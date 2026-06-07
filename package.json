@@ -1,0 +1,29 @@
+{
+  "name": "SQGATE",
+  "version": "1.0.0",
+  "description": "Professional 8-Bit Logic Simulator & EDA Platform",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "author": "Antigravity & User",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1",
+    "electron-packager": "^17.1.2"
+  },
+  "build": {
+    "appId": "com.SQGATE.app",
+    "productName": "SQGATE",
+    "win": {
+      "target": "nsis",
+      "icon": "icon.ico"
+    },
+    "mac": {
+      "category": "public.app-category.education"
+    }
+  }
+}
