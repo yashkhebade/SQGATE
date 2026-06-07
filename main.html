@@ -1641,6 +1641,10 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
         <svg viewBox="0 0 24 24"><path d="M9 22h6m-3-2v-5m-7 1a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v10Z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
         Tests
       </button>
+      <button class="tb-btn-text" id="btn-wave" title="Waveform Viewer" aria-label="Waves">
+        <svg viewBox="0 0 24 24"><path d="M2 12h4l2-9 4 18 2-9h8"/></svg>
+        Waves
+      </button>
       <button class="tb-btn-text" id="btn-verilog" title="Verilog Source" aria-label="Verilog">
         <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
         Verilog
@@ -4740,12 +4744,10 @@ waveHeader.addEventListener('click', function() {
   if (isExpanded) { setTimeout(drawWaveform, 50); }
 });
 
-/*
 document.getElementById('btn-wave').addEventListener('click', function() {
   var isExpanded = wavePanel.classList.toggle('expanded');
   if (isExpanded) { setTimeout(drawWaveform, 50); }
 });
-*/
 
 document.getElementById('wave-clear-btn').addEventListener('click', function(e) {
   e.stopPropagation();
@@ -6026,7 +6028,7 @@ function renderSpotlightResults(q) {
     { label:'Fit to screen', icon:'⊡', action:function(){ document.getElementById('btn-fit').click(); }, key:'' },
     { label:'Run DRC', icon:'⚑', action:function(){ document.getElementById('btn-drc').click(); }, key:'' },
     { label:'Open Truth Table', icon:'⊞', action:openTTModal, key:'' },
-//     { label:'Toggle Waveform', icon:'〜', action:function(){ document.getElementById('btn-wave').click(); }, key:'' },
+{ label:'Toggle Waveform', icon:'〜', action:function(){ document.getElementById('btn-wave').click(); }, key:'' },
     { label:'Export PNG', icon:'🖼', action:exportPNG, key:'' },
     { label:'Export SVG', icon:'✦', action:exportSVG, key:'' },
     { label:'Step Simulation', icon:'⏵', action:toggleStepMode, key:'' },
