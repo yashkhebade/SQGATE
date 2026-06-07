@@ -134,4 +134,4 @@ node test_gates.js
 ```
 The suite executes 310+ test assertions covering arithmetic overflows, clock transitions, register loading, and ALU operations.
 
-MADE BY MULTIPLE LLM AND STUDENT WHO IS PASSIONAATE ABOUT CPU ARCHICTURE
+Designed and refined through collaboration between multiple Large Language Models (LLMs) and a student deeply passionate about CPU architecture and computer systems.
