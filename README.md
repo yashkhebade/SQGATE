@@ -134,5 +134,4 @@ node test_gates.js
 ```
 The suite executes 310+ test assertions covering arithmetic overflows, clock transitions, register loading, and ALU operations.
 
----
-*Developed with ❤️ by Antigravity & User. Released under the MIT License.*
+MADE BY MULTIPLE LLM AND STUDENT WHO IS PASSIONAATE ABOUT CPU ARCHICTURE
