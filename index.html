@@ -4459,51 +4459,55 @@ function renderProjGrid(projects){
   });
 
   sorted.forEach(function(p){
-    var card = document.createElement('div');
-    card.className = 'proj-card';
-    card.style.position = 'relative';
+    try {
+      var card = document.createElement('div');
+      card.className = 'proj-card';
+      card.style.position = 'relative';
 
-    var gateCount = (p.data && p.data.gates) ? p.data.gates.length : 0;
-    var wireCount = (p.data && p.data.wires) ? p.data.wires.length : 0;
-    var dateStr   = p.updatedAt ? new Date(p.updatedAt).toLocaleDateString() : 'Never';
+      var gateCount = (p.data && p.data.gates) ? p.data.gates.length : 0;
+      var wireCount = (p.data && p.data.wires) ? p.data.wires.length : 0;
+      var dateStr   = p.updatedAt ? new Date(p.updatedAt).toLocaleDateString() : 'Never';
 
-    card.innerHTML =
-      '<div class="proj-card-name">'+escHtml(p.name)+'</div>'+
-      '<div class="proj-card-meta">'+gateCount+' gates &middot; '+wireCount+' wires &middot; '+dateStr+'</div>'+
-      '<div class="proj-card-badge">'+p.id+'</div>';
+      card.innerHTML =
+        '<div class="proj-card-name">'+escHtml(p.name)+'</div>'+
+        '<div class="proj-card-meta">'+gateCount+' gates &middot; '+wireCount+' wires &middot; '+dateStr+'</div>'+
+        '<div class="proj-card-badge">'+p.id+'</div>';
 
-    card.addEventListener('click', function(){ openProject(p); });
+      card.addEventListener('click', function(){ openProject(p); });
 
-    // Rename on double-click
-    card.addEventListener('dblclick', function(e){
-      e.stopPropagation();
-      customPrompt('Rename project:', p.name, function(newName) {
-        if(newName && newName.trim()){
-          p.name = newName.trim();
-          saveProject(p.id, p.name, p.data);
+      // Rename on double-click
+      card.addEventListener('dblclick', function(e){
+        e.stopPropagation();
+        customPrompt('Rename project:', p.name, function(newName) {
+          if(newName && newName.trim()){
+            p.name = newName.trim();
+            saveProject(p.id, p.name, p.data);
+            showProjects();
+          }
+        });
+      });
+
+      // Delete button
+      var del = document.createElement('button');
+      del.textContent = '×';
+      del.title = 'Delete project';
+      del.style.cssText = 'position:absolute;top:8px;right:8px;background:none;border:none;cursor:pointer;'+
+        'color:var(--t3);font-size:18px;line-height:1;transition:color .1s;padding:2px 6px;border-radius:3px';
+      del.addEventListener('mouseenter', function(){ del.style.color='var(--acr)'; });
+      del.addEventListener('mouseleave', function(){ del.style.color='var(--t3)'; });
+      del.addEventListener('click', function(e){
+        e.stopPropagation();
+        if(!window.confirm || window.confirm('Delete "'+p.name+'"? This cannot be undone.')){
+          deleteProject(p.id);
           showProjects();
+          msg('Project deleted','');
         }
       });
-    });
-
-    // Delete button
-    var del = document.createElement('button');
-    del.textContent = '×';
-    del.title = 'Delete project';
-    del.style.cssText = 'position:absolute;top:8px;right:8px;background:none;border:none;cursor:pointer;'+
-      'color:var(--t3);font-size:18px;line-height:1;transition:color .1s;padding:2px 6px;border-radius:3px';
-    del.addEventListener('mouseenter', function(){ del.style.color='var(--acr)'; });
-    del.addEventListener('mouseleave', function(){ del.style.color='var(--t3)'; });
-    del.addEventListener('click', function(e){
-      e.stopPropagation();
-      if(!window.confirm || window.confirm('Delete "'+p.name+'"? This cannot be undone.')){
-        deleteProject(p.id);
-        showProjects();
-        msg('Project deleted','');
-      }
-    });
-    card.appendChild(del);
-    grid.appendChild(card);
+      card.appendChild(del);
+      grid.appendChild(card);
+    } catch(err) {
+      console.error("Corrupted project skipped:", p, err);
+    }
   });
 }
 
