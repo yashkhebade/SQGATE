@@ -1938,6 +1938,35 @@ IN#1=1, IN#2=0 -> OUT#3=1</textarea>
     <button class="mclose" id="hub-close">&times;</button>
   </div>
 </div>
+<!-- MODAL: ASM Assembler -->
+<div class="ov" id="ov-asm">
+  <div class="mbox wide" style="max-width: 650px;">
+    <div class="mh">📝 Integrated ASM Compiler</div>
+    <div class="msc" style="display:flex; flex-direction:column; gap:10px;">
+      <p style="font-size:12px;color:var(--t2);margin-bottom:4px;line-height:1.6">
+        Write Assembly code using custom macros. 
+        <br>Syntax: <code>#DEFINE name hex_value</code>, <code>LABEL:</code>, <code>DATA</code>. Values can be hex (0xFF) or decimal (255).
+      </p>
+      <textarea id="asm-code" style="width:100%;height:220px;background:var(--bg0);color:var(--t1);border:1px solid var(--b2);border-radius:4px;font-family:var(--fmono);font-size:12px;padding:10px;resize:vertical;" spellcheck="false">#DEFINE NOP 0x00
+#DEFINE ADD 0x10
+#DEFINE JMP 0x80
+
+START:
+  NOP
+  ADD
+  0x05
+  JMP
+  START
+</textarea>
+      <div id="asm-log" style="width:100%;min-height:40px;max-height:80px;overflow-y:auto;background:var(--bg1);border:1px solid var(--b1);border-radius:4px;font-family:var(--fmono);font-size:11px;color:var(--t2);padding:6px;white-space:pre-wrap;">Ready to compile.</div>
+    </div>
+    <div class="mft">
+      <button class="mbtn sc" onclick="document.getElementById('ov-asm').classList.remove('open')">Cancel</button>
+      <button class="mbtn pr" id="asm-compile-btn">Compile & Flash to ROM</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL: Verilog -->
 <div class="ov" id="ov-verilog">
   <div class="mbox wide">
@@ -2962,18 +2991,10 @@ function bindGate(gate){
     if(gate.type==='clock'){e.stopPropagation();selGate(gate.id);msg('Set clock frequency in Properties panel \u2192','wa');}
     if(gate.type==='rom8'){
       e.stopPropagation();
-      customPrompt('Enter hex data for ROM (space separated, e.g. "01 A2 FF 00"):', '', function(hex) {
-        if(hex!==null){
-          if(!gate.mem) gate.mem = new Uint8Array(256);
-          var parts = hex.trim().split(/[\s,]+/);
-          for(var i=0; i<Math.min(256, parts.length); i++){
-            if(parts[i]) gate.mem[i] = parseInt(parts[i], 16) || 0;
-          }
-          msg('ROM data updated', 'ok');
-          simulate();
-          S.pdirty=true;
-        }
-      });
+      window.currentAsmTargetId = gate.id;
+      document.getElementById('asm-code').value = gate.asmCode || "#DEFINE NOP 0x00\n#DEFINE ADD 0x10\n#DEFINE JMP 0x80\n\nSTART:\n  NOP\n  ADD\n  0x05\n  JMP\n  START\n";
+      document.getElementById('asm-log').textContent = "Ready to compile. Double-click on ROM opens this editor.";
+      document.getElementById('ov-asm').classList.add('open');
     }
   });
 
@@ -4341,7 +4362,8 @@ function projDataSnapshot(){
   return {
     gates: S.gates.map(function(g){
       return {id:g.id,type:g.type,cn:g.cn,x:g.x,y:g.y,
-              value:g.value,q:g.q,prevClk:g.prevClk,freq:g.freq,fault:g.fault};
+              value:g.value,q:g.q,prevClk:g.prevClk,freq:g.freq,fault:g.fault,
+              asmCode:g.asmCode,mem:g.mem?Array.from(g.mem):null};
     }),
     wires:  S.wires.map(function(w){ return Object.assign({},w); }),
     custom: JSON.parse(JSON.stringify(S.custom)),
@@ -4368,6 +4390,7 @@ function loadProjData(data){
   WIRE_LABELS = data.wireLabels || {};
   (data.gates||[]).forEach(function(gd){
     var gate = Object.assign({lastTog:Date.now()},gd);
+    if(gate.mem) gate.mem = new Uint8Array(gate.mem);
     var el   = mkGateEl(gate);
     gate.el  = el;
     gateLyr.appendChild(el);
@@ -4609,7 +4632,8 @@ function histSnapshot() {
   return JSON.stringify({
     gates: S.gates.map(function(g) {
       return { id:g.id,type:g.type,cn:g.cn,x:g.x,y:g.y,
-               value:g.value,q:g.q,prevClk:g.prevClk,freq:g.freq,fault:g.fault };
+               value:g.value,q:g.q,prevClk:g.prevClk,freq:g.freq,fault:g.fault,
+               asmCode:g.asmCode,mem:g.mem?Array.from(g.mem):null };
     }),
     wires: S.wires.map(function(w) { return Object.assign({},w); }),
     nid: S.nid,
@@ -4649,6 +4673,7 @@ function histRestore(snap) {
   // Recreate gates
   snap.gates.forEach(function(gd) {
     var gate = Object.assign({ lastTog: Date.now() }, gd);
+    if(gate.mem) gate.mem = new Uint8Array(gate.mem);
     var el = mkGateEl(gate);
     gate.el = el;
     gateLyr.appendChild(el);
@@ -7212,6 +7237,134 @@ openProject = function(p){
     }
   }, 300);
 };
+
+// ── ASM Compiler Logic ──
+function compileASM() {
+  const code = document.getElementById('asm-code').value;
+  const logEl = document.getElementById('asm-log');
+  logEl.textContent = "Compiling...\n";
+  logEl.style.color = "var(--t2)";
+  
+  if (!window.currentAsmTargetId) {
+    logEl.textContent += "Error: No target ROM selected.";
+    logEl.style.color = "var(--acr)";
+    return;
+  }
+  
+  const targetGate = S.gates.find(g => g.id === window.currentAsmTargetId);
+  if (!targetGate) {
+    logEl.textContent += "Error: Target ROM gate no longer exists.";
+    logEl.style.color = "var(--acr)";
+    return;
+  }
+  
+  // Save the code to the gate so it persists
+  targetGate.asmCode = code;
+
+  const lines = code.split('\n');
+  const defines = {};
+  const labels = {};
+  
+  let parsedLines = [];
+  
+  // Pass 1: Parse Defines, Strip Comments, normalize tokens
+  for (let i = 0; i < lines.length; i++) {
+    let line = lines[i].split(';')[0].split('//')[0].trim();
+    if (!line) continue;
+    
+    if (line.toUpperCase().startsWith('#DEFINE')) {
+      const parts = line.split(/\s+/);
+      if (parts.length >= 3) {
+        defines[parts[1]] = parts[2];
+      }
+      continue;
+    }
+    
+    parsedLines.push({ num: i + 1, text: line });
+  }
+  
+  // Pass 2: Calculate Label Addresses
+  let currentAddr = 0;
+  for (let i = 0; i < parsedLines.length; i++) {
+    let text = parsedLines[i].text;
+    
+    if (text.endsWith(':')) {
+      labels[text.substring(0, text.length - 1)] = currentAddr;
+      parsedLines[i].isLabel = true;
+    } else if (text.toUpperCase().startsWith('.ORG')) {
+      const parts = text.split(/\s+/);
+      let valStr = parts[1];
+      let val = 0;
+      if (valStr.startsWith('0x') || valStr.startsWith('0X')) val = parseInt(valStr, 16);
+      else val = parseInt(valStr, 10);
+      currentAddr = val;
+      parsedLines[i].isOrg = true;
+    } else {
+      currentAddr++; // Each instruction/data takes 1 byte
+    }
+  }
+  
+  // Pass 3: Resolve Values and Generate Bytecode
+  const bytecode = new Uint8Array(256);
+  currentAddr = 0;
+  
+  for (let i = 0; i < parsedLines.length; i++) {
+    let p = parsedLines[i];
+    if (p.isLabel) continue;
+    if (p.isOrg) {
+       const parts = p.text.split(/\s+/);
+       let valStr = parts[1];
+       if (valStr.startsWith('0x') || valStr.startsWith('0X')) currentAddr = parseInt(valStr, 16);
+       else currentAddr = parseInt(valStr, 10);
+       continue;
+    }
+    
+    if (currentAddr >= 256) {
+      logEl.textContent += `Error on line ${p.num}: ROM capacity exceeded (256 bytes). Address: ${currentAddr}\n`;
+      logEl.style.color = "var(--acr)";
+      return;
+    }
+    
+    // Resolve tokens
+    let token = p.text;
+    
+    // Try to resolve as define
+    if (defines[token] !== undefined) {
+      token = defines[token];
+    }
+    
+    // Try to resolve as label
+    if (labels[token] !== undefined) {
+      token = labels[token].toString();
+    }
+    
+    // Parse value
+    let val = 0;
+    if (token.startsWith('0x') || token.startsWith('0X')) {
+      val = parseInt(token, 16);
+    } else if (!isNaN(parseInt(token, 10))) {
+      val = parseInt(token, 10);
+    } else {
+      logEl.textContent += `Error on line ${p.num}: Unknown token '${token}'\n`;
+      logEl.style.color = "var(--acr)";
+      return;
+    }
+    
+    bytecode[currentAddr] = val & 0xFF;
+    currentAddr++;
+  }
+  
+  // Flash to ROM
+  targetGate.mem = bytecode;
+  simulate();
+  S.pdirty = true;
+  drawGrid();
+  
+  logEl.textContent += `Success: Compiled ${currentAddr} bytes.\nFlashed to ROM #${targetGate.id}.`;
+  logEl.style.color = "var(--acb)";
+}
+
+document.getElementById('asm-compile-btn').addEventListener('click', compileASM);
 
 // ── ResizeObservers ──
 new ResizeObserver(function(){
