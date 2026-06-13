@@ -1569,7 +1569,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
     <div class="login-footer">
       Your data is stored <strong>locally in this browser</strong> — nothing is sent to any server.<br>
       Use the same email on any device to keep your projects.<br><br>
-      <span style="color:var(--acc)">⬡ Collaboration</span> — share projects via export codes with teammates.
+
     </div>
   </div>
 </div>
@@ -1592,7 +1592,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
     <div class="proj-actions">
       <button class="proj-action-btn" id="pa-import-v"><span>📥</span>Import .v File</button>
       <button class="proj-action-btn" id="pa-import-proj"><span>📂</span>Import Project</button>
-      <button class="proj-action-btn" id="pa-join"><span>🔗</span>Join Shared Project</button>
+
       <input type="file" class="import-input-hidden" id="import-v-file" accept=".v">
       <input type="file" class="import-input-hidden" id="import-proj-file" accept=".json">
     </div>
@@ -1995,106 +1995,6 @@ START:
     <div class="mft">
       <button class="mbtn sc" id="v-close">Close</button>
       <button class="mbtn pr" id="v-dl" style="display:flex;align-items:center;gap:6px">⬇ Download .v</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL: Share & Collaborate -->
-<div class="ov" id="ov-share">
-  <div class="mbox wide">
-    <div class="mh">⬡ Share & Collaborate</div>
-    <div class="msc">
-
-      <!-- Tab row -->
-      <div style="display:flex;gap:4px;margin-bottom:16px">
-        <div class="vtab on" id="sh-tab-share" onclick="switchShareTab('share')">Share Project</div>
-        <div class="vtab" id="sh-tab-join" onclick="switchShareTab('join')">Join a Project</div>
-        <div class="vtab" id="sh-tab-export" onclick="switchShareTab('export')">Export / Import</div>
-      </div>
-
-      <!-- SHARE TAB -->
-      <div id="sh-panel-share">
-        <p style="font-size:12.5px;color:var(--t3);margin-bottom:14px;line-height:1.7">
-          Generate a <strong style="color:var(--t2)">share code</strong> for this project.
-          Anyone with the code can join a copy of your project from the Projects page.
-          Your project auto-saves before sharing.
-        </p>
-
-        <div class="ph">Project Share Code</div>
-        <div style="display:flex;gap:8px;margin:8px 0 4px">
-          <div class="share-code" id="share-code"
-            style="flex:1;cursor:pointer;letter-spacing:2px;font-size:14px;text-align:center;padding:12px"
-            onclick="copyShareCode()" title="Click to copy">
-            —
-          </div>
-          <button class="mbtn sc" onclick="generateShareCode()" style="padding:8px 14px;font-size:12px">
-            ↺ Generate
-          </button>
-        </div>
-        <div style="font-size:11px;color:var(--t3);margin-bottom:12px" id="share-copied"></div>
-
-        <div style="background:var(--bg0);border:1px solid var(--b1);border-radius:4px;padding:12px;font-size:11.5px;color:var(--t3);line-height:1.7;margin-bottom:8px">
-          <b style="color:var(--t2)">How it works:</b><br>
-          1. Click <b style="color:var(--t2)">Generate</b> to create a unique code for this project<br>
-          2. Copy the code and send it to your collaborator<br>
-          3. They paste it in <b style="color:var(--t2)">Join a Project</b> tab to get their own copy<br>
-          4. Both of you can edit independently — use Export/Import to sync changes
-        </div>
-
-        <div class="ph" style="margin-top:12px">Shared Projects (visible on this device)</div>
-        <div id="share-list" style="max-height:140px;overflow-y:auto"></div>
-      </div>
-
-      <!-- JOIN TAB -->
-      <div id="sh-panel-join" style="display:none">
-        <p style="font-size:12.5px;color:var(--t3);margin-bottom:14px;line-height:1.7">
-          Enter a share code from a teammate to load a copy of their project into your account.
-        </p>
-        <div class="ph">Enter Share Code</div>
-        <div style="display:flex;gap:8px;margin:8px 0 12px">
-          <input class="mi" id="join-code-input"
-            placeholder="e.g. abc123xyz"
-            style="font-family:var(--fmono);letter-spacing:1px;font-size:14px"
-            autocomplete="off" spellcheck="false">
-          <button class="mbtn pr" onclick="joinSharedProject()" style="padding:8px 18px;font-size:12px;white-space:nowrap">
-            Join →
-          </button>
-        </div>
-        <div id="join-result" style="font-size:12px;min-height:24px"></div>
-        <div style="background:var(--bg0);border:1px solid var(--b1);border-radius:4px;padding:12px;font-size:11.5px;color:var(--t3);line-height:1.7;margin-top:12px">
-          <b style="color:var(--t2)">Note:</b> This creates an independent copy in your account.
-          Changes you make do not automatically sync to the original.
-          Use Export/Import to exchange updated versions.
-        </div>
-      </div>
-
-      <!-- EXPORT/IMPORT TAB -->
-      <div id="sh-panel-export" style="display:none">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
-
-          <div style="background:var(--bg2);border:1px solid var(--b1);border-radius:6px;padding:16px;cursor:pointer;transition:border-color .15s"
-            onmouseenter="this.style.borderColor='var(--acc)'" onmouseleave="this.style.borderColor='var(--b1)'"
-            onclick="exportProjectJSON()">
-            <div style="font-size:20px;margin-bottom:8px">📤</div>
-            <div style="font-weight:600;font-size:13px;margin-bottom:4px">Export JSON</div>
-            <div style="font-size:11.5px;color:var(--t3);line-height:1.5">Save full project as .json file to share via email, Slack, WhatsApp, etc.</div>
-          </div>
-
-          <div style="background:var(--bg2);border:1px solid var(--b1);border-radius:6px;padding:16px;cursor:pointer;transition:border-color .15s"
-            onmouseenter="this.style.borderColor='var(--acb)'" onmouseleave="this.style.borderColor='var(--b1)'"
-            onclick="document.getElementById('import-proj-file-share').click()">
-            <div style="font-size:20px;margin-bottom:8px">📥</div>
-            <div style="font-weight:600;font-size:13px;margin-bottom:4px">Import JSON</div>
-            <div style="font-size:11.5px;color:var(--t3);line-height:1.5">Load a .json project file from a teammate. Creates a new project in your account.</div>
-          </div>
-        </div>
-        <input type="file" id="import-proj-file-share" accept=".json" style="display:none">
-        <div id="export-import-result" style="font-size:12px;color:var(--t3);min-height:20px"></div>
-      </div>
-
-    </div>
-    <div class="mft">
-      <button class="mbtn sc" id="share-close">Close</button>
     </div>
   </div>
 </div>
@@ -4149,195 +4049,7 @@ document.getElementById('ed-proj-name').addEventListener('click',function(){
   });
 });
 
-// ═══════════════════════════════════════════════════════
-// COLLABORATION FUNCTIONS
-// ═══════════════════════════════════════════════════════
 
-function switchShareTab(tab){
-  ['share','join','export'].forEach(function(t){
-    var tabEl   = document.getElementById('sh-tab-'+t);
-    var panelEl = document.getElementById('sh-panel-'+t);
-    if(tabEl)   tabEl.classList.toggle('on', t===tab);
-    if(panelEl) panelEl.style.display = (t===tab)?'':'none';
-  });
-  if(tab==='share') refreshShareList();
-}
-
-function openShareModal(){
-  if(!PROJ){ msg('Open a project first','er'); return; }
-  autoSave();
-  // Default to share tab
-  switchShareTab('share');
-  // Show code if already shared
-  var existing = null;
-  try{ existing = localStorage.getItem('lgf_shared_'+PROJ.id); }catch(e){}
-  var codeEl = document.getElementById('share-code');
-  if(codeEl) codeEl.textContent = existing ? PROJ.id : '—';
-  var copiedEl = document.getElementById('share-copied');
-  if(copiedEl) copiedEl.textContent = '';
-  refreshShareList();
-  document.getElementById('ov-share').classList.add('open');
-}
-
-function generateShareCode(){
-  if(!PROJ){ msg('Open a project first','er'); return; }
-  autoSave();
-  var snap = {
-    id:       PROJ.id,
-    name:     PROJ.name,
-    data:     projDataSnapshot(),
-    sharedBy: CU ? CU.email : 'unknown',
-    sharedAt: Date.now(),
-  };
-  try{
-    localStorage.setItem('lgf_shared_'+PROJ.id, JSON.stringify(snap));
-  }catch(e){
-    msg('Storage full — use Export JSON instead','er'); return;
-  }
-  var codeEl = document.getElementById('share-code');
-  if(codeEl) codeEl.textContent = PROJ.id;
-  var copiedEl = document.getElementById('share-copied');
-  if(copiedEl) copiedEl.textContent = '';
-  refreshShareList();
-  msg('Share code ready — click it to copy','ok');
-}
-
-function copyShareCode(){
-  var codeEl = document.getElementById('share-code');
-  if(!codeEl) return;
-  var code = codeEl.textContent.trim();
-  if(!code || code==='—'){
-    msg('Click Generate first','er'); return;
-  }
-  var copiedEl = document.getElementById('share-copied');
-  if(navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(code).then(function(){
-      if(copiedEl){ copiedEl.style.color='var(--acc)'; copiedEl.textContent='✓ Copied! Send this code to your collaborator'; }
-    }).catch(function(){
-      if(copiedEl){ copiedEl.style.color='var(--aca)'; copiedEl.textContent='Code: '+code+' — select and copy manually'; }
-    });
-  } else {
-    if(copiedEl){ copiedEl.style.color='var(--aca)'; copiedEl.textContent='Code: '+code+' — select and copy manually'; }
-  }
-}
-
-function refreshShareList(){
-  var listEl = document.getElementById('share-list');
-  if(!listEl) return;
-  var shared = [];
-  try{
-    for(var i=0; i<localStorage.length; i++){
-      var key = localStorage.key(i);
-      if(key && key.startsWith('lgf_shared_')){
-        var d = JSON.parse(localStorage.getItem(key)||'{}');
-        if(d && d.id) shared.push(d);
-      }
-    }
-  }catch(e){}
-  if(!shared.length){
-    listEl.innerHTML='<div style="color:var(--t3);font-size:11.5px;padding:8px 0">No shared projects yet. Generate a code above to share this project.</div>';
-    return;
-  }
-  listEl.innerHTML = shared.map(function(s){
-    var date = s.sharedAt ? new Date(s.sharedAt).toLocaleDateString() : '';
-    return '<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--b1);font-size:12px">'+
-      '<div style="flex:1">'+
-        '<div style="font-weight:600;color:var(--t1)">'+escHtml(s.name||'Unnamed')+'</div>'+
-        '<div style="font-size:10.5px;color:var(--t3)">Code: <b style="color:var(--acc)">'+s.id+'</b> &middot; '+date+'</div>'+
-      '</div>'+
-      '<button onclick="revokeShare(\''+s.id+'\')" '+
-        'style="background:none;border:1px solid var(--b1);color:var(--t3);border-radius:3px;padding:2px 8px;font-size:11px;cursor:pointer;font-family:inherit">'+
-        'Revoke</button>'+
-    '</div>';
-  }).join('');
-}
-
-function revokeShare(id){
-  try{ localStorage.removeItem('lgf_shared_'+id); }catch(e){}
-  refreshShareList();
-  msg('Share code revoked','');
-}
-
-function joinSharedProject(){
-  var inputEl = document.getElementById('join-code-input');
-  var resEl   = document.getElementById('join-result');
-  if(!inputEl||!resEl) return;
-  var code = inputEl.value.trim();
-  resEl.textContent='';
-  if(!code){ resEl.style.color='var(--acr)'; resEl.textContent='Enter a share code first'; return; }
-  var key = code.startsWith('lgf_shared_') ? code : 'lgf_shared_'+code;
-  var raw = null;
-  try{ raw = localStorage.getItem(key); }catch(e){}
-  if(!raw){
-    resEl.style.color='var(--acr)';
-    resEl.textContent='Code not found. The project must have been shared on this device. Try Import JSON instead.';
-    return;
-  }
-  try{
-    var shared  = JSON.parse(raw);
-    var newId   = genId();
-    var newName = (shared.name||'Shared Project')+' (joined)';
-    saveProject(newId, newName, shared.data||{});
-    inputEl.value='';
-    document.getElementById('ov-share').classList.remove('open');
-    showProjects();
-    msg('Joined "'+newName+'" — now in your projects','ok');
-  }catch(e){
-    resEl.style.color='var(--acr)';
-    resEl.textContent='Invalid share data. Try importing a JSON file instead.';
-  }
-}
-
-function exportProjectJSON(){
-  if(!PROJ){ msg('Open a project first','er'); return; }
-  autoSave();
-  var snap = projDataSnapshot();
-  var obj  = {name:PROJ.name, data:snap, exportedAt:Date.now(), exportedBy:CU?CU.email:''};
-  var blob = new Blob([JSON.stringify(obj,null,2)],{type:'application/json'});
-  var url  = URL.createObjectURL(blob);
-  var a    = document.createElement('a');
-  a.href   = url;
-  a.download = (PROJ.name||'project').replace(/\W+/g,'_')+'.json';
-  a.click();
-  URL.revokeObjectURL(url);
-  var resEl = document.getElementById('export-import-result');
-  if(resEl){ resEl.style.color='var(--acc)'; resEl.textContent='✓ Exported '+a.download; }
-  msg('Exported: '+a.download,'ok');
-}
-
-// Share modal import file handler
-(function(){
-  var el = document.getElementById('import-proj-file-share');
-  if(!el) return;
-  el.addEventListener('change', function(){
-    var file = this.files[0]; if(!file) return;
-    var reader = new FileReader();
-    reader.onload = function(e){
-      var resEl = document.getElementById('export-import-result');
-      try{
-        var proj   = JSON.parse(e.target.result);
-        var id     = genId();
-        var name   = (proj.name||'Imported')+' (copy)';
-        saveProject(id, name, proj.data||{});
-        if(resEl){ resEl.style.color='var(--acc)'; resEl.textContent='✓ Imported "'+name+'" — go to Projects to open it'; }
-        msg('Imported: '+name,'ok');
-      }catch(err){
-        if(resEl){ resEl.style.color='var(--acr)'; resEl.textContent='Invalid file — must be a SQGATE JSON export'; }
-      }
-    };
-    reader.readAsText(file);
-    this.value='';
-  });
-})();
-
-// Wire up share button and modal
-
-document.getElementById('share-close').addEventListener('click', function(){
-  document.getElementById('ov-share').classList.remove('open');
-});
-document.getElementById('ov-share').addEventListener('click', function(e){
-  if(e.target===e.currentTarget) e.currentTarget.classList.remove('open');
-});
 
 // ═══════════════════════════════════════════════════════
 // STATUS
@@ -4615,12 +4327,6 @@ document.getElementById('import-proj-file').addEventListener('change', function(
   this.value = '';
 });
 
-// Join shared project from projects page (now uses new modal)
-document.getElementById('pa-join').addEventListener('click', function(){
-  // Open share modal on the Join tab
-  document.getElementById('ov-share').classList.add('open');
-  switchShareTab('join');
-});
 
 // ═══════════════════════════════════════════════════════
 // FEATURE 1: UNDO / REDO
