@@ -1579,6 +1579,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       Always remember me
     </label>
     <button class="login-sub-btn" id="login-btn">Sign In / Create Account</button>
+    <button class="login-sub-btn" id="guest-btn" style="background:var(--b2);margin-top:10px;">Continue as Guest</button>
     <div class="login-err" id="login-err"></div>
 
     <div class="login-footer">
@@ -4182,6 +4183,11 @@ function showPage(id){
 
 
 document.getElementById('login-btn').addEventListener('click', doLogin);
+document.getElementById('guest-btn').addEventListener('click', function(){
+  CU = {email: 'guest', name: 'Guest'};
+  authSave();
+  showProjects();
+});
 document.getElementById('login-email').addEventListener('keydown', function(e){ if(e.key==='Enter') document.getElementById('login-name').focus(); });
 document.getElementById('login-name').addEventListener('keydown',  function(e){ if(e.key==='Enter') doLogin(); });
 
@@ -4216,8 +4222,15 @@ function doLogin(){
 function showProjects(){
   showPage('pg-projects');
   var ud = getUserData(CU.email);
-  document.getElementById('pu-email').textContent = CU.email;
-  document.getElementById('pu-avatar').textContent = (CU.name||CU.email)[0].toUpperCase();
+  if (CU.email === 'guest') {
+    document.getElementById('pu-email').textContent = 'Local Workspace';
+    document.getElementById('pu-avatar').textContent = 'L';
+    document.getElementById('btn-logout').textContent = 'Sign In';
+  } else {
+    document.getElementById('pu-email').textContent = CU.email;
+    document.getElementById('pu-avatar').textContent = (CU.name||CU.email)[0].toUpperCase();
+    document.getElementById('btn-logout').textContent = 'Sign out';
+  }
   renderProjGrid(ud.projects||{});
 }
 
@@ -4329,6 +4342,9 @@ function openProject(p){
 // Project page action buttons
 document.getElementById('btn-logout').addEventListener('click', function(){
   if(PROJ) autoSave();
+  if(CU && CU.email !== 'guest') {
+    if(!confirm('Sign out of ' + CU.email + '?')) return;
+  }
   CU = null; authSave();
   showPage('pg-login');
   // Clear form
@@ -7141,7 +7157,8 @@ new ResizeObserver(function(){
 // ── START ──
 setupVerilogImport();
 authLoad();
-if(CU){ showProjects(); } else { showPage('pg-login'); }
+if(!CU){ CU = {email: 'guest', name: 'Guest'}; authSave(); }
+showProjects();
 </script>
 </body>
 </html>
