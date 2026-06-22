@@ -7164,10 +7164,19 @@ authLoad();
 if(!CU){ CU = {email: 'guest', name: 'Guest'}; authSave(); }
 
 // Directly open the Editor tool for frictionless use
-clearCanvas();
-PROJ = null;
-document.getElementById('ed-proj-name').textContent = 'Untitled';
-showPage('pg-editor');
+var projs = getProjects();
+var pkeys = Object.keys(projs);
+if(pkeys.length > 0) {
+  pkeys.sort(function(a,b){ return (projs[b].updatedAt||0) - (projs[a].updatedAt||0); });
+  var latest = projs[pkeys[0]];
+  PROJ = {id: latest.id, name: latest.name, data: latest.data};
+  document.getElementById('ed-proj-name').textContent = latest.name;
+  loadProjData(latest.data);
+  showPage('pg-editor');
+} else {
+  createNewProject();
+  showPage('pg-editor');
+}
 </script>
 </body>
 </html>
