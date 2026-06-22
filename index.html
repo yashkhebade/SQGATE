@@ -1843,16 +1843,25 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 
 <!-- MODAL: PRO Upgrade -->
 <div class="ov" id="ov-pro" style="z-index:9500;backdrop-filter:blur(5px);display:none;">
-  <div class="mbox" style="max-width:420px;text-align:center;padding:40px 30px;">
+  <div class="mbox" style="max-width:450px;text-align:center;padding:40px 30px;">
     <h2 style="margin:0 0 10px 0;color:var(--acc);font-size:26px;">SQGATE <span style="background:linear-gradient(135deg,#e09626,#e8b154);color:#fff;padding:2px 6px;border-radius:6px;font-size:14px;vertical-align:middle;box-shadow:0 2px 6px rgba(224,150,38,0.5);">PRO</span></h2>
-    <p style="color:var(--t2);font-size:14px;margin-bottom:24px;line-height:1.6;">Support the development of SQGATE and completely remove all advertisements forever.</p>
-    <div style="background:var(--bg0);border:1px solid var(--b1);padding:20px;border-radius:8px;margin-bottom:24px;">
-      <div style="font-weight:800;font-size:28px;color:#fff;">$10.00</div>
-      <div style="font-size:12px;color:var(--t3);margin-top:4px;">One-time payment</div>
+    <p style="color:var(--t2);font-size:14px;margin-bottom:24px;line-height:1.6;">Support the developer and completely remove all advertisements forever. Pay any amount on Ko-Fi to unlock!</p>
+    
+    <div style="background:var(--bg0);border:1px solid var(--b1);padding:20px;border-radius:8px;margin-bottom:20px;text-align:left;">
+      <div style="font-weight:600;color:var(--t1);margin-bottom:10px;">Step 1: Get your Code</div>
+      <a href="https://ko-fi.com/sqgate" target="_blank" style="display:block;text-align:center;background:linear-gradient(135deg,#ff5e5b,#ff9c5b);color:#fff;text-decoration:none;padding:12px;border-radius:6px;font-weight:bold;margin-bottom:10px;box-shadow:0 4px 12px rgba(255,94,91,0.3);transition:all .2s ease;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Pay on Ko-Fi (Any Amount) ☕</a>
+      <div style="font-size:11px;color:var(--t3);text-align:center;">Check the "Thank You" receipt message on Ko-Fi after paying to find your secret Activation Code.</div>
     </div>
-    <div style="display:flex;gap:12px;justify-content:center;">
-      <button class="mbtn sc" style="flex:1" onclick="closeProModal()">Cancel</button>
-      <button class="mbtn pr" style="flex:1;background:linear-gradient(135deg,#e09626,#e8b154);border:none;color:#fff;box-shadow:0 4px 12px rgba(224,150,38,0.4);" onclick="purchasePro()">Simulate Purchase</button>
+
+    <div style="background:var(--bg0);border:1px solid var(--b1);padding:20px;border-radius:8px;margin-bottom:24px;text-align:left;">
+      <div style="font-weight:600;color:var(--t1);margin-bottom:10px;">Step 2: Activate</div>
+      <input type="text" id="pro-activation-code" placeholder="Enter Activation Code..." style="width:100%;background:var(--bg1);border:1px solid var(--b2);color:var(--t1);padding:10px;border-radius:6px;font-family:var(--fmono);outline:none;margin-bottom:10px;">
+      <div id="pro-error" style="color:#ff5e5b;font-size:12px;display:none;margin-bottom:10px;text-align:center;">Invalid Activation Code.</div>
+      <button class="mbtn pr" style="width:100%;background:linear-gradient(135deg,#e09626,#e8b154);border:none;color:#fff;box-shadow:0 4px 12px rgba(224,150,38,0.4);" onclick="activatePro()">Activate PRO</button>
+    </div>
+
+    <div style="display:flex;justify-content:center;">
+      <button class="mbtn sc" style="width:100px;" onclick="closeProModal()">Cancel</button>
     </div>
   </div>
 </div>
@@ -2285,16 +2294,34 @@ function applyProState() {
   document.querySelectorAll('.ad-banner').forEach(function(el){ el.style.display = isPro ? 'none' : 'flex'; });
 }
 function openProModal() {
+  if (!CU || CU.email === 'guest') {
+    alert('You are currently a Guest! Please sign in or create an account first so your PRO upgrade is saved permanently.');
+    // Optional: Could redirect them to login page
+    showPage('pg-login');
+    return;
+  }
+  document.getElementById('pro-error').style.display = 'none';
+  document.getElementById('pro-activation-code').value = '';
   document.getElementById('ov-pro').style.display = 'flex';
 }
 function closeProModal() {
   document.getElementById('ov-pro').style.display = 'none';
 }
-function purchasePro() {
-  if(!CU) { alert('Please sign in first!'); return; }
-  CU.isPro = true;
-  authSave();
-  closeProModal();
+function activatePro() {
+  var code = document.getElementById('pro-activation-code').value.trim().toUpperCase();
+  // Secret activation codes (Yash should put one of these in Ko-Fi receipt)
+  var validCodes = ['SQGATE-PRO-2024', 'LOGIC-PRO-VIP'];
+  
+  if (validCodes.indexOf(code) !== -1) {
+    CU.isPro = true;
+    authSave();
+    closeProModal();
+    // Re-render UI state
+    applyProState();
+    alert('Success! SQGATE PRO is now activated. Thank you for your support!');
+  } else {
+    document.getElementById('pro-error').style.display = 'block';
+  }
 }
 function getUserData(email) {
   try { return JSON.parse(localStorage.getItem('lgf_user_' + email) || '{}'); } catch(e){ return {}; }
