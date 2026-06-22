@@ -4,12 +4,12 @@
 <script>window.onerror=function(msg,u,l,c,e){var err=document.createElement('div');err.style.cssText='position:fixed;top:0;left:0;width:100%;background:red;color:white;z-index:999999;padding:10px;font-family:monospace';err.innerText='ERROR: '+msg+' at line '+l;document.body.appendChild(err);};</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SQGATE - Free Online Quantum Circuit Simulator</title>
-<meta name="description" content="SQGATE is an educational simulator for digital logic and quantum circuits. Design, simulate, and debug your architectures directly in the browser.">
+<title>SQGATE - Free Online Digital Logic Simulator</title>
+<meta name="description" content="SQGATE is an educational simulator for digital logic circuits. Design, simulate, and debug your architectures directly in the browser.">
 <!-- OG Tags -->
-<meta property="og:title" content="SQGATE - Free Online Quantum Circuit Simulator">
-<meta property="og:description" content="SQGATE is an educational simulator for digital logic and quantum circuits. Design, simulate, and debug your architectures directly in the browser.">
-<meta property="og:image" content="https://via.placeholder.com/1200x630?text=SQGATE+Quantum+Simulator">
+<meta property="og:title" content="SQGATE - Free Online Digital Logic Simulator">
+<meta property="og:description" content="SQGATE is an educational simulator for digital logic circuits. Design, simulate, and debug your architectures directly in the browser.">
+<meta property="og:image" content="https://via.placeholder.com/1200x630?text=SQGATE+Logic+Simulator">
 <meta property="og:type" content="website">
 <link rel="icon" href="./icon.png" type="image/png">
 <!-- Paste Google Analytics or Umami script here -->
@@ -1629,7 +1629,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
     <!-- DASHBOARD FOOTER -->
     <div style="margin-top:auto;padding:24px 0;text-align:center;font-size:11.5px;color:var(--t3);border-top:1px solid var(--b1);">
       © 2024 SQGATE. Built by YASH KHEBADE. | <a href="privacy.html" style="color:var(--t2);text-decoration:none;">Privacy Policy</a> | <a href="https://github.com/YASHKHEBADE/SQGATE/issues" target="_blank" style="color:var(--t2);text-decoration:none;">Found a bug? Let me know!</a><br>
-      <span style="display:inline-block;margin-top:6px;opacity:0.7;">SQGATE is an educational simulator. Results may vary from physical quantum hardware.</span>
+      <span style="display:inline-block;margin-top:6px;opacity:0.7;">SQGATE is an educational simulator. Results may vary from physical logic hardware.</span>
     </div>
   </div>
 </div>
@@ -4087,7 +4087,11 @@ document.getElementById('ed-back').addEventListener('click',function(){
 document.getElementById('ed-proj-name').addEventListener('click',function(){
   customPrompt('Project name:', PROJ?PROJ.name:'Untitled', function(newName) {
     if(newName&&newName.trim()){
-      PROJ.name=newName.trim();
+      if(!PROJ) {
+        PROJ = {id: genId(), name: newName.trim(), data: projDataSnapshot()};
+      } else {
+        PROJ.name=newName.trim();
+      }
       document.getElementById('ed-proj-name').textContent=PROJ.name;
       autoSave();S.dirty=true;
     }
@@ -7158,7 +7162,12 @@ new ResizeObserver(function(){
 setupVerilogImport();
 authLoad();
 if(!CU){ CU = {email: 'guest', name: 'Guest'}; authSave(); }
-showProjects();
+
+// Directly open the Editor tool for frictionless use
+clearCanvas();
+PROJ = null;
+document.getElementById('ed-proj-name').textContent = 'Untitled';
+showPage('pg-editor');
 </script>
 </body>
 </html>
