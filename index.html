@@ -2293,28 +2293,34 @@ function deleteProject(id) {
   setUserData(CU.email, ud);
 }
 // TELEMETRY & AI DATA COLLECTION
-// NOTE: Set this to your Firebase/Supabase REST API endpoint. 
-// When set, the app will anonymously upload circuit designs for AI training!
-var TELEMETRY_ENDPOINT = ""; 
+var TELEMETRY_ENDPOINT = "https://vemphsxvtlzfmeyjnbeq.supabase.co/rest/v1/circuits"; 
+var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlbXBoc3h2dGx6Zm1leWpuYmVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMjU0MzEsImV4cCI6MjA5NzgwMTQzMX0.wGJ8PBs7ilfA6AD7zxwsmXoyZWGhMEkFgcHV_TvIio4";
 var _lastTelemetryTime = 0;
 
 function captureTelemetry(data) {
-  if (!TELEMETRY_ENDPOINT) return;
+  if (!TELEMETRY_ENDPOINT || !SUPABASE_ANON_KEY) return;
   var now = Date.now();
   if (now - _lastTelemetryTime < 60000) return; // Max 1 upload per minute
   _lastTelemetryTime = now;
 
   var payload = {
     timestamp: now,
-    gateCount: data.gates.length,
-    wireCount: data.wires.length,
-    gates: data.gates.map(function(g){ return {type: g.type, x: g.x, y: g.y, val: g.value}; }),
-    wires: data.wires.map(function(w){ return {fg: w.fg, tg: w.tg}; })
+    gate_count: data.gates.length,
+    wire_count: data.wires.length,
+    topology: {
+      gates: data.gates.map(function(g){ return {type: g.type, x: g.x, y: g.y, val: g.value}; }),
+      wires: data.wires.map(function(w){ return {fg: w.fg, tg: w.tg}; })
+    }
   };
 
   fetch(TELEMETRY_ENDPOINT, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+      'Prefer': 'return=minimal'
+    },
     body: JSON.stringify(payload)
   }).catch(function(e){ console.log("Telemetry upload skipped."); });
 }
