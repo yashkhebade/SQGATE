@@ -1766,7 +1766,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       <button class="tb-btn" id="btn-tmpl" title="Circuit Templates" aria-label="Templates">
         <svg viewBox="0 0 24 24"><path d="M2 12a10 10 0 1 0 20 0 10 10 0 1 0-20 0"/></svg>
       </button>
-      <button class="tb-btn" id="btn-theme" title="Toggle Theme" aria-label="Theme">
+      <button class="tb-btn" id="btn-theme" title="Toggle Theme" aria-label="Theme" style="display:none;">
         <svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
       </button>
       <button class="tb-btn" id="btn-exp-proj-json" title="Export Project JSON" aria-label="Export JSON">
@@ -6156,15 +6156,7 @@ var TEMPLATES = [
   {
     name: 'NAND Gate Array', icon: '⊼', desc: 'AND + OR + NOT built from NAND only',
     build: function(ox,oy){ buildNANDOnly(ox,oy); },
-  },
-  {
-    name: '4-Bit CPU', icon: '💻', desc: 'Full 4-bit CPU (PC, ROM, ALU, ACC)',
-    build: function(ox,oy){ build4BitCPU(ox,oy); },
-  },
-  {
-    name: '8-Bit CPU', icon: '💻', desc: 'Massive 8-bit Harvard CPU (PC, ROM, RAM, ALU)',
-    build: function(ox,oy){ build8BitCPU(ox,oy); },
-  },
+  }
 ];
 
 document.getElementById('btn-tmpl').addEventListener('click', openTmplModal);
