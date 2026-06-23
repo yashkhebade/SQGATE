@@ -7221,7 +7221,16 @@ function nextTourStep() {
   var dlg = document.getElementById('tour-dialog');
   var dlgTop = rect.bottom + 20;
   var dlgLeft = rect.left + (rect.width/2) - 160;
-  if (dlgTop + 200 > window.innerHeight) dlgTop = rect.top - 220; 
+  
+  // Keep dialog on screen vertically
+  if (dlgTop + 200 > window.innerHeight) {
+    dlgTop = rect.top - 220; 
+  }
+  if (dlgTop < 20) {
+    dlgTop = Math.max(20, window.innerHeight / 2 - 100);
+  }
+  
+  // Keep dialog on screen horizontally
   if (dlgLeft < 20) dlgLeft = 20;
   if (dlgLeft + 320 > window.innerWidth) dlgLeft = window.innerWidth - 340;
 
