@@ -1742,9 +1742,9 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       </a>
 
       <!-- Primary Action -->
-      <button class="tb-btn-primary" id="btn-step" aria-label="Step Simulation">
-        <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        Simulate
+      <button class="tb-btn-primary" id="btn-guide" aria-label="Interactive Guide" style="background:var(--aca); color:#fff; border:none; box-shadow:0 2px 8px rgba(61, 186, 110, 0.4);" onclick="startTour()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        Guide
       </button>
     </div>
   </div>
@@ -4326,7 +4326,17 @@ function createNewProject(){
   var id   = genId();
   var num  = Object.keys(getProjects()).length + 1;
   var name = 'Project ' + num;
-  var data = {gates:[],wires:[],custom:{},nid:1};
+  
+  // Default NAND Circuit Example
+  var g1 = {id:1, type:'input', x:-150, y:-50, value:0, p:[]};
+  var g2 = {id:2, type:'input', x:-150, y:50, value:0, p:[]};
+  var g3 = {id:3, type:'nand', x:0, y:0, p:[]};
+  var g4 = {id:4, type:'output', x:150, y:0, p:[]};
+  var w1 = {id:5, fg:1, fp:0, tg:3, tp:0, sig:0};
+  var w2 = {id:6, fg:2, fp:0, tg:3, tp:1, sig:0};
+  var w3 = {id:7, fg:3, fp:0, tg:4, tp:0, sig:0};
+  var data = {gates:[g1,g2,g3,g4], wires:[w1,w2,w3], custom:{}, nid:8};
+  
   saveProject(id, name, data);
   openProject({id, name, data});
 }
@@ -5535,7 +5545,8 @@ bindGate = function(gate) {
 // ═══════════════════════════════════════════════════════
 var STEP = { active: false, queue: [], currentIdx: 0, running: false };
 
-document.getElementById('btn-step').addEventListener('click', toggleStepMode);
+var btnStep = document.getElementById('btn-step');
+if(btnStep) btnStep.addEventListener('click', toggleStepMode);
 document.getElementById('step-exit').addEventListener('click', exitStepMode);
 document.getElementById('step-fwd').addEventListener('click', stepForward);
 document.getElementById('step-rst').addEventListener('click', function(){ STEP.currentIdx=0; highlightStep(-1); updateStepInfo(); });
@@ -5549,7 +5560,8 @@ function toggleStepMode() {
   if (STEP.active) { exitStepMode(); return; }
   STEP.active = true;
   document.getElementById('step-bar').classList.add('on');
-  document.getElementById('btn-step').classList.add('act');
+  var btnStep = document.getElementById('btn-step');
+  if(btnStep) btnStep.classList.add('act');
   // Build propagation queue: topological order
   STEP.queue = buildTopoQueue();
   STEP.currentIdx = 0;
@@ -5564,7 +5576,8 @@ function toggleStepMode() {
 function exitStepMode() {
   STEP.active = false; STEP.running = false;
   document.getElementById('step-bar').classList.remove('on');
-  document.getElementById('btn-step').classList.remove('act');
+  var btnStep = document.getElementById('btn-step');
+  if(btnStep) btnStep.classList.remove('act');
   S.gates.forEach(function(g){ if(g.el) g.el.style.filter=''; });
   // Remove step wire highlights
   wireSvg.querySelectorAll('.step-path-hi').forEach(function(el){ el.classList.remove('step-path-hi'); });
@@ -7163,6 +7176,68 @@ new ResizeObserver(function(){
   }
 }).observe(document.getElementById('wave-canvas-wrap'));
 
+//  INTERACTIVE ONBOARDING TOUR 
+var TOUR_STEPS = [
+  { sel: '#sidebar', title: 'Logic Gates Library', text: 'Drag and drop gates, inputs, and outputs onto the canvas. Scroll down to see advanced components like Flip-Flops and ALUs!' },
+  { sel: '#cvwrap', title: 'The Canvas', text: 'This is your workspace. We pre-loaded a simple NAND gate circuit for you. Try clicking the green IN gates to toggle them between 0 and 1!' },
+  { sel: '#btn-wave', title: 'Waveform Viewer', text: 'Click this button in the toolbar to open the Waveform Viewer and see your circuit\'s signals over time.' },
+  { sel: '#btn-verilog', title: 'Verilog Export', text: 'Once your circuit is built, click here to export it into professional Verilog code!' }
+];
+var tourIndex = -1;
+
+function startTour() {
+  document.getElementById('tour-overlay').style.display = 'block';
+  setTimeout(function(){
+    document.getElementById('tour-dialog').style.opacity = '1';
+    document.getElementById('tour-dialog').style.transform = 'translateY(0)';
+  }, 10);
+  tourIndex = -1;
+  nextTourStep();
+}
+
+function nextTourStep() {
+  tourIndex++;
+  if (tourIndex >= TOUR_STEPS.length) {
+    endTour();
+    return;
+  }
+  var step = TOUR_STEPS[tourIndex];
+  var el = document.querySelector(step.sel);
+  if (!el) { nextTourStep(); return; }
+
+  document.getElementById('tour-title-text').textContent = step.title;
+  document.getElementById('tour-text').textContent = step.text;
+  document.getElementById('tour-progress').textContent = (tourIndex + 1) + '/' + TOUR_STEPS.length;
+  document.getElementById('tour-next-btn').textContent = (tourIndex === TOUR_STEPS.length - 1) ? 'Finish' : 'Next';
+
+  var rect = el.getBoundingClientRect();
+  var hl = document.getElementById('tour-hl');
+  var pad = 6;
+  hl.style.left = (rect.left - pad) + 'px';
+  hl.style.top = (rect.top - pad) + 'px';
+  hl.style.width = (rect.width + pad*2) + 'px';
+  hl.style.height = (rect.height + pad*2) + 'px';
+
+  var dlg = document.getElementById('tour-dialog');
+  var dlgTop = rect.bottom + 20;
+  var dlgLeft = rect.left + (rect.width/2) - 160;
+  if (dlgTop + 200 > window.innerHeight) dlgTop = rect.top - 220; 
+  if (dlgLeft < 20) dlgLeft = 20;
+  if (dlgLeft + 320 > window.innerWidth) dlgLeft = window.innerWidth - 340;
+
+  dlg.style.top = dlgTop + 'px';
+  dlg.style.left = dlgLeft + 'px';
+}
+
+function endTour() {
+  var dlg = document.getElementById('tour-dialog');
+  dlg.style.opacity = '0';
+  dlg.style.transform = 'translateY(10px)';
+  setTimeout(function(){
+    document.getElementById('tour-overlay').style.display = 'none';
+  }, 300);
+}
+
 // ── wire-svg: enable pointer events so hitboxes work ──
 (function(){
   var svg = document.getElementById('wire-svg');
@@ -7189,5 +7264,23 @@ if(pkeys.length > 0) {
   showPage('pg-editor');
 }
 </script>
+<!-- TOUR OVERLAY -->
+<div id="tour-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;pointer-events:none;overflow:hidden;">
+  <div id="tour-hl" style="position:absolute;background:transparent;box-shadow:0 0 0 9999px rgba(0,0,0,0.6), 0 0 15px rgba(61,186,110,0.8);border:2px solid var(--aca);border-radius:6px;transition:all 0.3s ease;"></div>
+  <div id="tour-dialog" style="position:absolute;width:320px;background:var(--bg0);border:1px solid var(--b1);border-radius:8px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,0.5);pointer-events:auto;transition:all 0.3s ease;transform:translateY(10px);opacity:0;">
+    <h3 style="margin:0 0 10px 0;color:var(--aca);font-size:18px;display:flex;align-items:center;gap:8px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      <span id="tour-title-text">Title</span>
+    </h3>
+    <p id="tour-text" style="color:var(--t1);font-size:13px;line-height:1.5;margin-bottom:20px;">Text</p>
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <span id="tour-progress" style="color:var(--t3);font-size:12px;font-weight:bold;">1/4</span>
+      <div style="display:flex;gap:8px;">
+        <button class="mbtn sc" onclick="endTour()">Skip</button>
+        <button class="mbtn pr" id="tour-next-btn" style="background:var(--aca);border:none;color:#fff;" onclick="nextTourStep()">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
