@@ -7263,8 +7263,23 @@ new ResizeObserver(function(){
 var TOUR_STEPS = [
   { sel: '#sidebar', title: 'Logic Gates Library', text: 'Drag and drop gates, inputs, and outputs onto the canvas. Scroll down to see advanced components like Flip-Flops and ALUs!' },
   { sel: '#cvwrap', title: 'The Canvas', text: 'This is your workspace. We pre-loaded a simple NAND gate circuit for you. Try clicking the green IN gates to toggle them between 0 and 1!' },
-  { sel: '#btn-wave', title: 'Waveform Viewer', text: 'Click this button in the toolbar to open the Waveform Viewer and see your circuit\'s signals over time.' },
-  { sel: '#btn-verilog', title: 'Verilog Export', text: 'Once your circuit is built, click here to export it into professional Verilog code!' }
+  { sel: '#btn-rp', title: 'Properties Panel', text: 'Select any component or wire on the canvas to view and edit its properties here (like naming an input, or changing bit-width).' },
+  { sel: '#btn-tt', title: 'Boolean & Karnaugh Maps', text: 'Instantly generate Truth Tables, Boolean algebra expressions, and Karnaugh Maps for your design!' },
+  { sel: '#btn-tb', title: 'Automated Testbenches', text: 'Write automated testbenches to verify your logic circuit\'s correctness.' },
+  { sel: '#btn-wave', title: 'Waveform Viewer', text: 'Click this button to see your circuit\'s signals over time. We will open it for a quick peek right now!', action: function() {
+      var wbtn = document.getElementById('btn-wave');
+      var panel = document.getElementById('wave-panel');
+      if (wbtn && panel) {
+          if (!panel.classList.contains('expanded')) wbtn.click();
+          setTimeout(function() {
+              if (panel.classList.contains('expanded') && document.getElementById('tour-overlay').style.display === 'block') {
+                  wbtn.click();
+              }
+          }, 2500);
+      }
+  }},
+  { sel: '#btn-verilog', title: 'Verilog Export', text: 'Once your circuit is built, click here to export it into professional Verilog code!' },
+  { sel: '#btn-export', title: 'Export & Save', text: 'You can export your schematic as a high-res image (PNG/SVG) or save the raw project file.' }
 ];
 var tourIndex = -1;
 
@@ -7319,6 +7334,10 @@ function nextTourStep() {
 
   dlg.style.top = dlgTop + 'px';
   dlg.style.left = dlgLeft + 'px';
+
+  if (step.action) {
+    step.action();
+  }
 }
 
 function endTour() {
