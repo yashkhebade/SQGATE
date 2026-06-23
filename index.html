@@ -4573,22 +4573,6 @@ document.addEventListener('keydown', function(e) {
 /* document.getElementById('btn-exp-proj-json').addEventListener('click', function() { document.getElementById('exp-json').click(); }); */
 
 
-// Cloud Sync
-setInterval(() => {
-  if(S.dirty || S.pdirty) {
-            if(typeof saveProj==='function') saveProj(true);
-    if(S.multiplayer) broadcastState();
-    if(S.multiplayer) broadcastState();
-    var ind = document.getElementById('sync-ind');
-    if(ind) {
-      ind.style.opacity = 1;
-      setTimeout(() => ind.style.opacity = 0, 2000);
-    }
-    S.dirty=false; S.pdirty=false;
-  }
-}, 10000);
-
-// END PHASE 5
 
 // FEATURE 2: WAVEFORM VIEWER
 // ═══════════════════════════════════════════════════════
