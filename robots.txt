@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://yashkhebade.github.io/SQGATE/sitemap.xml
+Sitemap: https://sqgate.online/sitemap.xml
