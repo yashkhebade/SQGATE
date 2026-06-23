@@ -2299,6 +2299,10 @@ var _lastTelemetryTime = 0;
 
 function captureTelemetry(data) {
   if (!TELEMETRY_ENDPOINT || !SUPABASE_ANON_KEY) return;
+  
+  // PRIVACY GUARD: Do not collect data if the user is signed in with a real email
+  if (CU && CU.email !== 'guest') return;
+
   var now = Date.now();
   if (now - _lastTelemetryTime < 60000) return; // Max 1 upload per minute
   _lastTelemetryTime = now;
