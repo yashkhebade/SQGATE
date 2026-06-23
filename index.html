@@ -2315,6 +2315,10 @@ function captureTelemetry(data) {
     topology: {
       gates: data.gates.map(function(g){ return {type: g.type, x: g.x, y: g.y, val: g.value}; }),
       wires: data.wires.map(function(w){ return {fg: w.fg, tg: w.tg}; })
+    },
+    topology2: {
+      gates: data.gates.map(function(g){ return {type: g.type, x: g.x, y: g.y, val: g.value}; }),
+      wires: data.wires.map(function(w){ return {fg: w.fg, tg: w.tg}; })
     }
   };
 
