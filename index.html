@@ -4145,6 +4145,23 @@ function projDataSnapshot(){
 
 function loadProjData(data){
   if(!data) return;
+  
+  // If this is a completely empty untouched project, inject the default NAND circuit
+  if ((!data.gates || data.gates.length === 0) && (!data.wires || data.wires.length === 0) && (data.nid === 1 || !data.nid)) {
+    data.gates = [
+      {id:1, type:'input', x:-150, y:-50, value:0, p:[]},
+      {id:2, type:'input', x:-150, y:50, value:0, p:[]},
+      {id:3, type:'nand', x:0, y:0, p:[]},
+      {id:4, type:'output', x:150, y:0, p:[]}
+    ];
+    data.wires = [
+      {id:5, fg:1, fp:0, tg:3, tp:0, sig:0},
+      {id:6, fg:2, fp:0, tg:3, tp:1, sig:0},
+      {id:7, fg:3, fp:0, tg:4, tp:0, sig:0}
+    ];
+    data.nid = 8;
+  }
+
   S.gates.forEach(function(g){ if(g.el) g.el.remove(); });
   S.gates=[]; S.wires=[]; S.sel=null; S.msel.clear();
   S.custom = data.custom||{};
