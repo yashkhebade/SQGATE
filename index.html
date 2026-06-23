@@ -2455,8 +2455,20 @@ function pxy(gate,isOut,idx){
   const count=isOut?d.np:d.nc;
   if(idx<0||idx>=count)return null;
   const pct=(idx+1)/(count+1);
-  const wx=gate.x+(isOut?d.w:0);
-  const wy=gate.y+d.h*pct;
+  
+  const cx = gate.x + d.w/2;
+  const cy = gate.y + d.h/2;
+  const px_rel = (isOut ? d.w : 0) - d.w/2;
+  const py_rel = d.h * pct - d.h/2;
+  
+  const rot = gate.rot || 0;
+  let px_rot = px_rel, py_rot = py_rel;
+  if (rot === 1) { px_rot = -py_rel; py_rot = px_rel; }
+  else if (rot === 2) { px_rot = -px_rel; py_rot = -py_rel; }
+  else if (rot === 3) { px_rot = py_rel; py_rot = -px_rel; }
+  
+  const wx = cx + px_rot;
+  const wy = cy + py_rot;
   const s=w2s(wx,wy);
   return{x:s.x,y:s.y};
 }
@@ -2590,6 +2602,8 @@ function posGate(gate,el){
   el.style.top=s.y+'px';
   el.style.width=pw+'px';
   el.style.height=ph+'px';
+  var rot = gate.rot || 0;
+  el.style.transform = 'rotate(' + (rot * 90) + 'deg)';
 
   // Scale font relative to zoom — clamp to readable range
   const fs=Math.max(6,Math.min(14,Math.round(10.5*S.zoom)));
@@ -2959,8 +2973,58 @@ function bz(x1,y1,x2,y2){
   return `M${x1} ${y1} L${mx - rad*dirX} ${y1} Q${mx} ${y1} ${mx} ${y1 + rad*dirY} L${mx} ${y2 - rad*dirY} Q${mx} ${y2} ${mx + rad*dirX} ${y2} L${x2} ${y2}`;
 }
 
+function routeOrthogonal(fp, tp, boxes) {
+  function naive(yOffset) {
+    if (tp.x > fp.x + 20 && !yOffset) {
+      var midX = (fp.x + tp.x) / 2;
+      return [{x:fp.x, y:fp.y}, {x:midX, y:fp.y}, {x:midX, y:tp.y}, {x:tp.x, y:tp.y}];
+    } else {
+      var midY = yOffset || (fp.y + tp.y) / 2;
+      return [{x:fp.x, y:fp.y}, {x:fp.x+20, y:fp.y}, {x:fp.x+20, y:midY}, {x:tp.x-20, y:midY}, {x:tp.x-20, y:tp.y}, {x:tp.x, y:tp.y}];
+    }
+  }
+  function intersect(pA, pB) {
+    var minX = Math.min(pA.x, pB.x), maxX = Math.max(pA.x, pB.x);
+    var minY = Math.min(pA.y, pB.y), maxY = Math.max(pA.y, pB.y);
+    for(var i=0; i<boxes.length; i++) {
+      var b=boxes[i];
+      if (maxX > b.x0 && minX < b.x1 && maxY > b.y0 && minY < b.y1) return b;
+    }
+    return null;
+  }
+  function checkPath(pts) {
+    for(var i=0; i<pts.length-1; i++) {
+      var col = intersect(pts[i], pts[i+1]);
+      if (col) return col;
+    }
+    return null;
+  }
+
+  var p = naive();
+  var col = checkPath(p);
+  if (!col) return p;
+
+  var pTop = naive(col.y0 - 20);
+  if (!checkPath(pTop)) return pTop;
+
+  var pBot = naive(col.y1 + 20);
+  if (!checkPath(pBot)) return pBot;
+
+  return p;
+}
+
 function drawWires(){
   while(wireSvg.firstChild)wireSvg.removeChild(wireSvg.firstChild);
+
+  var boxes = [];
+  if (S.ortho) {
+    boxes = S.gates.map(function(g){
+      var d = gdef(g);
+      var s = w2s(g.x, g.y);
+      return {x0: s.x - 15, y0: s.y - 15, x1: s.x + d.w*S.zoom + 15, y1: s.y + d.h*S.zoom + 15, gid: g.id};
+    });
+  }
+
   S.wires.forEach(function(w){
     const fg=S.gates.find(function(g){return g.id===w.fg;});
     const tg=S.gates.find(function(g){return g.id===w.tg;});
@@ -2969,13 +3033,10 @@ function drawWires(){
     if(!fp||!tp)return;
     let d = '';
     if (S.ortho) {
-      if (tp.x > fp.x + 20) {
-        var midX = (fp.x + tp.x) / 2;
-        d = 'M'+fp.x+','+fp.y+' L'+midX+','+fp.y+' L'+midX+','+tp.y+' L'+tp.x+','+tp.y;
-      } else {
-        var midY = (fp.y + tp.y) / 2;
-        d = 'M'+fp.x+','+fp.y+' L'+(fp.x+20)+','+fp.y+' L'+(fp.x+20)+','+midY+' L'+(tp.x-20)+','+midY+' L'+(tp.x-20)+','+tp.y+' L'+tp.x+','+tp.y;
-      }
+      var validBoxes = boxes.filter(function(b){ return b.gid !== fg.id && b.gid !== tg.id; });
+      var pts = routeOrthogonal(fp, tp, validBoxes);
+      d = 'M' + pts[0].x + ',' + pts[0].y;
+      for (var i=1; i<pts.length; i++) d += ' L' + pts[i].x + ',' + pts[i].y;
     } else {
       d=bz(fp.x,fp.y,tp.x,tp.y);
     }
