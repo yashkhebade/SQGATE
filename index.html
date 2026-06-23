@@ -1590,38 +1590,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 /* Hide text labels for standard logic gates since they have SVG symbols */
 .tan .glbl, .tor .glbl, .tno .glbl, .tna .glbl, .tnr .glbl, .txo .glbl, .txn .glbl, .tbf .glbl { display: none !important; }
 /* login bg duplicate removed */
-/* Mobile Rotate Overlay */
-#mobile-rotate-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: var(--bg0);
-  z-index: 100000;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: var(--t1);
-  text-align: center;
-  padding: 30px;
-}
-#mobile-rotate-overlay svg {
-  width: 64px;
-  height: 64px;
-  color: var(--aca);
-  margin-bottom: 20px;
-  animation: rotatePhone 2s infinite ease-in-out;
-}
-@keyframes rotatePhone {
-  0% { transform: rotate(0deg); }
-  50% { transform: rotate(90deg); }
-  100% { transform: rotate(0deg); }
-}
-#mobile-rotate-overlay h2 { font-size: 24px; margin-bottom: 12px; }
-#mobile-rotate-overlay p { font-size: 14px; color: var(--t2); line-height: 1.5; }
 
-@media screen and (max-width: 800px) and (orientation: portrait) {
-  #mobile-rotate-overlay { display: flex; }
-}
 /* Mobile Fullscreen & Toolbar tweaks */
 #mobile-fullscreen-btn {
   display: none;
@@ -1649,11 +1618,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 </head>
 <body>
 
-<div id="mobile-rotate-overlay">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
-  <h2>Rotate Your Device</h2>
-  <p>SQGATE Simulator is designed for landscape viewing.<br>Please rotate your phone to continue.</p>
-</div>
+
 
 
 <!-- ═══════════ LOGIN PAGE ═══════════ -->
