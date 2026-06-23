@@ -1720,6 +1720,10 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
         <svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
         Clear
       </button>
+      <button class="tb-btn-text" id="btn-pkg" title="Package selected logic into a Custom IC" aria-label="Create IC">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        Create IC
+      </button>
       <button class="tb-btn" id="btn-autolayout" title="Auto-arrange Layout" aria-label="Layout">
         <svg viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
       </button>
@@ -4237,7 +4241,7 @@ function clearCanvas(){
   S.gates=[];S.wires=[];deselAll();simulate();stUpd();S.dirty=true;msg('Canvas cleared','');
 }
 
-// document.getElementById('btn-pkg').addEventListener('click',pkgSel);
+document.getElementById('btn-pkg').addEventListener('click',pkgSel);
 document.getElementById('btn-verilog').addEventListener('click',openVerilogModal);
 document.getElementById('btn-hlp').addEventListener('click',function(){document.getElementById('ov-hlp').classList.add('open');});
 document.getElementById('hlp-cl').addEventListener('click',function(){document.getElementById('ov-hlp').classList.remove('open');});
