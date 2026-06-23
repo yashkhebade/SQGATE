@@ -1590,16 +1590,48 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 /* Hide text labels for standard logic gates since they have SVG symbols */
 .tan .glbl, .tor .glbl, .tno .glbl, .tna .glbl, .tnr .glbl, .txo .glbl, .txn .glbl, .tbf .glbl { display: none !important; }
 /* login bg duplicate removed */
+/* Mobile Rotate Overlay */
+#mobile-rotate-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--bg0);
+  z-index: 100000;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--t1);
+  text-align: center;
+  padding: 30px;
+}
+#mobile-rotate-overlay svg {
+  width: 64px;
+  height: 64px;
+  color: var(--aca);
+  margin-bottom: 20px;
+  animation: rotatePhone 2s infinite ease-in-out;
+}
+@keyframes rotatePhone {
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(90deg); }
+  100% { transform: rotate(0deg); }
+}
+#mobile-rotate-overlay h2 { font-size: 24px; margin-bottom: 12px; }
+#mobile-rotate-overlay p { font-size: 14px; color: var(--t2); line-height: 1.5; }
+
+@media screen and (max-width: 800px) and (orientation: portrait) {
+  #mobile-rotate-overlay { display: flex; }
+}
 </style>
 </head>
 <body>
-<div id="mobile-warning" style="display:none;background:var(--aca);color:#fff;padding:12px;text-align:center;font-size:13px;z-index:999999;position:fixed;top:0;width:100%;font-weight:600;box-shadow:var(--shadow-sm);">
-  SQGATE is optimized for desktop. For the best experience with drag-and-drop, please use a computer. 
-  <button onclick="this.parentElement.style.display='none'" style="margin-left:12px;background:rgba(0,0,0,0.2);border:none;color:#fff;padding:4px 8px;border-radius:4px;cursor:pointer;">Dismiss</button>
+
+<div id="mobile-rotate-overlay">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+  <h2>Rotate Your Device</h2>
+  <p>SQGATE Simulator is designed for landscape viewing.<br>Please rotate your phone to continue.</p>
 </div>
-<script>
-  if(window.innerWidth < 768) document.getElementById('mobile-warning').style.display='block';
-</script>
+
 
 <!-- ═══════════ LOGIN PAGE ═══════════ -->
 <div id="pg-login">
@@ -7439,6 +7471,30 @@ if(pkeys.length > 0) {
   createNewProject();
   showPage('pg-editor');
 }
+// Touch to Mouse Event Translator for Mobile Support
+function touchHandler(event) {
+    if (event.touches.length > 1) return; // Ignore multi-touch
+    if (event.target.closest('#sidebar') || event.target.closest('#props-panel') || event.target.closest('.modal')) return; // Allow normal scrolling in sidebars
+    var touches = event.changedTouches, first = touches[0], type = "";
+    switch(event.type) {
+        case "touchstart": type = "mousedown"; break;
+        case "touchmove":  type="mousemove"; break;        
+        case "touchend":   type="mouseup"; break;
+        default: return;
+    }
+    var simulatedEvent = document.createEvent("MouseEvent");
+    simulatedEvent.initMouseEvent(type, true, true, window, 1, 
+                              first.screenX, first.screenY, 
+                              first.clientX, first.clientY, false, 
+                              false, false, false, 0/*left*/, null);
+    first.target.dispatchEvent(simulatedEvent);
+    // Prevent default scrolling on canvas so we can drag gates instead of scrolling the page
+    if (event.cancelable) event.preventDefault();
+}
+document.getElementById('cvwrap').addEventListener("touchstart", touchHandler, {passive: false});
+document.getElementById('cvwrap').addEventListener("touchmove", touchHandler, {passive: false});
+document.getElementById('cvwrap').addEventListener("touchend", touchHandler, {passive: false});
+
 </script>
 <!-- TOUR OVERLAY -->
 <div id="tour-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;pointer-events:none;overflow:hidden;">
