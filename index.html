@@ -1622,6 +1622,29 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 @media screen and (max-width: 800px) and (orientation: portrait) {
   #mobile-rotate-overlay { display: flex; }
 }
+/* Mobile Fullscreen & Toolbar tweaks */
+#mobile-fullscreen-btn {
+  display: none;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--bg2);
+  border: 1px solid var(--b2);
+  color: var(--t1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  z-index: 8000;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+@media screen and (max-width: 800px) {
+  #mobile-fullscreen-btn { display: flex; }
+  #ed-topbar { overflow-x: auto; overflow-y: hidden; justify-content: flex-start; padding-right: 20px; }
+  #ed-topbar::-webkit-scrollbar { display: none; }
+}
 </style>
 </head>
 <body>
@@ -1715,6 +1738,9 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 
 <!-- ═══════════ EDITOR PAGE ═══════════ -->
 <div id="pg-editor">
+  <button id="mobile-fullscreen-btn" title="Toggle Fullscreen">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+  </button>
   <div id="ed-topbar">
     <div class="tb-group">
       <img src="icon.png" style="width:24px;height:24px;border-radius:6px;margin-right:8px;box-shadow:0 2px 6px rgba(0,0,0,0.5);" alt="Logo">
@@ -7495,6 +7521,16 @@ document.getElementById('cvwrap').addEventListener("touchstart", touchHandler, {
 document.getElementById('cvwrap').addEventListener("touchmove", touchHandler, {passive: false});
 document.getElementById('cvwrap').addEventListener("touchend", touchHandler, {passive: false});
 
+// Mobile Fullscreen Toggle
+document.getElementById('mobile-fullscreen-btn').addEventListener('click', function() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(err => {
+      console.log('Error attempting to enable fullscreen:', err.message);
+    });
+  } else {
+    if (document.exitFullscreen) document.exitFullscreen();
+  }
+});
 </script>
 <!-- TOUR OVERLAY -->
 <div id="tour-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;pointer-events:none;overflow:hidden;">
