@@ -4584,15 +4584,8 @@ function createNewProject(){
   var num  = Object.keys(getProjects()).length + 1;
   var name = 'Project ' + num;
   
-  // Default NAND Circuit Example
-  var g1 = {id:1, type:'input', x:-150, y:-50, value:0, p:[]};
-  var g2 = {id:2, type:'input', x:-150, y:50, value:0, p:[]};
-  var g3 = {id:3, type:'nand', x:0, y:0, p:[]};
-  var g4 = {id:4, type:'output', x:150, y:0, p:[]};
-  var w1 = {id:5, fg:1, fp:0, tg:3, tp:0, sig:0};
-  var w2 = {id:6, fg:2, fp:0, tg:3, tp:1, sig:0};
-  var w3 = {id:7, fg:3, fp:0, tg:4, tp:0, sig:0};
-  var data = {gates:[g1,g2,g3,g4], wires:[w1,w2,w3], custom:{}, nid:8};
+  // Blank Canvas
+  var data = {gates:[], wires:[], custom:{}, nid:1};
   
   saveProject(id, name, data);
   openProject({id, name, data});
