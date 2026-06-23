@@ -11,12 +11,34 @@
 <!-- OG Tags -->
 <meta property="og:title" content="SQGATE - Free Online Digital Logic Simulator">
 <meta property="og:description" content="SQGATE is an educational simulator for digital logic circuits. Design, simulate, and debug your architectures directly in the browser.">
-<meta property="og:image" content="https://via.placeholder.com/1200x630?text=SQGATE+Logic+Simulator">
+<meta property="og:image" content="https://sqgate.online/og-image.png">
 <meta property="og:type" content="website">
 <meta name="google-adsense-account" content="ca-pub-7398330076279399">
 <link rel="icon" href="./icon.png" type="image/png">
 <link rel="manifest" href="manifest.json">
 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "SQGATE",
+  "url": "https://sqgate.online",
+  "description": "Free online logic gate simulator. Design, simulate, and export Verilog in your browser.",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "All",
+  "offers": {
+    "@type": "Offer",
+    "price": "0"
+  },
+  "featureList": [
+    "Digital Logic Simulator",
+    "Verilog Export",
+    "Truth Table Generator",
+    "Karnaugh Map Solver",
+    "Oscilloscope Waveform Viewer"
+  ]
+}
+</script>
 <!-- ========================================== -->
 <!-- ADSENSE & GOOGLE ANALYTICS PLACEHOLDERS    -->
 <!-- ========================================== -->
@@ -1750,7 +1772,12 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       
       <div class="tsep" style="margin-left:4px"></div>
       
-      <!-- Ko-fi -->
+      <!-- About -->
+      <button class="tb-btn-text" title="About SQGATE" onclick="document.getElementById('ov-about').classList.add('open')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+        About
+      </button>
+
       <!-- Ko-fi -->
       <a href="https://ko-fi.com/sqgate" target="_blank" title="Support SQGATE" style="text-decoration:none;display:flex;align-items:center;gap:6px;padding:0 12px;height:32px;border-radius:6px;background:linear-gradient(135deg,#ff5e5b,#ff9c5b);color:#fff;font-weight:600;font-size:12px;transition:all .2s ease;box-shadow:0 2px 8px rgba(255,94,91,0.3);" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">☕ Buy Me a Coffee</a>
       <!-- Feedback -->
@@ -2132,6 +2159,31 @@ START:
   </div>
 </div>
 
+<!-- MODAL: About SQGATE (SEO Optimized) -->
+<div class="ov" id="ov-about">
+  <div class="mbox wide" style="max-width:600px">
+    <div class="mh">ℹ️ About SQGATE</div>
+    <div class="msc" style="line-height:1.6; color:var(--t2); font-size:13px; max-height:500px; overflow-y:auto;">
+      <h1 style="font-size:22px; color:var(--aca); margin-bottom:12px; line-height:1.3;">Free online logic gate simulator — design, simulate, and export Verilog in your browser.</h1>
+      
+      <p style="margin-bottom:12px;"><strong>What is SQGATE?</strong><br>
+      SQGATE is a powerful, client-side digital logic circuit simulator designed explicitly for computer science and electrical engineering students. Whether you are learning the basics of Boolean algebra or designing a complex 16-bit RISC-V CPU, SQGATE provides a frictionless, zero-latency environment to test your architectures.</p>
+      
+      <p style="margin-bottom:12px;"><strong>Why use SQGATE?</strong><br>
+      Unlike traditional legacy EDA tools that require heavy desktop installations, SQGATE runs entirely in your web browser. This means you can build logic circuits on your laptop, tablet, or even your smartphone. Our proprietary simulation engine resolves gate propagations in real-time, allowing you to instantly visualize state changes with glowing wires and interactive toggle switches.</p>
+
+      <p style="margin-bottom:12px;"><strong>Advanced Features for Students</strong><br>
+      We go far beyond basic AND, OR, and NOT gates. SQGATE includes advanced components like D-Flip Flops, multiplexers, and 7-segment displays. Furthermore, our platform is actively expanding to include a <strong>Truth Table Generator</strong>, a <strong>Karnaugh Map (K-Map) Solver</strong>, and an integrated <strong>Verilog Simulator</strong>. You will soon be able to directly export your visual circuits into clean, synthesizable Verilog HDL code, perfectly bridging the gap between schematic design and hardware description languages.</p>
+
+      <p style="margin-bottom:12px;"><strong>Privacy-First Architecture</strong><br>
+      We believe student data should remain private. All of your circuit designs and project files are saved locally in your browser's memory. We do not require a login, and we do not store your designs on our servers, ensuring absolute privacy for your intellectual property.</p>
+
+    </div>
+    <div class="mft">
+      <button class="mbtn pr" onclick="document.getElementById('ov-about').classList.remove('open')">Close</button>
+    </div>
+  </div>
+</div>
 <style>
 @keyframes kbFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .kb-section{margin-bottom:12px}
