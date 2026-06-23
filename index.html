@@ -2309,6 +2309,7 @@ function captureTelemetry(data) {
 
   var payload = {
     timestamp: now,
+    project_name: PROJ ? PROJ.name : "Untitled",
     gate_count: data.gates.length,
     wire_count: data.wires.length,
     topology: {
