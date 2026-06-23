@@ -25,5 +25,8 @@
     "mac": {
       "category": "public.app-category.education"
     }
+  },
+  "dependencies": {
+    "jsdom": "^29.1.1"
   }
 }

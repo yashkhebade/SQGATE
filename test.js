@@ -1,0 +1,1 @@
+window.onerror=function(msg,u,l,c,e){var err=document.createElement('div');err.style.cssText='position:fixed;top:0;left:0;width:100%;background:red;color:white;z-index:999999;padding:10px;font-family:monospace';err.innerText='ERROR: '+msg+' at line '+l;document.body.appendChild(err);};
