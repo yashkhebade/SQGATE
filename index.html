@@ -2292,6 +2292,33 @@ function deleteProject(id) {
   delete ud.projects[id];
   setUserData(CU.email, ud);
 }
+// TELEMETRY & AI DATA COLLECTION
+// NOTE: Set this to your Firebase/Supabase REST API endpoint. 
+// When set, the app will anonymously upload circuit designs for AI training!
+var TELEMETRY_ENDPOINT = ""; 
+var _lastTelemetryTime = 0;
+
+function captureTelemetry(data) {
+  if (!TELEMETRY_ENDPOINT) return;
+  var now = Date.now();
+  if (now - _lastTelemetryTime < 60000) return; // Max 1 upload per minute
+  _lastTelemetryTime = now;
+
+  var payload = {
+    timestamp: now,
+    gateCount: data.gates.length,
+    wireCount: data.wires.length,
+    gates: data.gates.map(function(g){ return {type: g.type, x: g.x, y: g.y, val: g.value}; }),
+    wires: data.wires.map(function(w){ return {fg: w.fg, tg: w.tg}; })
+  };
+
+  fetch(TELEMETRY_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  }).catch(function(e){ console.log("Telemetry upload skipped."); });
+}
+
 function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
 
 // ═══════════════════════════════════════════════════════
@@ -4197,6 +4224,7 @@ function autoSave(){
   var data = projDataSnapshot();
   PROJ.data = data;
   saveProject(PROJ.id, PROJ.name, data);
+  captureTelemetry(data);
 }
 
 // ═══════════════════════════════════════════════════════
