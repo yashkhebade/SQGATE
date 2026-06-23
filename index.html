@@ -2028,7 +2028,6 @@ START:
         <div class="vtab on" id="vt-struct" data-mode="structural">Structural</div>
         <div class="vtab" id="vt-behav" data-mode="behavioral">Behavioral</div>
         <div class="vtab" id="vt-import">Import .v</div>
-        <button class="vtab" style="background:#2a50a8;color:#fff;border:none;border-radius:4px;padding:4px 12px;margin-left:10px;cursor:pointer" onclick="exportKiCad()">Export KiCad (.net)</button>
         <button class="vtab" style="background:var(--acc);color:#fff;border:none;border-radius:4px;padding:4px 12px;margin-left:10px;cursor:pointer" onclick="document.getElementById('v-file-in').click()">Import File</button>
       </div>
       <div id="v-export-area">
@@ -4573,32 +4572,6 @@ document.addEventListener('keydown', function(e) {
 // PHASE 5: ECOSYSTEM & COLLABORATION
 /* document.getElementById('btn-exp-proj-json').addEventListener('click', function() { document.getElementById('exp-json').click(); }); */
 
-
-function exportKiCad() {
-  var net = "(export (version D)\n  (components\n";
-  S.gates.forEach((g,i) => {
-    net += `    (comp (ref U${i+1})\n      (value ${g.type.toUpperCase()}))\n`;
-  });
-  net += "  )\n  (nets\n";
-  S.wires.forEach((w,i) => {
-    var fg=S.gates.find(g=>g.id===w.fg);
-    var tg=S.gates.find(g=>g.id===w.tg);
-    if(fg && tg) {
-      net += `    (net (code ${i+1}) (name "Net-${i+1}")\n`;
-      net += `      (node (ref U${S.gates.indexOf(fg)+1}) (pin ${w.fp+1}))\n`;
-      net += `      (node (ref U${S.gates.indexOf(tg)+1}) (pin ${w.tp+1})))\n`;
-    }
-  });
-  net += "  )\n)\n";
-  
-  const blob=new Blob([net],{type:'text/plain;charset=utf-8'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url; a.download='circuit.net';
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  msg('KiCad Netlist exported', 'ok');
-}
 
 // Cloud Sync
 setInterval(() => {
