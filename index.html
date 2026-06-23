@@ -1607,9 +1607,9 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
     <div class="proj-user">
       <div style="display:flex;align-items:center;gap:12px;margin-right:16px;">
         <a href="https://ko-fi.com/sqgate" target="_blank" title="Support SQGATE" style="text-decoration:none;display:flex;align-items:center;gap:6px;padding:0 12px;height:32px;border-radius:6px;background:linear-gradient(135deg,#ff5e5b,#ff9c5b);color:#fff;font-weight:600;font-size:12px;transition:all .2s ease;box-shadow:0 2px 8px rgba(255,94,91,0.3);" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">☕ Buy Me a Coffee</a>
-        <button title="Feedback / Contact" style="cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:6px;background:var(--bg2);border:1px solid var(--b1);color:var(--t2);transition:all .2s ease;" onmouseover="this.style.borderColor='#7248b9';this.style.color='#7248b9'" onmouseout="this.style.borderColor='var(--b1)';this.style.color='var(--t2)'" onclick="document.getElementById('ov-feedback').style.display='flex'">
+        <a href="https://forms.google.com/" target="_blank" id="btn-feedback-dash" title="Feedback / Contact (Requires Google Form Link)" style="text-decoration:none;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:6px;background:var(--bg2);border:1px solid var(--b1);color:var(--t2);transition:all .2s ease;" onmouseover="this.style.borderColor='#7248b9';this.style.color='#7248b9'" onmouseout="this.style.borderColor='var(--b1)';this.style.color='var(--t2)'">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="17" y2="8"></line><line x1="12" y1="12" x2="17" y2="12"></line><line x1="12" y1="16" x2="17" y2="16"></line><line x1="8" y1="8" x2="8.01" y2="8"></line><line x1="8" y1="12" x2="8.01" y2="12"></line><line x1="8" y1="16" x2="8.01" y2="16"></line></svg>
-        </button>
+        </a>
       </div>
       <span id="pu-email" style="color:var(--t3)"></span>
       <div class="proj-avatar" id="pu-avatar">?</div>
@@ -1737,9 +1737,9 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       <!-- Ko-fi -->
       <a href="https://ko-fi.com/sqgate" target="_blank" title="Support SQGATE" style="text-decoration:none;display:flex;align-items:center;gap:6px;padding:0 12px;height:32px;border-radius:6px;background:linear-gradient(135deg,#ff5e5b,#ff9c5b);color:#fff;font-weight:600;font-size:12px;transition:all .2s ease;box-shadow:0 2px 8px rgba(255,94,91,0.3);" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">☕ Buy Me a Coffee</a>
       <!-- Feedback -->
-      <button title="Feedback / Contact" style="cursor:pointer;border:none;background:transparent;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:6px;color:var(--t2);transition:all .2s ease;" onmouseover="this.style.color='#7248b9'" onmouseout="this.style.color='var(--t2)'" onclick="document.getElementById('ov-feedback').style.display='flex'">
+      <a href="https://forms.google.com/" target="_blank" id="btn-feedback-ed" title="Feedback / Contact (Requires Google Form Link)" style="text-decoration:none;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:6px;color:var(--t2);transition:all .2s ease;" onmouseover="this.style.color='#7248b9'" onmouseout="this.style.color='var(--t2)'">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="17" y2="8"></line><line x1="12" y1="12" x2="17" y2="12"></line><line x1="12" y1="16" x2="17" y2="16"></line><line x1="8" y1="8" x2="8.01" y2="8"></line><line x1="8" y1="12" x2="8.01" y2="12"></line><line x1="8" y1="16" x2="8.01" y2="16"></line></svg>
-      </button>
+      </a>
 
       <!-- Primary Action -->
       <button class="tb-btn-primary" id="btn-guide" aria-label="Interactive Guide" style="background:var(--aca); color:#fff; border:none; box-shadow:0 2px 8px rgba(61, 186, 110, 0.4);" onclick="startTour()">
@@ -1840,30 +1840,6 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 
 <!-- TOOLTIP -->
 <div id="tip"></div>
-
-<!-- MODAL: Feedback -->
-<div class="ov" id="ov-feedback" style="z-index:9500;backdrop-filter:blur(5px);display:none;">
-  <div class="mbox" style="max-width:450px;">
-    <div class="mh" style="color:#7248b9;display:flex;align-items:center;gap:8px;">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="17" y2="8"></line><line x1="12" y1="12" x2="17" y2="12"></line><line x1="12" y1="16" x2="17" y2="16"></line><line x1="8" y1="8" x2="8.01" y2="8"></line><line x1="8" y1="12" x2="8.01" y2="12"></line><line x1="8" y1="16" x2="8.01" y2="16"></line></svg>
-      Feedback & Requests
-    </div>
-    <div class="msc" style="padding:20px;">
-      <p style="color:var(--t2);font-size:13px;margin-bottom:15px;line-height:1.5;">Have a bug report or a feature request? Send it directly to the developer! This will open your email app.</p>
-      <select id="fb-type" style="width:100%;margin-bottom:10px;padding:8px;background:var(--bg1);border:1px solid var(--b2);color:var(--t1);border-radius:4px;outline:none;">
-        <option value="Bug Report">🐛 Bug Report</option>
-        <option value="Feature Request">✨ Feature Request</option>
-        <option value="General Question">💬 General Question</option>
-      </select>
-      <textarea id="fb-msg" placeholder="Describe your issue or request here..." style="width:100%;height:120px;padding:10px;background:var(--bg1);border:1px solid var(--b2);color:var(--t1);border-radius:4px;font-family:var(--fmono);outline:none;resize:none;margin-bottom:20px;"></textarea>
-      
-      <div style="display:flex;gap:12px;justify-content:flex-end;">
-        <button class="mbtn sc" onclick="document.getElementById('ov-feedback').style.display='none'">Cancel</button>
-        <button class="mbtn pr" style="background:#7248b9;border:none;color:#fff;" onclick="sendFeedback()">Submit via Email</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- MODAL: Custom Prompt -->
 <div class="ov" id="ov-prompt">
@@ -2315,18 +2291,6 @@ function deleteProject(id) {
   const ud = getUserData(CU.email);
   delete ud.projects[id];
   setUserData(CU.email, ud);
-}
-function sendFeedback() {
-  var type = document.getElementById('fb-type').value;
-  var msg = document.getElementById('fb-msg').value.trim();
-  if (!msg) { alert('Please enter a message first.'); return; }
-  
-  var subject = encodeURIComponent('SQGATE Feedback: ' + type);
-  var body = encodeURIComponent(msg + '\n\n---\nSent from SQGATE Simulator');
-  
-  window.location.href = 'mailto:KHEBADEYASH2006@GMAIL.COM?subject=' + subject + '&body=' + body;
-  document.getElementById('ov-feedback').style.display = 'none';
-  document.getElementById('fb-msg').value = '';
 }
 function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
 
