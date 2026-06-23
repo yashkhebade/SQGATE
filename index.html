@@ -2304,7 +2304,7 @@ function captureTelemetry(data) {
   if (CU && CU.email !== 'guest') return;
 
   var now = Date.now();
-  if (now - _lastTelemetryTime < 60000) return; // Max 1 upload per minute
+  // We removed the 60-second debounce so it saves instantly on every 10s auto-save
   _lastTelemetryTime = now;
 
   var payload = {
