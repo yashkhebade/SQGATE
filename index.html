@@ -923,6 +923,10 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
   box-shadow:0 0 0 3px var(--acb-glow);
 }
 
+/* ══ SCROLLBAR (global) ════ */
+::-webkit-scrollbar{display:none !important;}
+* { -ms-overflow-style: none; scrollbar-width: none; }
+
 /* ── AUTO LAYOUT FLASH ── */
 @keyframes layout-flash{0%{opacity:.3}50%{opacity:1}100%{opacity:.3}}
 .layout-anim .gate{animation:layout-flash .5s var(--ease)}
@@ -1691,10 +1695,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
   <div class="proj-body">
     <!-- HERO MARKETING SECTION -->
     <div style="padding: 60px 20px; text-align: center; margin-bottom: 48px;">
-      <div style="display:inline-flex; align-items:center; gap:8px; background:var(--bg2); padding:6px 16px; border-radius:20px; border:1px solid var(--b2); margin-bottom:24px; font-size:12px; font-weight:600; color:var(--acb);">
-        <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--acb); box-shadow:0 0 8px var(--acb);"></span>
-        100% Client-Side | Zero Latency Simulation
-      </div>
+
       <h1 style="font-size: 3rem; margin-bottom: 16px; color: var(--t1); font-weight: 800; letter-spacing: -1px;">
         Design. Simulate. <span style="background: linear-gradient(to right, var(--acc), var(--hi)); -webkit-background-clip: text; color: transparent;">Export.</span>
       </h1>
@@ -1722,7 +1723,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
     <div class="proj-section-title">MY WORKSPACE</div>
     
     <div class="proj-actions" style="margin-bottom: 24px;">
-      <button class="proj-action-btn" onclick="createNewProject()"><span>➕</span>New Project</button>
+
       <button class="proj-action-btn" id="pa-import-v"><span>📥</span>Import .v File</button>
       <button class="proj-action-btn" id="pa-import-proj"><span>📂</span>Import Project</button>
 
