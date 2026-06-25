@@ -221,10 +221,12 @@
 
       // ── Grant PRO if returning from Razorpay with ?payment=success ──
       var urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('payment') === 'success' && session && session.email && session.email !== 'guest') {
-        if (!userData) userData = {};
-        userData.isPro = true;
-        localStorage.setItem('lgf_user_' + session.email, JSON.stringify(userData));
+      if (urlParams.get('payment') === 'success') {
+        if (session && session.email && session.email !== 'guest') {
+          if (!userData) userData = {};
+          userData.isPro = true;
+          localStorage.setItem('lgf_user_' + session.email, JSON.stringify(userData));
+        }
         alert('🎉 Payment successful! Welcome to SQGATE PRO!');
         window.location.href = 'index.html';
         return;
@@ -239,15 +241,9 @@
         return;
       }
 
-      // ── Upgrade click → redirect to real Razorpay page ──
+      // ── Upgrade click → go directly to Razorpay (no login required) ──
       btnPro.addEventListener('click', function(e) {
         e.preventDefault();
-        if (!session || !session.email || session.email === 'guest') {
-          alert('Please sign in to your account first before purchasing PRO.');
-          window.location.href = 'index.html';
-          return;
-        }
-        // Redirect to Razorpay payment page
         window.location.href = RZP_LINK;
       });
     });
