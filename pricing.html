@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing | SQGATE</title>
+  <link rel="icon" href="./icon.png" type="image/png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap');
+    body {
+      margin: 0; padding: 0;
+      background: #09090b;
+      color: #e4e4e7;
+      font-family: 'Outfit', sans-serif;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    h1 {
+      color: #ffffff;
+      font-size: 36px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .subtitle {
+      text-align: center;
+      color: #a1a1aa;
+      margin-bottom: 50px;
+      font-size: 18px;
+    }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-top: 40px;
+    }
+    .pricing-card {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 12px;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+    }
+    .pricing-card.pro {
+      border-color: #6366f1;
+      background: linear-gradient(180deg, rgba(99,102,241,0.05) 0%, rgba(24,24,27,0) 100%);
+      position: relative;
+    }
+    .pro-badge {
+      position: absolute;
+      top: -12px;
+      right: 30px;
+      background: #6366f1;
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .tier-name {
+      font-size: 24px;
+      color: #fff;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .price {
+      font-size: 48px;
+      color: #fff;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .price span {
+      font-size: 16px;
+      color: #a1a1aa;
+      font-weight: 400;
+    }
+    .features {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 40px 0;
+      flex-grow: 1;
+    }
+    .features li {
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #d4d4d8;
+    }
+    .features li svg {
+      width: 20px;
+      height: 20px;
+      color: #10b981;
+      flex-shrink: 0;
+    }
+    .btn {
+      display: block;
+      text-align: center;
+      padding: 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .btn-secondary {
+      background: #27272a;
+      color: #fff;
+    }
+    .btn-secondary:hover {
+      background: #3f3f46;
+    }
+    .btn-primary {
+      background: #6366f1;
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: #4f46e5;
+    }
+    .back-btn {
+      display: inline-block;
+      margin-bottom: 30px;
+      background: #18181f;
+      color: #a1a1aa;
+      padding: 8px 16px;
+      border-radius: 6px;
+      border: 1px solid #323242;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    .back-btn:hover {
+      color: #ffffff;
+      border-color: #6366f1;
+    }
+    @media (max-width: 768px) {
+      .pricing-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="index.html" class="back-btn">← Back to SQGATE</a>
+    
+    <h1>Simple, transparent pricing</h1>
+    <p class="subtitle">Choose the perfect plan for your digital logic design needs.</p>
+
+    <div class="pricing-grid">
+      <!-- Free Tier -->
+      <div class="pricing-card">
+        <div class="tier-name">Free Simulator</div>
+        <div class="price">$0 <span>/ forever</span></div>
+        <ul class="features">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Basic Logic Gates (AND, OR, NOT)</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Local Browser Storage</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Up to 50 gates per project</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Truth Table Generator</li>
+        </ul>
+        <a href="index.html" class="btn btn-secondary">Current Plan</a>
+      </div>
+
+      <!-- Pro Tier -->
+      <div class="pricing-card pro">
+        <div class="pro-badge">Most Popular</div>
+        <div class="tier-name">SQGATE PRO</div>
+        <div class="price">$4.99 <span>/ month</span></div>
+        <ul class="features">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Everything in Free, plus:</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <strong>Verilog Code Export</strong></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Unlimited Gates & Complexity</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Automated Testbench Generation</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Cloud Saving & Sync</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Advanced FLIP-FLOP & Memory Components</li>
+        </ul>
+        <a href="#" class="btn btn-primary">Upgrade to PRO</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
