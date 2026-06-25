@@ -197,70 +197,58 @@
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Automated Testbench Generation</li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Priority Customer Support</li>
         </ul>
-        <a href="#" class="btn btn-primary" id="btn-pro">Upgrade to PRO</a>
+        <a href="#" class="btn btn-primary" id="btn-pro">🚀 Upgrade to PRO</a>
       </div>
     </div>
   </div>
 
-  <!-- Simulated Razorpay Modal -->
-  <div id="rzp-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center; flex-direction:column; color:#fff; font-family:'Outfit', sans-serif;">
-    <div style="width:50px; height:50px; border:4px solid #333; border-top-color:#6366f1; border-radius:50%; animation:spin 1s linear infinite; margin-bottom:20px;"></div>
-    <div style="font-size:20px; font-weight:600; margin-bottom:8px;">Processing Payment via Razorpay...</div>
-    <div style="font-size:14px; color:#a1a1aa;">Please do not close this window</div>
-  </div>
-  <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
+
 
   <script>
+    var RZP_LINK = 'https://rzp.io/rzp/WNeCKJhq';
+
     document.addEventListener('DOMContentLoaded', function() {
       const btnPro = document.getElementById('btn-pro');
-      const rzpModal = document.getElementById('rzp-modal');
-      
+
       // Get current user session
       let session = null;
-      try {
-        session = JSON.parse(localStorage.getItem('lgf_session'));
-      } catch(e) {}
+      try { session = JSON.parse(localStorage.getItem('lgf_session')); } catch(e) {}
 
       let userData = null;
-      if (session && session.email) {
-        try {
-          userData = JSON.parse(localStorage.getItem('lgf_user_' + session.email) || '{}');
-        } catch(e) {}
+      if (session && session.email && session.email !== 'guest') {
+        try { userData = JSON.parse(localStorage.getItem('lgf_user_' + session.email) || '{}'); } catch(e) {}
       }
 
-      // Check if already PRO
+      // ── Grant PRO if returning from Razorpay with ?payment=success ──
+      var urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('payment') === 'success' && session && session.email && session.email !== 'guest') {
+        if (!userData) userData = {};
+        userData.isPro = true;
+        localStorage.setItem('lgf_user_' + session.email, JSON.stringify(userData));
+        alert('🎉 Payment successful! Welcome to SQGATE PRO!');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      // ── Already PRO ──
       if (userData && userData.isPro) {
-        btnPro.textContent = 'Current Plan (PRO)';
+        btnPro.textContent = '✅ Current Plan (PRO)';
         btnPro.style.background = '#27272a';
+        btnPro.style.cursor = 'default';
         btnPro.style.pointerEvents = 'none';
         return;
       }
 
+      // ── Upgrade click → redirect to real Razorpay page ──
       btnPro.addEventListener('click', function(e) {
         e.preventDefault();
-        
         if (!session || !session.email || session.email === 'guest') {
-          alert('Please login to your account first before purchasing PRO.');
+          alert('Please sign in to your account first before purchasing PRO.');
           window.location.href = 'index.html';
           return;
         }
-
-        // Simulate Razorpay Checkout
-        rzpModal.style.display = 'flex';
-        
-        setTimeout(function() {
-          // Grant PRO access
-          if (!userData) userData = {};
-          userData.isPro = true;
-          localStorage.setItem('lgf_user_' + session.email, JSON.stringify(userData));
-          
-          rzpModal.innerHTML = '<div style="font-size:24px; font-weight:600; color:#10b981; margin-bottom:10px;">Payment Successful!</div><div style="color:#a1a1aa;">Welcome to SQGATE PRO. Redirecting...</div>';
-          
-          setTimeout(function() {
-            window.location.href = 'index.html';
-          }, 2000);
-          
-        }, 3000);
+        // Redirect to Razorpay payment page
+        window.location.href = RZP_LINK;
       });
     });
   </script>
