@@ -1683,6 +1683,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
     </div>
     <div class="proj-user">
       <div style="display:flex;align-items:center;gap:12px;margin-right:16px;">
+        <button id="btn-nav-login" style="background:var(--acc);color:white;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:600;display:none;transition:all 0.2s ease;">Login</button>
         <a href="https://docs.google.com/forms/d/e/1FAIpQLSc5AzzP2NccDkCbKAb5mVvefYFc5_X-EkJZx5RLWO7aqQ_8cw/viewform" target="_blank" id="btn-feedback-dash" title="Feedback / Contact" style="text-decoration:none;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:6px;background:var(--bg2);border:1px solid var(--b1);color:var(--t2);transition:all .2s ease;" onmouseover="this.style.borderColor='#7248b9';this.style.color='#7248b9'" onmouseout="this.style.borderColor='var(--b1)';this.style.color='var(--t2)'">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="17" y2="8"></line><line x1="12" y1="12" x2="17" y2="12"></line><line x1="12" y1="16" x2="17" y2="16"></line><line x1="8" y1="8" x2="8.01" y2="8"></line><line x1="8" y1="12" x2="8.01" y2="12"></line><line x1="8" y1="16" x2="8.01" y2="16"></line></svg>
         </a>
@@ -4698,11 +4699,19 @@ document.getElementById('btn-logout').addEventListener('click', function(){
     if(!confirm('Sign out of ' + CU.email + '?')) return;
   }
   CU = null; authSave();
-  showPage('pg-login');
+  
   // Clear form
   document.getElementById('login-email').value='';
   document.getElementById('login-name').value='';
   document.getElementById('login-err').textContent='';
+  
+  showPage('pg-projects');
+  var bnl = document.getElementById('btn-nav-login');
+  if(bnl) bnl.style.display = 'block';
+  document.getElementById('btn-logout').style.display = 'none';
+  document.getElementById('pu-avatar').style.display = 'none';
+  document.getElementById('pu-email').textContent = '';
+  document.getElementById('proj-grid').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--t3);background:var(--bg1);border:1px dashed var(--b2);border-radius:12px;margin-top:20px;">Please login to save your projects to the cloud and access your workspace.</div>';
 });
 
 // Import .v from projects page
@@ -7551,21 +7560,18 @@ function endTour() {
 // ── START ──
 setupVerilogImport();
 authLoad();
-if(!CU){ CU = {email: 'guest', name: 'Guest'}; authSave(); }
 
-// Directly open the Editor tool for frictionless use
-var projs = getProjects();
-var pkeys = Object.keys(projs);
-if(pkeys.length > 0) {
-  pkeys.sort(function(a,b){ return (projs[b].updatedAt||0) - (projs[a].updatedAt||0); });
-  var latest = projs[pkeys[0]];
-  PROJ = {id: latest.id, name: latest.name, data: latest.data};
-  document.getElementById('ed-proj-name').textContent = latest.name;
-  loadProjData(latest.data);
-  showPage('pg-editor');
+document.getElementById('btn-nav-login').addEventListener('click', function(){
+  showPage('pg-login');
+});
+
+showPage('pg-projects');
+if(CU) {
+  loadProjects();
 } else {
-  createNewProject();
-  showPage('pg-editor');
+  var bnl = document.getElementById('btn-nav-login');
+  if(bnl) bnl.style.display = 'block';
+  document.getElementById('proj-grid').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--t3);background:var(--bg1);border:1px dashed var(--b2);border-radius:12px;margin-top:20px;">Please login to save your projects to the cloud and access your workspace.</div>';
 }
 // Touch to Mouse Event Translator for Mobile Support
 function touchHandler(event) {
