@@ -2432,16 +2432,19 @@ function registerUser(email, name) {
 let PROJ = null; // { id, name, data:{gates,wires,custom} }
 
 function getProjects() {
+  if (!CU || !CU.email) return {};
   const ud = getUserData(CU.email);
   return ud.projects || {};
 }
 function saveProject(id, name, data) {
+  if (!CU || !CU.email) return;
   const ud = getUserData(CU.email);
   if (!ud.projects) ud.projects = {};
   ud.projects[id] = { id, name, data, updatedAt: Date.now(), owner: CU.email };
   setUserData(CU.email, ud);
 }
 function deleteProject(id) {
+  if (!CU || !CU.email) return;
   const ud = getUserData(CU.email);
   delete ud.projects[id];
   setUserData(CU.email, ud);
@@ -4569,6 +4572,10 @@ function doLogin(){
 // ═══════════════════════════════════════════════════════
 function showProjects(){
   showPage('pg-projects');
+  if (!CU || !CU.email) {
+    document.getElementById('proj-grid').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--t3);background:var(--bg1);border:1px dashed var(--b2);border-radius:12px;margin-top:20px;">Please <a href="#" onclick="showPage(\'pg-login\')" style="color:#6366f1;">login</a> to save your projects to the cloud and access your workspace.</div>';
+    return;
+  }
   var ud = getUserData(CU.email);
   var isGuest = (CU.email === 'guest');
   var nameText = isGuest ? 'Local Workspace' : CU.email;
@@ -7600,12 +7607,13 @@ document.getElementById('btn-nav-login').addEventListener('click', function(){
 });
 
 showPage('pg-projects');
-if(CU) {
+if(CU && CU.email) {
   showProjects();
 } else {
   var bnl = document.getElementById('btn-nav-login');
   if(bnl) bnl.style.display = 'block';
-  document.getElementById('proj-grid').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--t3);background:var(--bg1);border:1px dashed var(--b2);border-radius:12px;margin-top:20px;">Please login to save your projects to the cloud and access your workspace.</div>';
+  var pg = document.getElementById('proj-grid');
+  if(pg) pg.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--t3);background:var(--bg1);border:1px dashed var(--b2);border-radius:12px;margin-top:20px;">Please <a href="#" onclick="showPage(\'pg-login\')" style="color:#6366f1;">login</a> to save your projects to the cloud and access your workspace.</div>';
 }
 // Touch to Mouse Event Translator for Mobile Support
 function touchHandler(event) {
