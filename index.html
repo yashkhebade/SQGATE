@@ -1689,7 +1689,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
     </div>
     <div class="proj-user">
       <div style="display:flex;align-items:center;gap:12px;margin-right:16px;">
-        <button id="btn-nav-login" style="background:var(--acc);color:white;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:600;display:none;transition:all 0.2s ease;">Login</button>
+        <button id="btn-nav-login" style="background:var(--acc);color:white;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:600;display:none;transition:all 0.2s ease;">Sign In</button>
         <a href="https://docs.google.com/forms/d/e/1FAIpQLSc5AzzP2NccDkCbKAb5mVvefYFc5_X-EkJZx5RLWO7aqQ_8cw/viewform" target="_blank" id="btn-feedback-dash" title="Feedback / Contact" style="text-decoration:none;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:6px;background:var(--bg2);border:1px solid var(--b1);color:var(--t2);transition:all .2s ease;" onmouseover="this.style.borderColor='#7248b9';this.style.color='#7248b9'" onmouseout="this.style.borderColor='var(--b1)';this.style.color='var(--t2)'">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="17" y2="8"></line><line x1="12" y1="12" x2="17" y2="12"></line><line x1="12" y1="16" x2="17" y2="16"></line><line x1="8" y1="8" x2="8.01" y2="8"></line><line x1="8" y1="12" x2="8.01" y2="12"></line><line x1="8" y1="16" x2="8.01" y2="16"></line></svg>
         </a>
@@ -1721,6 +1721,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 
     <!-- MY WORKSPACE -->
     <div class="proj-section-title">MY WORKSPACE</div>
+    <div id="workspace-subtitle" style="font-size:12px;color:var(--t3);margin-bottom:16px;padding:0 2px;">Your projects are saved in this browser. <a href="#" onclick="showPage('pg-login')" style="color:#6366f1;text-decoration:none;">Sign in</a> to sync across devices.</div>
     
     <div class="proj-actions" style="margin-bottom: 24px;">
 
@@ -2407,8 +2408,15 @@ const GCOL={
 // ═══════════════════════════════════════════════════════
 let CU = null; // current user { email, name }
 
+// ── GUEST FALLBACK: always have a working user so simulator needs no login ──
+var GUEST_USER = {email: 'guest', name: 'Local Workspace'};
+
 function authLoad() {
   try { CU = JSON.parse(localStorage.getItem('lgf_session') || 'null'); } catch(e){ CU = null; }
+  if (!CU || !CU.email) {
+    // No saved session → auto-start as guest so simulator works immediately
+    CU = GUEST_USER;
+  }
 }
 function authSave() {
   localStorage.setItem('lgf_session', CU ? JSON.stringify(CU) : 'null');
@@ -4535,7 +4543,7 @@ function showPage(id){
 
 document.getElementById('login-btn').addEventListener('click', doLogin);
 document.getElementById('guest-btn').addEventListener('click', function(){
-  CU = {email: 'guest', name: 'Guest'};
+  CU = GUEST_USER;
   authSave();
   showProjects();
 });
@@ -4571,15 +4579,13 @@ function doLogin(){
 // PROJECTS PAGE
 // ═══════════════════════════════════════════════════════
 function showProjects(){
+  // Always ensure we have a user (guest fallback)
+  if (!CU || !CU.email) { CU = GUEST_USER; }
   showPage('pg-projects');
-  if (!CU || !CU.email) {
-    document.getElementById('proj-grid').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--t3);background:var(--bg1);border:1px dashed var(--b2);border-radius:12px;margin-top:20px;">Please <a href="#" onclick="showPage(\'pg-login\')" style="color:#6366f1;">login</a> to save your projects to the cloud and access your workspace.</div>';
-    return;
-  }
   var ud = getUserData(CU.email);
   var isGuest = (CU.email === 'guest');
   var nameText = isGuest ? 'Local Workspace' : CU.email;
-  var avatarChar = isGuest ? 'L' : (CU.name||CU.email)[0].toUpperCase();
+  var avatarChar = isGuest ? '✦' : (CU.name||CU.email)[0].toUpperCase();
 
   if (ud.isPro) {
     document.getElementById('pu-email').innerHTML = nameText + ' <span style="background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700;margin-left:8px;vertical-align:middle;box-shadow:0 2px 4px rgba(99,102,241,0.3);">PRO</span>';
@@ -4598,7 +4604,24 @@ function showProjects(){
   }
 
   document.getElementById('pu-avatar').textContent = avatarChar;
-  document.getElementById('btn-logout').textContent = isGuest ? 'Sign In' : 'Sign out';
+
+  // Logout btn: for guest acts as Sign In; for real user acts as Sign Out
+  var logoutBtn = document.getElementById('btn-logout');
+  if (logoutBtn) {
+    if (isGuest) {
+      logoutBtn.textContent = '→ Sign In';
+      logoutBtn.onclick = function(){ showPage('pg-login'); };
+    } else {
+      logoutBtn.textContent = 'Sign out';
+      logoutBtn.onclick = null; // restored to original event listener
+    }
+  }
+  var navLoginBtn = document.getElementById('btn-nav-login');
+  if (navLoginBtn) navLoginBtn.style.display = isGuest ? 'block' : 'none';
+
+  // Workspace subtitle: hint guests to sign in, hide for logged-in users
+  var wsSub = document.getElementById('workspace-subtitle');
+  if (wsSub) wsSub.style.display = isGuest ? 'block' : 'none';
   
   renderProjGrid(ud.projects||{});
 }
@@ -4739,20 +4762,17 @@ document.getElementById('btn-logout').addEventListener('click', function(){
   if(CU && CU.email !== 'guest') {
     if(!confirm('Sign out of ' + CU.email + '?')) return;
   }
-  CU = null; authSave();
+  // Revert to guest — simulator stays fully usable, no black screen
+  CU = GUEST_USER;
+  authSave();
+  PROJ = null;
   
-  // Clear form
+  // Clear login form
   document.getElementById('login-email').value='';
   document.getElementById('login-name').value='';
   document.getElementById('login-err').textContent='';
   
-  showPage('pg-projects');
-  var bnl = document.getElementById('btn-nav-login');
-  if(bnl) bnl.style.display = 'block';
-  document.getElementById('btn-logout').style.display = 'none';
-  document.getElementById('pu-avatar').style.display = 'none';
-  document.getElementById('pu-email').textContent = '';
-  document.getElementById('proj-grid').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--t3);background:var(--bg1);border:1px dashed var(--b2);border-radius:12px;margin-top:20px;">Please login to save your projects to the cloud and access your workspace.</div>';
+  showProjects();
 });
 
 // Import .v from projects page
@@ -7606,15 +7626,8 @@ document.getElementById('btn-nav-login').addEventListener('click', function(){
   showPage('pg-login');
 });
 
-showPage('pg-projects');
-if(CU && CU.email) {
-  showProjects();
-} else {
-  var bnl = document.getElementById('btn-nav-login');
-  if(bnl) bnl.style.display = 'block';
-  var pg = document.getElementById('proj-grid');
-  if(pg) pg.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--t3);background:var(--bg1);border:1px dashed var(--b2);border-radius:12px;margin-top:20px;">Please <a href="#" onclick="showPage(\'pg-login\')" style="color:#6366f1;">login</a> to save your projects to the cloud and access your workspace.</div>';
-}
+// authLoad() always guarantees CU is set (guest fallback), so showProjects() is always safe
+showProjects();
 // Touch to Mouse Event Translator for Mobile Support
 function touchHandler(event) {
     if (event.touches.length > 1) return; // Ignore multi-touch
