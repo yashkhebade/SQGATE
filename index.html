@@ -1871,8 +1871,8 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
       </button>
 
-      <!-- Ko-fi -->
-      <a href="https://razorpay.me/@yash6520" target="_blank" title="Support via Razorpay" style="text-decoration:none;display:flex;align-items:center;gap:6px;padding:0 10px;height:32px;border-radius:6px;background:linear-gradient(135deg,#2D78F6,#1652F0);color:#fff;font-weight:600;font-size:12px;transition:all .2s ease;box-shadow:0 2px 8px rgba(45,120,246,0.3);white-space:nowrap;flex-shrink:0;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">☕ Coffee</a>
+      <!-- Upgrade to PRO -->
+      <a href="pricing.html" id="btn-upgrade-pro" title="Unlock Premium Features" style="text-decoration:none;display:flex;align-items:center;gap:6px;padding:0 12px;height:32px;border-radius:6px;background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;font-weight:600;font-size:12px;transition:all .2s ease;box-shadow:0 2px 8px rgba(99,102,241,0.3);white-space:nowrap;flex-shrink:0;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">💎 Upgrade to PRO</a>
       
       <!-- Feedback -->
       <a href="https://docs.google.com/forms/d/e/1FAIpQLSc5AzzP2NccDkCbKAb5mVvefYFc5_X-EkJZx5RLWO7aqQ_8cw/viewform" target="_blank" id="btn-feedback-ed" title="Feedback / Contact" style="text-decoration:none;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:6px;color:var(--t2);transition:all .2s ease;flex-shrink:0;" onmouseover="this.style.color='#7248b9'" onmouseout="this.style.color='var(--t2)'">
@@ -4384,7 +4384,16 @@ function clearCanvas(){
 }
 
 document.getElementById('btn-pkg').addEventListener('click',pkgSel);
-document.getElementById('btn-verilog').addEventListener('click',openVerilogModal);
+document.getElementById('btn-verilog').addEventListener('click', function() {
+  var ud = getUserData(CU.email);
+  if (!ud.isPro) {
+    if(confirm("Verilog Export is a PRO feature. Click OK to upgrade to SQGATE PRO!")) {
+      window.location.href = 'pricing.html';
+    }
+  } else {
+    openVerilogModal();
+  }
+});
 document.getElementById('btn-hlp').addEventListener('click',function(){document.getElementById('ov-hlp').classList.add('open');});
 document.getElementById('hlp-cl').addEventListener('click',function(){document.getElementById('ov-hlp').classList.remove('open');});
 document.getElementById('ov-hlp').addEventListener('click',function(e){if(e.target===e.currentTarget)e.currentTarget.classList.remove('open');});
@@ -4564,15 +4573,23 @@ function doLogin(){
 function showProjects(){
   showPage('pg-projects');
   var ud = getUserData(CU.email);
-  if (CU.email === 'guest') {
-    document.getElementById('pu-email').textContent = 'Local Workspace';
-    document.getElementById('pu-avatar').textContent = 'L';
-    document.getElementById('btn-logout').textContent = 'Sign In';
+  var isGuest = (CU.email === 'guest');
+  var nameText = isGuest ? 'Local Workspace' : CU.email;
+  var avatarChar = isGuest ? 'L' : (CU.name||CU.email)[0].toUpperCase();
+
+  if (ud.isPro) {
+    document.getElementById('pu-email').innerHTML = nameText + ' <span style="background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700;margin-left:8px;vertical-align:middle;box-shadow:0 2px 4px rgba(99,102,241,0.3);">PRO</span>';
+    var btnPro = document.getElementById('btn-upgrade-pro');
+    if(btnPro) btnPro.style.display = 'none';
   } else {
-    document.getElementById('pu-email').textContent = CU.email;
-    document.getElementById('pu-avatar').textContent = (CU.name||CU.email)[0].toUpperCase();
-    document.getElementById('btn-logout').textContent = 'Sign out';
+    document.getElementById('pu-email').textContent = nameText;
+    var btnPro = document.getElementById('btn-upgrade-pro');
+    if(btnPro) btnPro.style.display = 'flex';
   }
+
+  document.getElementById('pu-avatar').textContent = avatarChar;
+  document.getElementById('btn-logout').textContent = isGuest ? 'Sign In' : 'Sign out';
+  
   renderProjGrid(ud.projects||{});
 }
 
