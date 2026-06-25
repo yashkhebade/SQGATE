@@ -205,8 +205,6 @@
 
 
   <script>
-    var RZP_LINK = 'https://rzp.io/rzp/WNeCKJhq';
-
     document.addEventListener('DOMContentLoaded', function() {
       const btnPro = document.getElementById('btn-pro');
 
@@ -219,19 +217,6 @@
         try { userData = JSON.parse(localStorage.getItem('lgf_user_' + session.email) || '{}'); } catch(e) {}
       }
 
-      // ── Grant PRO if returning from Razorpay with ?payment=success ──
-      var urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('payment') === 'success') {
-        if (session && session.email && session.email !== 'guest') {
-          if (!userData) userData = {};
-          userData.isPro = true;
-          localStorage.setItem('lgf_user_' + session.email, JSON.stringify(userData));
-        }
-        alert('🎉 Payment successful! Welcome to SQGATE PRO!');
-        window.location.href = 'index.html';
-        return;
-      }
-
       // ── Already PRO ──
       if (userData && userData.isPro) {
         btnPro.textContent = '✅ Current Plan (PRO)';
@@ -241,10 +226,10 @@
         return;
       }
 
-      // ── Upgrade click → go directly to Razorpay (no login required) ──
+      // ── Coming Soon ──
       btnPro.addEventListener('click', function(e) {
         e.preventDefault();
-        window.location.href = RZP_LINK;
+        alert('💎 PRO payments are coming soon! Stay tuned.');
       });
     });
   </script>
