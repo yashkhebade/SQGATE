@@ -1989,7 +1989,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       <div class="wh-controls" onclick="event.stopPropagation()">
         <button class="wh-btn" id="wave-clear-btn">Clear</button>
         <button class="wh-btn" id="wave-play-btn">▶ Record</button>
-        <button class="wh-btn" id="wave-export-btn">📷 Export</button>
+        <button class="wh-btn" id="wave-export-btn">Export</button>
         <button class="wh-btn" id="wave-expand-btn">⛶ Fullscreen</button>
         <span style="color:var(--t3);font-size:10px" id="wave-tick-lbl">0 ticks</span>
       </div>
@@ -2011,12 +2011,12 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 
 <!-- CONTEXT MENU -->
 <div id="cmenu">
-  <div class="cmi" id="cm-del">🗑 Delete</div>
+  <div class="cmi" id="cm-del">Delete</div>
   <div class="cmi" id="cm-dup">⧉ Duplicate</div>
   <div class="cmsep"></div>
   <div class="cmi" id="cm-rst">↺ Reset State</div>
   <div class="cmsep"></div>
-  <div class="cmi" id="cm-pkg">⊞ Package as Subcircuit</div>
+  <div class="cmi" id="cm-pkg">Package as Subcircuit</div>
 </div>
 
 <!-- TOOLTIP -->
@@ -2038,7 +2038,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 <!-- MODAL: Testbench -->
 <div class="ov" id="ov-tb">
   <div class="mbox wide">
-    <div class="mh">🧪 Automated Testbench</div>
+    <div class="mh">Automated Testbench</div>
     <div class="msc">
       <p style="font-size:12px;color:var(--t2)">Enter test vectors. Format: <code>IN#1=0, IN#2=1 -> OUT#3=1</code> (one per line)</p>
       <textarea id="tb-code" style="width:100%;height:150px;background:var(--bg0);color:var(--t1);border:1px solid var(--b2);font-family:var(--fmono);padding:8px">IN#1=0, IN#2=0 -> OUT#3=0
@@ -2052,7 +2052,7 @@ IN#1=1, IN#2=0 -> OUT#3=1</textarea>
 <!-- MODAL: Truth Table Generator -->
 <div class="ov" id="ov-tt">
   <div class="mbox wide">
-    <div class="mh">⊞ Truth Table Generator</div>
+    <div class="mh">Truth Table Generator</div>
     <div class="msc">
       <div class="tt-tab-row">
         <div class="tt-tab on" id="tt-tab-table" data-tab="table">Truth Table</div>
@@ -2063,7 +2063,7 @@ IN#1=1, IN#2=0 -> OUT#3=1</textarea>
     </div>
     <div class="mft">
       <button class="mbtn sc" id="tt-close">Close</button>
-      <button class="mbtn sc" id="tt-csv">⬇ Export CSV</button>
+      <button class="mbtn sc" id="tt-csv">Export CSV</button>
       <button class="mbtn pr" id="tt-regen">↺ Regenerate</button>
     </div>
   </div>
@@ -2072,11 +2072,11 @@ IN#1=1, IN#2=0 -> OUT#3=1</textarea>
 <!-- MODAL: Export -->
 <div class="ov" id="ov-export">
   <div class="mbox">
-    <div class="mh">⬇ Export Circuit</div>
+    <div class="mh">Export Circuit</div>
     <div class="msc">
       <img id="export-preview" class="export-preview" alt="Preview">
       <div class="export-opt" id="exp-png">
-        <div class="export-opt-icon">🖼</div>
+        <div class="export-opt-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--acc);"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div>
         <div><div class="export-opt-label">PNG Image</div><div class="export-opt-desc">High-res raster image — great for reports and presentations</div></div>
       </div>
       <div class="export-opt" id="exp-svg">
@@ -2084,7 +2084,7 @@ IN#1=1, IN#2=0 -> OUT#3=1</textarea>
         <div><div class="export-opt-label">SVG Vector</div><div class="export-opt-desc">Scalable vector — perfect for documentation and LaTeX</div></div>
       </div>
       <div class="export-opt" id="exp-json">
-        <div class="export-opt-icon">📄</div>
+        <div class="export-opt-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--acc);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
         <div><div class="export-opt-label">Project JSON</div><div class="export-opt-desc">Full project snapshot — share or restore later</div></div>
       </div>
     </div>
@@ -2102,7 +2102,7 @@ IN#1=1, IN#2=0 -> OUT#3=1</textarea>
 <!-- MODAL: DRC -->
 <div class="ov" id="ov-drc">
   <div class="mbox">
-    <div class="mh">⚑ Design Rule Check</div>
+    <div class="mh">Design Rule Check</div>
     <div class="msc" id="drc-body">
       <p style="color:var(--t3);font-size:11.5px">Run DRC to check your circuit for errors.</p>
     </div>
@@ -2143,7 +2143,7 @@ IN#1=1, IN#2=0 -> OUT#3=1</textarea>
 <!-- MODAL: Manage Custom -->
 <div class="ov" id="ov-mg">
   <div class="mbox">
-    <div class="mh">⊞ Custom Gate Library</div>
+    <div class="mh">Custom Gate Library</div>
     <div class="msc" id="mg-body"></div>
     <div class="mft"><button class="mbtn sc" id="mg-cl">Close</button></div>
   </div>
@@ -2152,7 +2152,7 @@ IN#1=1, IN#2=0 -> OUT#3=1</textarea>
 <!-- MODAL: Community Hub -->
 <div class="ov" id="ov-hub">
   <div class="mbox wide" style="max-width:600px">
-    <div class="mh">🌐 Community Hub & Asset Marketplace</div>
+    <div class="mh">Community Hub & Asset Marketplace</div>
     <div class="msc">
       <p style="font-size:12px;color:var(--t2)">Explore and import CPU architectures, components, and libraries published by the SQGATE community.</p>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px;">
@@ -2174,7 +2174,7 @@ IN#1=1, IN#2=0 -> OUT#3=1</textarea>
 <!-- MODAL: ASM Assembler -->
 <div class="ov" id="ov-asm">
   <div class="mbox wide" style="max-width: 650px;">
-    <div class="mh">📝 Integrated ASM Compiler</div>
+    <div class="mh">Integrated ASM Compiler</div>
     <div class="msc" style="display:flex; flex-direction:column; gap:10px;">
       <p style="font-size:12px;color:var(--t2);margin-bottom:4px;line-height:1.6">
         Write Assembly code using custom macros. 
@@ -2217,7 +2217,7 @@ START:
       </div>
       <div id="v-import-area" style="display:none">
         <div class="vimport-area" id="v-drop-zone">
-          <div style="font-size:24px;margin-bottom:10px">📄</div>
+          <div style="font-size:24px;margin-bottom:10px"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--acc);margin:0 auto;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
           <div>Drop a <strong>.v</strong> file here or click to browse</div>
           <div style="font-size:11px;margin-top:6px;color:var(--t3)">Supports: assign statements, basic gate instantiations</div>
         </div>
@@ -2227,7 +2227,7 @@ START:
     </div>
     <div class="mft">
       <button class="mbtn sc" id="v-close">Close</button>
-      <button class="mbtn pr" id="v-dl" style="display:flex;align-items:center;gap:6px">⬇ Download Source</button>
+      <button class="mbtn pr" id="v-dl" style="display:flex;align-items:center;gap:6px">Download Source</button>
     </div>
   </div>
 </div>
@@ -2236,7 +2236,7 @@ START:
 <!-- MODAL: Help & Shortcuts (Premium Overlay) -->
 <div class="ov" id="ov-hlp">
   <div class="mbox wide" style="max-width:560px">
-    <div class="mh">⌨ Keyboard Shortcuts & Controls</div>
+    <div class="mh">Keyboard Shortcuts & Controls</div>
     <div class="msc" style="max-height:480px">
 
       <div class="kb-section" style="animation:kbFadeIn .3s ease both">
@@ -2300,7 +2300,7 @@ START:
 <!-- MODAL: About SQGATE (SEO Optimized) -->
 <div class="ov" id="ov-about">
   <div class="mbox wide" style="max-width:600px">
-    <div class="mh">ℹ️ About SQGATE</div>
+    <div class="mh">About SQGATE</div>
     <div class="msc" style="line-height:1.6; color:var(--t2); font-size:13px; max-height:500px; overflow-y:auto;">
       <h1 style="font-size:22px; color:var(--aca); margin-bottom:12px; line-height:1.3;">Free online logic gate simulator — design, simulate, and export Verilog in your browser.</h1>
       
