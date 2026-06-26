@@ -2740,10 +2740,6 @@ function reposAll(){S.gates.forEach(function(g){posGate(g);});drawWires();}
 // PLACE GATE
 // ═══════════════════════════════════════════════════════
 function place(type,wx,wy){
-  if (S.gates.length >= 20) {
-    msg('Simulating more than 20 qubits requires too much memory. Please reduce your circuit size.', 'er');
-    return null;
-  }
   let rt=type,cn=null;
   if(type.startsWith('custom:')){rt='custom';cn=type.slice(7);}
   const d=rt==='custom'?S.custom[cn]?._def:DEF[rt];
@@ -5734,10 +5730,6 @@ function pasteClipboard() {
   if (!CLIPBOARD || !CLIPBOARD.gates.length) { msg('Nothing to paste', 'er'); return; }
   histPush();
   // Offset paste by 40px
-  if (S.gates.length + CLIPBOARD.gates.length > 20) {
-    msg('Simulating more than 20 qubits requires too much memory. Please reduce your circuit size.', 'er');
-    return;
-  }
   var ox = 60, oy = 60;
   var idMap = {}; // old id → new id
   CLIPBOARD.gates.forEach(function(og) {
