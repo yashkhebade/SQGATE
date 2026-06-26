@@ -1622,6 +1622,435 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
   #ed-topbar { overflow-x: auto; overflow-y: hidden; justify-content: flex-start; padding-right: 20px; }
   #ed-topbar::-webkit-scrollbar { display: none; }
 }
+
+/* ══ HOME PAGE STYLING ══════════════════════════════════════════ */
+#pg-home {
+  position: fixed;
+  inset: 0;
+  background: var(--bg0);
+  display: none;
+  overflow-y: auto;
+  z-index: 850;
+  font-family: var(--fsans);
+  color: var(--t1);
+  scroll-behavior: smooth;
+}
+
+.home-nav {
+  height: 64px;
+  background: rgba(12, 15, 28, 0.8);
+  border-bottom: 1px solid var(--b1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+}
+
+.home-logo-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.home-logo-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.home-logo-text {
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: 2px;
+  color: var(--acc);
+  text-transform: uppercase;
+}
+
+.home-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.home-nav-link {
+  color: var(--t2);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: color var(--ts);
+}
+
+.home-nav-link:hover {
+  color: var(--t1);
+}
+
+.home-nav-btn {
+  background: var(--bg3);
+  border: 1px solid var(--b1);
+  color: var(--t1);
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  font-family: var(--fsans);
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all var(--ts);
+}
+
+.home-nav-btn:hover {
+  background: var(--bgh);
+  border-color: var(--b2);
+  transform: translateY(-1px);
+}
+
+.home-hero {
+  padding: 120px 20px 100px 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.home-hero-glow {
+  position: absolute;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(139,92,246,0.15) 0%, rgba(0,0,0,0) 70%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.home-hero-title {
+  font-size: 3.8rem;
+  margin-bottom: 24px;
+  color: var(--t1);
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  line-height: 1.15;
+}
+
+.home-gradient-text {
+  background: linear-gradient(to right, var(--acc), var(--hi));
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.home-hero-subtitle {
+  font-size: 1.25rem;
+  color: var(--t2);
+  max-width: 680px;
+  margin: 0 auto 40px auto;
+  line-height: 1.6;
+}
+
+.home-hero-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+}
+
+.home-hero-primary-btn {
+  background: linear-gradient(135deg, var(--acc), #5b21b6);
+  color: white;
+  border: none;
+  padding: 14px 36px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px var(--acc-glow);
+}
+
+.home-hero-primary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(139,92,246,0.4);
+}
+
+.home-hero-secondary-btn {
+  background: var(--bg2);
+  border: 1px solid var(--b2);
+  color: var(--t1);
+  padding: 14px 36px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.home-hero-secondary-btn:hover {
+  background: var(--bgh);
+  border-color: var(--b3);
+  transform: translateY(-2px);
+}
+
+.home-features-section, .home-tools-section {
+  padding: 80px 40px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.home-section-header {
+  text-align: center;
+  margin-bottom: 54px;
+}
+
+.home-section-title {
+  font-size: 2.2rem;
+  color: var(--t1);
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 12px;
+}
+
+.home-section-subtitle {
+  font-size: 1.1rem;
+  color: var(--t2);
+}
+
+.home-features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.home-feature-card {
+  background: var(--bg1);
+  border: 1px solid var(--b1);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  transition: all 0.2s var(--ease);
+}
+
+.home-feature-card:hover {
+  border-color: var(--b2);
+  background: var(--bg2);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+.home-feature-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.home-feature-title {
+  font-size: 1.25rem;
+  color: var(--t1);
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.home-feature-desc {
+  font-size: 0.95rem;
+  color: var(--t2);
+  line-height: 1.5;
+}
+
+.home-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.home-tool-card {
+  background: var(--bg1);
+  border: 1px solid var(--b1);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.home-tool-card:hover {
+  border-color: var(--acc);
+  background: var(--bg2);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px var(--acc-glow);
+}
+
+.home-tool-badge {
+  font-size: 9px;
+  background: var(--bg3);
+  border: 1px solid var(--b2);
+  border-radius: 4px;
+  color: var(--t3);
+  padding: 2px 8px;
+  width: fit-content;
+  font-weight: 700;
+  margin-bottom: 16px;
+  letter-spacing: 0.5px;
+}
+
+.home-tool-title {
+  font-size: 1.15rem;
+  color: var(--t1);
+  margin-bottom: 8px;
+}
+
+.home-tool-desc {
+  font-size: 0.9rem;
+  color: var(--t2);
+  margin-bottom: 20px;
+  flex-grow: 1;
+}
+
+.home-tool-link {
+  font-size: 12px;
+  color: var(--acc);
+  font-weight: 600;
+  transition: color var(--ts);
+}
+
+.home-tool-card:hover .home-tool-link {
+  color: var(--hi);
+}
+
+.home-pricing-callout {
+  padding: 60px 40px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.home-pricing-box {
+  background: radial-gradient(circle at top right, rgba(99,102,241,0.08), rgba(0,0,0,0)), rgba(12, 15, 28, 0.9);
+  border: 1px solid var(--b2);
+  border-radius: 16px;
+  padding: 48px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.home-pricing-box h2 {
+  font-size: 2rem;
+  color: var(--t1);
+  margin-bottom: 12px;
+}
+
+.home-pricing-box p {
+  font-size: 1.05rem;
+  color: var(--t2);
+  max-width: 600px;
+  margin: 0 auto 28px auto;
+  line-height: 1.6;
+}
+
+.home-pricing-btn-primary {
+  background: linear-gradient(135deg, var(--acb), #065f46);
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px var(--acb-glow);
+}
+
+.home-pricing-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.3);
+}
+
+.home-pricing-btn-secondary {
+  background: var(--bg2);
+  border: 1px solid var(--b2);
+  color: var(--t1);
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.home-pricing-btn-secondary:hover {
+  background: var(--bgh);
+  transform: translateY(-2px);
+}
+
+.home-footer {
+  border-top: 1px solid var(--b1);
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--t3);
+  font-size: 12px;
+}
+
+.home-footer p {
+  margin-bottom: 12px;
+}
+
+.home-footer-links {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.home-footer-links a {
+  color: var(--t2);
+  text-decoration: none;
+  transition: color var(--ts);
+}
+
+.home-footer-links a:hover {
+  color: var(--t1);
+}
+
+@media screen and (max-width: 768px) {
+  .home-hero-title {
+    font-size: 2.5rem;
+  }
+  .home-hero-subtitle {
+    font-size: 1.1rem;
+  }
+  .home-hero-actions {
+    flex-direction: column;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+  }
+  .home-hero-primary-btn, .home-hero-secondary-btn {
+    width: 100%;
+  }
+  .home-nav-links {
+    display: none;
+  }
+  .home-nav {
+    padding: 0 20px;
+  }
+  .home-features-grid, .home-tools-grid {
+    grid-template-columns: 1fr;
+  }
+  .home-pricing-box {
+    padding: 32px 20px;
+  }
+}
 </style>
 </head>
 <body>
@@ -1629,12 +2058,137 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 
 
 
+<!-- ═══════════ HOME PAGE ═══════════ -->
+<div id="pg-home">
+  <!-- Navbar -->
+  <nav class="home-nav">
+    <div class="home-logo-group" onclick="showPage('pg-home')">
+      <img src="icon.png" class="home-logo-img" alt="Logo">
+      <span class="home-logo-text">SQGATE</span>
+    </div>
+    <div class="home-nav-links">
+      <a href="#features" class="home-nav-link">Features</a>
+      <a href="#tools" class="home-nav-link">Tools</a>
+      <a href="pricing.html" class="home-nav-link">Pricing</a>
+      <button onclick="showProjects()" class="home-nav-btn">Go to Dashboard</button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="home-hero">
+    <div class="home-hero-glow"></div>
+    <h1 class="home-hero-title">
+      Design, Simulate & Export<br>
+      <span class="home-gradient-text">Digital Logic Circuits</span>
+    </h1>
+    <p class="home-hero-subtitle">
+      SQGATE is a modern, high-performance digital logic simulator that runs entirely in your browser. Create, verify, and package custom circuits with zero installs.
+    </p>
+    <div class="home-hero-actions">
+      <button onclick="showProjects()" class="home-hero-primary-btn">Open Dashboard</button>
+      <a href="#features" class="home-hero-secondary-btn">Explore Features</a>
+    </div>
+  </header>
+
+  <!-- Features Grid -->
+  <section id="features" class="home-features-section">
+    <div class="home-section-header">
+      <h2 class="home-section-title">Designed for Engineers and Students</h2>
+      <p class="home-section-subtitle">A professional suite of tools to prototype and test your logic gates in real-time.</p>
+    </div>
+    <div class="home-features-grid">
+      <div class="home-feature-card">
+        <div class="home-feature-icon" style="background: rgba(139,92,246,0.1); color: var(--acc);">⊡</div>
+        <h3 class="home-feature-title">Visual Circuit Builder</h3>
+        <p class="home-feature-desc">Drag and drop over 30+ logic components, clocks, ROM/RAM modules, priority encoders, multiplexers, and custom subcircuits onto an infinite zoomable canvas.</p>
+      </div>
+      <div class="home-feature-card">
+        <div class="home-feature-icon" style="background: rgba(16,185,129,0.1); color: var(--acb);">⟲</div>
+        <h3 class="home-feature-title">Real-Time Simulation</h3>
+        <p class="home-feature-desc">Engineered with low-latency client-side calculation. Toggle inputs or drive clocks to watch logic signals propagate instantly across wire colors.</p>
+      </div>
+      <div class="home-feature-card">
+        <div class="home-feature-icon" style="background: rgba(34,211,238,0.1); color: var(--hi);">📊</div>
+        <h3 class="home-feature-title">Waveform Oscilloscope</h3>
+        <p class="home-feature-desc">Record, visualize, and analyze digital signals over time. Capture clock periods, transitions, and trace critical timing steps inside our live oscilloscope.</p>
+      </div>
+      <div class="home-feature-card">
+        <div class="home-feature-icon" style="background: rgba(245,158,11,0.1); color: var(--aca);">⚡</div>
+        <h3 class="home-feature-title">Verilog & VHDL Export</h3>
+        <p class="home-feature-desc">Convert your visual circuits into clean, synthesizable Verilog code or VHDL code. Export your design files and integrate them directly into external test benches.</p>
+      </div>
+      <div class="home-feature-card">
+        <div class="home-feature-icon" style="background: rgba(239,68,68,0.1); color: var(--acr);">⚙️</div>
+        <h3 class="home-feature-title">Custom Gate Packaging</h3>
+        <p class="home-feature-desc">Select any logic subcircuit and package it into a single custom integrated circuit (IC) block with its own defined input and output pins.</p>
+      </div>
+      <div class="home-feature-card">
+        <div class="home-feature-icon" style="background: rgba(99,102,241,0.1); color: #6366f1;">👁️</div>
+        <h3 class="home-feature-title">Truth Table & DRC</h3>
+        <p class="home-feature-desc">Automatically generate truth tables for any combination of inputs and run automated Design Rule Checks (DRC) to flag floating pins or loops.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Tools Section -->
+  <section id="tools" class="home-tools-section">
+    <div class="home-section-header">
+      <h2 class="home-section-title">Additional Educational Tools</h2>
+      <p class="home-section-subtitle">Access our integrated digital logic utility suite directly.</p>
+    </div>
+    <div class="home-tools-grid">
+      <div class="home-tool-card" onclick="window.location.href='truth-table-generator.html'">
+        <span class="home-tool-badge">WEB TOOL</span>
+        <h3 class="home-tool-title">Truth Table Generator</h3>
+        <p class="home-tool-desc">Quickly generate truth tables for logic equations or logic gates without sketching circuits.</p>
+        <span class="home-tool-link">Open Tool →</span>
+      </div>
+      <div class="home-tool-card" onclick="window.location.href='karnaugh-map-solver.html'">
+        <span class="home-tool-badge">WEB TOOL</span>
+        <h3 class="home-tool-title">Karnaugh Map Solver</h3>
+        <p class="home-tool-desc">Simplify complex Boolean algebraic terms automatically with our interactive Karnaugh map solver.</p>
+        <span class="home-tool-link">Open Tool →</span>
+      </div>
+      <div class="home-tool-card" onclick="window.location.href='verilog-simulator.html'">
+        <span class="home-tool-badge">SIMULATOR</span>
+        <h3 class="home-tool-title">Verilog Simulator</h3>
+        <p class="home-tool-desc">Compile and verify raw Verilog files directly inside your browser tab with live output waveforms.</p>
+        <span class="home-tool-link">Open Tool →</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Support / Pricing Callout -->
+  <section class="home-pricing-callout">
+    <div class="home-pricing-box">
+      <h2>Unlock Your Full Engineering Potential</h2>
+      <p>SQGATE is 100% free to use. Get started immediately in Guest mode. Upgrade to PRO at any time to access code generation, advanced custom subcircuits, and cloud storage.</p>
+      <div style="display: flex; gap: 16px; justify-content: center; margin-top: 20px;">
+        <button onclick="showProjects()" class="home-pricing-btn-primary">Launch Free Workspace</button>
+        <a href="pricing.html" class="home-pricing-btn-secondary">View Pricing Plans</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="home-footer">
+    <p>&copy; 2026 SQGATE. Built with precision for digital designers.</p>
+    <div class="home-footer-links">
+      <a href="pricing.html">Pricing</a> &bull;
+      <a href="terms.html">Terms of Service</a> &bull;
+      <a href="privacy.html">Privacy Policy</a> &bull;
+      <a href="refund.html">Refund Policy</a> &bull;
+      <a href="contact.html">Contact Us</a>
+    </div>
+  </footer>
+</div>
+
 <!-- ═══════════ LOGIN PAGE ═══════════ -->
 <div id="pg-login">
   <div class="login-card">
     <div class="login-header">
-      <img class="login-header-img" src="icon.png" alt="SQGATE Logo">
-      <div class="login-logo">SQGATE</div>
+      <img class="login-header-img" src="icon.png" alt="SQGATE Logo" style="cursor:pointer;" onclick="showPage('pg-home')">
+      <div class="login-logo" style="cursor:pointer;" onclick="showPage('pg-home')">SQGATE</div>
     </div>
     <div class="login-tagline">Professional Digital Circuit Simulator</div>
 
@@ -1673,7 +2227,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 <!-- ═══════════ PROJECTS PAGE ═══════════ -->
 <div id="pg-projects">
   <div class="proj-topbar">
-    <div class="proj-logo" style="display:flex;align-items:center;gap:12px;">
+    <div class="proj-logo" style="display:flex;align-items:center;gap:12px;cursor:pointer;" onclick="showPage('pg-home')" title="Go to home page">
       <img src="icon.png" style="width:32px;height:32px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.5);" alt="Logo">
       <div style="display:flex;align-items:center;gap:10px;">
         <div id="dash-logo-text">SQGATE</div>
@@ -1755,7 +2309,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
   </button>
   <div id="ed-topbar">
     <div class="tb-group">
-      <img src="icon.png" style="width:24px;height:24px;border-radius:6px;margin-right:8px;box-shadow:0 2px 6px rgba(0,0,0,0.5);" alt="Logo">
+      <img src="icon.png" style="width:24px;height:24px;border-radius:6px;margin-right:8px;box-shadow:0 2px 6px rgba(0,0,0,0.5);cursor:pointer;" onclick="showPage('pg-home')" title="Go to home page" alt="Logo">
       <button class="tb-btn" id="ed-back" title="Back to projects" aria-label="Back">
         <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
       </button>
@@ -4518,9 +5072,15 @@ function autoSave(){
 // PAGE NAVIGATION
 // ═══════════════════════════════════════════════════════
 function showPage(id){
-  ['pg-login','pg-projects','pg-editor'].forEach(function(p){
+  ['pg-login','pg-projects','pg-editor','pg-home'].forEach(function(p){
     var el = document.getElementById(p);
-    if(el) el.style.display = (p===id) ? 'flex' : 'none';
+    if(el) {
+      if (p === 'pg-home') {
+        el.style.display = (p===id) ? 'block' : 'none';
+      } else {
+        el.style.display = (p===id) ? 'flex' : 'none';
+      }
+    }
   });
 }
 
