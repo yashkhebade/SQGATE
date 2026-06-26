@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-72EG9VJELZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-72EG9VJELZ');
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finite State Machine (FSM) Designer | SQGATE</title>
+  <link rel="canonical" href="https://sqgate.online/fsm-designer.html">
+  <meta name="description" content="Design, simulate, and export Finite State Machines (FSM) visually. Generate synthesizable Verilog HDL directly in your browser.">
+  <meta name="keywords" content="FSM designer, state machine simulator, finite state machine, verilog code generator, sequential logic builder, digital design tools">
+  <meta name="google-adsense-account" content="ca-pub-7398330076279399">
+  <link rel="icon" href="./icon.png" type="image/png">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7398330076279399" crossorigin="anonymous"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;700&display=swap');
+    
+    :root {
+      --bg0: #060813;
+      --bg1: #0c0f1c;
+      --bg2: #121626;
+      --bg3: #1a2035;
+      --b1: #1e243b;
+      --b2: #2b3453;
+      --t1: #ffffff;
+      --t2: #94a3b8;
+      --t3: #64748b;
+      --acc: #8b5cf6;
+      --hi: #22d3ee;
+      --acb: #10b981;
+      --acr: #ef4444;
+      --aca: #f59e0b;
+      --acc-glow: rgba(139,92,246,0.25);
+      --hi-glow: rgba(34,211,238,0.4);
+      --radius: 8px;
+      --radius-lg: 12px;
+      --fmono: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, monospace;
+      --fsans: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--bg0);
+      font-family: var(--fsans);
+      color: var(--t1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Navbar */
+    .nav {
+      height: 56px;
+      background: var(--bg1);
+      border-bottom: 1px solid var(--b1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      flex-shrink: 0;
+    }
+
+    .logo-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .logo-img {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+    }
+
+    .logo-text {
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: 1px;
+      color: var(--acc);
+    }
+
+    .logo-tag {
+      font-size: 9px;
+      font-weight: 700;
+      background: var(--bg3);
+      border: 1px solid var(--b2);
+      color: var(--hi);
+      padding: 2px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      background: var(--bg2);
+      border: 1px solid var(--b1);
+      color: var(--t2);
+      padding: 7px 14px;
+      border-radius: var(--radius);
+      font-family: var(--fsans);
+      font-weight: 600;
+      font-size: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: var(--bg3);
+      border-color: var(--b2);
+      color: var(--t1);
+      transform: translateY(-1px);
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, var(--acc), #5b21b6);
+      color: white;
+      border: none;
+      box-shadow: 0 2px 8px var(--acc-glow);
+    }
+
+    .btn.primary:hover {
+      box-shadow: 0 4px 12px rgba(139,92,246,0.4);
+    }
+
+    /* Main Grid Layout */
+    .main-container {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 240px 1fr 300px;
+      overflow: hidden;
+    }
+
+    /* Left Sidebar */
+    .sidebar-left {
+      background: var(--bg1);
+      border-right: 1px solid var(--b1);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      overflow-y: auto;
+    }
+
+    .section-title {
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--t3);
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .var-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .var-item {
+      background: var(--bg2);
+      border: 1px solid var(--b1);
+      border-radius: var(--radius);
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: border-color 0.15s;
+    }
+
+    .var-item:hover {
+      border-color: var(--b2);
+    }
+
+    .var-name {
+      font-family: var(--fmono);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .var-toggle {
+      width: 32px;
+      height: 18px;
+      background: var(--bg3);
+      border: 1px solid var(--b2);
+      border-radius: 9px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s;
+    }
+
+    .var-toggle.active {
+      background: var(--acb);
+      border-color: transparent;
+    }
+
+    .var-toggle::before {
+      content: '';
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background: white;
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: transform 0.2s;
+    }
+
+    .var-toggle.active::before {
+      transform: translateX(14px);
+    }
+
+    .btn-add-var {
+      width: 100%;
+      background: transparent;
+      border: 1px dashed var(--b2);
+      color: var(--t3);
+      padding: 8px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-family: var(--fsans);
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-add-var:hover {
+      border-color: var(--acc);
+      color: var(--acc);
+      background: rgba(139,92,246,0.02);
+    }
+
+    /* Canvas / Center Area */
+    .center-pane {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background: #080a18;
+    }
+
+    .toolbar-center {
+      height: 48px;
+      background: rgba(12,15,28,0.7);
+      border-bottom: 1px solid var(--b1);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 10px;
+      backdrop-filter: blur(8px);
+      z-index: 10;
+    }
+
+    .canvas-wrap {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      cursor: crosshair;
+    }
+
+    /* Grid background */
+    .grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 20px 20px;
+      pointer-events: none;
+    }
+
+    .svg-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .states-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+    }
+
+    /* State node styles */
+    .state-node {
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: var(--bg2);
+      border: 2px solid var(--b2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: move;
+      user-select: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      transition: border-color 0.15s, box-shadow 0.15s, background-color 0.15s;
+    }
+
+    .state-node:hover {
+      border-color: var(--t3);
+    }
+
+    .state-node.active-simulation {
+      border-color: var(--acb);
+      box-shadow: 0 0 16px rgba(16,185,129,0.4);
+      background: rgba(16,185,129,0.05);
+    }
+
+    .state-node.selected {
+      border-color: var(--acc);
+      box-shadow: 0 0 16px var(--acc-glow);
+    }
+
+    .state-node.initial::after {
+      content: '▶';
+      position: absolute;
+      left: -18px;
+      font-size: 14px;
+      color: var(--hi);
+      text-shadow: 0 0 8px var(--hi-glow);
+    }
+
+    .state-name {
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--t1);
+    }
+
+    .state-outputs {
+      font-size: 9px;
+      font-family: var(--fmono);
+      color: var(--t3);
+      margin-top: 2px;
+    }
+
+    .state-node.active-simulation .state-outputs {
+      color: var(--acb);
+    }
+
+    /* Transition arrows SVG styling */
+    .trans-line {
+      fill: none;
+      stroke: var(--t3);
+      stroke-width: 2px;
+      cursor: pointer;
+      pointer-events: stroke;
+      transition: stroke 0.15s;
+    }
+
+    .trans-line:hover {
+      stroke: var(--t2);
+      stroke-width: 3px;
+    }
+
+    .trans-line.selected {
+      stroke: var(--acc);
+      stroke-width: 3px;
+    }
+
+    .trans-text {
+      font-family: var(--fmono);
+      font-size: 11px;
+      fill: var(--t2);
+      pointer-events: all;
+      cursor: pointer;
+      background: var(--bg0);
+    }
+
+    .trans-text:hover {
+      fill: var(--t1);
+      font-weight: 600;
+    }
+
+    .trans-text.selected {
+      fill: var(--acc);
+      font-weight: 600;
+    }
+
+    /* Right Sidebar (Properties) */
+    .sidebar-right {
+      background: var(--bg1);
+      border-left: 1px solid var(--b1);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      overflow-y: auto;
+    }
+
+    .panel-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .panel-label {
+      font-size: 11px;
+      color: var(--t3);
+      font-weight: 600;
+    }
+
+    .panel-input {
+      background: var(--bg0);
+      border: 1px solid var(--b2);
+      border-radius: var(--radius);
+      color: var(--t1);
+      padding: 8px 12px;
+      font-family: var(--fsans);
+      outline: none;
+      font-size: 13px;
+      transition: border-color 0.15s;
+    }
+
+    .panel-input:focus {
+      border-color: var(--acc);
+    }
+
+    .panel-select {
+      background: var(--bg0);
+      border: 1px solid var(--b2);
+      border-radius: var(--radius);
+      color: var(--t1);
+      padding: 8px 12px;
+      outline: none;
+      font-size: 13px;
+    }
+
+    .panel-row-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      user-select: none;
+      font-size: 12px;
+      color: var(--t2);
+    }
+
+    .panel-row-checkbox input {
+      accent-color: var(--acc);
+    }
+
+    /* Split code pane at bottom */
+    .code-pane {
+      height: 220px;
+      background: #04050a;
+      border-top: 1px solid var(--b1);
+      display: flex;
+      flex-direction: column;
+      z-index: 5;
+    }
+
+    .code-header {
+      height: 36px;
+      background: var(--bg1);
+      border-bottom: 1px solid var(--b1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+    }
+
+    .code-title {
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--t3);
+    }
+
+    .code-content {
+      flex: 1;
+      overflow: auto;
+      padding: 16px;
+      font-family: var(--fmono);
+      font-size: 12px;
+      color: #a78bfa;
+      background: #020306;
+      white-space: pre;
+    }
+
+    /* Alert / Prompt message overlay */
+    .msg-overlay {
+      position: absolute;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(18, 22, 38, 0.95);
+      border: 1px solid var(--acc);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+      padding: 12px 24px;
+      border-radius: var(--radius-lg);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      gap: 12px;
+      backdrop-filter: blur(12px);
+    }
+
+    .msg-text {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    /* Grid item styling for Moore state outputs list */
+    .outputs-grid {
+      display: grid;
+      grid-template-columns: 1fr 60px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .outputs-grid select {
+      background: var(--bg0);
+      border: 1px solid var(--b2);
+      border-radius: 4px;
+      color: white;
+      padding: 4px;
+      font-family: var(--fmono);
+      outline: none;
+    }
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--t3);
+      text-align: center;
+      gap: 8px;
+    }
+
+    .empty-state-icon {
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="nav">
+    <a href="index.html" class="logo-group">
+      <img src="icon.png" class="logo-img" alt="Logo">
+      <span class="logo-text">SQGATE</span>
+      <span class="logo-tag">FSM DESIGNER</span>
+    </a>
+    <div class="nav-actions">
+      <a href="index.html" class="btn">🔌 Circuit Simulator</a>
+      <button onclick="copyVerilogCode()" class="btn primary">📋 Copy Verilog</button>
+    </div>
+  </header>
+
+  <!-- Editor Container -->
+  <div class="main-container">
+    
+    <!-- Left Sidebar: IO Variables & Simulation -->
+    <aside class="sidebar-left">
+      <div>
+        <div class="section-title">Inputs (Toggles)</div>
+        <div class="var-list" id="input-list">
+          <!-- Dynamically populated inputs -->
+        </div>
+        <button onclick="addInputVar()" class="btn-add-var" style="margin-top: 10px;">
+          <span>⊕</span> Add Input
+        </button>
+      </div>
+
+      <div>
+        <div class="section-title">Outputs</div>
+        <div class="var-list" id="output-list">
+          <!-- Dynamically populated outputs -->
+        </div>
+        <button onclick="addOutputVar()" class="btn-add-var" style="margin-top: 10px;">
+          <span>⊕</span> Add Output
+        </button>
+      </div>
+
+      <div style="margin-top: auto; border-top: 1px solid var(--b1); padding-top: 15px;">
+        <div class="section-title">Simulation</div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <button onclick="tickSimulation()" class="btn" style="background: var(--bg2); border-color: var(--acb); color: var(--acb); width: 100%; justify-content: center;">
+            ⚡ Clock Tick
+          </button>
+          <button onclick="resetSimulation()" class="btn" style="width: 100%; justify-content: center;">
+            ↺ Reset State
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Center Pane: Editor Workspace & Code Panel -->
+    <main class="center-pane">
+      
+      <!-- Workspace Toolbar -->
+      <div class="toolbar-center">
+        <button onclick="enterAddStateMode()" class="btn" id="btn-add-state">⊕ Add State</button>
+        <button onclick="enterAddTransitionMode()" class="btn" id="btn-add-transition">↗ Add Transition</button>
+        <button onclick="deleteSelected()" class="btn" id="btn-delete" style="color: var(--acr); border-color: rgba(239,68,68,0.2);">🗑 Delete Selected</button>
+        
+        <div style="margin-left: auto; display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 11px; color: var(--t3);">FSM Model:</span>
+          <select id="fsm-type-select" onchange="changeFsmType(this.value)" class="panel-select" style="padding: 4px 8px; font-size: 11px; height: 26px;">
+            <option value="moore">Moore (Outputs on States)</option>
+            <option value="mealy">Mealy (Outputs on Transitions)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Message Alert / Guide Overlay -->
+      <div class="msg-overlay" id="msg-overlay">
+        <span class="msg-text" id="msg-text">Double-click canvas to place state, or select tool.</span>
+        <button onclick="hideOverlay()" class="btn" style="padding: 2px 8px; font-size: 10px;">Dismiss</button>
+      </div>
+
+      <!-- The FSM Canvas Area -->
+      <div class="canvas-wrap" id="canvas-wrap" onmousedown="onCanvasMouseDown(event)" ondblclick="onCanvasDblClick(event)">
+        <div class="grid-bg"></div>
+        <svg class="svg-layer" id="svg-layer">
+          <defs>
+            <!-- Marker for transition arrowheads -->
+            <marker id="arrow" viewBox="0 0 10 10" refX="28" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b" id="arrow-path"/>
+            </marker>
+            <marker id="arrow-selected" viewBox="0 0 10 10" refX="28" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#8b5cf6"/>
+            </marker>
+          </defs>
+          <!-- SVG transition lines get rendered here -->
+        </svg>
+        <div class="states-layer" id="states-layer">
+          <!-- State HTML nodes get rendered here -->
+        </div>
+      </div>
+
+      <!-- Live Verilog Panel -->
+      <div class="code-pane">
+        <div class="code-header">
+          <span class="code-title">Auto-Generated Verilog HDL</span>
+          <button onclick="copyVerilogCode()" class="btn" style="padding: 2px 8px; font-size: 10px;">Copy Code</button>
+        </div>
+        <pre class="code-content" id="verilog-code-box">module fsm_model ...</pre>
+      </div>
+
+    </main>
+
+    <!-- Right Sidebar: Selected Object Properties -->
+    <aside class="sidebar-right" id="properties-sidebar">
+      <div class="empty-state" id="prop-empty-state">
+        <span class="empty-state-icon">⚙️</span>
+        <span>Properties</span>
+        <span style="font-size: 11px; color: var(--t3);">Select a state node or transition line to edit its parameters.</span>
+      </div>
+
+      <!-- State Properties form -->
+      <div id="prop-state-form" style="display: none; flex-direction: column; gap: 16px;">
+        <div class="section-title">State Properties</div>
+        
+        <div class="panel-group">
+          <label class="panel-label">State Name</label>
+          <input type="text" id="state-name-input" class="panel-input" oninput="updateSelectedStateName(this.value)">
+        </div>
+
+        <div class="panel-group">
+          <label class="panel-row-checkbox">
+            <input type="checkbox" id="state-initial-checkbox" onchange="updateSelectedStateInitial(this.checked)">
+            Initial State
+          </label>
+        </div>
+
+        <div class="panel-group" id="moore-outputs-section">
+          <label class="panel-label" style="margin-bottom: 4px;">Moore State Outputs</label>
+          <div class="var-list" id="state-outputs-list" style="gap: 6px;">
+            <!-- Dynamically populated Moore outputs -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Transition Properties form -->
+      <div id="prop-trans-form" style="display: none; flex-direction: column; gap: 16px;">
+        <div class="section-title">Transition Properties</div>
+        
+        <div class="panel-group">
+          <label class="panel-label">From State</label>
+          <input type="text" id="trans-from-input" class="panel-input" disabled style="opacity: 0.5;">
+        </div>
+
+        <div class="panel-group">
+          <label class="panel-label">To State</label>
+          <input type="text" id="trans-to-input" class="panel-input" disabled style="opacity: 0.5;">
+        </div>
+
+        <div class="panel-group">
+          <label class="panel-label">Trigger Condition</label>
+          <input type="text" id="trans-cond-input" class="panel-input" placeholder="e.g. X=1 or X=0" oninput="updateSelectedTransCond(this.value)">
+          <span style="font-size: 10px; color: var(--t3); margin-top: 4px; line-height: 1.3;">Use format: Var=Value (e.g. X=1). Combine inputs with commas if multiple exist (e.g. X=1,Y=0). Leaving empty means unconditional.</span>
+        </div>
+
+        <div class="panel-group" id="mealy-outputs-section" style="display: none;">
+          <label class="panel-label" style="margin-bottom: 4px;">Mealy Transition Outputs</label>
+          <div class="var-list" id="trans-outputs-list" style="gap: 6px;">
+            <!-- Dynamically populated Mealy outputs -->
+          </div>
+        </div>
+
+        <div class="panel-group">
+          <label class="panel-label">Line Curve</label>
+          <input type="range" id="trans-curve-input" min="-100" max="100" value="0" oninput="updateSelectedTransCurve(parseInt(this.value))">
+        </div>
+      </div>
+
+    </aside>
+
+  </div>
+
+  <script>
+    // FSM State Variables
+    let states = [];
+    let transitions = [];
+    let inputVars = ["X"];
+    let outputVars = ["Z"];
+    let fsmType = "moore"; // 'moore' or 'mealy'
+
+    let selectedObject = null; // { type: 'state'|'transition', id: string }
+    let activeStateId = null;
+
+    let editorMode = "select"; // 'select', 'add-state', 'add-transition-start', 'add-transition-end'
+    let transitionStartNodeId = null;
+
+    let draggingStateId = null;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let stateStartX = 0;
+    let stateStartY = 0;
+
+    // Boot FSM Designer
+    window.addEventListener('DOMContentLoaded', () => {
+      // Create initial sample states
+      createState("S0", 150, 180, true);
+      createState("S1", 380, 180, false);
+      
+      // Initial transition
+      transitions.push({
+        id: "t_0_1",
+        from: states[0].id,
+        to: states[1].id,
+        condition: "X=1",
+        outputs: { "Z": 0 },
+        curve: 20
+      });
+      transitions.push({
+        id: "t_1_0",
+        from: states[1].id,
+        to: states[0].id,
+        condition: "X=0",
+        outputs: { "Z": 1 },
+        curve: 20
+      });
+
+      activeStateId = states[0].id;
+      
+      renderInputs();
+      renderOutputs();
+      renderFSM();
+      generateVerilog();
+    });
+
+    // Helper: Generate unique IDs
+    function generateId() {
+      return 'fsm_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    // STATE OPERATIONS
+    function createState(name, x, y, isInitial = false) {
+      const state = {
+        id: generateId(),
+        name: name,
+        x: x,
+        y: y,
+        isInitial: isInitial,
+        outputs: {}
+      };
+      
+      // Initialize output values
+      outputVars.forEach(v => {
+        state.outputs[v] = 0;
+      });
+
+      states.push(state);
+      return state;
+    }
+
+    function enterAddStateMode() {
+      editorMode = "add-state";
+      showOverlay("Click anywhere on the grid canvas to place a new state circle.");
+    }
+
+    function enterAddTransitionMode() {
+      editorMode = "add-transition-start";
+      showOverlay("Click the starting state node for the transition.");
+    }
+
+    // IO RENDER
+    function renderInputs() {
+      const container = document.getElementById('input-list');
+      container.innerHTML = '';
+      inputVars.forEach(v => {
+        const div = document.createElement('div');
+        div.className = 'var-item';
+        
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'var-name';
+        nameSpan.textContent = v;
+        
+        const toggle = document.createElement('div');
+        toggle.className = 'var-toggle' + (window[v] === 1 ? ' active' : '');
+        toggle.onclick = () => {
+          window[v] = window[v] === 1 ? 0 : 1;
+          toggle.classList.toggle('active');
+          generateVerilog();
+        };
+
+        div.appendChild(nameSpan);
+        div.appendChild(toggle);
+        container.appendChild(div);
+        
+        // Ensure global state variable is initialized
+        if (window[v] === undefined) window[v] = 0;
+      });
+    }
+
+    function renderOutputs() {
+      const container = document.getElementById('output-list');
+      container.innerHTML = '';
+      outputVars.forEach(v => {
+        const div = document.createElement('div');
+        div.className = 'var-item';
+        
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'var-name';
+        nameSpan.textContent = v;
+        
+        div.appendChild(nameSpan);
+        container.appendChild(div);
+      });
+    }
+
+    function addInputVar() {
+      const name = prompt("Enter input variable name:", "in_" + inputVars.length);
+      if (!name) return;
+      const cleanName = name.replace(/[^a-zA-Z0-9_]/g, '');
+      if (!cleanName || inputVars.includes(cleanName) || outputVars.includes(cleanName)) {
+        alert("Invalid or duplicate variable name.");
+        return;
+      }
+      inputVars.push(cleanName);
+      window[cleanName] = 0;
+      renderInputs();
+      generateVerilog();
+      refreshProperties();
+    }
+
+    function addOutputVar() {
+      const name = prompt("Enter output variable name:", "out_" + outputVars.length);
+      if (!name) return;
+      const cleanName = name.replace(/[^a-zA-Z0-9_]/g, '');
+      if (!cleanName || outputVars.includes(cleanName) || inputVars.includes(cleanName)) {
+        alert("Invalid or duplicate variable name.");
+        return;
+      }
+      outputVars.push(cleanName);
+      
+      // Update states and transitions output templates
+      states.forEach(s => s.outputs[cleanName] = 0);
+      transitions.forEach(t => t.outputs[cleanName] = 0);
+      
+      renderOutputs();
+      generateVerilog();
+      refreshProperties();
+      renderFSM();
+    }
+
+    // CANVAS EVENTS
+    function onCanvasDblClick(e) {
+      if (e.target !== document.getElementById('canvas-wrap') && e.target.className !== 'grid-bg') return;
+      const rect = document.getElementById('canvas-wrap').getBoundingClientRect();
+      const x = e.clientX - rect.left - 35; // 35 = state radius
+      const y = e.clientY - rect.top - 35;
+      
+      createState("S" + states.length, x, y);
+      renderFSM();
+      generateVerilog();
+    }
+
+    // Mouse drag select and placement handler
+    function onCanvasMouseDown(e) {
+      if (editorMode === "add-state") {
+        const rect = document.getElementById('canvas-wrap').getBoundingClientRect();
+        const x = e.clientX - rect.left - 35;
+        const y = e.clientY - rect.top - 35;
+        createState("S" + states.length, x, y);
+        editorMode = "select";
+        hideOverlay();
+        renderFSM();
+        generateVerilog();
+      }
+    }
+
+    function selectObject(type, id) {
+      selectedObject = { type, id };
+      
+      // Remove previous highlights
+      document.querySelectorAll('.state-node').forEach(n => n.classList.remove('selected'));
+      document.querySelectorAll('.trans-line').forEach(l => l.classList.remove('selected'));
+      document.querySelectorAll('.trans-text').forEach(t => t.classList.remove('selected'));
+
+      if (type === 'state') {
+        const el = document.getElementById('node_' + id);
+        if (el) el.classList.add('selected');
+      } else if (type === 'transition') {
+        const el = document.getElementById('path_' + id);
+        if (el) el.classList.add('selected');
+        const txt = document.getElementById('text_' + id);
+        if (txt) txt.classList.add('selected');
+      }
+
+      refreshProperties();
+    }
+
+    function deselectAll() {
+      selectedObject = null;
+      document.querySelectorAll('.state-node').forEach(n => n.classList.remove('selected'));
+      document.querySelectorAll('.trans-line').forEach(l => l.classList.remove('selected'));
+      document.querySelectorAll('.trans-text').forEach(t => t.classList.remove('selected'));
+      refreshProperties();
+    }
+
+    // PROPERTIES PANEL REFRESH
+    function refreshProperties() {
+      const emptyState = document.getElementById('prop-empty-state');
+      const stateForm = document.getElementById('prop-state-form');
+      const transForm = document.getElementById('prop-trans-form');
+
+      emptyState.style.display = 'none';
+      stateForm.style.display = 'none';
+      transForm.style.display = 'none';
+
+      if (!selectedObject) {
+        emptyState.style.display = 'flex';
+        return;
+      }
+
+      if (selectedObject.type === 'state') {
+        stateForm.style.display = 'flex';
+        const state = states.find(s => s.id === selectedObject.id);
+        if (!state) return;
+
+        document.getElementById('state-name-input').value = state.name;
+        document.getElementById('state-initial-checkbox').checked = state.isInitial;
+
+        // Populate Moore outputs
+        const outputsSection = document.getElementById('moore-outputs-section');
+        const outputsList = document.getElementById('state-outputs-list');
+        
+        if (fsmType === 'moore') {
+          outputsSection.style.display = 'block';
+          outputsList.innerHTML = '';
+          outputVars.forEach(v => {
+            const row = document.createElement('div');
+            row.className = 'outputs-grid';
+            row.innerHTML = `<span style="font-family:var(--fmono); font-size:12px;">${v}</span>
+              <select onchange="updateStateOutput('${state.id}', '${v}', this.value)">
+                <option value="0" ${state.outputs[v] == 0 ? 'selected' : ''}>0</option>
+                <option value="1" ${state.outputs[v] == 1 ? 'selected' : ''}>1</option>
+              </select>`;
+            outputsList.appendChild(row);
+          });
+        } else {
+          outputsSection.style.display = 'none';
+        }
+
+      } else if (selectedObject.type === 'transition') {
+        transForm.style.display = 'flex';
+        const trans = transitions.find(t => t.id === selectedObject.id);
+        if (!trans) return;
+
+        const fromNode = states.find(s => s.id === trans.from);
+        const toNode = states.find(s => s.id === trans.to);
+
+        document.getElementById('trans-from-input').value = fromNode ? fromNode.name : 'Unknown';
+        document.getElementById('trans-to-input').value = toNode ? toNode.name : 'Unknown';
+        document.getElementById('trans-cond-input').value = trans.condition;
+        document.getElementById('trans-curve-input').value = trans.curve || 0;
+
+        // Populate Mealy outputs
+        const mealySection = document.getElementById('mealy-outputs-section');
+        const transOutputsList = document.getElementById('trans-outputs-list');
+
+        if (fsmType === 'mealy') {
+          mealySection.style.display = 'block';
+          transOutputsList.innerHTML = '';
+          outputVars.forEach(v => {
+            if (trans.outputs[v] === undefined) trans.outputs[v] = 0;
+            const row = document.createElement('div');
+            row.className = 'outputs-grid';
+            row.innerHTML = `<span style="font-family:var(--fmono); font-size:12px;">${v}</span>
+              <select onchange="updateTransOutput('${trans.id}', '${v}', this.value)">
+                <option value="0" ${trans.outputs[v] == 0 ? 'selected' : ''}>0</option>
+                <option value="1" ${trans.outputs[v] == 1 ? 'selected' : ''}>1</option>
+              </select>`;
+            transOutputsList.appendChild(row);
+          });
+        } else {
+          mealySection.style.display = 'none';
+        }
+      }
+    }
+
+    // PROPERTY MUTATORS
+    function updateSelectedStateName(val) {
+      if (selectedObject && selectedObject.type === 'state') {
+        const state = states.find(s => s.id === selectedObject.id);
+        if (state) {
+          state.name = val.replace(/\s+/g, '');
+          const nodeNameEl = document.querySelector(`#node_${state.id} .state-name`);
+          if (nodeNameEl) nodeNameEl.textContent = state.name;
+          generateVerilog();
+          renderFSM(); // Refresh transition labels to reflect new state name
+        }
+      }
+    }
+
+    function updateSelectedStateInitial(val) {
+      if (selectedObject && selectedObject.type === 'state') {
+        // Clear previous initials
+        states.forEach(s => s.isInitial = false);
+        document.querySelectorAll('.state-node').forEach(el => el.classList.remove('initial'));
+
+        const state = states.find(s => s.id === selectedObject.id);
+        if (state) {
+          state.isInitial = val;
+          const el = document.getElementById('node_' + state.id);
+          if (el && val) el.classList.add('initial');
+          if (val) activeStateId = state.id;
+        }
+        generateVerilog();
+      }
+    }
+
+    function updateStateOutput(stateId, varName, val) {
+      const state = states.find(s => s.id === stateId);
+      if (state) {
+        state.outputs[varName] = parseInt(val);
+        const outputsEl = document.querySelector(`#node_${state.id} .state-outputs`);
+        if (outputsEl && fsmType === 'moore') {
+          outputsEl.textContent = getOutputsString(state.outputs);
+        }
+        generateVerilog();
+      }
+    }
+
+    function updateTransOutput(transId, varName, val) {
+      const trans = transitions.find(t => t.id === transId);
+      if (trans) {
+        trans.outputs[varName] = parseInt(val);
+        renderFSM();
+        generateVerilog();
+      }
+    }
+
+    function updateSelectedTransCond(val) {
+      if (selectedObject && selectedObject.type === 'transition') {
+        const trans = transitions.find(t => t.id === selectedObject.id);
+        if (trans) {
+          trans.condition = val.replace(/\s+/g, '');
+          renderFSM();
+          generateVerilog();
+        }
+      }
+    }
+
+    function updateSelectedTransCurve(val) {
+      if (selectedObject && selectedObject.type === 'transition') {
+        const trans = transitions.find(t => t.id === selectedObject.id);
+        if (trans) {
+          trans.curve = val;
+          renderFSM();
+        }
+      }
+    }
+
+    // FSM RENDER ENGINE
+    function renderFSM() {
+      const statesContainer = document.getElementById('states-layer');
+      const svg = document.getElementById('svg-layer');
+
+      // Clear SVG transition lines/text (but preserve definitions)
+      const defs = svg.querySelector('defs');
+      svg.innerHTML = '';
+      svg.appendChild(defs);
+
+      // Render states
+      statesContainer.innerHTML = '';
+      states.forEach(s => {
+        const div = document.createElement('div');
+        div.className = 'state-node' + 
+          (s.isInitial ? ' initial' : '') + 
+          (s.id === selectedObject?.id && selectedObject.type === 'state' ? ' selected' : '') +
+          (s.id === activeStateId ? ' active-simulation' : '');
+        div.id = 'node_' + s.id;
+        div.style.left = s.x + 'px';
+        div.style.top = s.y + 'px';
+
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'state-name';
+        nameSpan.textContent = s.name;
+
+        const outputsSpan = document.createElement('span');
+        outputsSpan.className = 'state-outputs';
+        outputsSpan.textContent = fsmType === 'moore' ? getOutputsString(s.outputs) : '';
+
+        div.appendChild(nameSpan);
+        div.appendChild(outputsSpan);
+
+        // Bind State Node Drag Events
+        div.addEventListener('mousedown', (e) => {
+          e.stopPropagation();
+          if (editorMode === "add-transition-start") {
+            transitionStartNodeId = s.id;
+            editorMode = "add-transition-end";
+            showOverlay("Select target state node to complete transition.");
+            return;
+          }
+          if (editorMode === "add-transition-end") {
+            createTransition(transitionStartNodeId, s.id);
+            editorMode = "select";
+            hideOverlay();
+            return;
+          }
+
+          selectObject('state', s.id);
+
+          draggingStateId = s.id;
+          dragStartX = e.clientX;
+          dragStartY = e.clientY;
+          stateStartX = s.x;
+          stateStartY = s.y;
+        });
+
+        statesContainer.appendChild(div);
+      });
+
+      // Render transitions
+      transitions.forEach(t => {
+        const fromNode = states.find(s => s.id === t.from);
+        const toNode = states.find(s => s.id === t.to);
+        if (!fromNode || !toNode) return;
+
+        // Math for line endpoints (from center of node A to center of node B)
+        const x1 = fromNode.x + 35;
+        const y1 = fromNode.y + 35;
+        const x2 = toNode.x + 35;
+        const y2 = toNode.y + 35;
+
+        let pathD = '';
+        let textX = 0;
+        let textY = 0;
+
+        // If self-loop
+        if (fromNode.id === toNode.id) {
+          // Render loop-arc
+          const r = 30;
+          pathD = `M ${x1-15} ${y1-30} A ${r} ${r} 0 1 1 ${x1+15} ${y1-30}`;
+          textX = x1;
+          textY = y1 - 70;
+        } else {
+          // Render curved line
+          const midX = (x1 + x2) / 2;
+          const midY = (y1 + y2) / 2;
+          
+          // Calculate perpendicular vector for curve height offset
+          const dx = x2 - x1;
+          const dy = y2 - y1;
+          const len = Math.sqrt(dx*dx + dy*dy) || 1;
+          const px = -dy / len;
+          const py = dx / len;
+
+          const curveOffset = t.curve || 0;
+          const cx = midX + px * curveOffset;
+          const cy = midY + py * curveOffset;
+
+          pathD = `M ${x1} ${y1} Q ${cx} ${cy} ${x2} ${y2}`;
+          textX = cx;
+          textY = cy - 8;
+        }
+
+        // Draw line path
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', pathD);
+        path.setAttribute('class', 'trans-line' + (selectedObject?.id === t.id && selectedObject.type === 'transition' ? ' selected' : ''));
+        path.setAttribute('id', 'path_' + t.id);
+        
+        // Use marker for arrowheads
+        const isSel = selectedObject?.id === t.id && selectedObject.type === 'transition';
+        path.setAttribute('marker-end', isSel ? 'url(#arrow-selected)' : 'url(#arrow)');
+
+        // Bind clicks to select transition
+        path.addEventListener('mousedown', (e) => {
+          e.stopPropagation();
+          selectObject('transition', t.id);
+        });
+
+        // Draw condition label text
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', textX);
+        text.setAttribute('y', textY);
+        text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('class', 'trans-text' + (selectedObject?.id === t.id && selectedObject.type === 'transition' ? ' selected' : ''));
+        text.setAttribute('id', 'text_' + t.id);
+
+        let label = t.condition || 'uncond';
+        if (fsmType === 'mealy') {
+          label += ' / ' + getOutputsString(t.outputs);
+        }
+        text.textContent = label;
+
+        text.addEventListener('mousedown', (e) => {
+          e.stopPropagation();
+          selectObject('transition', t.id);
+        });
+
+        svg.appendChild(path);
+        svg.appendChild(text);
+      });
+    }
+
+    // Drag Listener
+    window.addEventListener('mousemove', (e) => {
+      if (draggingStateId) {
+        const state = states.find(s => s.id === draggingStateId);
+        if (state) {
+          const dx = e.clientX - dragStartX;
+          const dy = e.clientY - dragStartY;
+          state.x = Math.max(0, stateStartX + dx);
+          state.y = Math.max(0, stateStartY + dy);
+          
+          const el = document.getElementById('node_' + state.id);
+          if (el) {
+            el.style.left = state.x + 'px';
+            el.style.top = state.y + 'px';
+          }
+          renderFSM(); // Redraw arrows
+        }
+      }
+    });
+
+    window.addEventListener('mouseup', () => {
+      draggingStateId = null;
+    });
+
+    // FSM TRANSITION BUILDER
+    function createTransition(fromId, toId) {
+      // Check duplicate
+      const duplicate = transitions.find(t => t.from === fromId && t.to === toId);
+      if (duplicate) {
+        alert("A transition between these states already exists. Edit its properties instead.");
+        return;
+      }
+
+      const trans = {
+        id: generateId(),
+        from: fromId,
+        to: toId,
+        condition: "",
+        outputs: {},
+        curve: fromId === toId ? 0 : 15
+      };
+
+      outputVars.forEach(v => {
+        trans.outputs[v] = 0;
+      });
+
+      transitions.push(trans);
+      renderFSM();
+      generateVerilog();
+      selectObject('transition', trans.id);
+    }
+
+    function deleteSelected() {
+      if (!selectedObject) return;
+      if (selectedObject.type === 'state') {
+        // Remove state
+        states = states.filter(s => s.id !== selectedObject.id);
+        // Remove attached transitions
+        transitions = transitions.filter(t => t.from !== selectedObject.id && t.to !== selectedObject.id);
+        // Clear active state if removed
+        if (activeStateId === selectedObject.id) {
+          activeStateId = states[0]?.id || null;
+        }
+      } else if (selectedObject.type === 'transition') {
+        // Remove transition
+        transitions = transitions.filter(t => t.id !== selectedObject.id);
+      }
+      deselectAll();
+      renderFSM();
+      generateVerilog();
+    }
+
+    function changeFsmType(val) {
+      fsmType = val;
+      renderFSM();
+      generateVerilog();
+      refreshProperties();
+    }
+
+    // UTILS
+    function getOutputsString(outputsObj) {
+      return Object.keys(outputsObj).map(k => `${k}=${outputsObj[k]}`).join(', ');
+    }
+
+    // Alerts panel overlay
+    function showOverlay(txt) {
+      const el = document.getElementById('msg-overlay');
+      document.getElementById('msg-text').textContent = txt;
+      el.style.display = 'flex';
+    }
+
+    function hideOverlay() {
+      document.getElementById('msg-overlay').style.display = 'none';
+    }
+
+    // SIMULATOR RUNTIME ENGINE
+    function resetSimulation() {
+      const initial = states.find(s => s.isInitial);
+      if (initial) {
+        activeStateId = initial.id;
+        renderFSM();
+        msg("Simulation reset to state: " + initial.name);
+      } else if (states.length > 0) {
+        activeStateId = states[0].id;
+        renderFSM();
+        msg("No initial state defined, reset to first state: " + states[0].name);
+      }
+    }
+
+    function tickSimulation() {
+      if (!activeStateId) {
+        alert("Please create at least one state node to simulate.");
+        return;
+      }
+
+      const activeState = states.find(s => s.id === activeStateId);
+      if (!activeState) return;
+
+      // Find all outgoing transitions from active state
+      const outgoing = transitions.filter(t => t.from === activeStateId);
+      
+      let nextStateId = null;
+      let matchedTransition = null;
+
+      for (let i = 0; i < outgoing.length; i++) {
+        const trans = outgoing[i];
+        if (evaluateCondition(trans.condition)) {
+          nextStateId = trans.to;
+          matchedTransition = trans;
+          break; // First matching condition gets executed (priority encoding)
+        }
+      }
+
+      if (nextStateId) {
+        activeStateId = nextStateId;
+        const nextState = states.find(s => s.id === nextStateId);
+        
+        let msgTxt = `Clock Tick: state transitioned from ${activeState.name} → ${nextState.name}`;
+        
+        // Print outputs state
+        if (fsmType === 'moore') {
+          msgTxt += ` (Moore outputs: ${getOutputsString(nextState.outputs)})`;
+        } else if (fsmType === 'mealy' && matchedTransition) {
+          msgTxt += ` (Mealy outputs: ${getOutputsString(matchedTransition.outputs)})`;
+        }
+
+        msg(msgTxt);
+        renderFSM();
+      } else {
+        msg(`Clock Tick: state held in ${activeState.name} (no transition conditions matched)`);
+      }
+    }
+
+    // Evaluates transitions conditions e.g. "X=1, Y=0"
+    function evaluateCondition(condStr) {
+      if (!condStr || condStr.trim() === "") return true; // Unconditional transition
+      
+      const subConds = condStr.split(',');
+      for (let i = 0; i < subConds.length; i++) {
+        const parts = subConds[i].split('=');
+        if (parts.length !== 2) return false;
+        
+        const varName = parts[0].trim();
+        const expectedVal = parseInt(parts[1].trim());
+        
+        if (window[varName] !== expectedVal) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function msg(txt) {
+      showOverlay(txt);
+      setTimeout(hideOverlay, 4000);
+    }
+
+    // VERILOG GENERATOR LOGIC
+    function generateVerilog() {
+      if (states.length === 0) {
+        document.getElementById('verilog-code-box').textContent = "// Add states to generate Verilog FSM Model...";
+        return;
+      }
+
+      const fsmName = "fsm_generator";
+      const initialState = states.find(s => s.isInitial) || states[0];
+      
+      // Calculate state bits width
+      const stateBits = Math.max(1, Math.ceil(Math.log2(states.length)));
+      
+      let v = `// ═══════════════════════════════════════════════════════\n`;
+      v += `// SQGATE AUTO-GENERATED SYNTHESIZABLE FSM CONTROLLER\n`;
+      v += `// Model Type: ${fsmType.toUpperCase()} STATE MACHINE\n`;
+      v += `// ═══════════════════════════════════════════════════════\n\n`;
+      
+      v += `module ${fsmName} (\n`;
+      v += `    input wire clk,\n`;
+      v += `    input wire rst_n,\n`;
+      
+      // Inputs list
+      inputVars.forEach(inp => {
+        v += `    input wire ${inp},\n`;
+      });
+
+      // Outputs list
+      outputVars.forEach((out, i) => {
+        v += `    output reg ${out}${i === outputVars.length - 1 ? '' : ','}\n`;
+      });
+      v += `);\n\n`;
+
+      // State constants parameters
+      v += `    // State Parameter Definitions\n`;
+      states.forEach((s, idx) => {
+        const binaryVal = idx.toString(2).padStart(stateBits, '0');
+        v += `    parameter ${s.name} = ${stateBits}'b${binaryVal};\n`;
+      });
+      v += `\n`;
+
+      // State registers
+      v += `    reg [${stateBits - 1}:0] current_state;\n`;
+      v += `    reg [${stateBits - 1}:0] next_state;\n\n`;
+
+      // Synchronous State Register block
+      v += `    // State Register Reset & Clock Transition Block\n`;
+      v += `    always @(posedge clk or negedge rst_n) begin\n`;
+      v += `        if (!rst_n) begin\n`;
+      v += `            current_state <= ${initialState.name};\n`;
+      v += `        end else begin\n`;
+      v += `            current_state <= next_state;\n`;
+      v += `        end\n`;
+      v += `    end\n\n`;
+
+      // Next State Combinational Logic
+      v += `    // Next State Transition Combinational Logic\n`;
+      v += `    always @(*) begin\n`;
+      v += `        case (current_state)\n`;
+
+      states.forEach(s => {
+        v += `            ${s.name}: begin\n`;
+        const outgoing = transitions.filter(t => t.from === s.id);
+        
+        let hasConditions = false;
+        outgoing.forEach((t, tIdx) => {
+          const targetState = states.find(st => st.id === t.to);
+          if (!targetState) return;
+
+          const cond = formatVerilogCondition(t.condition);
+          if (cond) {
+            hasConditions = true;
+            v += `                ${tIdx === 0 ? 'if' : 'else if'} (${cond}) begin\n`;
+            v += `                    next_state = ${targetState.name};\n`;
+            v += `                end\n`;
+          } else {
+            // Unconditional transition
+            if (hasConditions) {
+              v += `                else begin\n`;
+              v += `                    next_state = ${targetState.name};\n`;
+              v += `                end\n`;
+            } else {
+              v += `                next_state = ${targetState.name};\n`;
+            }
+          }
+        });
+
+        // Catch-all self hold fallback
+        if (outgoing.length > 0 && hasConditions) {
+          v += `                else begin\n`;
+          v += `                    next_state = ${s.name};\n`;
+          v += `                end\n`;
+        } else if (outgoing.length === 0) {
+          v += `                next_state = ${s.name};\n`;
+        }
+
+        v += `            end\n`;
+      });
+
+      v += `            default: begin\n`;
+      v += `                next_state = ${initialState.name};\n`;
+      v += `            end\n`;
+      v += `        endcase\n`;
+      v += `    end\n\n`;
+
+      // Output Combinational Logic (Moore vs. Mealy)
+      v += `    // Output Combinational Control Logic\n`;
+      v += `    always @(*) begin\n`;
+      
+      if (fsmType === 'moore') {
+        v += `        case (current_state)\n`;
+        states.forEach(s => {
+          v += `            ${s.name}: begin\n`;
+          outputVars.forEach(o => {
+            v += `                ${o} = 1'b${s.outputs[o] || 0};\n`;
+          });
+          v += `            end\n`;
+        });
+        v += `            default: begin\n`;
+        outputVars.forEach(o => {
+          v += `                ${o} = 1'b0;\n`;
+        });
+        v += `            end\n`;
+        v += `        endcase\n`;
+      } else {
+        // Mealy outputs (depend on state + inputs)
+        v += `        // Default outputs initialization\n`;
+        outputVars.forEach(o => {
+          v += `        ${o} = 1'b0;\n`;
+        });
+        v += `\n        case (current_state)\n`;
+        states.forEach(s => {
+          v += `            ${s.name}: begin\n`;
+          const outgoing = transitions.filter(t => t.from === s.id);
+          
+          let hasConditions = false;
+          outgoing.forEach((t, tIdx) => {
+            const cond = formatVerilogCondition(t.condition);
+            const hasOutputWrites = outputVars.some(o => t.outputs[o] == 1);
+            
+            if (hasOutputWrites) {
+              if (cond) {
+                hasConditions = true;
+                v += `                ${tIdx === 0 ? 'if' : 'else if'} (${cond}) begin\n`;
+                outputVars.forEach(o => {
+                  v += `                    ${o} = 1'b${t.outputs[o] || 0};\n`;
+                });
+                v += `                end\n`;
+              } else {
+                if (hasConditions) {
+                  v += `                else begin\n`;
+                }
+                outputVars.forEach(o => {
+                  v += `                    ${o} = 1'b${t.outputs[o] || 0};\n`;
+                });
+                if (hasConditions) {
+                  v += `                end\n`;
+                }
+              }
+            }
+          });
+          v += `            end\n`;
+        });
+        v += `            default: begin\n`;
+        outputVars.forEach(o => {
+          v += `                ${o} = 1'b0;\n`;
+        });
+        v += `            end\n`;
+        v += `        endcase\n`;
+      }
+      
+      v += `    end\n\n`;
+      v += `endmodule\n`;
+
+      document.getElementById('verilog-code-box').textContent = v;
+    }
+
+    function formatVerilogCondition(condStr) {
+      if (!condStr || condStr.trim() === "") return null;
+      
+      const parts = condStr.split(',');
+      const formatted = parts.map(p => {
+        const item = p.split('=');
+        if (item.length !== 2) return '';
+        const vName = item[0].trim();
+        const val = item[1].trim();
+        return `${vName} == 1'b${val}`;
+      }).filter(Boolean);
+
+      return formatted.join(' && ');
+    }
+
+    function copyVerilogCode() {
+      const code = document.getElementById('verilog-code-box').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        msg("Verilog code copied to clipboard successfully!");
+      }).catch(err => {
+        alert("Failed to copy code: " + err);
+      });
+    }
+  </script>
+</body>
+</html>
