@@ -572,8 +572,8 @@
       <span class="logo-tag">FSM DESIGNER</span>
     </a>
     <div class="nav-actions">
-      <a href="index.html" class="btn">🔌 Circuit Simulator</a>
-      <button onclick="copyVerilogCode()" class="btn primary">📋 Copy Verilog</button>
+      <a href="index.html" class="btn">Circuit Simulator</a>
+      <button onclick="copyVerilogCode()" class="btn primary">Copy Verilog</button>
     </div>
   </header>
 
@@ -588,7 +588,7 @@
           <!-- Dynamically populated inputs -->
         </div>
         <button onclick="addInputVar()" class="btn-add-var" style="margin-top: 10px;">
-          <span>⊕</span> Add Input
+          Add Input
         </button>
       </div>
 
@@ -598,7 +598,7 @@
           <!-- Dynamically populated outputs -->
         </div>
         <button onclick="addOutputVar()" class="btn-add-var" style="margin-top: 10px;">
-          <span>⊕</span> Add Output
+          Add Output
         </button>
       </div>
 
@@ -606,10 +606,10 @@
         <div class="section-title">Simulation</div>
         <div style="display: flex; flex-direction: column; gap: 8px;">
           <button onclick="tickSimulation()" class="btn" style="background: var(--bg2); border-color: var(--acb); color: var(--acb); width: 100%; justify-content: center;">
-            ⚡ Clock Tick
+            Clock Tick
           </button>
           <button onclick="resetSimulation()" class="btn" style="width: 100%; justify-content: center;">
-            ↺ Reset State
+            Reset State
           </button>
         </div>
       </div>
@@ -620,9 +620,9 @@
       
       <!-- Workspace Toolbar -->
       <div class="toolbar-center">
-        <button onclick="enterAddStateMode()" class="btn" id="btn-add-state">⊕ Add State</button>
-        <button onclick="enterAddTransitionMode()" class="btn" id="btn-add-transition">↗ Add Transition</button>
-        <button onclick="deleteSelected()" class="btn" id="btn-delete" style="color: var(--acr); border-color: rgba(239,68,68,0.2);">🗑 Delete Selected</button>
+        <button onclick="enterAddStateMode()" class="btn" id="btn-add-state">Add State</button>
+        <button onclick="enterAddTransitionMode()" class="btn" id="btn-add-transition">Add Transition</button>
+        <button onclick="deleteSelected()" class="btn" id="btn-delete" style="color: var(--acr); border-color: rgba(239,68,68,0.2);">Delete Selected</button>
         
         <div style="margin-left: auto; display: flex; align-items: center; gap: 8px;">
           <span style="font-size: 11px; color: var(--t3);">FSM Model:</span>
@@ -673,8 +673,7 @@
     <!-- Right Sidebar: Selected Object Properties -->
     <aside class="sidebar-right" id="properties-sidebar">
       <div class="empty-state" id="prop-empty-state">
-        <span class="empty-state-icon">⚙️</span>
-        <span>Properties</span>
+        <span style="font-size: 14px; font-weight: 700; color: var(--t2); margin-bottom: 4px;">Properties</span>
         <span style="font-size: 11px; color: var(--t3);">Select a state node or transition line to edit its parameters.</span>
       </div>
 
