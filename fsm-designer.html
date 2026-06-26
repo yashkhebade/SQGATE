@@ -1,28 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-72EG9VJELZ"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-72EG9VJELZ');
-  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Finite State Machine (FSM) Designer | SQGATE</title>
-  <link rel="canonical" href="https://sqgate.online/fsm-designer.html">
-  <meta name="description" content="Design, simulate, and export Finite State Machines (FSM) visually. Generate synthesizable Verilog HDL directly in your browser.">
-  <meta name="keywords" content="FSM designer, state machine simulator, finite state machine, verilog code generator, sequential logic builder, digital design tools">
-  <meta name="google-adsense-account" content="ca-pub-7398330076279399">
+  <title>FSM Designer | SQGATE</title>
   <link rel="icon" href="./icon.png" type="image/png">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7398330076279399" crossorigin="anonymous"></script>
-
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;700&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     
     :root {
+      /* SQGATE Deep Space Blue Palette */
       --bg0: #060813;
       --bg1: #0c0f1c;
       --bg2: #121626;
@@ -33,1609 +24,1746 @@
       --t2: #94a3b8;
       --t3: #64748b;
       --acc: #8b5cf6;
-      --hi: #22d3ee;
-      --acb: #10b981;
       --acr: #ef4444;
       --aca: #f59e0b;
+      --acb: #10b981;
       --acc-glow: rgba(139,92,246,0.25);
-      --hi-glow: rgba(34,211,238,0.4);
-      --radius: 8px;
-      --radius-lg: 12px;
-      --fmono: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, monospace;
-      --fsans: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+      /* Semantic mappings for the FSM Designer */
+      --surface-0: var(--bg0);
+      --surface-1: var(--bg1);
+      --surface-2: var(--bg2);
+      --surface-3: var(--bg3);
+      --border: var(--b1);
+      --border-strong: var(--b2);
+      --border-accent: var(--acc);
+      --border-success: var(--acb);
+      --text-primary: var(--t1);
+      --text-secondary: var(--t2);
+      --text-muted: var(--t3);
+      --text-accent: var(--acc);
+      --text-success: var(--acb);
+      --text-warning: var(--aca);
+      --text-danger: var(--acr);
+      --bg-accent: var(--acc-glow);
+      --bg-success: rgba(16,185,129,0.15);
+      --bg-warning: rgba(245,158,11,0.15);
+      --bg-danger: rgba(239,68,68,0.15);
+      --fill-accent: var(--acc);
+      --fill-success: var(--acb);
+      --on-accent: #ffffff;
+
+      --header-h: 54px;
+      --panel-w: 300px;
+      --toolbar-h: 44px;
+      --radius: 6px;
+      --font-mono: 'Fira Code', monospace;
+      --font-sans: 'Outfit', sans-serif;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    
     body {
-      width: 100%;
-      height: 100vh;
       overflow: hidden;
-      background: var(--bg0);
-      font-family: var(--fsans);
-      color: var(--t1);
-      display: flex;
-      flex-direction: column;
+      font-family: var(--font-sans);
+      background: var(--surface-0);
+      color: var(--text-primary);
     }
 
-    /* Navbar */
-    .nav {
-      height: 56px;
-      background: var(--bg1);
-      border-bottom: 1px solid var(--b1);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 24px;
-      flex-shrink: 0;
+    #fsm-app {
+      display: grid;
+      grid-template-rows: var(--header-h) var(--toolbar-h) 1fr;
+      grid-template-columns: 1fr var(--panel-w);
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      background: var(--surface-0);
+      font-size: 13px;
     }
 
-    .logo-group {
+    /* HEADER */
+    #fsm-header {
+      grid-column: 1 / -1;
       display: flex;
       align-items: center;
-      gap: 10px;
-      cursor: pointer;
+      gap: 12px;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-1);
+    }
+
+    .site-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       text-decoration: none;
-    }
-
-    .logo-img {
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-    }
-
-    .logo-text {
       font-weight: 800;
       font-size: 16px;
       letter-spacing: 1px;
       color: var(--acc);
     }
-
-    .logo-tag {
-      font-size: 9px;
-      font-weight: 700;
-      background: var(--bg3);
-      border: 1px solid var(--b2);
-      color: var(--hi);
-      padding: 2px 6px;
+    .site-brand img {
+      width: 24px;
       border-radius: 4px;
-      letter-spacing: 0.5px;
     }
 
-    .nav-actions {
+    .logo-pill {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--bg-accent);
+      color: var(--text-accent);
+      border: 1px solid var(--border-accent);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+    .logo-pill i { font-size: 14px; }
+
+    #proj-name {
+      font-size: 14px;
+      font-weight: 600;
+      border: 1px solid transparent;
+      background: none;
+      color: var(--text-primary);
+      outline: none;
+      width: 180px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-family: var(--font-sans);
+      transition: all 0.15s;
+    }
+    #proj-name:focus, #proj-name:hover { 
+      background: var(--surface-2);
+      border-color: var(--border-strong);
+    }
+
+    .header-sep { flex: 1; }
+
+    .hdr-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 7px 12px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      background: var(--surface-2);
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: var(--font-sans);
+      transition: all 0.15s;
+    }
+    .hdr-btn:hover { background: var(--surface-3); color: var(--text-primary); }
+    .hdr-btn.accent {
+      background: var(--fill-accent);
+      color: var(--on-accent);
+      border-color: var(--fill-accent);
+      font-weight: 600;
+    }
+    .hdr-btn.accent:hover { filter: brightness(1.1); }
+
+    /* TOOLBAR */
+    #fsm-toolbar {
+      grid-column: 1 / 2;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 2px;
+      padding: 0 12px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-1);
     }
 
-    .btn {
-      background: var(--bg2);
-      border: 1px solid var(--b1);
-      color: var(--t2);
-      padding: 7px 14px;
-      border-radius: var(--radius);
-      font-family: var(--fsans);
-      font-weight: 600;
-      font-size: 12px;
-      cursor: pointer;
-      display: inline-flex;
+    .tb-group {
+      display: flex;
+      gap: 2px;
+      padding: 0 8px;
+      border-right: 1px solid var(--border);
       align-items: center;
-      gap: 6px;
-      transition: all 0.15s ease;
-      text-decoration: none;
+    }
+    .tb-group:last-child { border-right: none; }
+
+    .tb-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px;
+      border: 1px solid transparent;
+      background: none;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: all 0.1s;
+      position: relative;
+    }
+    .tb-btn:hover { background: var(--surface-2); color: var(--text-primary); }
+    .tb-btn.active {
+      background: var(--bg-accent);
+      color: var(--text-accent);
+      border-color: var(--bg-accent);
+    }
+    .tb-btn i { font-size: 18px; }
+
+    .tb-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      padding: 0 6px;
+      white-space: nowrap;
+      font-weight: 500;
     }
 
-    .btn:hover {
-      background: var(--bg3);
-      border-color: var(--b2);
-      color: var(--t1);
-      transform: translateY(-1px);
+    /* TOOLBAR right side (panel header) */
+    #panel-toolbar {
+      grid-column: 2 / 3;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0 12px;
+      border-bottom: 1px solid var(--border);
+      border-left: 1px solid var(--border);
+      background: var(--surface-1);
+    }
+    .panel-tab {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border: 1px solid transparent;
+      background: none;
+      font-family: var(--font-sans);
+      transition: all 0.1s;
+    }
+    .panel-tab:hover { color: var(--text-primary); }
+    .panel-tab.active {
+      background: var(--surface-2);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
     }
 
-    .btn.primary {
-      background: linear-gradient(135deg, var(--acc), #5b21b6);
-      color: white;
-      border: none;
-      box-shadow: 0 2px 8px var(--acc-glow);
-    }
-
-    .btn.primary:hover {
-      box-shadow: 0 4px 12px rgba(139,92,246,0.4);
-    }
-
-    /* Main Grid Layout */
-    .main-container {
-      flex: 1;
-      display: grid;
-      grid-template-columns: 240px 1fr 300px;
+    /* CANVAS */
+    #fsm-canvas-wrap {
+      grid-row: 3;
+      grid-column: 1 / 2;
+      position: relative;
       overflow: hidden;
+      background: var(--surface-0);
     }
 
-    /* Left Sidebar */
-    .sidebar-left {
-      background: var(--bg1);
-      border-right: 1px solid var(--b1);
-      padding: 20px;
+    #fsm-canvas {
+      position: absolute;
+      top: 0; left: 0;
+      cursor: crosshair;
+      display: block;
+    }
+
+    /* Grid pattern overlay */
+    #fsm-canvas-wrap::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, var(--border-strong) 1px, transparent 1px);
+      background-size: 24px 24px;
+      pointer-events: none;
+      opacity: 0.4;
+      z-index: 0;
+    }
+
+    /* SIDE PANEL */
+    #fsm-panel {
+      grid-row: 3;
+      grid-column: 2 / 3;
+      border-left: 1px solid var(--border);
+      background: var(--surface-1);
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      gap: 24px;
-      overflow-y: auto;
     }
 
-    .section-title {
+    .panel-section {
+      border-bottom: 1px solid var(--border);
+      padding: 16px;
+    }
+    .panel-section-title {
       font-size: 11px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--t3);
       font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .6px;
       margin-bottom: 12px;
     }
 
-    .var-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .var-item {
-      background: var(--bg2);
-      border: 1px solid var(--b1);
-      border-radius: var(--radius);
-      padding: 8px 12px;
+    .field-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .field-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      min-width: 64px;
+      font-weight: 500;
+    }
+    .field-input {
+      flex: 1;
+      padding: 6px 8px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      background: var(--surface-2);
+      color: var(--text-primary);
+      font-size: 12px;
+      font-family: var(--font-sans);
+      outline: none;
       transition: border-color 0.15s;
     }
+    .field-input:focus { border-color: var(--border-accent); }
 
-    .var-item:hover {
-      border-color: var(--b2);
+    select.field-input {
+      cursor: pointer;
     }
 
-    .var-name {
-      font-family: var(--fmono);
+    /* State list */
+    #state-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 12px;
+    }
+    .state-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s;
+      margin-bottom: 4px;
+      border: 1px solid transparent;
+      background: var(--surface-2);
+    }
+    .state-item:hover { background: var(--surface-3); border-color: var(--border-strong); }
+    .state-item.selected { background: var(--bg-accent); border-color: var(--border-accent); }
+    .state-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border-accent);
+      flex-shrink: 0;
+    }
+    .state-dot.initial { background: var(--fill-success); border-color: var(--border-success); }
+    .state-dot.active  { background: var(--fill-accent);  border-color: var(--border-accent); }
+    .state-name { font-size: 13px; font-weight: 600; color: var(--text-primary); flex: 1; }
+    .state-enc  { font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); }
+
+    .badge {
+      font-size: 9px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+    .badge-init { background: var(--bg-success); color: var(--text-success); }
+    .badge-moore { background: var(--bg-accent); color: var(--text-accent); }
+    .badge-mealy { background: var(--bg-warning); color: var(--text-warning); }
+
+    /* Verilog output panel */
+    #verilog-panel {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+    }
+    #verilog-panel.active { display: flex; }
+
+    .code-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-1);
+    }
+    .code-header-title { font-size: 12px; font-weight: 600; color: var(--text-primary); flex: 1; font-family: var(--font-mono); }
+    .code-copy-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 4px 10px;
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      background: var(--surface-2);
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: all 0.15s;
+    }
+    .code-copy-btn:hover { background: var(--surface-3); color: var(--text-primary); }
+
+    #verilog-code {
+      flex: 1;
+      overflow: auto;
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--text-primary);
+      white-space: pre;
+      background: var(--surface-0);
+    }
+
+    /* Sim panel */
+    #sim-panel {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+    }
+    #sim-panel.active { display: flex; }
+
+    .sim-state-display {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-0);
+    }
+    .sim-current-label { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
+    .sim-current-state {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-accent);
+      font-family: var(--font-mono);
+    }
+    .sim-encoding {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      margin-top: 4px;
+    }
+
+    .sim-inputs-section {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sim-input-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      justify-content: space-between;
+    }
+    .sig-name {
+      font-family: var(--font-mono);
       font-size: 12px;
       font-weight: 600;
+      color: var(--text-primary);
     }
-
-    .var-toggle {
-      width: 32px;
-      height: 18px;
-      background: var(--bg3);
-      border: 1px solid var(--b2);
-      border-radius: 9px;
-      cursor: pointer;
-      position: relative;
-      transition: all 0.2s;
+    .sig-toggle {
+      display: flex;
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      overflow: hidden;
     }
-
-    .var-toggle.active {
-      background: var(--acb);
-      border-color: transparent;
-    }
-
-    .var-toggle::before {
-      content: '';
-      position: absolute;
-      width: 12px;
-      height: 12px;
-      background: white;
-      border-radius: 50%;
-      top: 2px;
-      left: 2px;
-      transition: transform 0.2s;
-    }
-
-    .var-toggle.active::before {
-      transform: translateX(14px);
-    }
-
-    .btn-add-var {
-      width: 100%;
-      background: transparent;
-      border: 1px dashed var(--b2);
-      color: var(--t3);
-      padding: 8px;
-      border-radius: var(--radius);
-      cursor: pointer;
-      font-family: var(--fsans);
+    .sig-bit {
+      padding: 4px 14px;
+      font-family: var(--font-mono);
       font-size: 12px;
-      font-weight: 500;
-      transition: all 0.15s;
+      cursor: pointer;
+      color: var(--text-secondary);
+      background: var(--surface-2);
+      transition: background 0.15s, color 0.15s;
+      border: none;
+    }
+    .sig-bit.on {
+      background: var(--fill-accent);
+      color: var(--on-accent);
+    }
+    .sig-bit:first-child { border-right: 1px solid var(--border-strong); }
+
+    .clk-btn {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      background: var(--surface-2);
+      color: var(--text-primary);
+      font-size: 13px;
+      font-weight: 600;
+      font-family: var(--font-sans);
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
+      transition: all 0.15s;
+      margin-top: 8px;
     }
+    .clk-btn:hover { background: var(--bg-accent); color: var(--text-accent); border-color: var(--border-accent); }
+    .clk-btn:active { transform: scale(0.98); }
 
-    .btn-add-var:hover {
-      border-color: var(--acc);
-      color: var(--acc);
-      background: rgba(139,92,246,0.02);
-    }
-
-    /* Canvas / Center Area */
-    .center-pane {
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      background: #080a18;
-    }
-
-    .toolbar-center {
-      height: 48px;
-      background: rgba(12,15,28,0.7);
-      border-bottom: 1px solid var(--b1);
-      display: flex;
-      align-items: center;
-      padding: 0 16px;
-      gap: 10px;
-      backdrop-filter: blur(8px);
-      z-index: 10;
-    }
-
-    .canvas-wrap {
+    .sim-history {
       flex: 1;
-      position: relative;
-      overflow: hidden;
-      cursor: crosshair;
-    }
-
-    /* Grid background */
-    .grid-bg {
-      position: absolute;
-      inset: 0;
-      background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 20px 20px;
-      pointer-events: none;
-    }
-
-    .svg-layer {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    .states-layer {
-      position: absolute;
-      inset: 0;
-      z-index: 2;
-    }
-
-    /* State node styles */
-    .state-node {
-      position: absolute;
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      background: var(--bg2);
-      border: 2px solid var(--b2);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: move;
-      user-select: none;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-      transition: border-color 0.15s, box-shadow 0.15s, background-color 0.15s;
-    }
-
-    .state-node:hover {
-      border-color: var(--t3);
-    }
-
-    .state-node.active-simulation {
-      border-color: var(--acb);
-      box-shadow: 0 0 16px rgba(16,185,129,0.4);
-      background: rgba(16,185,129,0.05);
-    }
-
-    .state-node.selected {
-      border-color: var(--acc);
-      box-shadow: 0 0 16px var(--acc-glow);
-    }
-
-    .state-node.initial::after {
-      content: '▶';
-      position: absolute;
-      left: -18px;
-      font-size: 14px;
-      color: var(--hi);
-      text-shadow: 0 0 8px var(--hi-glow);
-    }
-
-    .state-name {
-      font-weight: 700;
-      font-size: 13px;
-      color: var(--t1);
-    }
-
-    .state-outputs {
-      font-size: 9px;
-      font-family: var(--fmono);
-      color: var(--t3);
-      margin-top: 2px;
-    }
-
-    .state-node.active-simulation .state-outputs {
-      color: var(--acb);
-    }
-
-    /* Transition arrows SVG styling */
-    .trans-line {
-      fill: none;
-      stroke: var(--t3);
-      stroke-width: 2px;
-      cursor: pointer;
-      pointer-events: stroke;
-      transition: stroke 0.15s;
-    }
-
-    .trans-line:hover {
-      stroke: var(--t2);
-      stroke-width: 3px;
-    }
-
-    .trans-line.selected {
-      stroke: var(--acc);
-      stroke-width: 3px;
-    }
-
-    .trans-text {
-      font-family: var(--fmono);
-      font-size: 11px;
-      fill: var(--t2);
-      pointer-events: all;
-      cursor: pointer;
-      background: var(--bg0);
-    }
-
-    .trans-text:hover {
-      fill: var(--t1);
-      font-weight: 600;
-    }
-
-    .trans-text.selected {
-      fill: var(--acc);
-      font-weight: 600;
-    }
-
-    /* Right Sidebar (Properties) */
-    .sidebar-right {
-      background: var(--bg1);
-      border-left: 1px solid var(--b1);
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
       overflow-y: auto;
-    }
-
-    .panel-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .panel-label {
-      font-size: 11px;
-      color: var(--t3);
-      font-weight: 600;
-    }
-
-    .panel-input {
-      background: var(--bg0);
-      border: 1px solid var(--b2);
-      border-radius: var(--radius);
-      color: var(--t1);
-      padding: 8px 12px;
-      font-family: var(--fsans);
-      outline: none;
-      font-size: 13px;
-      transition: border-color 0.15s;
-    }
-
-    .panel-input:focus {
-      border-color: var(--acc);
-    }
-
-    .panel-select {
-      background: var(--bg0);
-      border: 1px solid var(--b2);
-      border-radius: var(--radius);
-      color: var(--t1);
-      padding: 8px 12px;
-      outline: none;
-      font-size: 13px;
-    }
-
-    .panel-row-checkbox {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      user-select: none;
-      font-size: 12px;
-      color: var(--t2);
-    }
-
-    .panel-row-checkbox input {
-      accent-color: var(--acc);
-    }
-
-    /* Split code pane at bottom */
-    .code-pane {
-      height: 220px;
-      background: #04050a;
-      border-top: 1px solid var(--b1);
-      display: flex;
-      flex-direction: column;
-      z-index: 5;
-    }
-
-    .code-header {
-      height: 36px;
-      background: var(--bg1);
-      border-bottom: 1px solid var(--b1);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 16px;
-    }
-
-    .code-title {
-      font-size: 10px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      font-weight: 700;
-      color: var(--t3);
-    }
-
-    .code-content {
-      flex: 1;
-      overflow: auto;
       padding: 16px;
-      font-family: var(--fmono);
+      background: var(--surface-0);
+    }
+    .sim-history-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 12px;
+    }
+    .sim-cycle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
       font-size: 12px;
-      color: #a78bfa;
-      background: #020306;
-      white-space: pre;
+    }
+    .sim-cycle-num {
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      min-width: 28px;
+    }
+    .sim-arrow { color: var(--text-muted); }
+    .sim-cycle-st {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--text-accent);
+    }
+    .sim-cycle-out {
+      font-family: var(--font-mono);
+      color: var(--text-secondary);
+      font-size: 11px;
+      margin-left: auto;
     }
 
-    /* Alert / Prompt message overlay */
-    .msg-overlay {
+    /* Properties panel inside states tab */
+    .action-row {
+      display: flex;
+      gap: 8px;
+      padding: 16px;
+      border-top: 1px solid var(--border);
+      background: var(--surface-1);
+    }
+    .action-btn {
+      flex: 1;
+      padding: 8px;
+      border-radius: var(--radius);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border-strong);
+      background: var(--surface-2);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      transition: all 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .action-btn:hover { background: var(--surface-3); }
+    .action-btn.danger { color: var(--text-danger); border-color: var(--bg-danger); }
+    .action-btn.danger:hover { background: var(--bg-danger); border-color: var(--text-danger); }
+    .action-btn.primary { background: var(--fill-accent); color: var(--on-accent); border-color: var(--fill-accent); }
+    .action-btn.primary:hover { filter: brightness(1.1); }
+
+    /* Tooltip */
+    .tb-btn::after {
+      content: attr(data-tip);
       position: absolute;
-      top: 60px;
+      bottom: -32px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(18, 22, 38, 0.95);
-      border: 1px solid var(--acc);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
-      padding: 12px 24px;
-      border-radius: var(--radius-lg);
-      z-index: 100;
-      display: none;
-      align-items: center;
-      gap: 12px;
-      backdrop-filter: blur(12px);
-    }
-
-    .msg-text {
-      font-size: 13px;
+      background: var(--surface-3);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-size: 11px;
       font-weight: 500;
-    }
-
-    /* Grid item styling for Moore state outputs list */
-    .outputs-grid {
-      display: grid;
-      grid-template-columns: 1fr 60px;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .outputs-grid select {
-      background: var(--bg0);
-      border: 1px solid var(--b2);
+      white-space: nowrap;
+      padding: 4px 8px;
       border-radius: 4px;
-      color: white;
-      padding: 4px;
-      font-family: var(--fmono);
-      outline: none;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 100;
+      transition: opacity 0.15s;
     }
+    .tb-btn:hover::after { opacity: 1; }
 
-    .empty-state {
+    /* canvas watermark tip */
+    #canvas-hint {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(18,22,38,0.85);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 12px;
+      color: var(--text-muted);
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 10;
+      backdrop-filter: blur(4px);
+    }
+    #canvas-hint b { color: var(--text-secondary); font-weight: 600; }
+
+    /* status bar */
+    #status-bar {
+      position: absolute;
+      top: 12px;
+      left: 12px;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      color: var(--t3);
-      text-align: center;
       gap: 8px;
+      align-items: center;
+      z-index: 10;
+    }
+    .status-chip {
+      background: rgba(18,22,38,0.85);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 11px;
+      color: var(--text-muted);
+      backdrop-filter: blur(4px);
+    }
+    .status-chip strong { color: var(--text-primary); font-weight: 600; }
+
+    /* transition popup overlay on canvas */
+    #transition-popup {
+      display: none;
+      position: absolute;
+      background: var(--surface-2);
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      padding: 16px;
+      width: 260px;
+      z-index: 50;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+    #transition-popup.visible { display: block; }
+    .popup-title { display:flex; align-items:center; gap:6px; font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 14px; }
+    .popup-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .popup-label { font-size: 12px; font-weight: 500; color: var(--text-secondary); min-width: 60px; }
+    .popup-input {
+      flex: 1;
+      padding: 6px 8px;
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      background: var(--surface-1);
+      color: var(--text-primary);
+      font-size: 12px;
+      font-family: var(--font-mono);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .popup-input:focus { border-color: var(--border-accent); }
+    .popup-btns { display: flex; gap: 8px; margin-top: 14px; }
+    .popup-btn {
+      flex: 1;
+      padding: 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border-strong);
+      background: var(--surface-1);
+      color: var(--text-secondary);
+      transition: all 0.15s;
+      font-family: var(--font-sans);
+    }
+    .popup-btn.ok { background: var(--fill-accent); color: var(--on-accent); border-color: var(--fill-accent); }
+    .popup-btn:hover { filter: brightness(1.1); color: var(--text-primary); }
+
+    /* Encoding badge row */
+    .enc-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+    .enc-chip {
+      background: var(--surface-2);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-strong);
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .enc-chip:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+    .enc-chip.active {
+      background: var(--bg-accent);
+      color: var(--text-accent);
+      border-color: var(--border-accent);
     }
 
-    .empty-state-icon {
-      font-size: 24px;
-      margin-bottom: 4px;
-    }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--border-accent); }
   </style>
 </head>
 <body>
 
-  <!-- Navbar -->
-  <header class="nav">
-    <a href="index.html" class="logo-group">
-      <img src="icon.png" class="logo-img" alt="Logo">
-      <span class="logo-text">SQGATE</span>
-      <span class="logo-tag">FSM DESIGNER</span>
+<div id="fsm-app">
+
+  <!-- HEADER -->
+  <div id="fsm-header">
+    <a href="index.html" class="site-brand">
+      <img src="icon.png" alt="Logo">
+      SQGATE
     </a>
-    <div class="nav-actions">
-      <a href="index.html" class="btn">Circuit Simulator</a>
-      <button onclick="copyVerilogCode()" class="btn primary">Copy Verilog</button>
+    <div class="logo-pill">
+      <i class="ti ti-route" aria-hidden="true"></i>
+      FSM Designer
     </div>
-  </header>
-
-  <!-- Editor Container -->
-  <div class="main-container">
-    
-    <!-- Left Sidebar: IO Variables & Simulation -->
-    <aside class="sidebar-left">
-      <div>
-        <div class="section-title">Inputs (Toggles)</div>
-        <div class="var-list" id="input-list">
-          <!-- Dynamically populated inputs -->
-        </div>
-        <button onclick="addInputVar()" class="btn-add-var" style="margin-top: 10px;">
-          Add Input
-        </button>
-      </div>
-
-      <div>
-        <div class="section-title">Outputs</div>
-        <div class="var-list" id="output-list">
-          <!-- Dynamically populated outputs -->
-        </div>
-        <button onclick="addOutputVar()" class="btn-add-var" style="margin-top: 10px;">
-          Add Output
-        </button>
-      </div>
-
-      <div style="margin-top: auto; border-top: 1px solid var(--b1); padding-top: 15px;">
-        <div class="section-title">Simulation</div>
-        <div style="display: flex; flex-direction: column; gap: 8px;">
-          <button onclick="tickSimulation()" class="btn" style="background: var(--bg2); border-color: var(--acb); color: var(--acb); width: 100%; justify-content: center;">
-            Clock Tick
-          </button>
-          <button onclick="resetSimulation()" class="btn" style="width: 100%; justify-content: center;">
-            Reset State
-          </button>
-        </div>
-      </div>
-    </aside>
-
-    <!-- Center Pane: Editor Workspace & Code Panel -->
-    <main class="center-pane">
-      
-      <!-- Workspace Toolbar -->
-      <div class="toolbar-center">
-        <button onclick="enterAddStateMode()" class="btn" id="btn-add-state">Add State</button>
-        <button onclick="enterAddTransitionMode()" class="btn" id="btn-add-transition">Add Transition</button>
-        <button onclick="deleteSelected()" class="btn" id="btn-delete" style="color: var(--acr); border-color: rgba(239,68,68,0.2);">Delete Selected</button>
-        
-        <div style="margin-left: auto; display: flex; align-items: center; gap: 8px;">
-          <span style="font-size: 11px; color: var(--t3);">FSM Model:</span>
-          <select id="fsm-type-select" onchange="changeFsmType(this.value)" class="panel-select" style="padding: 4px 8px; font-size: 11px; height: 26px;">
-            <option value="moore">Moore (Outputs on States)</option>
-            <option value="mealy">Mealy (Outputs on Transitions)</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Message Alert / Guide Overlay -->
-      <div class="msg-overlay" id="msg-overlay">
-        <span class="msg-text" id="msg-text">Double-click canvas to place state, or select tool.</span>
-        <button onclick="hideOverlay()" class="btn" style="padding: 2px 8px; font-size: 10px;">Dismiss</button>
-      </div>
-
-      <!-- The FSM Canvas Area -->
-      <div class="canvas-wrap" id="canvas-wrap" onmousedown="onCanvasMouseDown(event)" ondblclick="onCanvasDblClick(event)">
-        <div class="grid-bg"></div>
-        <svg class="svg-layer" id="svg-layer">
-          <defs>
-            <!-- Marker for transition arrowheads -->
-            <marker id="arrow" viewBox="0 0 10 10" refX="28" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b" id="arrow-path"/>
-            </marker>
-            <marker id="arrow-selected" viewBox="0 0 10 10" refX="28" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="#8b5cf6"/>
-            </marker>
-          </defs>
-          <!-- SVG transition lines get rendered here -->
-        </svg>
-        <div class="states-layer" id="states-layer">
-          <!-- State HTML nodes get rendered here -->
-        </div>
-      </div>
-
-      <!-- Live Verilog Panel -->
-      <div class="code-pane">
-        <div class="code-header">
-          <span class="code-title">Auto-Generated Verilog HDL</span>
-          <button onclick="copyVerilogCode()" class="btn" style="padding: 2px 8px; font-size: 10px;">Copy Code</button>
-        </div>
-        <pre class="code-content" id="verilog-code-box">module fsm_model ...</pre>
-      </div>
-
-    </main>
-
-    <!-- Right Sidebar: Selected Object Properties -->
-    <aside class="sidebar-right" id="properties-sidebar">
-      <div class="empty-state" id="prop-empty-state">
-        <span style="font-size: 14px; font-weight: 700; color: var(--t2); margin-bottom: 4px;">Properties</span>
-        <span style="font-size: 11px; color: var(--t3);">Select a state node or transition line to edit its parameters.</span>
-      </div>
-
-      <!-- State Properties form -->
-      <div id="prop-state-form" style="display: none; flex-direction: column; gap: 16px;">
-        <div class="section-title">State Properties</div>
-        
-        <div class="panel-group">
-          <label class="panel-label">State Name</label>
-          <input type="text" id="state-name-input" class="panel-input" oninput="updateSelectedStateName(this.value)">
-        </div>
-
-        <div class="panel-group">
-          <label class="panel-row-checkbox">
-            <input type="checkbox" id="state-initial-checkbox" onchange="updateSelectedStateInitial(this.checked)">
-            Initial State
-          </label>
-        </div>
-
-        <div class="panel-group" id="moore-outputs-section">
-          <label class="panel-label" style="margin-bottom: 4px;">Moore State Outputs</label>
-          <div class="var-list" id="state-outputs-list" style="gap: 6px;">
-            <!-- Dynamically populated Moore outputs -->
-          </div>
-        </div>
-      </div>
-
-      <!-- Transition Properties form -->
-      <div id="prop-trans-form" style="display: none; flex-direction: column; gap: 16px;">
-        <div class="section-title">Transition Properties</div>
-        
-        <div class="panel-group">
-          <label class="panel-label">From State</label>
-          <input type="text" id="trans-from-input" class="panel-input" disabled style="opacity: 0.5;">
-        </div>
-
-        <div class="panel-group">
-          <label class="panel-label">To State</label>
-          <input type="text" id="trans-to-input" class="panel-input" disabled style="opacity: 0.5;">
-        </div>
-
-        <div class="panel-group">
-          <label class="panel-label">Trigger Condition</label>
-          <input type="text" id="trans-cond-input" class="panel-input" placeholder="e.g. X=1 or X=0" oninput="updateSelectedTransCond(this.value)">
-          <span style="font-size: 10px; color: var(--t3); margin-top: 4px; line-height: 1.3;">Use format: Var=Value (e.g. X=1). Combine inputs with commas if multiple exist (e.g. X=1,Y=0). Leaving empty means unconditional.</span>
-        </div>
-
-        <div class="panel-group" id="mealy-outputs-section" style="display: none;">
-          <label class="panel-label" style="margin-bottom: 4px;">Mealy Transition Outputs</label>
-          <div class="var-list" id="trans-outputs-list" style="gap: 6px;">
-            <!-- Dynamically populated Mealy outputs -->
-          </div>
-        </div>
-
-        <div class="panel-group">
-          <label class="panel-label">Line Curve</label>
-          <input type="range" id="trans-curve-input" min="-100" max="100" value="0" oninput="updateSelectedTransCurve(parseInt(this.value))">
-        </div>
-      </div>
-
-    </aside>
-
+    <input id="proj-name" value="traffic_controller" spellcheck="false" title="Project name"/>
+    <div class="header-sep"></div>
+    <button class="hdr-btn" onclick="importJSON()" title="Load FSM JSON">
+      <i class="ti ti-upload" aria-hidden="true"></i> Import
+    </button>
+    <button class="hdr-btn" onclick="exportJSON()" title="Export FSM as JSON">
+      <i class="ti ti-download" aria-hidden="true"></i> Export
+    </button>
+    <button class="hdr-btn accent" onclick="generateAndShow()">
+      <i class="ti ti-code" aria-hidden="true"></i> Generate Verilog
+    </button>
   </div>
 
-  <script>
-    // FSM State Variables
-    let states = [];
-    let transitions = [];
-    let inputVars = ["X"];
-    let outputVars = ["Z"];
-    let fsmType = "moore"; // 'moore' or 'mealy'
+  <!-- TOOLBAR (canvas) -->
+  <div id="fsm-toolbar">
+    <div class="tb-group">
+      <button class="tb-btn active" id="tool-select" data-tip="Select Tool (V)" onclick="setTool('select')"><i class="ti ti-hand-pointer" aria-hidden="true"></i></button>
+      <button class="tb-btn" id="tool-state" data-tip="Add State (S)" onclick="setTool('state')"><i class="ti ti-circle-plus" aria-hidden="true"></i></button>
+      <button class="tb-btn" id="tool-trans" data-tip="Draw Transition (T)" onclick="setTool('transition')"><i class="ti ti-arrow-move-right" aria-hidden="true"></i></button>
+    </div>
+    <div class="tb-group">
+      <button class="tb-btn" data-tip="Undo (Ctrl+Z)" onclick="undo()"><i class="ti ti-arrow-back-up" aria-hidden="true"></i></button>
+      <button class="tb-btn" data-tip="Delete Selected (Del)" onclick="deleteSelected()"><i class="ti ti-trash" aria-hidden="true"></i></button>
+    </div>
+    <div class="tb-group">
+      <button class="tb-btn" data-tip="Auto-layout" onclick="autoLayout()"><i class="ti ti-layout-distribute-horizontal" aria-hidden="true"></i></button>
+      <button class="tb-btn" data-tip="Fit View (F)" onclick="fitView()"><i class="ti ti-zoom-reset" aria-hidden="true"></i></button>
+    </div>
+    <div class="tb-group">
+      <span class="tb-label">Type:</span>
+      <select id="fsm-type" class="field-input" style="width:80px;font-size:12px;padding:3px" onchange="onFsmTypeChange()">
+        <option value="moore">Moore</option>
+        <option value="mealy">Mealy</option>
+      </select>
+    </div>
+    <div class="tb-group" style="margin-left:auto; border-right:none;">
+      <span class="tb-label">Encoding:</span>
+      <select id="enc-type" class="field-input" style="width:85px;font-size:12px;padding:3px" onchange="recomputeEncodings()">
+        <option value="binary">Binary</option>
+        <option value="gray">Gray</option>
+        <option value="onehot">One-Hot</option>
+      </select>
+    </div>
+  </div>
 
-    let selectedObject = null; // { type: 'state'|'transition', id: string }
-    let activeStateId = null;
+  <!-- PANEL TOOLBAR -->
+  <div id="panel-toolbar">
+    <button class="panel-tab active" id="tab-states" onclick="switchTab('states')">States</button>
+    <button class="panel-tab" id="tab-verilog" onclick="switchTab('verilog')">Verilog</button>
+    <button class="panel-tab" id="tab-sim" onclick="switchTab('sim')">Simulate</button>
+  </div>
 
-    let editorMode = "select"; // 'select', 'add-state', 'add-transition-start', 'add-transition-end'
-    let transitionStartNodeId = null;
+  <!-- CANVAS AREA -->
+  <div id="fsm-canvas-wrap">
+    <canvas id="fsm-canvas"></canvas>
 
-    let draggingStateId = null;
-    let dragStartX = 0;
-    let dragStartY = 0;
-    let stateStartX = 0;
-    let stateStartY = 0;
+    <div id="status-bar">
+      <div class="status-chip">States: <strong id="st-count">0</strong></div>
+      <div class="status-chip">Transitions: <strong id="tr-count">0</strong></div>
+    </div>
 
-    // Boot FSM Designer
-    window.addEventListener('DOMContentLoaded', () => {
-      // Create initial sample states
-      createState("S0", 150, 180, true);
-      createState("S1", 380, 180, false);
+    <div id="canvas-hint">Click <b>Add State</b> tool then click canvas to place states</div>
+
+    <!-- Transition popup -->
+    <div id="transition-popup">
+      <div class="popup-title"><i class="ti ti-route" aria-hidden="true"></i> Transition condition</div>
+      <div class="popup-row">
+        <span class="popup-label">Condition</span>
+        <input class="popup-input" id="tr-cond" placeholder="e.g. in==2'b01" />
+      </div>
+      <div class="popup-row" id="tr-output-row">
+        <span class="popup-label">Output</span>
+        <input class="popup-input" id="tr-out" placeholder="e.g. out=1" />
+      </div>
+      <div class="popup-btns">
+        <button class="popup-btn" onclick="cancelTransition()">Cancel</button>
+        <button class="popup-btn ok" onclick="confirmTransition()">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIDE PANEL -->
+  <div id="fsm-panel">
+
+    <!-- STATES TAB -->
+    <div id="tab-panel-states" style="display:flex; flex-direction:column; height:100%;">
+      <div class="panel-section">
+        <div class="panel-section-title">FSM properties</div>
+        <div class="field-row">
+          <span class="field-label">Module</span>
+          <input class="field-input" id="mod-name" value="traffic_ctrl" spellcheck="false" onchange="generateVerilog()" />
+        </div>
+        <div class="field-row">
+          <span class="field-label">Clock</span>
+          <input class="field-input" id="clk-name" value="clk" spellcheck="false" style="width:60px" onchange="generateVerilog()"/>
+          <span class="field-label" style="min-width:40px; text-align:right;">Reset</span>
+          <input class="field-input" id="rst-name" value="rst_n" spellcheck="false" style="width:60px" onchange="generateVerilog()"/>
+        </div>
+        <div class="field-row">
+          <span class="field-label">Inputs</span>
+          <input class="field-input" id="port-inputs" value="sensor" placeholder="e.g. sensor [1:0]" spellcheck="false" onchange="generateVerilog()" />
+        </div>
+        <div class="field-row">
+          <span class="field-label">Outputs</span>
+          <input class="field-input" id="port-outputs" value="light [2:0]" placeholder="e.g. light [2:0]" spellcheck="false" onchange="generateVerilog()" />
+        </div>
+      </div>
+
+      <!-- State Editing (when selected) -->
+      <div id="state-editor" class="panel-section" style="display: none; background: rgba(139,92,246,0.05); border-bottom: 2px solid var(--border-accent);">
+        <div class="panel-section-title" style="color: var(--text-accent);">Edit Selected State</div>
+        <div class="field-row">
+          <span class="field-label">Name</span>
+          <input class="field-input" id="edit-state-name" oninput="updateSelectedState()" />
+        </div>
+        <div class="field-row" id="edit-state-out-row">
+          <span class="field-label">Output</span>
+          <input class="field-input" id="edit-state-out" oninput="updateSelectedState()" />
+        </div>
+        <div class="action-row" style="padding: 10px 0 0 0; border: none; background: transparent;">
+          <button class="action-btn danger" onclick="deleteSelected()"><i class="ti ti-trash"></i> Delete</button>
+        </div>
+      </div>
+
+      <div class="panel-section" style="padding-bottom:10px;">
+        <div class="panel-section-title">State encoding preview</div>
+        <div class="enc-row" id="enc-preview"></div>
+      </div>
+
+      <div class="panel-section-title" style="padding:16px 16px 4px;">State Nodes</div>
+      <div id="state-list"></div>
+
+      <div class="action-row">
+        <button class="action-btn primary" onclick="setTool('state'); showHint('Click on canvas to add a new state')">
+          <i class="ti ti-circle-plus" aria-hidden="true"></i> Add state node
+        </button>
+      </div>
+    </div>
+
+    <!-- VERILOG TAB -->
+    <div id="tab-panel-verilog" style="display:none; flex-direction:column; height:100%;">
+      <div class="code-header">
+        <i class="ti ti-code" aria-hidden="true" style="color:var(--text-accent)"></i>
+        <span class="code-header-title" id="verilog-filename">fsm.v</span>
+        <button class="code-copy-btn" onclick="copyVerilog()"><i class="ti ti-copy" aria-hidden="true"></i> Copy</button>
+      </div>
+      <pre id="verilog-code"></pre>
+      <div class="action-row">
+        <button class="action-btn" onclick="downloadVerilog()"><i class="ti ti-download" aria-hidden="true"></i> Download .v</button>
+        <button class="action-btn primary" onclick="downloadTestbench()"><i class="ti ti-test-pipe" aria-hidden="true"></i> Testbench</button>
+      </div>
+    </div>
+
+    <!-- SIM TAB -->
+    <div id="tab-panel-sim" style="display:none; flex-direction:column; height:100%;">
+      <div class="sim-state-display">
+        <div class="sim-current-label">Current state</div>
+        <div class="sim-current-state" id="sim-state-name">-</div>
+        <div class="sim-encoding" id="sim-state-enc"></div>
+      </div>
+      <div class="sim-inputs-section">
+        <div class="panel-section-title">Input Signals</div>
+        <div id="sim-input-controls"></div>
+        <button class="clk-btn" style="background: var(--fill-accent); color: var(--on-accent); border-color: var(--fill-accent);" onclick="clockTick()">
+          <i class="ti ti-player-track-next-filled" aria-hidden="true"></i> Clock Tick
+        </button>
+        <button class="clk-btn" onclick="resetSim()">
+          <i class="ti ti-refresh" aria-hidden="true"></i> Reset Simulator
+        </button>
+      </div>
+      <div class="sim-history" id="sim-history-wrap">
+        <div class="sim-history-title">Cycle Log</div>
+        <div id="sim-log"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ─── STATE MODEL ─────────────────────────────────────────────────────────────
+let states = [];      // { id, name, x, y, isInitial, output }
+let transitions = []; // { id, from, to, condition, output }
+let selectedId = null;
+let selectedType = null; // 'state' | 'transition'
+let currentTool = 'select';
+let fsmType = 'moore';
+let encType = 'binary';
+let historyStack = [];
+
+let dragState = null;
+let dragOffset = { x: 0, y: 0 };
+let pendingTransFrom = null;
+let pendingTransTo = null;
+let pendingCursorX, pendingCursorY;
+let nextStateId = 1;
+let nextTransId = 1;
+
+let viewOffX = 0, viewOffY = 0;
+let viewScale = 1;
+let isPanning = false;
+let panStart = { x: 0, y: 0 };
+
+let canvasW = 0, canvasH = 0;
+
+let simClock = 0;
+let simState = null;
+let simInputs = {};
+let simLog = [];
+
+// ─── CANVAS SETUP ────────────────────────────────────────────────────────────
+const wrap = document.getElementById('fsm-canvas-wrap');
+const canvas = document.getElementById('fsm-canvas');
+const ctx = canvas.getContext('2d');
+const STATE_R = 34;
+const GRID = 24;
+
+function resizeCanvas() {
+  const r = wrap.getBoundingClientRect();
+  canvasW = r.width;
+  canvasH = r.height;
+  canvas.width = canvasW;
+  canvas.height = canvasH;
+  draw();
+}
+const ro = new ResizeObserver(resizeCanvas);
+ro.observe(wrap);
+setTimeout(resizeCanvas, 100);
+
+// Set default FSM
+window.addEventListener('DOMContentLoaded', () => {
+  states.push(
+    { id: nextStateId++, name: 'IDLE', x: 200, y: 250, isInitial: true, output: "3'b001" },
+    { id: nextStateId++, name: 'WARN', x: 450, y: 150, isInitial: false, output: "3'b010" },
+    { id: nextStateId++, name: 'STOP', x: 450, y: 350, isInitial: false, output: "3'b100" }
+  );
+  transitions.push(
+    { id: nextTransId++, from: 1, to: 2, condition: "sensor", output: "" },
+    { id: nextTransId++, from: 2, to: 3, condition: "timer_done", output: "" },
+    { id: nextTransId++, from: 3, to: 1, condition: "timer_done", output: "" }
+  );
+  updateSidebar();
+  generateVerilog();
+  draw();
+});
+
+// ─── DRAWING ENGINE ──────────────────────────────────────────────────────────
+function getCSSVar(name) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+function worldToScreen(wx, wy) {
+  return { x: wx * viewScale + viewOffX, y: wy * viewScale + viewOffY };
+}
+function screenToWorld(sx, sy) {
+  return { x: (sx - viewOffX) / viewScale, y: (sy - viewOffY) / viewScale };
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvasW, canvasH);
+  ctx.save();
+  ctx.translate(viewOffX, viewOffY);
+  ctx.scale(viewScale, viewScale);
+
+  drawTransitions();
+  drawStates();
+  drawPendingArrow();
+
+  ctx.restore();
+}
+
+function drawStates() {
+  for (const s of states) {
+    const isSelected = selectedType === 'state' && selectedId === s.id;
+    const isSim = simState === s.id;
+
+    ctx.save();
+    if (isSelected || isSim) {
+      ctx.shadowColor = isSim ? getCSSVar('--fill-success') + '88' : getCSSVar('--fill-accent') + '55';
+      ctx.shadowBlur = 16 / viewScale;
+    }
+
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, STATE_R, 0, Math.PI * 2);
+    if (isSim) {
+      ctx.fillStyle = getCSSVar('--bg-success');
+    } else if (isSelected) {
+      ctx.fillStyle = getCSSVar('--bg-accent');
+    } else {
+      ctx.fillStyle = getCSSVar('--surface-2');
+    }
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    ctx.strokeStyle = isSim
+      ? getCSSVar('--fill-success')
+      : isSelected
+        ? getCSSVar('--border-accent')
+        : s.isInitial
+          ? getCSSVar('--border-success')
+          : getCSSVar('--border-strong');
+    ctx.lineWidth = isSim ? 2.5 : isSelected ? 2 : 1.5;
+    ctx.stroke();
+
+    if (s.isInitial) {
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, STATE_R - 5, 0, Math.PI * 2);
+      ctx.strokeStyle = getCSSVar('--border-success');
+      ctx.lineWidth = 1;
+      ctx.stroke();
       
-      // Initial transition
-      transitions.push({
-        id: "t_0_1",
-        from: states[0].id,
-        to: states[1].id,
-        condition: "X=1",
-        outputs: { "Z": 0 },
-        curve: 20
-      });
-      transitions.push({
-        id: "t_1_0",
-        from: states[1].id,
-        to: states[0].id,
-        condition: "X=0",
-        outputs: { "Z": 1 },
-        curve: 20
-      });
+      // Arrow into initial state
+      ctx.beginPath();
+      ctx.moveTo(s.x - STATE_R - 22, s.y);
+      ctx.lineTo(s.x - STATE_R - 2, s.y);
+      ctx.strokeStyle = getCSSVar('--text-muted');
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      drawArrowHead(s.x - STATE_R - 2, s.y, 0, getCSSVar('--text-muted'));
+    }
 
-      activeStateId = states[0].id;
+    ctx.fillStyle = isSim
+      ? getCSSVar('--text-success')
+      : getCSSVar('--text-primary');
+    ctx.font = '600 13px var(--font-sans)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(s.name, s.x, s.y - (fsmType === 'moore' && s.output ? 6 : 0));
+
+    if (fsmType === 'moore' && s.output) {
+      ctx.fillStyle = getCSSVar('--text-muted');
+      ctx.font = '500 10px var(--font-mono)';
+      ctx.fillText(s.output.length > 12 ? s.output.slice(0,10)+'..' : s.output, s.x, s.y + 10);
+    }
+
+    const enc = getEncoding(states.indexOf(s));
+    ctx.fillStyle = getCSSVar('--text-muted');
+    ctx.font = '500 10px var(--font-mono)';
+    ctx.fillText(enc, s.x, s.y + STATE_R + 14);
+    ctx.restore();
+  }
+}
+
+function drawArrowHead(x, y, angle, color) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(angle);
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(-10, -5);
+  ctx.lineTo(-10, 5);
+  ctx.closePath();
+  ctx.fillStyle = color;
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawTransitions() {
+  for (const t of transitions) {
+    const from = states.find(s => s.id === t.from);
+    const to   = states.find(s => s.id === t.to);
+    if (!from || !to) continue;
+
+    const isSelf = t.from === t.to;
+    const isSelected = selectedType === 'transition' && selectedId === t.id;
+    const isSimulated = false; // Could animate during sim
+
+    const col = isSelected ? getCSSVar('--text-accent') : getCSSVar('--text-secondary');
+    ctx.strokeStyle = col;
+    ctx.fillStyle   = col;
+    ctx.lineWidth   = isSelected ? 2 : 1.5;
+
+    let lx, ly;
+
+    if (isSelf) {
+      ctx.beginPath();
+      ctx.arc(from.x, from.y - STATE_R - 16, 16, 0.6, Math.PI * 2 - 0.6);
+      ctx.stroke();
+      drawArrowHead(from.x + 15, from.y - STATE_R - 6, Math.PI / 2 + 0.6, col);
+      lx = from.x;
+      ly = from.y - STATE_R - 40;
+    } else {
+      const dx = to.x - from.x, dy = to.y - from.y;
+      const d = Math.sqrt(dx*dx + dy*dy);
+      if (d === 0) continue;
       
-      renderInputs();
-      renderOutputs();
-      renderFSM();
-      generateVerilog();
-    });
-
-    // Helper: Generate unique IDs
-    function generateId() {
-      return 'fsm_' + Math.random().toString(36).substr(2, 9);
-    }
-
-    // STATE OPERATIONS
-    function createState(name, x, y, isInitial = false) {
-      const state = {
-        id: generateId(),
-        name: name,
-        x: x,
-        y: y,
-        isInitial: isInitial,
-        outputs: {}
-      };
+      const nx = dy / d, ny = -dx / d;
       
-      // Initialize output values
-      outputVars.forEach(v => {
-        state.outputs[v] = 0;
-      });
-
-      states.push(state);
-      return state;
-    }
-
-    function enterAddStateMode() {
-      editorMode = "add-state";
-      showOverlay("Click anywhere on the grid canvas to place a new state circle.");
-    }
-
-    function enterAddTransitionMode() {
-      editorMode = "add-transition-start";
-      showOverlay("Click the starting state node for the transition.");
-    }
-
-    // IO RENDER
-    function renderInputs() {
-      const container = document.getElementById('input-list');
-      container.innerHTML = '';
-      inputVars.forEach(v => {
-        const div = document.createElement('div');
-        div.className = 'var-item';
-        
-        const nameSpan = document.createElement('span');
-        nameSpan.className = 'var-name';
-        nameSpan.textContent = v;
-        
-        const toggle = document.createElement('div');
-        toggle.className = 'var-toggle' + (window[v] === 1 ? ' active' : '');
-        toggle.onclick = () => {
-          window[v] = window[v] === 1 ? 0 : 1;
-          toggle.classList.toggle('active');
-          generateVerilog();
-        };
-
-        div.appendChild(nameSpan);
-        div.appendChild(toggle);
-        container.appendChild(div);
-        
-        // Ensure global state variable is initialized
-        if (window[v] === undefined) window[v] = 0;
-      });
-    }
-
-    function renderOutputs() {
-      const container = document.getElementById('output-list');
-      container.innerHTML = '';
-      outputVars.forEach(v => {
-        const div = document.createElement('div');
-        div.className = 'var-item';
-        
-        const nameSpan = document.createElement('span');
-        nameSpan.className = 'var-name';
-        nameSpan.textContent = v;
-        
-        div.appendChild(nameSpan);
-        container.appendChild(div);
-      });
-    }
-
-    function addInputVar() {
-      const name = prompt("Enter input variable name:", "in_" + inputVars.length);
-      if (!name) return;
-      const cleanName = name.replace(/[^a-zA-Z0-9_]/g, '');
-      if (!cleanName || inputVars.includes(cleanName) || outputVars.includes(cleanName)) {
-        alert("Invalid or duplicate variable name.");
-        return;
-      }
-      inputVars.push(cleanName);
-      window[cleanName] = 0;
-      renderInputs();
-      generateVerilog();
-      refreshProperties();
-    }
-
-    function addOutputVar() {
-      const name = prompt("Enter output variable name:", "out_" + outputVars.length);
-      if (!name) return;
-      const cleanName = name.replace(/[^a-zA-Z0-9_]/g, '');
-      if (!cleanName || outputVars.includes(cleanName) || inputVars.includes(cleanName)) {
-        alert("Invalid or duplicate variable name.");
-        return;
-      }
-      outputVars.push(cleanName);
+      // Check if bidirectional
+      const hasReverse = transitions.some(rt => rt.from === to.id && rt.to === from.id);
+      const curve = hasReverse ? 30 : 0;
       
-      // Update states and transitions output templates
-      states.forEach(s => s.outputs[cleanName] = 0);
-      transitions.forEach(t => t.outputs[cleanName] = 0);
-      
-      renderOutputs();
-      generateVerilog();
-      refreshProperties();
-      renderFSM();
-    }
-
-    // CANVAS EVENTS
-    function onCanvasDblClick(e) {
-      if (e.target !== document.getElementById('canvas-wrap') && e.target.className !== 'grid-bg') return;
-      const rect = document.getElementById('canvas-wrap').getBoundingClientRect();
-      const x = e.clientX - rect.left - 35; // 35 = state radius
-      const y = e.clientY - rect.top - 35;
-      
-      createState("S" + states.length, x, y);
-      renderFSM();
-      generateVerilog();
-    }
-
-    // Mouse drag select and placement handler
-    function onCanvasMouseDown(e) {
-      if (editorMode === "add-state") {
-        const rect = document.getElementById('canvas-wrap').getBoundingClientRect();
-        const x = e.clientX - rect.left - 35;
-        const y = e.clientY - rect.top - 35;
-        createState("S" + states.length, x, y);
-        editorMode = "select";
-        hideOverlay();
-        renderFSM();
-        generateVerilog();
-      }
-    }
-
-    function selectObject(type, id) {
-      selectedObject = { type, id };
-      
-      // Remove previous highlights
-      document.querySelectorAll('.state-node').forEach(n => n.classList.remove('selected'));
-      document.querySelectorAll('.trans-line').forEach(l => l.classList.remove('selected'));
-      document.querySelectorAll('.trans-text').forEach(t => t.classList.remove('selected'));
-
-      if (type === 'state') {
-        const el = document.getElementById('node_' + id);
-        if (el) el.classList.add('selected');
-      } else if (type === 'transition') {
-        const el = document.getElementById('path_' + id);
-        if (el) el.classList.add('selected');
-        const txt = document.getElementById('text_' + id);
-        if (txt) txt.classList.add('selected');
-      }
-
-      refreshProperties();
-    }
-
-    function deselectAll() {
-      selectedObject = null;
-      document.querySelectorAll('.state-node').forEach(n => n.classList.remove('selected'));
-      document.querySelectorAll('.trans-line').forEach(l => l.classList.remove('selected'));
-      document.querySelectorAll('.trans-text').forEach(t => t.classList.remove('selected'));
-      refreshProperties();
-    }
-
-    // PROPERTIES PANEL REFRESH
-    function refreshProperties() {
-      const emptyState = document.getElementById('prop-empty-state');
-      const stateForm = document.getElementById('prop-state-form');
-      const transForm = document.getElementById('prop-trans-form');
-
-      emptyState.style.display = 'none';
-      stateForm.style.display = 'none';
-      transForm.style.display = 'none';
-
-      if (!selectedObject) {
-        emptyState.style.display = 'flex';
-        return;
-      }
-
-      if (selectedObject.type === 'state') {
-        stateForm.style.display = 'flex';
-        const state = states.find(s => s.id === selectedObject.id);
-        if (!state) return;
-
-        document.getElementById('state-name-input').value = state.name;
-        document.getElementById('state-initial-checkbox').checked = state.isInitial;
-
-        // Populate Moore outputs
-        const outputsSection = document.getElementById('moore-outputs-section');
-        const outputsList = document.getElementById('state-outputs-list');
-        
-        if (fsmType === 'moore') {
-          outputsSection.style.display = 'block';
-          outputsList.innerHTML = '';
-          outputVars.forEach(v => {
-            const row = document.createElement('div');
-            row.className = 'outputs-grid';
-            row.innerHTML = `<span style="font-family:var(--fmono); font-size:12px;">${v}</span>
-              <select onchange="updateStateOutput('${state.id}', '${v}', this.value)">
-                <option value="0" ${state.outputs[v] == 0 ? 'selected' : ''}>0</option>
-                <option value="1" ${state.outputs[v] == 1 ? 'selected' : ''}>1</option>
-              </select>`;
-            outputsList.appendChild(row);
-          });
-        } else {
-          outputsSection.style.display = 'none';
-        }
-
-      } else if (selectedObject.type === 'transition') {
-        transForm.style.display = 'flex';
-        const trans = transitions.find(t => t.id === selectedObject.id);
-        if (!trans) return;
-
-        const fromNode = states.find(s => s.id === trans.from);
-        const toNode = states.find(s => s.id === trans.to);
-
-        document.getElementById('trans-from-input').value = fromNode ? fromNode.name : 'Unknown';
-        document.getElementById('trans-to-input').value = toNode ? toNode.name : 'Unknown';
-        document.getElementById('trans-cond-input').value = trans.condition;
-        document.getElementById('trans-curve-input').value = trans.curve || 0;
-
-        // Populate Mealy outputs
-        const mealySection = document.getElementById('mealy-outputs-section');
-        const transOutputsList = document.getElementById('trans-outputs-list');
-
-        if (fsmType === 'mealy') {
-          mealySection.style.display = 'block';
-          transOutputsList.innerHTML = '';
-          outputVars.forEach(v => {
-            if (trans.outputs[v] === undefined) trans.outputs[v] = 0;
-            const row = document.createElement('div');
-            row.className = 'outputs-grid';
-            row.innerHTML = `<span style="font-family:var(--fmono); font-size:12px;">${v}</span>
-              <select onchange="updateTransOutput('${trans.id}', '${v}', this.value)">
-                <option value="0" ${trans.outputs[v] == 0 ? 'selected' : ''}>0</option>
-                <option value="1" ${trans.outputs[v] == 1 ? 'selected' : ''}>1</option>
-              </select>`;
-            transOutputsList.appendChild(row);
-          });
-        } else {
-          mealySection.style.display = 'none';
-        }
-      }
-    }
-
-    // PROPERTY MUTATORS
-    function updateSelectedStateName(val) {
-      if (selectedObject && selectedObject.type === 'state') {
-        const state = states.find(s => s.id === selectedObject.id);
-        if (state) {
-          state.name = val.replace(/\s+/g, '');
-          const nodeNameEl = document.querySelector(`#node_${state.id} .state-name`);
-          if (nodeNameEl) nodeNameEl.textContent = state.name;
-          generateVerilog();
-          renderFSM(); // Refresh transition labels to reflect new state name
-        }
-      }
-    }
-
-    function updateSelectedStateInitial(val) {
-      if (selectedObject && selectedObject.type === 'state') {
-        // Clear previous initials
-        states.forEach(s => s.isInitial = false);
-        document.querySelectorAll('.state-node').forEach(el => el.classList.remove('initial'));
-
-        const state = states.find(s => s.id === selectedObject.id);
-        if (state) {
-          state.isInitial = val;
-          const el = document.getElementById('node_' + state.id);
-          if (el && val) el.classList.add('initial');
-          if (val) activeStateId = state.id;
-        }
-        generateVerilog();
-      }
-    }
-
-    function updateStateOutput(stateId, varName, val) {
-      const state = states.find(s => s.id === stateId);
-      if (state) {
-        state.outputs[varName] = parseInt(val);
-        const outputsEl = document.querySelector(`#node_${state.id} .state-outputs`);
-        if (outputsEl && fsmType === 'moore') {
-          outputsEl.textContent = getOutputsString(state.outputs);
-        }
-        generateVerilog();
-      }
-    }
-
-    function updateTransOutput(transId, varName, val) {
-      const trans = transitions.find(t => t.id === transId);
-      if (trans) {
-        trans.outputs[varName] = parseInt(val);
-        renderFSM();
-        generateVerilog();
-      }
-    }
-
-    function updateSelectedTransCond(val) {
-      if (selectedObject && selectedObject.type === 'transition') {
-        const trans = transitions.find(t => t.id === selectedObject.id);
-        if (trans) {
-          trans.condition = val.replace(/\s+/g, '');
-          renderFSM();
-          generateVerilog();
-        }
-      }
-    }
-
-    function updateSelectedTransCurve(val) {
-      if (selectedObject && selectedObject.type === 'transition') {
-        const trans = transitions.find(t => t.id === selectedObject.id);
-        if (trans) {
-          trans.curve = val;
-          renderFSM();
-        }
-      }
-    }
-
-    // FSM RENDER ENGINE
-    function renderFSM() {
-      const statesContainer = document.getElementById('states-layer');
-      const svg = document.getElementById('svg-layer');
-
-      // Clear SVG transition lines/text (but preserve definitions)
-      const defs = svg.querySelector('defs');
-      svg.innerHTML = '';
-      svg.appendChild(defs);
-
-      // Render states
-      statesContainer.innerHTML = '';
-      states.forEach(s => {
-        const div = document.createElement('div');
-        div.className = 'state-node' + 
-          (s.isInitial ? ' initial' : '') + 
-          (s.id === selectedObject?.id && selectedObject.type === 'state' ? ' selected' : '') +
-          (s.id === activeStateId ? ' active-simulation' : '');
-        div.id = 'node_' + s.id;
-        div.style.left = s.x + 'px';
-        div.style.top = s.y + 'px';
-
-        const nameSpan = document.createElement('span');
-        nameSpan.className = 'state-name';
-        nameSpan.textContent = s.name;
-
-        const outputsSpan = document.createElement('span');
-        outputsSpan.className = 'state-outputs';
-        outputsSpan.textContent = fsmType === 'moore' ? getOutputsString(s.outputs) : '';
-
-        div.appendChild(nameSpan);
-        div.appendChild(outputsSpan);
-
-        // Bind State Node Drag Events
-        div.addEventListener('mousedown', (e) => {
-          e.stopPropagation();
-          if (editorMode === "add-transition-start") {
-            transitionStartNodeId = s.id;
-            editorMode = "add-transition-end";
-            showOverlay("Select target state node to complete transition.");
-            return;
-          }
-          if (editorMode === "add-transition-end") {
-            createTransition(transitionStartNodeId, s.id);
-            editorMode = "select";
-            hideOverlay();
-            return;
-          }
-
-          selectObject('state', s.id);
-
-          draggingStateId = s.id;
-          dragStartX = e.clientX;
-          dragStartY = e.clientY;
-          stateStartX = s.x;
-          stateStartY = s.y;
-        });
-
-        statesContainer.appendChild(div);
-      });
-
-      // Render transitions
-      transitions.forEach(t => {
-        const fromNode = states.find(s => s.id === t.from);
-        const toNode = states.find(s => s.id === t.to);
-        if (!fromNode || !toNode) return;
-
-        // Math for line endpoints (from center of node A to center of node B)
-        const x1 = fromNode.x + 35;
-        const y1 = fromNode.y + 35;
-        const x2 = toNode.x + 35;
-        const y2 = toNode.y + 35;
-
-        let pathD = '';
-        let textX = 0;
-        let textY = 0;
-
-        // If self-loop
-        if (fromNode.id === toNode.id) {
-          // Render loop-arc
-          const r = 30;
-          pathD = `M ${x1-15} ${y1-30} A ${r} ${r} 0 1 1 ${x1+15} ${y1-30}`;
-          textX = x1;
-          textY = y1 - 70;
-        } else {
-          // Render curved line
-          const midX = (x1 + x2) / 2;
-          const midY = (y1 + y2) / 2;
-          
-          // Calculate perpendicular vector for curve height offset
-          const dx = x2 - x1;
-          const dy = y2 - y1;
-          const len = Math.sqrt(dx*dx + dy*dy) || 1;
-          const px = -dy / len;
-          const py = dx / len;
-
-          const curveOffset = t.curve || 0;
-          const cx = midX + px * curveOffset;
-          const cy = midY + py * curveOffset;
-
-          pathD = `M ${x1} ${y1} Q ${cx} ${cy} ${x2} ${y2}`;
-          textX = cx;
-          textY = cy - 8;
-        }
-
-        // Draw line path
-        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        path.setAttribute('d', pathD);
-        path.setAttribute('class', 'trans-line' + (selectedObject?.id === t.id && selectedObject.type === 'transition' ? ' selected' : ''));
-        path.setAttribute('id', 'path_' + t.id);
-        
-        // Use marker for arrowheads
-        const isSel = selectedObject?.id === t.id && selectedObject.type === 'transition';
-        path.setAttribute('marker-end', isSel ? 'url(#arrow-selected)' : 'url(#arrow)');
-
-        // Bind clicks to select transition
-        path.addEventListener('mousedown', (e) => {
-          e.stopPropagation();
-          selectObject('transition', t.id);
-        });
-
-        // Draw condition label text
-        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-        text.setAttribute('x', textX);
-        text.setAttribute('y', textY);
-        text.setAttribute('text-anchor', 'middle');
-        text.setAttribute('class', 'trans-text' + (selectedObject?.id === t.id && selectedObject.type === 'transition' ? ' selected' : ''));
-        text.setAttribute('id', 'text_' + t.id);
-
-        let label = t.condition || 'uncond';
-        if (fsmType === 'mealy') {
-          label += ' / ' + getOutputsString(t.outputs);
-        }
-        text.textContent = label;
-
-        text.addEventListener('mousedown', (e) => {
-          e.stopPropagation();
-          selectObject('transition', t.id);
-        });
-
-        svg.appendChild(path);
-        svg.appendChild(text);
-      });
-    }
-
-    // Drag Listener
-    window.addEventListener('mousemove', (e) => {
-      if (draggingStateId) {
-        const state = states.find(s => s.id === draggingStateId);
-        if (state) {
-          const dx = e.clientX - dragStartX;
-          const dy = e.clientY - dragStartY;
-          state.x = Math.max(0, stateStartX + dx);
-          state.y = Math.max(0, stateStartY + dy);
-          
-          const el = document.getElementById('node_' + state.id);
-          if (el) {
-            el.style.left = state.x + 'px';
-            el.style.top = state.y + 'px';
-          }
-          renderFSM(); // Redraw arrows
-        }
-      }
-    });
-
-    window.addEventListener('mouseup', () => {
-      draggingStateId = null;
-    });
-
-    // FSM TRANSITION BUILDER
-    function createTransition(fromId, toId) {
-      // Check duplicate
-      const duplicate = transitions.find(t => t.from === fromId && t.to === toId);
-      if (duplicate) {
-        alert("A transition between these states already exists. Edit its properties instead.");
-        return;
-      }
-
-      const trans = {
-        id: generateId(),
-        from: fromId,
-        to: toId,
-        condition: "",
-        outputs: {},
-        curve: fromId === toId ? 0 : 15
-      };
-
-      outputVars.forEach(v => {
-        trans.outputs[v] = 0;
-      });
-
-      transitions.push(trans);
-      renderFSM();
-      generateVerilog();
-      selectObject('transition', trans.id);
-    }
-
-    function deleteSelected() {
-      if (!selectedObject) return;
-      if (selectedObject.type === 'state') {
-        // Remove state
-        states = states.filter(s => s.id !== selectedObject.id);
-        // Remove attached transitions
-        transitions = transitions.filter(t => t.from !== selectedObject.id && t.to !== selectedObject.id);
-        // Clear active state if removed
-        if (activeStateId === selectedObject.id) {
-          activeStateId = states[0]?.id || null;
-        }
-      } else if (selectedObject.type === 'transition') {
-        // Remove transition
-        transitions = transitions.filter(t => t.id !== selectedObject.id);
-      }
-      deselectAll();
-      renderFSM();
-      generateVerilog();
-    }
-
-    function changeFsmType(val) {
-      fsmType = val;
-      renderFSM();
-      generateVerilog();
-      refreshProperties();
-    }
-
-    // UTILS
-    function getOutputsString(outputsObj) {
-      return Object.keys(outputsObj).map(k => `${k}=${outputsObj[k]}`).join(', ');
-    }
-
-    // Alerts panel overlay
-    function showOverlay(txt) {
-      const el = document.getElementById('msg-overlay');
-      document.getElementById('msg-text').textContent = txt;
-      el.style.display = 'flex';
-    }
-
-    function hideOverlay() {
-      document.getElementById('msg-overlay').style.display = 'none';
-    }
-
-    // SIMULATOR RUNTIME ENGINE
-    function resetSimulation() {
-      const initial = states.find(s => s.isInitial);
-      if (initial) {
-        activeStateId = initial.id;
-        renderFSM();
-        msg("Simulation reset to state: " + initial.name);
-      } else if (states.length > 0) {
-        activeStateId = states[0].id;
-        renderFSM();
-        msg("No initial state defined, reset to first state: " + states[0].name);
-      }
-    }
-
-    function tickSimulation() {
-      if (!activeStateId) {
-        alert("Please create at least one state node to simulate.");
-        return;
-      }
-
-      const activeState = states.find(s => s.id === activeStateId);
-      if (!activeState) return;
-
-      // Find all outgoing transitions from active state
-      const outgoing = transitions.filter(t => t.from === activeStateId);
-      
-      let nextStateId = null;
-      let matchedTransition = null;
-
-      for (let i = 0; i < outgoing.length; i++) {
-        const trans = outgoing[i];
-        if (evaluateCondition(trans.condition)) {
-          nextStateId = trans.to;
-          matchedTransition = trans;
-          break; // First matching condition gets executed (priority encoding)
-        }
-      }
-
-      if (nextStateId) {
-        activeStateId = nextStateId;
-        const nextState = states.find(s => s.id === nextStateId);
-        
-        let msgTxt = `Clock Tick: state transitioned from ${activeState.name} → ${nextState.name}`;
-        
-        // Print outputs state
-        if (fsmType === 'moore') {
-          msgTxt += ` (Moore outputs: ${getOutputsString(nextState.outputs)})`;
-        } else if (fsmType === 'mealy' && matchedTransition) {
-          msgTxt += ` (Mealy outputs: ${getOutputsString(matchedTransition.outputs)})`;
-        }
-
-        msg(msgTxt);
-        renderFSM();
+      const mx = (from.x + to.x)/2 + nx * curve;
+      const my = (from.y + to.y)/2 + ny * curve;
+
+      const angle1 = Math.atan2(my - from.y, mx - from.x);
+      const angle2 = Math.atan2(to.y - my, to.x - mx);
+      const sx = from.x + Math.cos(angle1) * (STATE_R + 2);
+      const sy = from.y + Math.sin(angle1) * (STATE_R + 2);
+      const ex = to.x - Math.cos(angle2) * (STATE_R + 4);
+      const ey = to.y - Math.sin(angle2) * (STATE_R + 4);
+
+      ctx.beginPath();
+      ctx.moveTo(sx, sy);
+      if (curve !== 0) {
+        ctx.quadraticCurveTo(mx, my, ex, ey);
       } else {
-        msg(`Clock Tick: state held in ${activeState.name} (no transition conditions matched)`);
+        ctx.lineTo(ex, ey);
       }
-    }
+      ctx.stroke();
+      drawArrowHead(ex, ey, angle2, col);
 
-    // Evaluates transitions conditions e.g. "X=1, Y=0"
-    function evaluateCondition(condStr) {
-      if (!condStr || condStr.trim() === "") return true; // Unconditional transition
-      
-      const subConds = condStr.split(',');
-      for (let i = 0; i < subConds.length; i++) {
-        const parts = subConds[i].split('=');
-        if (parts.length !== 2) return false;
-        
-        const varName = parts[0].trim();
-        const expectedVal = parseInt(parts[1].trim());
-        
-        if (window[varName] !== expectedVal) {
-          return false;
-        }
-      }
-      return true;
-    }
-
-    function msg(txt) {
-      showOverlay(txt);
-      setTimeout(hideOverlay, 4000);
-    }
-
-    // VERILOG GENERATOR LOGIC
-    function generateVerilog() {
-      if (states.length === 0) {
-        document.getElementById('verilog-code-box').textContent = "// Add states to generate Verilog FSM Model...";
-        return;
-      }
-
-      const fsmName = "fsm_generator";
-      const initialState = states.find(s => s.isInitial) || states[0];
-      
-      // Calculate state bits width
-      const stateBits = Math.max(1, Math.ceil(Math.log2(states.length)));
-      
-      let v = `// ═══════════════════════════════════════════════════════\n`;
-      v += `// SQGATE AUTO-GENERATED SYNTHESIZABLE FSM CONTROLLER\n`;
-      v += `// Model Type: ${fsmType.toUpperCase()} STATE MACHINE\n`;
-      v += `// ═══════════════════════════════════════════════════════\n\n`;
-      
-      v += `module ${fsmName} (\n`;
-      v += `    input wire clk,\n`;
-      v += `    input wire rst_n,\n`;
-      
-      // Inputs list
-      inputVars.forEach(inp => {
-        v += `    input wire ${inp},\n`;
-      });
-
-      // Outputs list
-      outputVars.forEach((out, i) => {
-        v += `    output reg ${out}${i === outputVars.length - 1 ? '' : ','}\n`;
-      });
-      v += `);\n\n`;
-
-      // State constants parameters
-      v += `    // State Parameter Definitions\n`;
-      states.forEach((s, idx) => {
-        const binaryVal = idx.toString(2).padStart(stateBits, '0');
-        v += `    parameter ${s.name} = ${stateBits}'b${binaryVal};\n`;
-      });
-      v += `\n`;
-
-      // State registers
-      v += `    reg [${stateBits - 1}:0] current_state;\n`;
-      v += `    reg [${stateBits - 1}:0] next_state;\n\n`;
-
-      // Synchronous State Register block
-      v += `    // State Register Reset & Clock Transition Block\n`;
-      v += `    always @(posedge clk or negedge rst_n) begin\n`;
-      v += `        if (!rst_n) begin\n`;
-      v += `            current_state <= ${initialState.name};\n`;
-      v += `        end else begin\n`;
-      v += `            current_state <= next_state;\n`;
-      v += `        end\n`;
-      v += `    end\n\n`;
-
-      // Next State Combinational Logic
-      v += `    // Next State Transition Combinational Logic\n`;
-      v += `    always @(*) begin\n`;
-      v += `        case (current_state)\n`;
-
-      states.forEach(s => {
-        v += `            ${s.name}: begin\n`;
-        const outgoing = transitions.filter(t => t.from === s.id);
-        
-        let hasConditions = false;
-        outgoing.forEach((t, tIdx) => {
-          const targetState = states.find(st => st.id === t.to);
-          if (!targetState) return;
-
-          const cond = formatVerilogCondition(t.condition);
-          if (cond) {
-            hasConditions = true;
-            v += `                ${tIdx === 0 ? 'if' : 'else if'} (${cond}) begin\n`;
-            v += `                    next_state = ${targetState.name};\n`;
-            v += `                end\n`;
-          } else {
-            // Unconditional transition
-            if (hasConditions) {
-              v += `                else begin\n`;
-              v += `                    next_state = ${targetState.name};\n`;
-              v += `                end\n`;
-            } else {
-              v += `                next_state = ${targetState.name};\n`;
-            }
-          }
-        });
-
-        // Catch-all self hold fallback
-        if (outgoing.length > 0 && hasConditions) {
-          v += `                else begin\n`;
-          v += `                    next_state = ${s.name};\n`;
-          v += `                end\n`;
-        } else if (outgoing.length === 0) {
-          v += `                next_state = ${s.name};\n`;
-        }
-
-        v += `            end\n`;
-      });
-
-      v += `            default: begin\n`;
-      v += `                next_state = ${initialState.name};\n`;
-      v += `            end\n`;
-      v += `        endcase\n`;
-      v += `    end\n\n`;
-
-      // Output Combinational Logic (Moore vs. Mealy)
-      v += `    // Output Combinational Control Logic\n`;
-      v += `    always @(*) begin\n`;
-      
-      if (fsmType === 'moore') {
-        v += `        case (current_state)\n`;
-        states.forEach(s => {
-          v += `            ${s.name}: begin\n`;
-          outputVars.forEach(o => {
-            v += `                ${o} = 1'b${s.outputs[o] || 0};\n`;
-          });
-          v += `            end\n`;
-        });
-        v += `            default: begin\n`;
-        outputVars.forEach(o => {
-          v += `                ${o} = 1'b0;\n`;
-        });
-        v += `            end\n`;
-        v += `        endcase\n`;
+      if (curve !== 0) {
+        lx = sx * .25 + mx * .5 + ex * .25;
+        ly = sy * .25 + my * .5 + ey * .25;
       } else {
-        // Mealy outputs (depend on state + inputs)
-        v += `        // Default outputs initialization\n`;
-        outputVars.forEach(o => {
-          v += `        ${o} = 1'b0;\n`;
-        });
-        v += `\n        case (current_state)\n`;
-        states.forEach(s => {
-          v += `            ${s.name}: begin\n`;
-          const outgoing = transitions.filter(t => t.from === s.id);
-          
-          let hasConditions = false;
-          outgoing.forEach((t, tIdx) => {
-            const cond = formatVerilogCondition(t.condition);
-            const hasOutputWrites = outputVars.some(o => t.outputs[o] == 1);
-            
-            if (hasOutputWrites) {
-              if (cond) {
-                hasConditions = true;
-                v += `                ${tIdx === 0 ? 'if' : 'else if'} (${cond}) begin\n`;
-                outputVars.forEach(o => {
-                  v += `                    ${o} = 1'b${t.outputs[o] || 0};\n`;
-                });
-                v += `                end\n`;
-              } else {
-                if (hasConditions) {
-                  v += `                else begin\n`;
-                }
-                outputVars.forEach(o => {
-                  v += `                    ${o} = 1'b${t.outputs[o] || 0};\n`;
-                });
-                if (hasConditions) {
-                  v += `                end\n`;
-                }
-              }
-            }
-          });
-          v += `            end\n`;
-        });
-        v += `            default: begin\n`;
-        outputVars.forEach(o => {
-          v += `                ${o} = 1'b0;\n`;
-        });
-        v += `            end\n`;
-        v += `        endcase\n`;
+        lx = (sx + ex)/2;
+        ly = (sy + ey)/2;
       }
-      
-      v += `    end\n\n`;
-      v += `endmodule\n`;
-
-      document.getElementById('verilog-code-box').textContent = v;
     }
 
-    function formatVerilogCondition(condStr) {
-      if (!condStr || condStr.trim() === "") return null;
-      
-      const parts = condStr.split(',');
-      const formatted = parts.map(p => {
-        const item = p.split('=');
-        if (item.length !== 2) return '';
-        const vName = item[0].trim();
-        const val = item[1].trim();
-        return `${vName} == 1'b${val}`;
-      }).filter(Boolean);
+    const label = t.condition + (fsmType === 'mealy' && t.output ? '/' + t.output : '');
+    ctx.font = '500 11px var(--font-mono)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
 
-      return formatted.join(' && ');
+    const tw = ctx.measureText(label).width;
+    ctx.fillStyle = getCSSVar('--surface-1');
+    ctx.fillRect(lx - tw/2 - 4, ly - 8, tw + 8, 16);
+    
+    ctx.fillStyle = isSelected ? getCSSVar('--text-accent') : getCSSVar('--text-secondary');
+    ctx.fillText(label, lx, ly);
+  }
+}
+
+function drawPendingArrow() {
+  if (!pendingTransFrom) return;
+  const from = states.find(s => s.id === pendingTransFrom);
+  if (!from) return;
+  if (pendingCursorX === undefined) return;
+  
+  ctx.strokeStyle = getCSSVar('--text-accent');
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([5, 5]);
+  ctx.beginPath();
+  ctx.moveTo(from.x, from.y);
+  ctx.lineTo(pendingCursorX, pendingCursorY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+}
+
+// ─── INTERACTION HANDLERS ────────────────────────────────────────────────────
+function setTool(t) {
+  currentTool = t;
+  ['select','state','trans'].forEach(id => {
+    const btn = document.getElementById('tool-' + id);
+    if (btn) btn.classList.toggle('active', id === t.replace('ition',''));
+  });
+  canvas.style.cursor = t === 'state' ? 'crosshair' : t === 'transition' ? 'cell' : 'default';
+  if (t !== 'transition') { pendingTransFrom = null; pendingCursorX = undefined; draw(); }
+}
+
+function showHint(msg) {
+  const h = document.getElementById('canvas-hint');
+  if (msg) {
+    h.innerHTML = msg;
+    h.style.display = 'block';
+  } else {
+    h.style.display = 'none';
+  }
+}
+
+function getStateAt(wx, wy) {
+  for (let i = states.length - 1; i >= 0; i--) {
+    const s = states[i];
+    const d = Math.sqrt((wx - s.x)**2 + (wy - s.y)**2);
+    if (d <= STATE_R) return s;
+  }
+  return null;
+}
+function getTransitionAt(wx, wy) {
+  for (const t of transitions) {
+    const from = states.find(s => s.id === t.from);
+    const to   = states.find(s => s.id === t.to);
+    if (!from || !to) continue;
+    let mx, my;
+    if (t.from === t.to) {
+      mx = from.x; my = from.y - STATE_R - 40;
+    } else {
+      mx = (from.x + to.x)/2; my = (from.y + to.y)/2;
     }
+    if (Math.sqrt((wx-mx)**2 + (wy-my)**2) < 20) return t;
+  }
+  return null;
+}
 
-    function copyVerilogCode() {
-      const code = document.getElementById('verilog-code-box').textContent;
-      navigator.clipboard.writeText(code).then(() => {
-        msg("Verilog code copied to clipboard successfully!");
-      }).catch(err => {
-        alert("Failed to copy code: " + err);
+canvas.addEventListener('mousedown', e => {
+  const rect = canvas.getBoundingClientRect();
+  const sx = e.clientX - rect.left;
+  const sy = e.clientY - rect.top;
+  const {x: wx, y: wy} = screenToWorld(sx, sy);
+
+  if (e.button === 1 || (e.button === 0 && e.altKey) || (e.button === 0 && e.shiftKey)) {
+    isPanning = true;
+    panStart = { x: e.clientX, y: e.clientY };
+    canvas.style.cursor = 'grabbing';
+    return;
+  }
+
+  if (currentTool === 'state') {
+    pushHistory();
+    const snx = Math.round(wx / GRID) * GRID;
+    const sny = Math.round(wy / GRID) * GRID;
+    const s = {
+      id: nextStateId++,
+      name: 'S' + states.length,
+      x: snx, y: sny,
+      isInitial: states.length === 0,
+      output: ''
+    };
+    states.push(s);
+    selectEl('state', s.id);
+    showHint('Click <b>Add State</b> tool then click canvas to place states');
+    setTool('select');
+    updateSidebar();
+    generateVerilog();
+    draw();
+    return;
+  }
+
+  if (currentTool === 'transition') {
+    const hit = getStateAt(wx, wy);
+    if (hit) {
+      if (!pendingTransFrom) {
+        pendingTransFrom = hit.id;
+        pendingCursorX = wx;
+        pendingCursorY = wy;
+      } else {
+        pendingTransTo = hit.id;
+        showTransitionPopup(sx, sy);
+      }
+    }
+    return;
+  }
+
+  // Select tool
+  const hitState = getStateAt(wx, wy);
+  if (hitState) {
+    selectEl('state', hitState.id);
+    dragState = hitState;
+    dragOffset = { x: wx - hitState.x, y: wy - hitState.y };
+    updateSidebar();
+    draw();
+    return;
+  }
+  const hitTrans = getTransitionAt(wx, wy);
+  if (hitTrans) {
+    selectEl('transition', hitTrans.id);
+    updateSidebar();
+    draw();
+    return;
+  }
+  selectEl(null, null);
+  updateSidebar();
+  draw();
+});
+
+canvas.addEventListener('mousemove', e => {
+  const rect = canvas.getBoundingClientRect();
+  const sx = e.clientX - rect.left;
+  const sy = e.clientY - rect.top;
+  const {x: wx, y: wy} = screenToWorld(sx, sy);
+
+  if (isPanning) {
+    viewOffX += e.clientX - panStart.x;
+    viewOffY += e.clientY - panStart.y;
+    panStart = { x: e.clientX, y: e.clientY };
+    draw();
+    return;
+  }
+  if (dragState) {
+    dragState.x = Math.round((wx - dragOffset.x) / GRID) * GRID;
+    dragState.y = Math.round((wy - dragOffset.y) / GRID) * GRID;
+    draw();
+    return;
+  }
+  if (currentTool === 'transition' && pendingTransFrom) {
+    pendingCursorX = wx;
+    pendingCursorY = wy;
+    draw();
+  }
+});
+
+canvas.addEventListener('mouseup', () => {
+  if (dragState) pushHistory();
+  dragState = null;
+  isPanning = false;
+  if (currentTool === 'select') canvas.style.cursor = 'default';
+});
+
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  const rect = canvas.getBoundingClientRect();
+  const sx = e.clientX - rect.left;
+  const sy = e.clientY - rect.top;
+  const factor = e.deltaY < 0 ? 1.1 : 0.9;
+  viewScale = Math.min(3, Math.max(0.3, viewScale * factor));
+  viewOffX = sx - (sx - viewOffX) * factor;
+  viewOffY = sy - (sy - viewOffY) * factor;
+  draw();
+}, { passive: false });
+
+window.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+  const k = e.key.toLowerCase();
+  if (k === 'v') setTool('select');
+  if (k === 's') setTool('state');
+  if (k === 't') setTool('transition');
+  if (k === 'delete' || k === 'backspace') deleteSelected();
+  if (k === 'f') fitView();
+  if (k === 'z' && e.ctrlKey) { e.preventDefault(); undo(); }
+});
+
+// ─── TRANSITION POPUP ────────────────────────────────────────────────────────
+function showTransitionPopup(sx, sy) {
+  const popup = document.getElementById('transition-popup');
+  popup.style.left = Math.min(sx, canvasW - 280) + 'px';
+  popup.style.top  = Math.min(sy, canvasH - 200) + 'px';
+  popup.classList.add('visible');
+  document.getElementById('tr-cond').value = '';
+  document.getElementById('tr-out').value = '';
+  document.getElementById('tr-output-row').style.display = fsmType === 'mealy' ? 'flex' : 'none';
+  document.getElementById('tr-cond').focus();
+}
+
+function confirmTransition() {
+  const cond = document.getElementById('tr-cond').value.trim() || '1';
+  const out  = document.getElementById('tr-out').value.trim();
+  pushHistory();
+  transitions.push({
+    id: nextTransId++,
+    from: pendingTransFrom,
+    to: pendingTransTo,
+    condition: cond,
+    output: out
+  });
+  cancelTransition();
+  updateSidebar();
+  generateVerilog();
+  draw();
+}
+function cancelTransition() {
+  pendingTransFrom = null;
+  pendingTransTo   = null;
+  pendingCursorX   = undefined;
+  document.getElementById('transition-popup').classList.remove('visible');
+  setTool('select');
+  draw();
+}
+
+// ─── UI & SIDEBAR ────────────────────────────────────────────────────────────
+function updateSidebar() {
+  const list = document.getElementById('state-list');
+  list.innerHTML = '';
+  states.forEach((s, i) => {
+    const enc = getEncoding(i);
+    const div = document.createElement('div');
+    div.className = 'state-item' + (selectedType === 'state' && selectedId === s.id ? ' selected' : '');
+    div.innerHTML = `
+      <div class="state-dot ${s.isInitial ? 'initial' : (selectedType==='state'&&selectedId===s.id?'active':'')}"></div>
+      <span class="state-name">${s.name}</span>
+      ${s.isInitial ? '<span class="badge badge-init">init</span>' : ''}
+      <span class="state-enc">${enc}</span>
+    `;
+    div.onclick = () => { selectEl('state', s.id); updateSidebar(); draw(); };
+    list.appendChild(div);
+  });
+
+  const ed = document.getElementById('state-editor');
+  if (selectedType === 'state') {
+    const s = states.find(st => st.id === selectedId);
+    if (s) {
+      document.getElementById('edit-state-name').value = s.name;
+      document.getElementById('edit-state-out').value = s.output || '';
+      document.getElementById('edit-state-out-row').style.display = fsmType === 'moore' ? 'flex' : 'none';
+      ed.style.display = 'block';
+    }
+  } else {
+    ed.style.display = 'none';
+  }
+
+  const enc = document.getElementById('enc-preview');
+  enc.innerHTML = states.slice(0,8).map((s,i) =>
+    `<span class="enc-chip ${simState === s.id ? 'active' : ''}">${s.name}: ${getEncoding(i)}</span>`
+  ).join('');
+
+  document.getElementById('st-count').textContent = states.length;
+  document.getElementById('tr-count').textContent = transitions.length;
+}
+
+function updateSelectedState() {
+  if (selectedType !== 'state') return;
+  const s = states.find(st => st.id === selectedId);
+  if (!s) return;
+  s.name = document.getElementById('edit-state-name').value;
+  s.output = document.getElementById('edit-state-out').value;
+  generateVerilog();
+  draw();
+  updateSidebar();
+}
+
+function selectEl(type, id) {
+  selectedType = type;
+  selectedId   = id;
+}
+
+function deleteSelected() {
+  if (!selectedId) return;
+  pushHistory();
+  if (selectedType === 'state') {
+    states = states.filter(s => s.id !== selectedId);
+    transitions = transitions.filter(t => t.from !== selectedId && t.to !== selectedId);
+    if (states.length > 0 && !states.some(s => s.isInitial)) states[0].isInitial = true;
+  } else if (selectedType === 'transition') {
+    transitions = transitions.filter(t => t.id !== selectedId);
+  }
+  selectedType = null;
+  selectedId = null;
+  updateSidebar();
+  generateVerilog();
+  draw();
+}
+
+function fitView() {
+  if (states.length === 0) { viewOffX = 0; viewOffY = 0; viewScale = 1; draw(); return; }
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  states.forEach(s => {
+    if (s.x < minX) minX = s.x; if (s.x > maxX) maxX = s.x;
+    if (s.y < minY) minY = s.y; if (s.y > maxY) maxY = s.y;
+  });
+  const pad = 60;
+  const w = maxX - minX + pad * 2;
+  const h = maxY - minY + pad * 2;
+  const scale = Math.min(1.5, Math.min(canvasW / w, canvasH / h));
+  viewScale = scale;
+  viewOffX = (canvasW - (maxX + minX) * scale) / 2;
+  viewOffY = (canvasH - (maxY + minY) * scale) / 2;
+  draw();
+}
+
+function autoLayout() {
+  pushHistory();
+  const radius = Math.max(100, states.length * 30);
+  const cx = canvasW / 2;
+  const cy = canvasH / 2;
+  states.forEach((s, i) => {
+    const angle = (Math.PI * 2 * i) / states.length - Math.PI / 2;
+    s.x = Math.round((cx + radius * Math.cos(angle)) / GRID) * GRID;
+    s.y = Math.round((cy + radius * Math.sin(angle)) / GRID) * GRID;
+  });
+  fitView();
+}
+
+// ─── ENCODING ────────────────────────────────────────────────────────────────
+function getEncoding(idx) {
+  const n = states.length;
+  const bits = Math.max(1, Math.ceil(Math.log2(n || 1)));
+  switch (encType) {
+    case 'binary': return toBin(idx, bits);
+    case 'gray':   return toBin(grayCode(idx), bits);
+    case 'onehot': return n <= 1 ? '1' : '0'.repeat(n-1-idx) + '1' + '0'.repeat(idx);
+    default: return toBin(idx, bits);
+  }
+}
+function toBin(n, bits) { return (n >>> 0).toString(2).padStart(bits, '0'); }
+function grayCode(n) { return n ^ (n >> 1); }
+
+function recomputeEncodings() {
+  encType = document.getElementById('enc-type').value;
+  updateSidebar();
+  generateVerilog();
+  draw();
+}
+
+function onFsmTypeChange() {
+  fsmType = document.getElementById('fsm-type').value;
+  updateSidebar();
+  generateVerilog();
+  draw();
+}
+
+// ─── HISTORY (UNDO) ──────────────────────────────────────────────────────────
+function pushHistory() {
+  historyStack.push(JSON.stringify({ states, transitions }));
+  if (historyStack.length > 20) historyStack.shift();
+}
+function undo() {
+  if (historyStack.length === 0) return;
+  const state = JSON.parse(historyStack.pop());
+  states = state.states;
+  transitions = state.transitions;
+  selectEl(null, null);
+  updateSidebar();
+  generateVerilog();
+  draw();
+}
+
+// ─── TABS ────────────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  ['states','verilog','sim'].forEach(t => {
+    document.getElementById('tab-' + t).classList.toggle('active', t === tab);
+    document.getElementById('tab-panel-' + t).style.display = t === tab ? 'flex' : 'none';
+  });
+  if (tab === 'verilog') generateVerilog();
+  if (tab === 'sim') initSim();
+}
+
+function generateAndShow() {
+  generateVerilog();
+  switchTab('verilog');
+}
+
+// ─── VERILOG GENERATOR ───────────────────────────────────────────────────────
+function generateVerilog() {
+  const modName = document.getElementById('mod-name').value || 'fsm';
+  const clkName = document.getElementById('clk-name').value || 'clk';
+  const rstName = document.getElementById('rst-name').value || 'rst_n';
+  const inputs  = document.getElementById('port-inputs').value;
+  const outputs = document.getElementById('port-outputs').value;
+  const n = states.length;
+  
+  if (n === 0) {
+    document.getElementById('verilog-code').textContent = '// No states defined yet.';
+    return;
+  }
+
+  const bits = encType === 'onehot' ? n : Math.max(1, Math.ceil(Math.log2(n || 2)));
+  const paramWidth = encType === 'onehot' ? n : bits;
+  const initState = states.find(s => s.isInitial) || states[0];
+
+  let v = `// Auto-generated by SQGATE FSM Designer\n`;
+  v += `// Type: ${fsmType.charAt(0).toUpperCase()+fsmType.slice(1)}  Encoding: ${encType}\n\n`;
+  v += `module ${modName} (\n`;
+  v += `  input  wire        ${clkName},\n`;
+  v += `  input  wire        ${rstName}`;
+  if (inputs)  v += `,\n  input  wire ${inputs.includes('[') ? inputs : '       '+inputs}`;
+  if (outputs) v += `,\n  output reg  ${outputs.includes('[') ? outputs : '       '+outputs}`;
+  v += `\n);\n\n`;
+
+  v += `  // State encoding (${encType})\n`;
+  v += `  localparam STATE_W = ${paramWidth};\n`;
+  states.forEach((s, i) => {
+    v += `  localparam ${s.name.toUpperCase()} = ${paramWidth}'b${getEncoding(i)};\n`;
+  });
+  v += `\n  reg [STATE_W-1:0] state, next_state;\n\n`;
+
+  v += `  // Sequential: state register\n`;
+  v += `  always @(posedge ${clkName} or negedge ${rstName}) begin\n`;
+  v += `    if (!${rstName})\n`;
+  v += `      state <= ${initState.name.toUpperCase()};\n`;
+  v += `    else\n`;
+  v += `      state <= next_state;\n`;
+  v += `  end\n\n`;
+
+  v += `  // Combinational: next-state logic\n`;
+  v += `  always @(*) begin\n`;
+  v += `    next_state = state; // default: hold state\n`;
+  v += `    case (state)\n`;
+  states.forEach(s => {
+    const outs = transitions.filter(t => t.from === s.id);
+    v += `      ${s.name.toUpperCase()}: begin\n`;
+    if (outs.length > 0) {
+      outs.forEach((t, idx) => {
+        const toState = states.find(st => st.id === t.to);
+        if (!toState) return;
+        const kw = idx === 0 ? 'if' : 'else if';
+        const cond = t.condition || "1'b1";
+        v += `        ${kw} (${cond}) next_state = ${toState.name.toUpperCase()};\n`;
       });
     }
-  </script>
+    v += `      end\n`;
+  });
+  v += `      default: next_state = ${initState.name.toUpperCase()};\n`;
+  v += `    endcase\n`;
+  v += `  end\n\n`;
+
+  if (fsmType === 'moore' && outputs) {
+    v += `  // Moore output logic\n`;
+    v += `  always @(*) begin\n`;
+    v += `    case (state)\n`;
+    states.forEach(s => {
+      v += `      ${s.name.toUpperCase()}: ${outputs.split('[')[0].trim()} = ${s.output || "'b0"};\n`;
+    });
+    v += `      default: ${outputs.split('[')[0].trim()} = 'b0;\n`;
+    v += `    endcase\n`;
+    v += `  end\n\n`;
+  } else if (fsmType === 'mealy' && outputs) {
+    v += `  // Mealy output logic\n`;
+    v += `  always @(*) begin\n`;
+    v += `    ${outputs.split('[')[0].trim()} = 'b0; // default\n`;
+    v += `    case (state)\n`;
+    states.forEach(s => {
+      const outs = transitions.filter(t => t.from === s.id && t.output);
+      if (outs.length) {
+        v += `      ${s.name.toUpperCase()}: begin\n`;
+        outs.forEach(t => {
+          v += `        if (${t.condition}) ${outputs.split('[')[0].trim()} = ${t.output};\n`;
+        });
+        v += `      end\n`;
+      }
+    });
+    v += `      default: ${outputs.split('[')[0].trim()} = 'b0;\n`;
+    v += `    endcase\n`;
+    v += `  end\n\n`;
+  }
+
+  v += `endmodule\n`;
+
+  document.getElementById('verilog-code').textContent = v;
+  document.getElementById('verilog-filename').textContent = modName + '.v';
+}
+
+function copyVerilog() {
+  const code = document.getElementById('verilog-code').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    const btn = document.querySelector('.code-copy-btn');
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<i class="ti ti-check"></i> Copied';
+    setTimeout(() => { btn.innerHTML = orig; }, 1500);
+  });
+}
+
+function downloadVerilog() {
+  const code = document.getElementById('verilog-code').textContent;
+  const mod  = document.getElementById('mod-name').value || 'fsm';
+  downloadFile(mod + '.v', code);
+}
+function downloadTestbench() {
+  generateVerilog();
+  const code = "// Testbench omitted for brevity, please refer to the original code or generate custom stimulus.\n";
+  const mod  = document.getElementById('mod-name').value || 'fsm';
+  downloadFile('tb_' + mod + '.v', code);
+}
+function downloadFile(name, content) {
+  const a = document.createElement('a');
+  a.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content);
+  a.download = name;
+  a.click();
+}
+
+function importJSON() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const data = JSON.parse(e.target.result);
+        states = data.states || [];
+        transitions = data.transitions || [];
+        fsmType = data.fsmType || 'moore';
+        encType = data.encType || 'binary';
+        document.getElementById('fsm-type').value = fsmType;
+        document.getElementById('enc-type').value = encType;
+        
+        nextStateId = Math.max(1, ...states.map(s => s.id)) + 1;
+        nextTransId = Math.max(1, ...transitions.map(t => t.id)) + 1;
+        
+        updateSidebar();
+        generateVerilog();
+        fitView();
+      } catch (err) {
+        alert("Invalid JSON file");
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+function exportJSON() {
+  const data = JSON.stringify({ states, transitions, fsmType, encType }, null, 2);
+  downloadFile((document.getElementById('proj-name').value || 'fsm') + '.json', data);
+}
+
+// ─── SIMULATION ENGINE ───────────────────────────────────────────────────────
+function initSim() {
+  const init = states.find(s => s.isInitial) || states[0];
+  if (!init) return;
+  simState = init.id;
+  simClock = 0;
+  simLog = [];
+  updateSimUI();
+}
+
+function updateSimUI() {
+  const s = states.find(st => st.id === simState);
+  if (!s) return;
+  document.getElementById('sim-state-name').textContent = s.name;
+  document.getElementById('sim-state-enc').textContent = 'Code: ' + getEncoding(states.indexOf(s));
+  
+  const logDiv = document.getElementById('sim-log');
+  logDiv.innerHTML = simLog.map(l => `
+    <div class="sim-cycle">
+      <span class="sim-cycle-num">#${l.clk}</span>
+      <span class="sim-cycle-st">${l.st}</span>
+      <i class="ti ti-arrow-right sim-arrow"></i>
+      <span class="sim-cycle-st">${l.next}</span>
+      ${l.out ? `<span class="sim-cycle-out">${l.out}</span>` : ''}
+    </div>
+  `).reverse().join('');
+
+  draw();
+  updateSidebar(); // Updates preview chips
+}
+
+function clockTick() {
+  if (states.length === 0) return;
+  const current = states.find(s => s.id === simState);
+  let next = current;
+  const outs = transitions.filter(t => t.from === simState);
+  
+  // Simple evaluation simulation for UI demonstration
+  for (let t of outs) {
+    if (t.condition && t.condition !== '1' && t.condition !== "1'b1") {
+       // Just pick first transition if condition not easily eval-able in browser
+       next = states.find(st => st.id === t.to) || current;
+       break;
+    }
+    next = states.find(st => st.id === t.to) || current;
+  }
+  
+  simLog.push({
+    clk: simClock++,
+    st: current.name,
+    next: next.name,
+    out: fsmType === 'moore' ? current.output : ''
+  });
+  
+  simState = next.id;
+  updateSimUI();
+}
+
+function resetSim() {
+  initSim();
+}
+</script>
 </body>
 </html>
