@@ -2132,7 +2132,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 <div id="pg-home">
   <!-- Navbar -->
   <nav class="home-nav">
-    <div class="home-logo-group" onclick="showPage('pg-home')">
+    <div class="home-logo-group" onclick="window.location.hash='#home'; showPage('pg-home')">
       <img src="icon.png" class="home-logo-img" alt="Logo">
       <span class="home-logo-text">SQGATE</span>
     </div>
@@ -2295,8 +2295,8 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 <div id="pg-login">
   <div class="login-card">
     <div class="login-header">
-      <img class="login-header-img" src="icon.png" alt="SQGATE Logo" style="cursor:pointer;" onclick="showPage('pg-home')">
-      <div class="login-logo" style="cursor:pointer;" onclick="showPage('pg-home')">SQGATE</div>
+      <img class="login-header-img" src="icon.png" alt="SQGATE Logo" style="cursor:pointer;" onclick="window.location.hash='#home'; showPage('pg-home')">
+      <div class="login-logo" style="cursor:pointer;" onclick="window.location.hash='#home'; showPage('pg-home')">SQGATE</div>
     </div>
     <div class="login-tagline">Professional Digital Circuit Simulator</div>
 
@@ -2335,7 +2335,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 <!-- ═══════════ PROJECTS PAGE ═══════════ -->
 <div id="pg-projects">
   <div class="proj-topbar">
-    <div class="proj-logo" style="display:flex;align-items:center;gap:12px;cursor:pointer;" onclick="showPage('pg-home')" title="Go to home page">
+    <div class="proj-logo" style="display:flex;align-items:center;gap:12px;cursor:pointer;" onclick="window.location.hash='#home'; showPage('pg-home')" title="Go to home page">
       <img src="icon.png" style="width:32px;height:32px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.5);" alt="Logo">
       <div style="display:flex;align-items:center;gap:10px;">
         <div id="dash-logo-text">SQGATE</div>
@@ -2349,6 +2349,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
         </a>
       </div>
       <a href="pricing.html" id="btn-upgrade-pro-dash" style="background:linear-gradient(135deg,#6366f1,#4f46e5);color:white;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-weight:600;display:none;transition:all 0.2s ease;text-decoration:none;font-size:11px;box-shadow:0 2px 8px rgba(99,102,241,0.3);margin-right:10px;">💎 Upgrade to PRO</a>
+      <button class="proj-logout" onclick="window.location.hash='#home'; showPage('pg-home')" style="margin-right:8px; border-color:var(--b2); color:var(--t2);">🏠 Home Page</button>
       <span id="pu-email" style="color:var(--t3)"></span>
       <div class="proj-avatar" id="pu-avatar">?</div>
       <button class="proj-logout" id="btn-logout">Sign out</button>
@@ -2417,7 +2418,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
   </button>
   <div id="ed-topbar">
     <div class="tb-group">
-      <img src="icon.png" style="width:24px;height:24px;border-radius:6px;margin-right:8px;box-shadow:0 2px 6px rgba(0,0,0,0.5);cursor:pointer;" onclick="showPage('pg-home')" title="Go to home page" alt="Logo">
+      <img src="icon.png" style="width:24px;height:24px;border-radius:6px;margin-right:8px;box-shadow:0 2px 6px rgba(0,0,0,0.5);cursor:pointer;" onclick="window.location.hash='#home'; showPage('pg-home')" title="Go to home page" alt="Logo">
       <button class="tb-btn" id="ed-back" title="Back to projects" aria-label="Back">
         <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
       </button>
@@ -2522,6 +2523,9 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       <button class="tb-btn" title="About SQGATE" onclick="document.getElementById('ov-about').classList.add('open')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
       </button>
+
+      <!-- Home Link -->
+      <a href="#" onclick="window.location.hash='#home'; showPage('pg-home')" class="tb-btn" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;padding:0 10px;height:32px;border-radius:6px;border:1px solid var(--b1);color:var(--t2);font-weight:600;font-size:12px;transition:all .2s ease;margin-right:8px;">🏠 Home</a>
 
       <!-- Upgrade to PRO -->
       <a href="pricing.html" id="btn-upgrade-pro" title="Unlock Premium Features" style="text-decoration:none;display:flex;align-items:center;gap:6px;padding:0 12px;height:32px;border-radius:6px;background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;font-weight:600;font-size:12px;transition:all .2s ease;box-shadow:0 2px 8px rgba(99,102,241,0.3);white-space:nowrap;flex-shrink:0;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">💎 Upgrade to PRO</a>
@@ -8278,8 +8282,21 @@ document.getElementById('btn-nav-login').addEventListener('click', function(){
   showPage('pg-login');
 });
 
-// authLoad() always guarantees CU is set (guest fallback), so showProjects() is always safe
-showProjects();
+// Check location hash for direct home loading
+if (window.location.hash === '#home') {
+  showPage('pg-home');
+} else {
+  showProjects();
+}
+
+// Listen to hash changes for smooth back navigation
+window.addEventListener('hashchange', function() {
+  if (window.location.hash === '#home') {
+    showPage('pg-home');
+  } else if (window.location.hash === '#projects' || window.location.hash === '') {
+    showProjects();
+  }
+});
 // Touch to Mouse Event Translator for Mobile Support
 function touchHandler(event) {
     if (event.touches.length > 1) return; // Ignore multi-touch
