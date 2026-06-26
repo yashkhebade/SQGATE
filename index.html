@@ -1692,7 +1692,6 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       </div>
       <a href="#features" style="color:var(--t2);text-decoration:none;font-weight:600;transition:color 0.15s;" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t2)'">Features</a>
       <a href="#tools" style="color:var(--t2);text-decoration:none;font-weight:600;margin-right:12px;transition:color 0.15s;" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t2)'">Tools</a>
-      <a href="pricing.html" id="btn-upgrade-pro-dash" style="background:linear-gradient(135deg,#6366f1,#4f46e5);color:white;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-weight:600;display:none;transition:all 0.2s ease;text-decoration:none;font-size:11px;box-shadow:0 2px 8px rgba(99,102,241,0.3);margin-right:10px;">Upgrade to PRO</a>
       <span id="pu-email" style="color:var(--t3)"></span>
       <div class="proj-avatar" id="pu-avatar">?</div>
       <button class="proj-logout" id="btn-logout">Sign out</button>
@@ -1717,19 +1716,13 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       </div>
     </div>
 
-    <!-- PRODUCT PREVIEW (GIF/Image Mockup) -->
-    <div id="features" style="max-width: 800px; margin: 0 auto 24px auto; border-radius: 12px; border: 1px solid var(--b2); overflow: hidden; box-shadow: 0 16px 64px rgba(0,0,0,0.6); position: relative;">
-      <img src="simulator_preview.png" alt="SQGATE Circuit Simulator Action Preview" style="width: 100%; display: block;">
-      <div style="position: absolute; top:0; left:0; right:0; bottom:0; background: linear-gradient(180deg, transparent 50%, var(--bg0) 100%); pointer-events: none;"></div>
-    </div>
-    
     <!-- BUILT FOR SOCIAL PROOF -->
     <div style="text-align:center; font-family:var(--fmono); font-size:12px; color:var(--t3); letter-spacing:1px; text-transform:uppercase; margin-bottom: 64px;">
       Built for electronics engineering students, VLSI hobbyists, and digital logic learners
     </div>
 
     <!-- DIGITAL DESIGN SUITE -->
-    <div id="tools" class="proj-section-title">THE DIGITAL DESIGN SUITE</div>
+    <div id="features" class="proj-section-title">THE DIGITAL DESIGN SUITE</div>
     <div class="proj-grid" style="margin-bottom: 48px;">
       
       <!-- Circuit Simulator (Electric Blue) -->
@@ -1930,10 +1923,6 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       <button class="tb-btn" title="About SQGATE" onclick="document.getElementById('ov-about').classList.add('open')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
       </button>
-
-      <!-- Upgrade to PRO -->
-      <a href="pricing.html" id="btn-upgrade-pro" title="Unlock Premium Features" style="text-decoration:none;display:flex;align-items:center;gap:6px;padding:0 12px;height:32px;border-radius:6px;background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;font-weight:600;font-size:12px;transition:all .2s ease;box-shadow:0 2px 8px rgba(99,102,241,0.3);white-space:nowrap;flex-shrink:0;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Upgrade to PRO</a>
-      
       <!-- Feedback -->
       <a href="https://docs.google.com/forms/d/e/1FAIpQLSc5AzzP2NccDkCbKAb5mVvefYFc5_X-EkJZx5RLWO7aqQ_8cw/viewform" target="_blank" id="btn-feedback-ed" title="Feedback / Contact" style="text-decoration:none;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:6px;color:var(--t2);transition:all .2s ease;flex-shrink:0;" onmouseover="this.style.color='#7248b9'" onmouseout="this.style.color='var(--t2)'">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="17" y2="8"></line><line x1="12" y1="12" x2="17" y2="12"></line><line x1="12" y1="16" x2="17" y2="16"></line><line x1="8" y1="8" x2="8.01" y2="8"></line><line x1="8" y1="12" x2="8.01" y2="12"></line><line x1="8" y1="16" x2="8.01" y2="16"></line></svg>
@@ -4451,14 +4440,7 @@ function clearCanvas(){
 
 document.getElementById('btn-pkg').addEventListener('click',pkgSel);
 document.getElementById('btn-verilog').addEventListener('click', function() {
-  var ud = getUserData(CU.email);
-  if (!ud.isPro) {
-    if(confirm("Verilog Export is a PRO feature. Upgrade to PRO to unlock this!")) {
-      window.location.href = 'pricing.html';
-    }
-  } else {
-    openVerilogModal();
-  }
+  openVerilogModal();
 });
 document.getElementById('btn-hlp').addEventListener('click',function(){document.getElementById('ov-hlp').classList.add('open');});
 document.getElementById('hlp-cl').addEventListener('click',function(){document.getElementById('ov-hlp').classList.remove('open');});
