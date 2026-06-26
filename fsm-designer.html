@@ -727,6 +727,9 @@
     </div>
     <input id="proj-name" value="traffic_controller" spellcheck="false" title="Project name"/>
     <div class="header-sep"></div>
+    <button class="hdr-btn" onclick="document.getElementById('guide-modal').style.display='flex'" title="How to use FSM Designer">
+      <i class="ti ti-help" aria-hidden="true"></i> Guide
+    </button>
     <button class="hdr-btn" onclick="importJSON()" title="Load FSM JSON">
       <i class="ti ti-upload" aria-hidden="true"></i> Import
     </button>
@@ -741,9 +744,9 @@
   <!-- TOOLBAR (canvas) -->
   <div id="fsm-toolbar">
     <div class="tb-group">
-      <button class="tb-btn active" id="tool-select" data-tip="Select Tool (V)" onclick="setTool('select')"><i class="ti ti-hand-pointer" aria-hidden="true"></i></button>
-      <button class="tb-btn" id="tool-state" data-tip="Add State (S)" onclick="setTool('state')"><i class="ti ti-circle-plus" aria-hidden="true"></i></button>
-      <button class="tb-btn" id="tool-trans" data-tip="Draw Transition (T)" onclick="setTool('transition')"><i class="ti ti-arrow-move-right" aria-hidden="true"></i></button>
+      <button class="tb-btn active" id="tool-select" data-tip="Select Tool (V)" onclick="setTool('select')" style="width:auto; padding:0 12px; gap:6px;"><i class="ti ti-hand-pointer" aria-hidden="true"></i> Select</button>
+      <button class="tb-btn" id="tool-state" data-tip="Add State (S)" onclick="setTool('state')" style="width:auto; padding:0 12px; gap:6px;"><i class="ti ti-circle-plus" aria-hidden="true"></i> Add State</button>
+      <button class="tb-btn" id="tool-trans" data-tip="Draw Transition (T)" onclick="setTool('transition')" style="width:auto; padding:0 12px; gap:6px;"><i class="ti ti-arrow-move-right" aria-hidden="true"></i> Transition</button>
     </div>
     <div class="tb-group">
       <button class="tb-btn" data-tip="Undo (Ctrl+Z)" onclick="undo()"><i class="ti ti-arrow-back-up" aria-hidden="true"></i></button>
@@ -802,6 +805,23 @@
       <div class="popup-btns">
         <button class="popup-btn" onclick="cancelTransition()">Cancel</button>
         <button class="popup-btn ok" onclick="confirmTransition()">Add</button>
+      </div>
+    </div>
+
+    <!-- Guide Modal -->
+    <div id="guide-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+      <div style="background:var(--surface-1); border:1px solid var(--border-strong); border-radius:12px; width:450px; max-width:90%; padding:24px; box-shadow:0 12px 48px rgba(0,0,0,0.6);">
+        <h2 style="font-size:18px; color:var(--text-primary); margin-bottom:16px; font-weight:700; font-family:var(--font-sans);">How to use FSM Designer</h2>
+        <ul style="color:var(--text-secondary); font-size:13px; font-family:var(--font-sans); line-height:1.6; padding-left:20px; margin-bottom:24px;">
+          <li style="margin-bottom:8px;"><strong>Select:</strong> Click states/transitions to select them. Drag on canvas to pan. Scroll to zoom.</li>
+          <li style="margin-bottom:8px;"><strong>Add State:</strong> Select the <i class="ti ti-circle-plus"></i> tool, then click anywhere on the canvas to place a new state node.</li>
+          <li style="margin-bottom:8px;"><strong>Add Transition:</strong> Select the <i class="ti ti-arrow-move-right"></i> tool, then drag from one state to another.</li>
+          <li style="margin-bottom:8px;"><strong>Edit Properties:</strong> Use the right sidebar to define module name, inputs, outputs, and state encoding.</li>
+          <li style="margin-bottom:8px;"><strong>Simulate:</strong> Open the "Simulate" tab to set input values and clock the FSM to see state changes.</li>
+        </ul>
+        <div style="text-align:right;">
+          <button onclick="document.getElementById('guide-modal').style.display='none'" style="background:var(--fill-accent); color:var(--on-accent); border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:600; font-family:var(--font-sans);">Got it!</button>
+        </div>
       </div>
     </div>
   </div>
