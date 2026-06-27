@@ -1927,6 +1927,14 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       <input type="file" class="import-input-hidden" id="import-proj-file" accept=".json">
     </div>
 
+    <!-- MULTI-DELETE HEADER -->
+    <div id="multi-delete-container" style="display:none; margin: 0 auto 16px auto; max-width: 1200px; padding: 12px 24px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; justify-content: space-between; align-items: center; box-sizing: border-box;">
+      <div style="font-weight: 600; color: #f87171;" id="multi-delete-text">0 selected</div>
+      <div style="display: flex; gap: 12px;">
+        <button onclick="clearProjectSelection()" style="background: transparent; color: var(--t2); border: 1px solid var(--b2); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.2s;">Cancel</button>
+        <button onclick="deleteSelectedProjects()" style="background: #ef4444; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; box-shadow: 0 4px 12px rgba(239,68,68,0.3); transition: all 0.2s;">Delete Selected</button>
+      </div>
+    </div>
     <div class="proj-grid" id="proj-grid"></div>
     
     <!-- DASHBOARD FOOTER -->
@@ -4820,6 +4828,30 @@ function showProjects(){
   
   renderProjGrid(ud.projects||{});
 }
+window.selectedProjects = new Set();
+function updateDeleteSelectedBtn() {
+  const container = document.getElementById('multi-delete-container');
+  const text = document.getElementById('multi-delete-text');
+  if (window.selectedProjects.size > 0) {
+    container.style.display = 'flex';
+    text.textContent = window.selectedProjects.size + ' project' + (window.selectedProjects.size > 1 ? 's' : '') + ' selected';
+  } else {
+    container.style.display = 'none';
+  }
+}
+function clearProjectSelection() {
+  window.selectedProjects.clear();
+  updateDeleteSelectedBtn();
+  showProjects();
+}
+function deleteSelectedProjects() {
+  if(!window.confirm('Delete ' + window.selectedProjects.size + ' project(s)? This cannot be undone.')) return;
+  window.selectedProjects.forEach(id => deleteProject(id));
+  window.selectedProjects.clear();
+  updateDeleteSelectedBtn();
+  showProjects();
+  msg('Projects deleted', '');
+}
 
 function renderProjGrid(projects){
   var grid = document.getElementById('proj-grid');
@@ -4869,10 +4901,18 @@ function renderProjGrid(projects){
       var wireCount = (p.data && p.data.wires) ? p.data.wires.length : 0;
       var dateStr   = p.updatedAt ? new Date(p.updatedAt).toLocaleDateString() : 'Never';
 
+      var isSelected = window.selectedProjects && window.selectedProjects.has(p.id);
+
       card.innerHTML =
-        '<div class="proj-card-name">'+escHtml(p.name)+'</div>'+
-        '<div class="proj-card-meta">'+gateCount+' gates &middot; '+wireCount+' wires &middot; '+dateStr+'</div>'+
-        '<div class="proj-card-badge">'+p.id+'</div>';
+        '<input type="checkbox" class="proj-checkbox" style="position:absolute; top:12px; left:12px; transform:scale(1.2); cursor:pointer; z-index:10; accent-color:#ef4444;" '+(isSelected?'checked':'')+'>'+
+        '<div class="proj-card-name" style="padding-left:24px;">'+escHtml(p.name)+'</div>'+
+        '<div class="proj-card-meta" style="padding-left:24px;">'+gateCount+' gates &middot; '+wireCount+' wires &middot; '+dateStr+'</div>'+
+        '<div class="proj-card-badge" style="padding-left:24px;">'+p.id+'</div>';
+
+      if (isSelected) {
+        card.style.borderColor = '#ef4444';
+        card.style.background = 'rgba(239,68,68,0.05)';
+      }
 
       card.addEventListener('click', function(){ openProject(p); });
 
@@ -4888,6 +4928,22 @@ function renderProjGrid(projects){
         });
       });
 
+      // Checkbox event
+      var cb = card.querySelector('.proj-checkbox');
+      cb.addEventListener('click', function(e){
+        e.stopPropagation();
+        if (cb.checked) window.selectedProjects.add(p.id);
+        else window.selectedProjects.delete(p.id);
+        updateDeleteSelectedBtn();
+        if (cb.checked) {
+          card.style.borderColor = '#ef4444';
+          card.style.background = 'rgba(239,68,68,0.05)';
+        } else {
+          card.style.borderColor = '';
+          card.style.background = '';
+        }
+      });
+
       // Delete button
       var del = document.createElement('button');
       del.textContent = '×';
@@ -4900,6 +4956,10 @@ function renderProjGrid(projects){
         e.stopPropagation();
         if(!window.confirm || window.confirm('Delete "'+p.name+'"? This cannot be undone.')){
           deleteProject(p.id);
+          if (window.selectedProjects) {
+            window.selectedProjects.delete(p.id);
+            updateDeleteSelectedBtn();
+          }
           showProjects();
           msg('Project deleted','');
         }
