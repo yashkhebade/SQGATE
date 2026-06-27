@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>\n  <meta charset="UTF-8" />
+<head>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="theme-color" content="#0f1729" />
@@ -2453,24 +2454,40 @@ const CATS = [
 ];
 
 const DEF = {
-  input: {lbl:'IN',   w:52, h:40,  nc:0,np:1,cls:'ti',  tip:'Toggle Input\nClick body to switch 0↔1'},
+  input: {lbl:'IN',   w:52, h:40,  nc:0,np:1,cls:'ti',  tip:'Toggle Input
+Click body to switch 0↔1'},
   output:{lbl:'OUT',  w:58, h:40,  nc:1,np:0,cls:'to',  tip:'Output Probe — shows signal'},
-  clock: {lbl:'CLK',  w:64, h:54,  nc:0,np:1,cls:'tck', tip:'Clock oscillator\nDouble-click → set freq in Props'},
+  clock: {lbl:'CLK',  w:64, h:54,  nc:0,np:1,cls:'tck', tip:'Clock oscillator
+Double-click → set freq in Props'},
   const0:{lbl:'0',    w:40, h:34,  nc:0,np:1,cls:'tc0', tip:'Constant LOW (0)'},
   const1:{lbl:'1',    w:40, h:34,  nc:0,np:1,cls:'tc1', tip:'Constant HIGH (1)'},
   led:   {lbl:'LED',  w:52, h:52,  nc:1,np:0,cls:'tled',tip:'LED — lights up when input is HIGH'},
-  seg7:  {lbl:'SEG7', w:80, h:110, nc:7,np:0,cls:'tseg',tip:'7-Segment Display\nInputs: a,b,c,d,e,f,g\nShows hex digit 0–F'},
-  matrix:{lbl:'8x8',  w:120, h:130, nc:16,np:0,cls:'tmtx',tip:'8x8 LED Matrix\nR0-R7, C0-C7\nLights up when R=1, C=1'},
-  merge4: {lbl:'MERGE', w:70, h:74, nc:4,np:1,cls:'tmg',tip:'4-Bit Merger\n4 single bits -> 1 4-bit bus',sub:'4-BIT'},
-  split4: {lbl:'SPLIT', w:70, h:74, nc:1,np:4,cls:'tsp',tip:'4-Bit Splitter\n1 4-bit bus -> 4 single bits',sub:'4-BIT'},
-  merge8: {lbl:'MERGE', w:70, h:122, nc:8,np:1,cls:'tmg',tip:'8-Bit Merger\n8 single bits -> 1 8-bit bus',sub:'8-BIT'},
-  split8: {lbl:'SPLIT', w:70, h:122, nc:1,np:8,cls:'tsp',tip:'8-Bit Splitter\n1 8-bit bus -> 8 single bits',sub:'8-BIT'},
-  hexdisp:{lbl:'HEX',   w:52, h:76, nc:1,np:0,cls:'thx',tip:'Hex Display\nTakes a 4-bit bus input'},
-  rom8:   {lbl:'ROM', w:86, h:66, nc:1,np:1,cls:'trm', tip:'ROM (256x8)\nDouble-click to edit data',sub:'8-BIT'},
-  ram8:   {lbl:'RAM', w:96, h:100, nc:4,np:1,cls:'trm', tip:'RAM (256x8)\nA,Din,WE,CLK -> Dout',sub:'8-BIT'},
-  alu8:   {lbl:'ALU', w:110, h:86, nc:3,np:3,cls:'tal', tip:'8-Bit ALU\nA,B,OP -> Y,Cout,Z',sub:'8-BIT'},
-  count8: {lbl:'CNT', w:96, h:100, nc:4,np:2,cls:'tct', tip:'8-Bit Counter\nCLK,EN,CLR,UP',sub:'8-BIT'},
-  shift8: {lbl:'SHF', w:96, h:100, nc:4,np:2,cls:'tsh', tip:'8-Bit Shift Register\nCLK,LD,Din,Sin',sub:'8-BIT'},
+  seg7:  {lbl:'SEG7', w:80, h:110, nc:7,np:0,cls:'tseg',tip:'7-Segment Display
+Inputs: a,b,c,d,e,f,g
+Shows hex digit 0–F'},
+  matrix:{lbl:'8x8',  w:120, h:130, nc:16,np:0,cls:'tmtx',tip:'8x8 LED Matrix
+R0-R7, C0-C7
+Lights up when R=1, C=1'},
+  merge4: {lbl:'MERGE', w:70, h:74, nc:4,np:1,cls:'tmg',tip:'4-Bit Merger
+4 single bits -> 1 4-bit bus',sub:'4-BIT'},
+  split4: {lbl:'SPLIT', w:70, h:74, nc:1,np:4,cls:'tsp',tip:'4-Bit Splitter
+1 4-bit bus -> 4 single bits',sub:'4-BIT'},
+  merge8: {lbl:'MERGE', w:70, h:122, nc:8,np:1,cls:'tmg',tip:'8-Bit Merger
+8 single bits -> 1 8-bit bus',sub:'8-BIT'},
+  split8: {lbl:'SPLIT', w:70, h:122, nc:1,np:8,cls:'tsp',tip:'8-Bit Splitter
+1 8-bit bus -> 8 single bits',sub:'8-BIT'},
+  hexdisp:{lbl:'HEX',   w:52, h:76, nc:1,np:0,cls:'thx',tip:'Hex Display
+Takes a 4-bit bus input'},
+  rom8:   {lbl:'ROM', w:86, h:66, nc:1,np:1,cls:'trm', tip:'ROM (256x8)
+Double-click to edit data',sub:'8-BIT'},
+  ram8:   {lbl:'RAM', w:96, h:100, nc:4,np:1,cls:'trm', tip:'RAM (256x8)
+A,Din,WE,CLK -> Dout',sub:'8-BIT'},
+  alu8:   {lbl:'ALU', w:110, h:86, nc:3,np:3,cls:'tal', tip:'8-Bit ALU
+A,B,OP -> Y,Cout,Z',sub:'8-BIT'},
+  count8: {lbl:'CNT', w:96, h:100, nc:4,np:2,cls:'tct', tip:'8-Bit Counter
+CLK,EN,CLR,UP',sub:'8-BIT'},
+  shift8: {lbl:'SHF', w:96, h:100, nc:4,np:2,cls:'tsh', tip:'8-Bit Shift Register
+CLK,LD,Din,Sin',sub:'8-BIT'},
   buffer:{lbl:'BUF',  w:56, h:38,  nc:1,np:1,cls:'tbf', tip:'Buffer — passes signal'},
   and:   {lbl:'AND',  w:66, h:44,  nc:2,np:1,cls:'tan', tip:'AND — all inputs HIGH'},
   or:    {lbl:'OR',   w:60, h:44,  nc:2,np:1,cls:'tor', tip:'OR — any input HIGH'},
@@ -2479,20 +2496,35 @@ const DEF = {
   nor:   {lbl:'NOR',  w:64, h:44,  nc:2,np:1,cls:'tnr', tip:'NOR — NOT OR'},
   xor:   {lbl:'XOR',  w:60, h:44,  nc:2,np:1,cls:'txo', tip:'XOR — inputs differ'},
   xnor:  {lbl:'XNOR', w:70, h:44,  nc:2,np:1,cls:'txn', tip:'XNOR — inputs match'},
-  ha:    {lbl:'HA',   w:90, h:54,  nc:2,np:2,cls:'tah', tip:'Half Adder\nA,B → Sum,Carry',sub:'HALF ADD'},
-  fa:    {lbl:'FA',   w:94, h:62,  nc:3,np:2,cls:'taf', tip:'Full Adder\nA,B,Cin → Sum,Cout',sub:'FULL ADD'},
-  add4:  {lbl:'4BIT', w:110, h:122, nc:9,np:5,cls:'taa', tip:'4-Bit Adder\nA3-A0,B3-B0,Cin→S3-S0,Cout',sub:'ADDER'},
-  mux2:  {lbl:'MUX',  w:86, h:60,  nc:3,np:1,cls:'tm2', tip:'2:1 MUX\nA,B,S→Y  S=0→A  S=1→B',sub:'2:1'},
-  mux4:  {lbl:'MUX',  w:90, h:92,  nc:6,np:1,cls:'tm4', tip:'4:1 MUX\nD0-D3,S0,S1→Y',sub:'4:1'},
-  dmux2: {lbl:'DMUX', w:86, h:60,  nc:2,np:2,cls:'td2', tip:'1:2 DEMUX\nIN,S→Y0,Y1',sub:'1:2'},
-  dmux4: {lbl:'DMUX', w:90, h:92,  nc:3,np:4,cls:'td4', tip:'1:4 DEMUX\nIN,S0,S1→Y0-Y3',sub:'1:4'},
-  enc4:  {lbl:'ENC',  w:86, h:74,  nc:4,np:2,cls:'te4', tip:'4:2 Priority Encoder\nI0-I3→A0,A1',sub:'4:2'},
-  dec2:  {lbl:'DEC',  w:86, h:74,  nc:2,np:4,cls:'tdc', tip:'2:4 Decoder\nA0,A1→Y0-Y3',sub:'2:4'},
-  sr:    {lbl:'SR',   w:90, h:66,  nc:2,np:2,cls:'tsr', tip:'SR Latch\nS,R→Q,Q̄  S=R=1 INVALID!',sub:'LATCH'},
-  dlatch:{lbl:'D',    w:90, h:66,  nc:2,np:2,cls:'tdl', tip:'D Latch\nD,E→Q,Q̄  Transparent E=1',sub:'LATCH'},
-  dff:   {lbl:'D-FF', w:96, h:82,  nc:3,np:2,cls:'tdf', tip:'D Flip-Flop\nD,CLK,RST→Q,Q̄  Captures D on CLK↑'},
-  jkff:  {lbl:'JK-FF',w:100, h:82,  nc:3,np:2,cls:'tjk', tip:'JK Flip-Flop\nJ,K,CLK→Q,Q̄\n00=hold 01=reset 10=set 11=toggle'},
-  tff:   {lbl:'T-FF', w:90, h:66,  nc:2,np:2,cls:'ttf', tip:'T Flip-Flop\nT,CLK→Q,Q̄  Toggles on CLK↑ T=1'},
+  ha:    {lbl:'HA',   w:90, h:54,  nc:2,np:2,cls:'tah', tip:'Half Adder
+A,B → Sum,Carry',sub:'HALF ADD'},
+  fa:    {lbl:'FA',   w:94, h:62,  nc:3,np:2,cls:'taf', tip:'Full Adder
+A,B,Cin → Sum,Cout',sub:'FULL ADD'},
+  add4:  {lbl:'4BIT', w:110, h:122, nc:9,np:5,cls:'taa', tip:'4-Bit Adder
+A3-A0,B3-B0,Cin→S3-S0,Cout',sub:'ADDER'},
+  mux2:  {lbl:'MUX',  w:86, h:60,  nc:3,np:1,cls:'tm2', tip:'2:1 MUX
+A,B,S→Y  S=0→A  S=1→B',sub:'2:1'},
+  mux4:  {lbl:'MUX',  w:90, h:92,  nc:6,np:1,cls:'tm4', tip:'4:1 MUX
+D0-D3,S0,S1→Y',sub:'4:1'},
+  dmux2: {lbl:'DMUX', w:86, h:60,  nc:2,np:2,cls:'td2', tip:'1:2 DEMUX
+IN,S→Y0,Y1',sub:'1:2'},
+  dmux4: {lbl:'DMUX', w:90, h:92,  nc:3,np:4,cls:'td4', tip:'1:4 DEMUX
+IN,S0,S1→Y0-Y3',sub:'1:4'},
+  enc4:  {lbl:'ENC',  w:86, h:74,  nc:4,np:2,cls:'te4', tip:'4:2 Priority Encoder
+I0-I3→A0,A1',sub:'4:2'},
+  dec2:  {lbl:'DEC',  w:86, h:74,  nc:2,np:4,cls:'tdc', tip:'2:4 Decoder
+A0,A1→Y0-Y3',sub:'2:4'},
+  sr:    {lbl:'SR',   w:90, h:66,  nc:2,np:2,cls:'tsr', tip:'SR Latch
+S,R→Q,Q̄  S=R=1 INVALID!',sub:'LATCH'},
+  dlatch:{lbl:'D',    w:90, h:66,  nc:2,np:2,cls:'tdl', tip:'D Latch
+D,E→Q,Q̄  Transparent E=1',sub:'LATCH'},
+  dff:   {lbl:'D-FF', w:96, h:82,  nc:3,np:2,cls:'tdf', tip:'D Flip-Flop
+D,CLK,RST→Q,Q̄  Captures D on CLK↑'},
+  jkff:  {lbl:'JK-FF',w:100, h:82,  nc:3,np:2,cls:'tjk', tip:'JK Flip-Flop
+J,K,CLK→Q,Q̄
+00=hold 01=reset 10=set 11=toggle'},
+  tff:   {lbl:'T-FF', w:90, h:66,  nc:2,np:2,cls:'ttf', tip:'T Flip-Flop
+T,CLK→Q,Q̄  Toggles on CLK↑ T=1'},
 };
 
 const PLBL = {
@@ -3362,7 +3394,17 @@ function bindGate(gate){
     if(gate.type==='rom8'){
       e.stopPropagation();
       window.currentAsmTargetId = gate.id;
-      document.getElementById('asm-code').value = gate.asmCode || "#DEFINE NOP 0x00\n#DEFINE ADD 0x10\n#DEFINE JMP 0x80\n\nSTART:\n  NOP\n  ADD\n  0x05\n  JMP\n  START\n";
+      document.getElementById('asm-code').value = gate.asmCode || "#DEFINE NOP 0x00
+#DEFINE ADD 0x10
+#DEFINE JMP 0x80
+
+START:
+  NOP
+  ADD
+  0x05
+  JMP
+  START
+";
       document.getElementById('asm-log').textContent = "Ready to compile. Double-click on ROM opens this editor.";
       document.getElementById('ov-asm').classList.add('open');
     }
@@ -3912,15 +3954,33 @@ function genVerilog(){
   const portList=[inPorts,outPorts].filter(Boolean).join(', ');
 
   if(vMode==='vhdl'){
-    let code='-- Generated by SQGATE\n-- Mode: VHDL\n\nlibrary IEEE;\nuse IEEE.STD_LOGIC_1164.ALL;\n\n';
-    code+='entity '+pName+' is\n  Port (\n';
+    let code='-- Generated by SQGATE
+-- Mode: VHDL
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+';
+    code+='entity '+pName+' is
+  Port (
+';
     const vPorts=[];
-    if(inPorts) vPorts.push('    '+inputs.map(function(g){return inMap[g.id]+' : in STD_LOGIC';}).join(';\n    '));
-    if(outPorts) vPorts.push('    '+outputs.map(function(g){return outMap[g.id]+' : out STD_LOGIC';}).join(';\n    '));
-    code+=vPorts.join(';\n')+'\n  );\nend '+pName+';\n\n';
-    code+='architecture Behavioral of '+pName+' is\n';
-    if(internalNets.size) code+='  signal '+[...internalNets].join(', ')+' : STD_LOGIC;\n';
-    code+='begin\n';
+    if(inPorts) vPorts.push('    '+inputs.map(function(g){return inMap[g.id]+' : in STD_LOGIC';}).join(';
+    '));
+    if(outPorts) vPorts.push('    '+outputs.map(function(g){return outMap[g.id]+' : out STD_LOGIC';}).join(';
+    '));
+    code+=vPorts.join(';
+')+'
+  );
+end '+pName+';
+
+';
+    code+='architecture Behavioral of '+pName+' is
+';
+    if(internalNets.size) code+='  signal '+[...internalNets].join(', ')+' : STD_LOGIC;
+';
+    code+='begin
+';
     
     // Logic assignments
     S.gates.forEach(function(gate){
@@ -3945,32 +4005,45 @@ function genVerilog(){
         else if(gt==='not') expr = 'not '+ins[0];
         else if(gt==='buffer') expr = ins[0];
         else expr = "'0'; -- "+gt+" not mapped to VHDL yet";
-        code+='  '+net+' <= '+expr+';\n';
+        code+='  '+net+' <= '+expr+';
+';
       }
     });
     
     // Assign outputs
     outputs.forEach(function(g){
       const w=S.wires.find(function(w){return w.tg===g.id&&w.tp===0;});
-      if(w){const src=netMap[w.fg+'_'+w.fp];code+='  '+outMap[g.id]+' <= '+(src||"'0'")+';\n';}
+      if(w){const src=netMap[w.fg+'_'+w.fp];code+='  '+outMap[g.id]+' <= '+(src||"'0'")+';
+';}
     });
-    code+='end Behavioral;\n';
+    code+='end Behavioral;
+';
     document.getElementById('vcode').textContent=code;
     return;
   }
 
-  let code='// Generated by SQGATE\n';
-  code+='// Mode: '+(vMode==='structural'?'Structural':'Behavioral')+'\n\n';
+  let code='// Generated by SQGATE
+';
+  code+='// Mode: '+(vMode==='structural'?'Structural':'Behavioral')+'
+
+';
 
   const modParts=[];
   if(inPorts)modParts.push('input wire '+inPorts);
   if(outPorts)modParts.push(vMode==='behavioral'?'output reg '+outPorts:'output wire '+outPorts);
   if(internalNets.size)modParts.push('wire '+[...internalNets].join(', '));
 
-  code+='module '+pName+'(\n';
-  code+='  '+[...(inPorts?['input wire '+inPorts]:[]),...(outPorts?['output '+(vMode==='behavioral'?'reg':'wire')+' '+outPorts]:[])].join(',\n  ');
-  code+='\n);\n\n';
-  if(internalNets.size)code+='  wire '+[...internalNets].join(', ')+';\n\n';
+  code+='module '+pName+'(
+';
+  code+='  '+[...(inPorts?['input wire '+inPorts]:[]),...(outPorts?['output '+(vMode==='behavioral'?'reg':'wire')+' '+outPorts]:[])].join(',
+  ');
+  code+='
+);
+
+';
+  if(internalNets.size)code+='  wire '+[...internalNets].join(', ')+';
+
+';
 
   if(vMode==='structural'){
     // Output a primitive instantiation per gate
@@ -3993,17 +4066,21 @@ function genVerilog(){
       code+='  '+gn+' U'+gCount+'(';
       const ports=ins.map(function(n,i){return'.i'+i+'('+n+')';});
       outs.forEach(function(n,i){ports.push('.o'+i+'('+n+')');});
-      code+=ports.join(', ')+');\n';
+      code+=ports.join(', ')+');
+';
       gCount++;
     });
     // Output assignments
     outputs.forEach(function(g,i){
       const w=S.wires.find(function(w){return w.tg===g.id&&w.tp===0;});
-      if(w){const src=netMap[w.fg+'_'+w.fp];code+='  assign '+outMap[g.id]+' = '+(src||"1'b0")+';\n';}
+      if(w){const src=netMap[w.fg+'_'+w.fp];code+='  assign '+outMap[g.id]+' = '+(src||"1'b0")+';
+';}
     });
     // Primitive modules
     if(gCount>0){
-      code+='\n// ─── Primitive definitions ───\n';
+      code+='
+// ─── Primitive definitions ───
+';
       const seen=new Set();
       S.gates.forEach(function(gate){
         if(['input','output','clock','const0','const1'].includes(gate.type))return;
@@ -4013,20 +4090,28 @@ function genVerilog(){
         const oPorts=Array.from({length:d.np},function(_,i){return'o'+i;});
         const allPorts=[...iPorts,...oPorts];
         const gn=gate.type.replace('ff','_ff').replace('dlatch','d_latch');
-        code+='\nmodule '+gn+'('+allPorts.join(', ')+');\n';
-        if(iPorts.length)code+='  input '+iPorts.join(', ')+';\n';
+        code+='
+module '+gn+'('+allPorts.join(', ')+');
+';
+        if(iPorts.length)code+='  input '+iPorts.join(', ')+';
+';
         if(gate.type === 'count8'){
-          code+='  output reg [7:0] o0;\n  output wire o1;\n';
+          code+='  output reg [7:0] o0;
+  output wire o1;
+';
         } else if(oPorts.length) {
-          code+='  output '+(isSeq(gate.type)?'reg':'wire')+' '+oPorts.join(', ')+';\n';
+          code+='  output '+(isSeq(gate.type)?'reg':'wire')+' '+oPorts.join(', ')+';
+';
         }
         code+=verilogPrimBody(gate.type,iPorts,oPorts);
-        code+='endmodule\n';
+        code+='endmodule
+';
       });
     }
   }else{
     // Behavioral
-    code+='  always @(*) begin\n';
+    code+='  always @(*) begin
+';
     S.gates.forEach(function(gate){
       if(['input','output','clock','const0','const1'].includes(gate.type))return;
       const d=gdef(gate);
@@ -4037,17 +4122,22 @@ function genVerilog(){
       }
       for(let p=0;p<d.np;p++){
         const net=netMap[gate.id+'_'+p];
-        if(net){code+='    '+net+' = '+verilogExpr(gate.type,ins,p)+';\n';}
+        if(net){code+='    '+net+' = '+verilogExpr(gate.type,ins,p)+';
+';}
       }
     });
     outputs.forEach(function(g,i){
       const w=S.wires.find(function(w){return w.tg===g.id&&w.tp===0;});
-      if(w){const src=netMap[w.fg+'_'+w.fp];code+='    '+outMap[g.id]+' = '+(src||"1'b0")+';\n';}
+      if(w){const src=netMap[w.fg+'_'+w.fp];code+='    '+outMap[g.id]+' = '+(src||"1'b0")+';
+';}
     });
-    code+='  end\n';
+    code+='  end
+';
   }
 
-  code+='\nendmodule\n';
+  code+='
+endmodule
+';
   document.getElementById('vcode').textContent=code;
 }
 
@@ -4073,28 +4163,48 @@ function verilogPrimBody(type,iPorts,oPorts){
   const a=iPorts[0]||"1'b0",b=iPorts[1]||"1'b0",c=iPorts[2]||"1'b0";
   const o0=oPorts[0],o1=oPorts[1];
   switch(type){
-    case 'buffer':return'  assign '+o0+' = '+a+';\n';
-    case 'and': return'  assign '+o0+' = '+a+' & '+b+';\n';
-    case 'or':  return'  assign '+o0+' = '+a+' | '+b+';\n';
-    case 'not': return'  assign '+o0+' = ~'+a+';\n';
-    case 'nand':return'  assign '+o0+' = ~('+a+' & '+b+');\n';
-    case 'nor': return'  assign '+o0+' = ~('+a+' | '+b+');\n';
-    case 'xor': return'  assign '+o0+' = '+a+' ^ '+b+';\n';
-    case 'xnor':return'  assign '+o0+' = ~('+a+' ^ '+b+');\n';
-    case 'ha':  return'  assign '+o0+' = '+a+' ^ '+b+';\n  assign '+o1+' = '+a+' & '+b+';\n';
-    case 'mux2':return'  assign '+o0+' = '+c+'?'+b+':'+a+';\n';
+    case 'buffer':return'  assign '+o0+' = '+a+';
+';
+    case 'and': return'  assign '+o0+' = '+a+' & '+b+';
+';
+    case 'or':  return'  assign '+o0+' = '+a+' | '+b+';
+';
+    case 'not': return'  assign '+o0+' = ~'+a+';
+';
+    case 'nand':return'  assign '+o0+' = ~('+a+' & '+b+');
+';
+    case 'nor': return'  assign '+o0+' = ~('+a+' | '+b+');
+';
+    case 'xor': return'  assign '+o0+' = '+a+' ^ '+b+';
+';
+    case 'xnor':return'  assign '+o0+' = ~('+a+' ^ '+b+');
+';
+    case 'ha':  return'  assign '+o0+' = '+a+' ^ '+b+';
+  assign '+o1+' = '+a+' & '+b+';
+';
+    case 'mux2':return'  assign '+o0+' = '+c+'?'+b+':'+a+';
+';
     case 'count8': {
       const clk=iPorts[0], en=iPorts[1], clr=iPorts[2], up=iPorts[3];
-      return '  always @(posedge '+clk+' or posedge '+clr+') begin\n'+
-             '    if ('+clr+') o0 <= 8\'d0;\n'+
-             '    else if ('+en+') begin\n'+
-             '      if ('+up+') o0 <= o0 + 1;\n'+
-             '      else o0 <= o0 - 1;\n'+
-             '    end\n'+
-             '  end\n'+
-             '  assign o1 = ('+up+' && o0 == 8\'d255) || (!'+up+' && o0 == 8\'d0);\n';
+      return '  always @(posedge '+clk+' or posedge '+clr+') begin
+'+
+             '    if ('+clr+') o0 <= 8\'d0;
+'+
+             '    else if ('+en+') begin
+'+
+             '      if ('+up+') o0 <= o0 + 1;
+'+
+             '      else o0 <= o0 - 1;
+'+
+             '    end
+'+
+             '  end
+'+
+             '  assign o1 = ('+up+' && o0 == 8\'d255) || (!'+up+' && o0 == 8\'d0);
+';
     }
-    default: return'  // '+type+'\n';
+    default: return'  // '+type+'
+';
   }
 }
 
@@ -4134,7 +4244,8 @@ function readVFile(file){
 // ─── Verilog token helpers ───────────────────────────────
 function vClean(src) {
   // Remove line comments
-  src = src.replace(/\/\/[^\n]*/g, '');
+  src = src.replace(/\/\/[^
+]*/g, '');
   // Remove block comments
   src = src.replace(/\/\*[\s\S]*?\*\//g, '');
   // Collapse whitespace
@@ -5296,7 +5407,8 @@ document.getElementById('btn-tb').addEventListener('click', () => document.getEl
 /*
 document.getElementById('tb-run').addEventListener('click', function() {
   var code = document.getElementById('tb-code').value;
-  var lines = code.split('\n');
+  var lines = code.split('
+');
   var res = document.getElementById('tb-res');
   res.innerHTML = '';
   
@@ -5472,7 +5584,8 @@ function renderTTContent() {
     var html = '<div class="tt-gen-info">Sum-of-Products (SOP) Boolean expressions for each output:</div>';
     html += '<div class="tt-gen-expr">';
     if (ttData.boolExprs.length) {
-      html += ttData.boolExprs.join('\n');
+      html += ttData.boolExprs.join('
+');
     } else {
       html += '(No outputs connected)';
     }
@@ -5544,7 +5657,8 @@ function exportTTCSV() {
   ttData.rows.forEach(function(row) {
     lines.push(row.in.concat(row.out).join(','));
   });
-  var csv = lines.join('\n');
+  var csv = lines.join('
+');
   var blob = new Blob([csv], {type:'text/csv'});
   var url = URL.createObjectURL(blob);
   var a = document.createElement('a'); a.href=url; a.download='truth_table.csv'; a.click();
@@ -5774,7 +5888,8 @@ function exportPNG() {
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     var label = d.lbl;
     if (gate.type==='input') label = gate.value ? '1' : '0';
-    else if (['sr','dlatch','dff','jkff','tff'].includes(gate.type)) label = d.lbl+'\nQ='+(gate.q?1:0);
+    else if (['sr','dlatch','dff','jkff','tff'].includes(gate.type)) label = d.lbl+'
+Q='+(gate.q?1:0);
     ctx.fillText(label, gx+gw/2, gy+gh/2);
 
     // Pins
@@ -5848,7 +5963,8 @@ function exportSVG() {
   });
 
   lines.push('</g></svg>');
-  var svgStr = lines.join('\n');
+  var svgStr = lines.join('
+');
   var blob = new Blob([svgStr], {type:'image/svg+xml'});
   var url = URL.createObjectURL(blob);
   var a = document.createElement('a'); a.href=url; a.download=(PROJ?PROJ.name:'circuit').replace(/\W/g,'_')+'.svg'; a.click();
@@ -6794,7 +6910,13 @@ function buildNANDOnly(ox,oy) {
 }
 
 function build8BitCPU(ox, oy) {
-  addAnnotation(ox, oy - 60, "8-BIT HARVARD CPU ARCHITECTURE\n==============================\nPC: 8-Bit Counter\nROM: Instruction Memory\nRAM: Data Memory\nALU: 8-Bit (Add/Sub/Logic)\nACC: 8-Bit Register");
+  addAnnotation(ox, oy - 60, "8-BIT HARVARD CPU ARCHITECTURE
+==============================
+PC: 8-Bit Counter
+ROM: Instruction Memory
+RAM: Data Memory
+ALU: 8-Bit (Add/Sub/Logic)
+ACC: 8-Bit Register");
 
   // --- CONTROLS ---
   var clk = place('clock', ox, oy); clk.freq = 2;
@@ -6872,7 +6994,13 @@ function build8BitCPU(ox, oy) {
 }
 
 function build4BitCPU(ox,oy) {
-  addAnnotation(ox, oy - 60, "4-BIT CPU ARCHITECTURE (S-4)\n==========================\nPC: 4-Bit Counter\nROM: 16x8 Instructions\nIR: 4-bit Op / 4-bit Operand\nALU: 4-Bit Add/Sub\nACC: 4-Bit Register");
+  addAnnotation(ox, oy - 60, "4-BIT CPU ARCHITECTURE (S-4)
+==========================
+PC: 4-Bit Counter
+ROM: 16x8 Instructions
+IR: 4-bit Op / 4-bit Operand
+ALU: 4-Bit Add/Sub
+ACC: 4-Bit Register");
 
   // --- CLOCK & CONTROLS ---
   var clk = place('clock', ox, oy); clk.freq = 1;
@@ -7423,7 +7551,8 @@ function updateStats() {
     html += '<div class="stat-path">'+critGates.map(function(gid){
       var g=gates.find(function(g){return g.id===gid;});
       return g?(gdef(g).lbl+'#'+gid):'?';
-    }).join(' →\n')+'</div>';
+    }).join(' →
+')+'</div>';
   } else {
     html += '<div style="color:var(--t3);font-size:11px">No output gates found</div>';
   }
@@ -7520,7 +7649,8 @@ openProject = function(p){
 function compileASM() {
   const code = document.getElementById('asm-code').value;
   const logEl = document.getElementById('asm-log');
-  logEl.textContent = "Compiling...\n";
+  logEl.textContent = "Compiling...
+";
   logEl.style.color = "var(--t2)";
   
   if (!window.currentAsmTargetId) {
@@ -7539,7 +7669,8 @@ function compileASM() {
   // Save the code to the gate so it persists
   targetGate.asmCode = code;
 
-  const lines = code.split('\n');
+  const lines = code.split('
+');
   const defines = {};
   const labels = {};
   
@@ -7598,7 +7729,8 @@ function compileASM() {
     }
     
     if (currentAddr >= 256) {
-      logEl.textContent += `Error on line ${p.num}: ROM capacity exceeded (256 bytes). Address: ${currentAddr}\n`;
+      logEl.textContent += `Error on line ${p.num}: ROM capacity exceeded (256 bytes). Address: ${currentAddr}
+`;
       logEl.style.color = "var(--acr)";
       return;
     }
@@ -7623,7 +7755,8 @@ function compileASM() {
     } else if (!isNaN(parseInt(token, 10))) {
       val = parseInt(token, 10);
     } else {
-      logEl.textContent += `Error on line ${p.num}: Unknown token '${token}'\n`;
+      logEl.textContent += `Error on line ${p.num}: Unknown token '${token}'
+`;
       logEl.style.color = "var(--acr)";
       return;
     }
@@ -7638,7 +7771,8 @@ function compileASM() {
   S.pdirty = true;
   drawGrid();
   
-  logEl.textContent += `Success: Compiled ${currentAddr} bytes.\nFlashed to ROM #${targetGate.id}.`;
+  logEl.textContent += `Success: Compiled ${currentAddr} bytes.
+Flashed to ROM #${targetGate.id}.`;
   logEl.style.color = "var(--acb)";
 }
 
@@ -7945,7 +8079,8 @@ function submitWaitlist() {
     "query-input": "required name=search_term_string"
   }
 }
-</script>\n<script type="application/ld+json">
+</script>
+<script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -7972,5 +8107,6 @@ function submitWaitlist() {
     }
   ]
 }
-</script>\n</body>
+</script>
+</body>
 </html>
