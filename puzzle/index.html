@@ -311,7 +311,7 @@
     <filter id="radio-glass">
       <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
       <feGaussianBlur in="noise" stdDeviation="2" result="blurredNoise" />
-      <feDisplacementMap in="SourceGraphic" in2="blurredNoise" scale="25" xChannelSelector="R" yChannelSelector="B" result="displaced" />
+      <feDisplacementMap in="SourceGraphic" in2="blurredNoise" scale="40" xChannelSelector="R" yChannelSelector="B" result="displaced" />
       <feGaussianBlur in="displaced" stdDeviation="1.5" result="finalBlur" />
       <feComposite in="finalBlur" in2="finalBlur" operator="over" />
     </filter>
@@ -1000,7 +1000,7 @@ function checkTourAction(actionName) {
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background: rgba(255,255,255,0.02);
+    background: rgba(255,255,255,0.08);
     filter: url("#radio-glass");
     z-index: -1;
     pointer-events: none;
