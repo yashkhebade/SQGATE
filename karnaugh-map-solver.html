@@ -133,7 +133,7 @@
 
   /* Main layout */
   .main-grid { display: grid; grid-template-columns: 1fr 340px; gap: 24px; align-items: start; }
-  @media(max-width: 800px) { .main-grid { grid-template-columns: 1fr; } }
+  @media(max-width: 1100px) { .main-grid { grid-template-columns: 1fr; } }
 
   /* Cards */
   .kmap-card {
@@ -184,6 +184,11 @@
   .kmap-cell.val-0 { color: var(--t3); }
   .kmap-cell.val-1 { color: #4ade80; }
   .kmap-cell.val-x { color: #60a5fa; }
+
+  /* Responsive Cell Sizes for 5 and 6 Variables */
+  .kmap-table.vars-5 th, .kmap-table.vars-6 th { min-width: 46px; padding: 6px 8px; font-size: 11px; }
+  .kmap-table.vars-5 .kmap-cell, .kmap-table.vars-6 .kmap-cell { width: 46px; height: 46px; font-size: 16px; }
+  .kmap-table.vars-5 .minterm-num, .kmap-table.vars-6 .minterm-num { font-size: 9px; top: 2px; left: 4px; }
 
   /* Minterm label */
   .minterm-num {
@@ -453,6 +458,7 @@ function cellMinterm(r, c) {
 function renderTable() {
   const cfg = CONFIGS[varCount];
   const table = document.getElementById('kmapTable');
+  table.className = 'kmap-table vars-' + varCount;
   table.innerHTML = '';
 
   const thead = document.createElement('thead');
