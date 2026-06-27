@@ -44,13 +44,13 @@
   
 
   :root {
-    /* SQGATE Deep Space Blue Palette */
+    /* SQGATE Deep Space Blue Palette (Liquid Glass) */
     --bg0: #060813;
-    --bg1: #0c0f1c;
-    --bg2: #121626;
-    --bg3: #1a2035;
-    --b1: #1e243b;
-    --b2: #2b3453;
+    --bg1: rgba(12, 15, 28, 0.65);
+    --bg2: rgba(18, 22, 38, 0.65);
+    --bg3: rgba(26, 32, 53, 0.65);
+    --b1: rgba(255, 255, 255, 0.08);
+    --b2: rgba(255, 255, 255, 0.12);
     --t1: #ffffff;
     --t2: #94a3b8;
     --t3: #64748b;
@@ -946,7 +946,28 @@ function checkTourAction(actionName) {
 .sqgate-em-btn-primary:hover { background: #5b3a94; transform: translateY(-2px); }
 .sqgate-em-btn-secondary { background: transparent; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.2); }
 .sqgate-em-btn-secondary:hover { background: rgba(255,255,255,0.05); color: #fff; }
+/* LIQUID GLASS EFFECTS */
+#lq-header, .lq-sidebar, .lq-levels-panel, .lq-btn, .lq-em-box, .gate-dragger {
+  backdrop-filter: blur(16px) saturate(120%);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+}
+.lq-levels-panel, .lq-em-box { box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); }
+
+/* BACKGROUND ORBS */
+.bg-orbs { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; background: #060813; }
+.orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5; animation: float 20s infinite ease-in-out alternate; }
+.orb-1 { width: 400px; height: 400px; background: #8b5cf6; top: -100px; left: -100px; }
+.orb-2 { width: 500px; height: 500px; background: #10b981; bottom: -150px; right: -100px; animation-delay: -5s; }
+.orb-3 { width: 300px; height: 300px; background: #22d3ee; top: 40%; left: 30%; animation-delay: -10s; opacity: 0.3; }
+@keyframes float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(50px, 50px) scale(1.1); } }
 </style>
+<body>
+<!-- BACKGROUND ORBS -->
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
 <div id="sqgate-error-modal">
   <div class="sqgate-em-box">
     <div class="sqgate-em-icon">⚠️</div>

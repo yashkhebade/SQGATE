@@ -38,7 +38,7 @@
     </div>
     <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 8px;">
       <button id="sqgate-cookie-decline" style="background: transparent; color: #94a3b8; border: 1px solid #334155; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s;">Decline Optional</button>
-      <button id="sqgate-cookie-accept" style="background: #8b5cf6; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s;">Accept All</button>
+      <button id="sqgate-cookie-accept" style="background: #4f46e5; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; transition: all 0.2s;">Accept All</button>
     </div>
   `;
 

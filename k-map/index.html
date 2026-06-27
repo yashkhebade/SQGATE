@@ -44,13 +44,13 @@
   
 
   :root {
-    /* SQGATE Deep Space Blue Palette */
+    /* SQGATE Deep Space Blue Palette (Liquid Glass) */
     --bg0: #060813;
-    --bg1: #0c0f1c;
-    --bg2: #121626;
-    --bg3: #1a2035;
-    --b1: #1e243b;
-    --b2: #2b3453;
+    --bg1: rgba(12, 15, 28, 0.65);
+    --bg2: rgba(18, 22, 38, 0.65);
+    --bg3: rgba(26, 32, 53, 0.65);
+    --b1: rgba(255, 255, 255, 0.08);
+    --b2: rgba(255, 255, 255, 0.12);
     --t1: #ffffff;
     --t2: #94a3b8;
     --t3: #64748b;
@@ -561,8 +561,29 @@
 
 .toast{position:fixed;bottom:24px;right:24px;background:var(--surface-2);border:1px solid var(--border-strong);color:var(--text-primary);padding:12px 20px;border-radius:var(--radius);font-size:14px;font-family:var(--font-sans);opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;box-shadow:0 10px 30px rgba(0,0,0,0.5);font-weight:500}
 .toast.show{opacity:1}
+/* LIQUID GLASS EFFECTS */
+#kmap-header, .km-ctrl-row, .panel-card, .vbtn, .vbtn2, .ov-box, .sqgate-em-box {
+  backdrop-filter: blur(16px) saturate(120%);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+}
+.panel-card, .ov-box, .sqgate-em-box { box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); }
+
+/* BACKGROUND ORBS */
+.bg-orbs { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; background: #060813; }
+.orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5; animation: float 20s infinite ease-in-out alternate; }
+.orb-1 { width: 400px; height: 400px; background: #8b5cf6; top: -100px; left: -100px; }
+.orb-2 { width: 500px; height: 500px; background: #10b981; bottom: -150px; right: -100px; animation-delay: -5s; }
+.orb-3 { width: 300px; height: 300px; background: #22d3ee; top: 40%; left: 30%; animation-delay: -10s; opacity: 0.3; }
+@keyframes float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(50px, 50px) scale(1.1); } }
 </style>
 
+<body>
+<!-- BACKGROUND ORBS -->
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
 <div class="km-root">
   <div class="km-ctrl-row">
     <span class="km-lbl">Variables</span>
@@ -877,7 +898,12 @@ function solve(){
 
 document.querySelectorAll('.vbtn[data-v]').forEach(btn=>{
   btn.addEventListener('click',()=>{
-    V=parseInt(btn.dataset.v);
+    let newV = parseInt(btn.dataset.v);
+    if (newV > 4 && !checkProStatus()) {
+      showProModal('5 & 6 Variable K-Maps');
+      return;
+    }
+    V = newV;
     document.querySelectorAll('.vbtn[data-v]').forEach(b=>b.classList.remove('on'));
     btn.classList.add('on');
     initGrid(); renderMaps(); solve();
@@ -968,7 +994,40 @@ initGrid(); renderMaps(); solve();
     { "@type": "ListItem", "position": 2, "name": "K-Map Solver", "item": "https://sqgate.online/k-map" }
   ]
 }
-</script>\n
+</script>
+
+<!-- PRO UPGRADE MODAL -->
+<style>
+.ov { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 999999; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+.ov-box { width: 440px; text-align: center; border: 1px solid var(--border-accent); background: var(--surface-1); box-shadow: 0 0 40px rgba(99,102,241,0.2); border-radius: 12px; padding: 30px; font-family: var(--font-sans); }
+.ov-btn { padding: 12px; font-size: 15px; font-weight: 700; border-radius: 8px; cursor: pointer; display: block; width: 100%; border: none; font-family: var(--font-sans); color: var(--text-primary); }
+.ov-btn.primary { background: var(--bg-accent); text-decoration: none; margin-bottom: 12px; color: var(--text-accent); }
+</style>
+<div class="ov" id="pro-modal">
+  <div class="ov-box">
+    <div style="font-size: 24px; font-weight: 800; color: white; margin-bottom: 8px;">Pro Feature Locked</div>
+    <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 24px;">
+      You've reached a free tier limit: <strong style="color:var(--text-primary);" id="pro-feature-name">Unlimited Components</strong>. Upgrade to Pro to remove all limits.
+    </div>
+    
+    <a href="/pricing.html" class="ov-btn primary">See Pro Pricing</a>
+    
+    <button class="ov-btn" style="background: transparent; border: 1px solid var(--border-strong);" onclick="document.getElementById('pro-modal').style.display='none'">Cancel</button>
+  </div>
+</div>
+<script>
+function checkProStatus() {
+  return localStorage.getItem('sqgate_pro_status') === 'active';
+}
+function showProModal(featureName) {
+  const m = document.getElementById('pro-modal');
+  if(m) {
+    document.getElementById('pro-feature-name').textContent = featureName;
+    m.style.display = 'flex';
+  }
+}
+</script>
+\n
 <!-- GLOBAL ERROR HANDLER -->
 <style>
 #sqgate-error-modal { position: fixed; inset: 0; z-index: 999999; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); font-family: 'Outfit', sans-serif; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
