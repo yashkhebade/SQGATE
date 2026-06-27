@@ -349,6 +349,26 @@
         ud.isPro = true;
         localStorage.setItem('lgf_user_' + session.email, JSON.stringify(ud));
         
+        // Sync to Supabase
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlbXBoc3h2dGx6Zm1leWpuYmVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMjU0MzEsImV4cCI6MjA5NzgwMTQzMX0.wGJ8PBs7ilfA6AD7zxwsmXoyZWGhMEkFgcHV_TvIio4";
+        try {
+          await fetch('https://vemphsxvtlzfmeyjnbeq.supabase.co/rest/v1/users', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'apikey': SUPABASE_ANON_KEY,
+              'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+              'Prefer': 'resolution=merge-duplicates'
+            },
+            body: JSON.stringify({
+              email: session.email,
+              name: ud.name || '',
+              is_pro: true,
+              projects: ud.projects || {}
+            })
+          });
+        } catch(e) { console.error('Supabase sync failed', e); }
+        
         alert("🎉 Congratulations! SQGATE Pro is now Unlocked!");
         window.location.href = '/home/';
       } else {
