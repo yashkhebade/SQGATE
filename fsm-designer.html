@@ -709,6 +709,13 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--border-accent); }
+
+    @keyframes guidePulse {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+    .guide-pulse { animation: guidePulse 2s infinite; }
   </style>
 </head>
 <body>
@@ -725,7 +732,7 @@
       <i class="ti ti-route" aria-hidden="true"></i>
       FSM Designer
     </div>
-    <input id="proj-name" value="traffic_controller" spellcheck="false" title="Project name"/>
+    <input id="proj-name" value="untitled_fsm" spellcheck="false" title="Project name"/>
     <div class="header-sep"></div>
     <button class="hdr-btn" onclick="document.getElementById('guide-modal').style.display='flex'" title="How to use FSM Designer">
       <i class="ti ti-help" aria-hidden="true"></i> Guide
@@ -755,7 +762,7 @@
     <div class="tb-group">
       <button class="tb-btn" data-tip="Auto-layout" onclick="autoLayout()"><i class="ti ti-layout-distribute-horizontal" aria-hidden="true"></i></button>
       <button class="tb-btn" data-tip="Fit View (F)" onclick="fitView()"><i class="ti ti-zoom-reset" aria-hidden="true"></i></button>
-      <button class="tb-btn" id="btn-guide" data-tip="Interactive Guide" style="background:var(--acb); color:#fff; border:none; box-shadow:0 2px 8px rgba(16, 185, 129, 0.4); margin-left: 10px; width:auto; padding:0 12px; gap:6px; font-weight: 600;" onclick="startTour()">
+      <button class="tb-btn guide-pulse" id="btn-guide" data-tip="Interactive Guide" style="background:var(--acb); color:#fff; border:none; box-shadow:0 2px 8px rgba(16, 185, 129, 0.4); margin-left: 10px; width:auto; padding:0 12px; gap:6px; font-weight: 600;" onclick="startTour()">
         <i class="ti ti-book" aria-hidden="true"></i> Guide
       </button>
     </div>
@@ -979,16 +986,6 @@ setTimeout(resizeCanvas, 100);
 
 // Set default FSM
 window.addEventListener('DOMContentLoaded', () => {
-  states.push(
-    { id: nextStateId++, name: 'IDLE', x: 200, y: 250, isInitial: true, output: "3'b001" },
-    { id: nextStateId++, name: 'WARN', x: 450, y: 150, isInitial: false, output: "3'b010" },
-    { id: nextStateId++, name: 'STOP', x: 450, y: 350, isInitial: false, output: "3'b100" }
-  );
-  transitions.push(
-    { id: nextTransId++, from: 1, to: 2, condition: "sensor", output: "" },
-    { id: nextTransId++, from: 2, to: 3, condition: "timer_done", output: "" },
-    { id: nextTransId++, from: 3, to: 1, condition: "timer_done", output: "" }
-  );
   updateSidebar();
   generateVerilog();
   draw();
@@ -1811,6 +1808,9 @@ const FSM_TOUR_STEPS = [
 let tourIndex = -1;
 
 function startTour() {
+  const guideBtn = document.getElementById('btn-guide');
+  if (guideBtn) guideBtn.classList.remove('guide-pulse');
+  
   document.getElementById('tour-overlay').style.display = 'block';
   setTimeout(() => {
     document.getElementById('tour-dialog').style.opacity = '1';
