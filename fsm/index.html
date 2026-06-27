@@ -767,7 +767,41 @@ function captureTelemetry() {
       100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
     }
     .guide-pulse { animation: guidePulse 2s infinite; }
-  </style>
+  
+/* ── MOBILE UI REDESIGN ── */
+.mobile-only { display: none !important; }
+@media (max-width: 768px) {
+  .mobile-only { display: inline-flex !important; }
+  
+  #fsm-panel {
+    position: absolute;
+    top: 0; bottom: 0; right: 0;
+    z-index: 1000;
+    width: 280px !important;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.2,0.8,0.2,1);
+    box-shadow: -4px 0 40px rgba(0,0,0,0.8);
+  }
+  #fsm-panel.mobile-open {
+    transform: translateX(0);
+  }
+
+  .tb-btn, .panel-tab {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  #fsm-toolbar {
+    overflow-x: auto;
+    padding-right: 16px;
+  }
+  #fsm-toolbar::-webkit-scrollbar { display: none; }
+  
+  /* Make sure app container handles relative positioning for absolute panel */
+  #fsm-app { position: relative; overflow: hidden; }
+}
+</style>
+
 </head>
 <body>
 
@@ -823,6 +857,9 @@ function captureTelemetry() {
         <option value="moore">Moore</option>
         <option value="mealy">Mealy</option>
       </select>
+    </div>
+    <div class="tb-group mobile-only" style="border-right:none; border-left:1px solid var(--border); padding-left:8px;">
+      <button class="tb-btn" onclick="document.getElementById('fsm-panel').classList.toggle('mobile-open')" style="width:auto; padding:0 12px; gap:6px; background:rgba(139,92,246,0.15); color:#8b5cf6;"><i class="ti ti-layout-sidebar-right"></i> Props</button>
     </div>
     <div class="tb-group" style="margin-left:auto; border-right:none;">
       <span class="tb-label">Encoding:</span>
