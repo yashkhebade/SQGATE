@@ -238,6 +238,13 @@
     100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
   }
   .win-pulse { animation: pulseWin 2s infinite; }
+  
+  @keyframes guidePulse {
+    0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+  }
+  .guide-pulse { animation: guidePulse 2s infinite; }
 </style>
 </head>
 <body>
@@ -252,6 +259,10 @@
     <i class="ti ti-puzzle" aria-hidden="true"></i>
     Logic Quest
   </div>
+  <div class="header-sep"></div>
+  <button class="hdr-btn guide-pulse" id="btn-guide" onclick="startTour()" title="How to play" style="background:transparent; border:1px solid var(--b2); color:var(--t2); padding:6px 12px; border-radius:8px; cursor:pointer; display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; margin-left:16px;">
+    <i class="ti ti-help" aria-hidden="true"></i> Guide
+  </button>
 </div>
 
 <div class="lq-root">
@@ -468,6 +479,7 @@ function openWiring(type) {
   }
   
   document.getElementById('wiring-overlay').style.display = 'flex';
+  if(typeof checkTourAction === 'function') checkTourAction('open-wiring');
 }
 
 function closeWiring() {
@@ -485,6 +497,7 @@ function confirmWiring() {
   
   closeWiring();
   render();
+  if(typeof checkTourAction === 'function') setTimeout(() => checkTourAction('place-gate'), 200);
 }
 
 function handleUndo() {
@@ -659,6 +672,115 @@ function render() {
 
 // Boot
 initLevel(0);
+
+// --- INTERACTIVE TOUR ---
+const LQ_TOUR_STEPS = [
+  { sel: '#btn-guide', title: 'Logic Quest', text: 'Welcome! This guide will walk you through your first logic puzzle.', action: null },
+  { sel: '#puzzle-desc', title: 'The Objective', text: 'Each level has a description and a Target Truth Table. Your goal is to build a circuit that perfectly matches it.', action: null },
+  { sel: '#inventory-list', title: 'Inventory Limit', text: 'You are restricted to specific gates. For Level 1, you can only use exactly 1 NAND gate.', action: null },
+  { sel: '.gate-add-btn', title: 'Add a Gate', text: 'Click the Add button to begin wiring your NAND gate.', action: 'open-wiring' },
+  { sel: '.wiring-box', title: 'Wire Inputs', text: 'A NOT gate inverts a signal. Since a NAND gate returns FALSE only when both inputs are TRUE, tying both inputs to the same signal acts as a NOT gate. Ensure Input 1 and 2 are set to A, then click Place Gate.', action: 'place-gate' },
+  { sel: '#val-result', title: 'Validation', text: 'Awesome! The engine automatically simulated your circuit and verified that it matches the target truth table. You solved Level 1!', action: null }
+];
+let tourIndex = -1;
+
+function startTour() {
+  const guideBtn = document.getElementById('btn-guide');
+  if (guideBtn) guideBtn.classList.remove('guide-pulse');
+  
+  if (state.levelIdx !== 0 || state.isRandom) {
+    initLevel(0);
+  } else if (state.placedGates.length > 0) {
+    state.placedGates = [];
+    state.allowedRemaining = Object.assign({}, getActivePuzzle().allowedComponents);
+    render();
+  }
+  
+  document.getElementById('tour-overlay').style.display = 'block';
+  setTimeout(() => {
+    document.getElementById('tour-dialog').style.opacity = '1';
+    document.getElementById('tour-dialog').style.transform = 'translateY(0)';
+  }, 10);
+  tourIndex = -1;
+  nextTourStep();
+}
+
+function nextTourStep() {
+  tourIndex++;
+  if (tourIndex >= LQ_TOUR_STEPS.length) {
+    endTour();
+    return;
+  }
+  const step = LQ_TOUR_STEPS[tourIndex];
+  const el = document.querySelector(step.sel);
+  if (!el) { nextTourStep(); return; }
+
+  document.getElementById('tour-title-text').textContent = step.title;
+  document.getElementById('tour-text').textContent = step.text;
+  document.getElementById('tour-progress').textContent = (tourIndex + 1) + '/' + LQ_TOUR_STEPS.length;
+  
+  const nextBtn = document.getElementById('tour-next-btn');
+  if (step.action) {
+    nextBtn.style.display = 'none';
+    document.getElementById('tour-text').innerHTML = step.text + '<br><br><span style="color:#f59e0b;font-weight:bold;font-size:11px;text-transform:uppercase;letter-spacing:1px;">Waiting for your action...</span>';
+  } else {
+    nextBtn.style.display = 'block';
+    nextBtn.textContent = (tourIndex === LQ_TOUR_STEPS.length - 1) ? 'Finish' : 'Next';
+  }
+
+  const hl = document.getElementById('tour-hl');
+  const rect = el.getBoundingClientRect();
+  hl.style.top = (rect.top - 6) + 'px';
+  hl.style.left = (rect.left - 6) + 'px';
+  hl.style.width = (rect.width + 12) + 'px';
+  hl.style.height = (rect.height + 12) + 'px';
+
+  const dlg = document.getElementById('tour-dialog');
+  let topPos = rect.bottom + 16;
+  if (topPos + 200 > window.innerHeight) topPos = rect.top - 216;
+  let leftPos = rect.left + rect.width / 2 - 160;
+  if (leftPos < 10) leftPos = 10;
+  if (leftPos + 320 > window.innerWidth) leftPos = window.innerWidth - 330;
+  
+  dlg.style.top = topPos + 'px';
+  dlg.style.left = leftPos + 'px';
+}
+
+function endTour() {
+  const dlg = document.getElementById('tour-dialog');
+  dlg.style.opacity = '0';
+  dlg.style.transform = 'translateY(10px)';
+  setTimeout(() => {
+    document.getElementById('tour-overlay').style.display = 'none';
+  }, 300);
+}
+
+function checkTourAction(actionName) {
+  if (tourIndex >= 0 && tourIndex < LQ_TOUR_STEPS.length) {
+    if (LQ_TOUR_STEPS[tourIndex].action === actionName) {
+      setTimeout(nextTourStep, 500);
+    }
+  }
+}
 </script>
+
+<!-- TOUR OVERLAY -->
+<div id="tour-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;pointer-events:none;overflow:hidden;">
+  <div id="tour-hl" style="position:absolute;background:transparent;box-shadow:0 0 0 9999px rgba(0,0,0,0.6), 0 0 15px rgba(245,158,11,0.8);border:2px solid #f59e0b;border-radius:6px;transition:all 0.3s ease;"></div>
+  <div id="tour-dialog" style="position:absolute;width:320px;background:var(--bg0);border:1px solid var(--b1);border-radius:8px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,0.5);pointer-events:auto;transition:all 0.3s ease;transform:translateY(10px);opacity:0;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <span id="tour-title-text" style="font-weight:bold;color:#f59e0b;">Title</span>
+    </div>
+    <p id="tour-text" style="color:var(--t1);font-size:13px;line-height:1.5;margin-bottom:20px;">Text</p>
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <span id="tour-progress" style="color:var(--t3);font-size:12px;font-weight:bold;">1/4</span>
+      <div style="display:flex;gap:8px;">
+        <button class="mbtn cancel" style="padding:6px 12px;font-size:12px;" onclick="endTour()">Skip</button>
+        <button class="mbtn primary" id="tour-next-btn" style="padding:6px 12px;font-size:12px;" onclick="nextTourStep()">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
