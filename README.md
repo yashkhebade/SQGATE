@@ -69,6 +69,24 @@ We welcome contributions from the engineering community! If you want to add a ne
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
+## 📚 Documentation
+For complete technical and product documentation, please see the [/docs](./docs) directory which includes:
+- [Product Requirement Document (PRD)](./docs/PRD.md)
+- [Technical Requirement Document (TRD)](./docs/TRD.md)
+- [Application Flow](./docs/APP_FLOW.md)
+- [UI/UX Brief](./docs/UI_UX_BRIEF.md)
+- [Typography & Fonts](./docs/TYPOGRAPHY_FONTS.md)
+- [Backend Schema](./docs/BACKEND_SCHEMA.md)
+- [Future Implementation Plan](./docs/IMPLEMENTATION_PLAN.md)
+
+---
+
+## 🚀 Recent Updates
+- **SEO Optimization:** Added comprehensive OpenGraph, Twitter card, and meta tags to the root domain.
+- **UI Enhancements:** Shifted the "Get SQGATE Pro" button cleanly into the dashboard navigation bar.
+- **Mobile Experience:** Fixed the overlapping button glitch on the mobile portrait "Force Landscape" overlay.
+- **Toolbar Cleanup:** Simplified button texts (e.g., "Save Image" to "Save") for a cleaner interface.
+
 ---
 
 ## 📄 License
