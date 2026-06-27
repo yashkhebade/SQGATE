@@ -390,6 +390,18 @@
 </style>
 </head>
 <body>
+<svg class="hidden" style="position: absolute; width: 0; height: 0;">
+  <defs>
+    <filter id="radio-glass">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
+      <feGaussianBlur in="noise" stdDeviation="2" result="blurredNoise" />
+      <feDisplacementMap in="SourceGraphic" in2="blurredNoise" scale="25" xChannelSelector="R" yChannelSelector="B" result="displaced" />
+      <feGaussianBlur in="displaced" stdDeviation="1.5" result="finalBlur" />
+      <feComposite in="finalBlur" in2="finalBlur" operator="over" />
+    </filter>
+  </defs>
+</svg>
+
 
 <!-- LIQUID RADIO SVG FILTER -->
 <svg class="hidden" style="display:none;">

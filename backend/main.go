@@ -72,7 +72,10 @@ func main() {
 func initDB() {
 	dbURL := os.Getenv("DB_URL")
 	if dbURL == "" {
-		dbURL = "postgres://schemio:schemiopassword@localhost:5432/schemio_db?sslmode=disable"
+		dbURL = os.Getenv("DATABASE_URL")
+		if dbURL == "" {
+			dbURL = "postgres://schemio:schemiopassword@localhost:5432/schemio_db?sslmode=disable"
+		}
 	}
 	var err error
 	db, err = pgxpool.New(ctx, dbURL)
