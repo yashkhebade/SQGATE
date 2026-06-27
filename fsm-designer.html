@@ -755,6 +755,9 @@
     <div class="tb-group">
       <button class="tb-btn" data-tip="Auto-layout" onclick="autoLayout()"><i class="ti ti-layout-distribute-horizontal" aria-hidden="true"></i></button>
       <button class="tb-btn" data-tip="Fit View (F)" onclick="fitView()"><i class="ti ti-zoom-reset" aria-hidden="true"></i></button>
+      <button class="tb-btn" id="btn-guide" data-tip="Interactive Guide" style="background:var(--acb); color:#fff; border:none; box-shadow:0 2px 8px rgba(16, 185, 129, 0.4); margin-left: 10px; width:auto; padding:0 12px; gap:6px; font-weight: 600;" onclick="startTour()">
+        <i class="ti ti-book" aria-hidden="true"></i> Guide
+      </button>
     </div>
     <div class="tb-group">
       <span class="tb-label">Type:</span>
@@ -1272,6 +1275,7 @@ canvas.addEventListener('mousedown', e => {
     updateSidebar();
     generateVerilog();
     draw();
+    if(typeof checkTourAction === 'function') checkTourAction('add-state');
     return;
   }
 
@@ -1395,6 +1399,7 @@ function confirmTransition() {
   updateSidebar();
   generateVerilog();
   draw();
+  if(typeof checkTourAction === 'function') checkTourAction('add-transition');
 }
 function cancelTransition() {
   pendingTransFrom = null;
@@ -1794,6 +1799,105 @@ function clockTick() {
 function resetSim() {
   initSim();
 }
+
+// --- INTERACTIVE TOUR ---
+const FSM_TOUR_STEPS = [
+  { sel: '#btn-guide', title: 'FSM Designer', text: 'Welcome! This guide will show you how to build a simple Finite State Machine.', action: null },
+  { sel: '#tool-state', title: 'Add First State', text: 'Click the Add State tool, then click anywhere on the canvas to place your first state.', action: 'add-state' },
+  { sel: '#tool-state', title: 'Add Second State', text: 'Great! Now click the canvas again to place a second state.', action: 'add-state' },
+  { sel: '#tool-trans', title: 'Add Transition', text: 'Select the Transition tool. Click your first state, then click your second state to link them. Click Save in the popup.', action: 'add-transition' },
+  { sel: '.code-header', title: 'Verilog Export', text: 'Awesome! Your FSM is complete. The Verilog code on the right updates instantly as you design.', action: null }
+];
+let tourIndex = -1;
+
+function startTour() {
+  document.getElementById('tour-overlay').style.display = 'block';
+  setTimeout(() => {
+    document.getElementById('tour-dialog').style.opacity = '1';
+    document.getElementById('tour-dialog').style.transform = 'translateY(0)';
+  }, 10);
+  tourIndex = -1;
+  nextTourStep();
+}
+
+function nextTourStep() {
+  tourIndex++;
+  if (tourIndex >= FSM_TOUR_STEPS.length) {
+    endTour();
+    return;
+  }
+  const step = FSM_TOUR_STEPS[tourIndex];
+  const el = document.querySelector(step.sel);
+  if (!el) { nextTourStep(); return; }
+
+  document.getElementById('tour-title-text').textContent = step.title;
+  document.getElementById('tour-text').textContent = step.text;
+  document.getElementById('tour-progress').textContent = (tourIndex + 1) + '/' + FSM_TOUR_STEPS.length;
+  
+  const nextBtn = document.getElementById('tour-next-btn');
+  if (step.action) {
+    nextBtn.style.display = 'none';
+    document.getElementById('tour-text').innerHTML = step.text + '<br><br><span style="color:var(--acb);font-weight:bold;font-size:11px;text-transform:uppercase;letter-spacing:1px;">Waiting for your action...</span>';
+  } else {
+    nextBtn.style.display = 'block';
+    nextBtn.textContent = (tourIndex === FSM_TOUR_STEPS.length - 1) ? 'Finish' : 'Next';
+  }
+
+  const rect = el.getBoundingClientRect();
+  const hl = document.getElementById('tour-hl');
+  const pad = 6;
+  hl.style.left = (rect.left - pad) + 'px';
+  hl.style.top = (rect.top - pad) + 'px';
+  hl.style.width = (rect.width + pad*2) + 'px';
+  hl.style.height = (rect.height + pad*2) + 'px';
+
+  let dlgTop = rect.bottom + 20;
+  let dlgLeft = rect.left + (rect.width/2) - 160;
+  if (dlgTop + 200 > window.innerHeight) dlgTop = rect.top - 220; 
+  if (dlgTop < 20) dlgTop = Math.max(20, window.innerHeight / 2 - 100);
+  if (dlgLeft + 320 > window.innerWidth) dlgLeft = window.innerWidth - 340;
+  if (dlgLeft < 20) dlgLeft = 20;
+
+  const dlg = document.getElementById('tour-dialog');
+  dlg.style.top = dlgTop + 'px';
+  dlg.style.left = dlgLeft + 'px';
+}
+
+function endTour() {
+  const dlg = document.getElementById('tour-dialog');
+  dlg.style.opacity = '0';
+  dlg.style.transform = 'translateY(10px)';
+  setTimeout(() => {
+    document.getElementById('tour-overlay').style.display = 'none';
+  }, 300);
+}
+
+function checkTourAction(actionName) {
+  if (tourIndex >= 0 && tourIndex < FSM_TOUR_STEPS.length) {
+    if (FSM_TOUR_STEPS[tourIndex].action === actionName) {
+      setTimeout(nextTourStep, 500);
+    }
+  }
+}
 </script>
+
+<!-- TOUR OVERLAY -->
+<div id="tour-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;pointer-events:none;overflow:hidden;">
+  <div id="tour-hl" style="position:absolute;background:transparent;box-shadow:0 0 0 9999px rgba(0,0,0,0.6), 0 0 15px rgba(16,185,129,0.8);border:2px solid var(--acb);border-radius:6px;transition:all 0.3s ease;"></div>
+  <div id="tour-dialog" style="position:absolute;width:320px;background:var(--bg0);border:1px solid var(--b1);border-radius:8px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,0.5);pointer-events:auto;transition:all 0.3s ease;transform:translateY(10px);opacity:0;">
+    <h3 style="margin:0 0 10px 0;color:var(--acb);font-size:18px;display:flex;align-items:center;gap:8px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      <span id="tour-title-text">Title</span>
+    </h3>
+    <p id="tour-text" style="color:var(--t1);font-size:13px;line-height:1.5;margin-bottom:20px;">Text</p>
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <span id="tour-progress" style="color:var(--t3);font-size:12px;font-weight:bold;">1/4</span>
+      <div style="display:flex;gap:8px;">
+        <button class="tb-btn" style="border:1px solid var(--b2);padding:6px 12px;border-radius:4px;color:var(--t2);cursor:pointer;" onclick="endTour()">Skip</button>
+        <button class="tb-btn" id="tour-next-btn" style="background:var(--acb);border:none;color:#fff;padding:6px 12px;border-radius:4px;font-weight:bold;cursor:pointer;" onclick="nextTourStep()">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
