@@ -33,6 +33,23 @@
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-72EG9VJELZ"></script>
   <script>
+// TELEMETRY
+var TELEMETRY_ENDPOINT = "https://vemphsxvtlzfmeyjnbeq.supabase.co/rest/v1/fsm";
+var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlbXBoc3h2dGx6Zm1leWpuYmVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMjU0MzEsImV4cCI6MjA5NzgwMTQzMX0.wGJ8PBs7ilfA6AD7zxwsmXoyZWGhMEkFgcHV_TvIio4";
+function captureTelemetry() {
+  if (!TELEMETRY_ENDPOINT || !SUPABASE_ANON_KEY) return;
+  fetch(TELEMETRY_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY, 'Prefer': 'return=minimal' },
+    body: JSON.stringify({
+      timestamp: Date.now(),
+      state_count: states.length,
+      transition_count: transitions.length,
+      type: document.getElementById('fsm-type').value || 'moore'
+    })
+  }).catch(function(e){});
+}
+
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
@@ -1615,6 +1632,7 @@ function generateVerilog() {
     document.getElementById('verilog-code').textContent = '// No states defined yet.';
     return;
   }
+  captureTelemetry();
 
   const bits = encType === 'onehot' ? n : Math.max(1, Math.ceil(Math.log2(n || 2)));
   const paramWidth = encType === 'onehot' ? n : bits;

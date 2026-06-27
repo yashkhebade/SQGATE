@@ -386,6 +386,23 @@
 </div>
 
 <script>
+// TELEMETRY
+var TELEMETRY_ENDPOINT = "https://vemphsxvtlzfmeyjnbeq.supabase.co/rest/v1/puzzle";
+var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlbXBoc3h2dGx6Zm1leWpuYmVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMjU0MzEsImV4cCI6MjA5NzgwMTQzMX0.wGJ8PBs7ilfA6AD7zxwsmXoyZWGhMEkFgcHV_TvIio4";
+function captureTelemetry(level_idx, gates_used, is_random) {
+  if (!TELEMETRY_ENDPOINT || !SUPABASE_ANON_KEY) return;
+  fetch(TELEMETRY_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY, 'Prefer': 'return=minimal' },
+    body: JSON.stringify({
+      timestamp: Date.now(),
+      level_idx: level_idx,
+      gates_used: gates_used,
+      is_random: is_random
+    })
+  }).catch(function(e){});
+}
+
 // --- ENGINE FUNCTIONS ---
 const GATE_FN = {
   AND:  (a, b) => (a & b) & 1,
@@ -589,7 +606,16 @@ function evaluateCircuit() {
   }
   
   const isComplete = state.placedGates.length > 0 && failedRows.length === 0;
-  if(isComplete && !state.isRandom) state.completedLevels.add(state.levelIdx);
+  if(isComplete && !state.isRandom) {
+    if(!state.completedLevels.has(state.levelIdx)) captureTelemetry(state.levelIdx, state.placedGates.length, false);
+    state.completedLevels.add(state.levelIdx);
+  }
+  if(isComplete && state.isRandom) {
+    if(window._lastRand !== state.targetTruthTable.join('')) {
+      window._lastRand = state.targetTruthTable.join('');
+      captureTelemetry(-1, state.placedGates.length, true);
+    }
+  }
   
   return { isComplete, failedRows, simulatedOutputs };
 }

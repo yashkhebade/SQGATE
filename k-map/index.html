@@ -558,6 +558,23 @@
 <div class="toast" id="toast"></div>
 
 <script>
+// TELEMETRY
+var TELEMETRY_ENDPOINT = "https://vemphsxvtlzfmeyjnbeq.supabase.co/rest/v1/kmap";
+var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlbXBoc3h2dGx6Zm1leWpuYmVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMjU0MzEsImV4cCI6MjA5NzgwMTQzMX0.wGJ8PBs7ilfA6AD7zxwsmXoyZWGhMEkFgcHV_TvIio4";
+function captureTelemetry(variables_count, minterm_count, dontcare_count) {
+  if (!TELEMETRY_ENDPOINT || !SUPABASE_ANON_KEY) return;
+  fetch(TELEMETRY_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY, 'Prefer': 'return=minimal' },
+    body: JSON.stringify({
+      timestamp: Date.now(),
+      variables_count: variables_count,
+      minterm_count: minterm_count,
+      dontcare_count: dontcare_count
+    })
+  }).catch(function(e){});
+}
+
 const GRAY4 = ['00','01','11','10'];
 const GRAY2 = ['0','1'];
 
@@ -768,6 +785,14 @@ function termToVerilog(t){
 function solve(){
   const res=solveKMap();
   window._lastRes=res;
+  if(res && res.terms && res.terms.length > 0) {
+    let mt_count = 0, dc_count = 0;
+    for(let i=0; i<NUM_CELLS; i++) {
+       if(state.cells[i]===1) mt_count++;
+       if(state.cells[i]==='X') dc_count++;
+    }
+    captureTelemetry(VARS, mt_count, dc_count);
+  }
   const sopEl=document.getElementById('sopBox');
   const implEl=document.getElementById('implList');
   const mtEl=document.getElementById('mtBox');
