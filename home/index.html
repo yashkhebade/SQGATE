@@ -8083,13 +8083,19 @@ function shareCircuit() {
     const b64 = btoa(encodeURIComponent(jsonStr));
     const url = window.location.origin + window.location.pathname + '#load=' + b64;
     
-    navigator.clipboard.writeText(url).then(() => {
-      msg("Link copied to clipboard!", "#4caf50");
-    }).catch(err => {
-      msg("Failed to copy link.", "#f44336");
-    });
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(() => {
+        msg("Link copied to clipboard!", "ok");
+      }).catch(err => {
+        console.error("Clipboard API failed:", err);
+        prompt("Copy this link to share your circuit:", url);
+      });
+    } else {
+      prompt("Copy this link to share your circuit:", url);
+    }
   } catch (err) {
-    msg("Failed to generate link.", "#f44336");
+    console.error("Failed to generate share link:", err);
+    msg("Failed to generate link.", "er");
   }
 }
 
