@@ -329,610 +329,483 @@
   </button>
 </div>
 
-<div class="kmap-root">
-  <div class="controls">
-    <span class="ctrl-label">VARIABLES</span>
-    <button class="var-btn" data-v="2" id="v2-btn">2 — AB</button>
-    <button class="var-btn active" data-v="3" id="v3-btn">3 — ABC</button>
-    <button class="var-btn" data-v="4" id="v4-btn">4 — ABCD</button>
-    <button class="var-btn" data-v="5" id="v5-btn">5 — ABCDE</button>
-    <button class="var-btn" data-v="6" id="v6-btn">6 — ABCDEF</button>
-    <button class="reset-btn" id="resetBtn" onclick="initGrid(); renderTable(); solve();">
-      <i class="ti ti-refresh"></i> Clear Map
-    </button>
+<style>
+
+  :root {
+    --bg0: #060813;
+    --bg1: #0c0f1c;
+    --bg2: #121626;
+    --bg3: #1a2035;
+    --b1: #1e243b;
+    --b2: #2b3453;
+    --t1: #ffffff;
+    --t2: #94a3b8;
+    --t3: #64748b;
+    --hi: #ef4444;
+    --fmain: 'Outfit', sans-serif;
+    --fmono: 'JetBrains Mono', monospace;
+    
+    --surface-0: var(--bg2);
+    --surface-1: var(--bg1);
+    --surface-2: var(--bg3);
+    --text-primary: var(--t1);
+    --text-secondary: #e2e8f0;
+    --text-muted: var(--t2);
+    --border: var(--b1);
+    --border-strong: var(--b2);
+    --bg-warning: rgba(245,158,11,0.15);
+    --border-warning: rgba(245,158,11,0.4);
+    --text-warning: #f59e0b;
+    --fill-warning: rgba(245,158,11,0.25);
+    --on-warning: #f59e0b;
+    --bg-accent: rgba(99,102,241,0.15);
+    --border-accent: #6366f1;
+    --text-accent: #818cf8;
+    --bg-pro: rgba(56,189,248,0.15);
+    --text-pro: #38bdf8;
+    --border-danger: #ef4444;
+    --text-danger: #ef4444;
+    --text-success: #10b981;
+    --radius: 8px;
+    --font-mono: var(--fmono);
+    --font-sans: var(--fmain);
+  }
+
+  body {
+    background: var(--bg0);
+    color: var(--t1);
+    font-family: var(--fmain);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  /* Header */
+  #kmap-header {
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    height: 60px;
+    background: rgba(18,22,38,0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--b1);
+    flex-shrink: 0;
+  }
+  .site-brand {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--t1);
+    letter-spacing: 0.5px;
+  }
+  .site-brand img { width: 24px; height: 24px; margin-right: 10px; }
+  .logo-pill {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-left: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .header-sep { flex: 1; }
+
+*{box-sizing:border-box;margin:0;padding:0}
+.km-root{font-family:var(--font-mono,'JetBrains Mono',monospace);padding:24px; flex:1; overflow-y:auto; max-width:1200px; margin:0 auto; width:100%}
+.km-topbar{display:flex;align-items:center;gap:12px;padding:1rem 0 1.25rem;flex-wrap:wrap;border-bottom:1px solid var(--border);margin-bottom:1.25rem;display:none} /* Hidden topbar, using header instead */
+.km-icon{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;width:34px;height:34px;padding:5px;background:var(--bg-warning);border-radius:8px;flex-shrink:0}
+.km-icon span{background:var(--text-warning);border-radius:1px}
+.km-title{font-size:15px;font-weight:500;color:var(--text-primary);letter-spacing:-.3px}
+.km-sub{font-size:12px;color:var(--text-muted);margin-top:1px;font-family:var(--font-sans)}
+.km-ctrl-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:16px 20px; background:var(--surface-1); border:1px solid var(--border); border-radius:12px; margin-bottom:1.5rem}
+.km-lbl{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.07em;font-family:var(--font-sans)}
+.vbtn{background:var(--surface-1);border:1px solid var(--border-strong);color:var(--text-secondary);border-radius:var(--radius);padding:8px 16px;font-size:12px;cursor:pointer;font-family:var(--font-mono);transition:all .12s}
+.vbtn:hover{border-color:var(--border-accent);color:var(--text-accent);background:var(--bg-accent)}
+.vbtn.on{background:var(--bg-accent);border-color:var(--border-accent);color:var(--text-accent);font-weight:600}
+.rstbtn{background:transparent;border:1px solid var(--border);color:var(--text-muted);border-radius:var(--radius);padding:8px 16px;font-size:12px;cursor:pointer;font-family:var(--font-sans);margin-left:auto;transition:all .12s}
+.rstbtn:hover{border-color:var(--border-danger);color:var(--text-danger);background:rgba(239,68,68,0.1)}
+
+.km-body{display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start}
+@media(max-width:1100px){.km-body{grid-template-columns:1fr}}
+
+.km-maps-col{display:flex;flex-direction:row;flex-wrap:wrap;gap:24px}
+.km-plane{background:var(--surface-1);border:1px solid var(--border);border-radius:12px;padding:20px;flex:1;min-width:300px}
+.km-plane-lbl{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--text-muted);margin-bottom:16px;font-family:var(--font-sans)}
+.km-plane-lbl span{color:var(--text-accent);font-weight:600}
+
+.kmtbl{border-collapse:collapse;margin:0 auto}
+.kmtbl th{background:var(--surface-0);color:var(--text-muted);font-size:12px;padding:8px 12px;text-align:center;border:1px solid var(--border);font-weight:500;min-width:48px;font-family:var(--font-mono)}
+.kmtbl th.corner{background:transparent;border-color:transparent;color:var(--text-muted);font-size:11px}
+.kmtbl th.rhdr{color:var(--text-secondary)}
+.km-cell{width:48px;height:48px;text-align:center;border:1px solid var(--border);cursor:pointer;font-size:16px;font-weight:600;transition:all .1s;position:relative;user-select:none;vertical-align:middle;font-family:var(--font-mono)}
+.km-cell:hover{border-color:var(--border-accent)!important;background:rgba(255,255,255,0.05)}
+.km-cell.v0{background:transparent;color:var(--text-muted)}
+.km-cell.v1{background:var(--bg-warning);color:var(--text-warning);box-shadow:inset 0 0 12px rgba(245,158,11,0.1)}
+.km-cell.vx{background:var(--bg-pro);color:var(--text-pro)}
+.km-cell.hi{outline:2px solid var(--border-accent);outline-offset:-2px}
+.mnum{position:absolute;top:4px;left:6px;font-size:9px;color:var(--text-muted);font-weight:400;pointer-events:none}
+
+.km-legend{display:flex;gap:16px;margin-top:16px;flex-wrap:wrap;justify-content:center}
+.leg-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted);font-family:var(--font-sans)}
+.leg-dot{width:12px;height:12px;border-radius:4px;flex-shrink:0}
+
+.km-panel{display:flex;flex-direction:column;gap:16px;position:sticky;top:16px}
+.panel-card{background:var(--surface-1);border:1px solid var(--border);border-radius:12px;padding:20px}
+.pc-lbl{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:12px;font-family:var(--font-sans);font-weight:600}
+
+.sop-box{background:var(--surface-0);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;font-size:15px;color:var(--text-primary);min-height:56px;line-height:1.7;word-break:break-all;font-family:var(--font-mono)}
+.sop-box.empty-state{color:var(--text-muted);font-size:14px;font-style:italic}
+.sop-t{color:var(--text-warning)}
+.sop-p{color:var(--text-muted);padding:0 4px}
+.sop-bar{text-decoration:overline}
+.sop-one{color:var(--text-success)}
+
+.impl-list{display:flex;flex-direction:column;gap:8px;max-height:250px;overflow-y:auto;padding-right:4px}
+.impl-item{display:flex;align-items:center;gap:8px;background:var(--surface-0);border:1px solid var(--border);border-radius:var(--radius);padding:8px 12px;font-size:13px}
+.impl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.impl-tm{color:var(--text-primary);font-family:var(--font-mono)}
+.impl-ms{color:var(--text-muted);margin-left:auto;font-size:11px;font-family:var(--font-sans);max-width:140px;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.mt-box{background:var(--surface-0);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;font-size:13px;color:var(--text-muted);font-family:var(--font-sans);min-height:42px}
+
+.vbtn2{background:var(--bg-warning);border:1px solid var(--border-warning);color:var(--text-warning);border-radius:var(--radius);padding:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font-mono);transition:all .2s;width:100%;letter-spacing:.05em;display:flex;align-items:center;justify-content:center;gap:8px}
+.vbtn2:hover{background:var(--fill-warning);color:var(--on-warning);transform:translateY(-2px);box-shadow:0 4px 12px rgba(245,158,11,0.2)}
+
+.tip-box{font-size:12px;color:var(--text-muted);font-family:var(--font-sans);line-height:1.6;padding:14px;background:var(--surface-0);border-radius:var(--radius);border:1px solid var(--border)}
+.tip-box b{color:var(--text-secondary);font-weight:600}
+
+.toast{position:fixed;bottom:24px;right:24px;background:var(--surface-2);border:1px solid var(--border-strong);color:var(--text-primary);padding:12px 20px;border-radius:var(--radius);font-size:14px;font-family:var(--font-sans);opacity:0;transition:opacity .3s;pointer-events:none;z-index:999;box-shadow:0 10px 30px rgba(0,0,0,0.5);font-weight:500}
+.toast.show{opacity:1}
+</style>
+
+<div class="km-root">
+  <div class="km-ctrl-row">
+    <span class="km-lbl">Variables</span>
+    <button class="vbtn" data-v="2">2 · AB</button>
+    <button class="vbtn" data-v="3">3 · ABC</button>
+    <button class="vbtn on" data-v="4">4 · ABCD</button>
+    <button class="vbtn" data-v="5">5 · ABCDE</button>
+    <button class="vbtn" data-v="6">6 · ABCDEF</button>
+    <button class="rstbtn" id="rstBtn"><i class="ti ti-refresh" aria-hidden="true"></i> Reset</button>
   </div>
 
-  <div class="main-grid">
-    <div class="kmap-card">
-      <div class="kmap-section-label"><i class="ti ti-hand-click"></i> Click cells to toggle 0 → 1 → X</div>
-      
-      <div class="kmap-wrapper" id="kmap-wrapper">
-        <table class="kmap-table" id="kmapTable"></table>
-        <svg id="kmap-svg-overlay"></svg>
+  <div class="km-body">
+    <div class="km-maps-col" id="mapsCol"></div>
+    <div class="km-panel">
+      <div class="panel-card">
+        <div class="pc-lbl">Simplified SOP</div>
+        <div class="sop-box empty-state" id="sopBox">Select minterms to solve…</div>
       </div>
-
-      <div class="legend">
-        <div class="legend-item"><div class="legend-dot" style="background:var(--bg0); border:1px solid var(--b2);"></div><span>0 — False</span></div>
-        <div class="legend-item"><div class="legend-dot" style="background:#4ade80"></div><span>1 — True</span></div>
-        <div class="legend-item"><div class="legend-dot" style="background:#60a5fa"></div><span>X — Don't Care</span></div>
+      <div class="panel-card">
+        <div class="pc-lbl">Prime implicants</div>
+        <div class="impl-list" id="implList"><div style="color:var(--text-muted);font-size:11px;font-family:var(--font-sans)">None</div></div>
       </div>
-    </div>
-
-    <div class="result-card">
-      <div>
-        <div class="kmap-section-label"><i class="ti ti-math-function"></i> Simplified SOP Expression</div>
-        <div class="sop-display empty" id="sopDisplay">Click cells to begin solving...</div>
+      <div class="panel-card">
+        <div class="pc-lbl">Minterms &amp; don't cares</div>
+        <div class="mt-box" id="mtBox">—</div>
       </div>
-
-      <div>
-        <div class="kmap-section-label"><i class="ti ti-layers-intersect"></i> Prime Implicants</div>
-        <div class="impl-list" id="implList">
-          <div style="color:var(--t3);font-size:13px;">No minterms selected</div>
-        </div>
+      <button class="vbtn2" id="copyBtn"><i class="ti ti-copy" aria-hidden="true"></i> Copy Verilog assign</button>
+      <div class="tip-box">
+        <b>5-var:</b> Two 4×4 maps (E=0 left, E=1 right).<br>
+        <b>6-var:</b> Four 4×4 maps (EF = 00, 01, 11, 10).<br>
+        Groups wrap within <i>and across</i> planes. Powers of 2 only (1→2→4→8→16→32→64). Click cells: <b>0 → 1 → X → 0</b>
       </div>
-
-      <div>
-        <div class="kmap-section-label"><i class="ti ti-list-numbers"></i> Minterms & Don't Cares</div>
-        <div class="minterm-tag-box" id="mintermBox">—</div>
-      </div>
-
-      <button class="verilog-btn" id="verilogBtn">
-        <i class="ti ti-code"></i> Copy Verilog assign
-      </button>
     </div>
   </div>
 </div>
 
-<div class="copied-toast" id="toast">Copied to clipboard!</div>
-
-<!-- TOUR OVERLAY -->
-<div id="tour-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;pointer-events:none;overflow:hidden;">
-  <div id="tour-hl" style="position:absolute;background:transparent;box-shadow:0 0 0 9999px rgba(0,0,0,0.6), 0 0 15px rgba(239,68,68,0.8);border:2px solid #ef4444;border-radius:6px;transition:all 0.3s ease;"></div>
-  <div id="tour-dialog" style="position:absolute;width:320px;background:var(--bg0);border:1px solid var(--b1);border-radius:8px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,0.5);pointer-events:auto;transition:all 0.3s ease;transform:translateY(10px);opacity:0;">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-      <span id="tour-title-text" style="font-weight:bold;color:#ef4444;">Title</span>
-    </div>
-    <p id="tour-text" style="color:var(--t1);font-size:13px;line-height:1.5;margin-bottom:20px;">Text</p>
-    <div style="display:flex;align-items:center;justify-content:space-between;">
-      <span id="tour-progress" style="color:var(--t3);font-size:12px;font-weight:bold;">1/4</span>
-      <div style="display:flex;gap:8px;">
-        <button class="mbtn cancel" style="padding:6px 12px;font-size:12px; background:transparent; border:none; color:var(--t2); cursor:pointer;" onclick="endTour()">Skip</button>
-        <button class="mbtn primary" id="tour-next-btn" style="padding:6px 12px;font-size:12px; background:#ef4444; color:#fff; border:none; border-radius:6px; cursor:pointer;" onclick="nextTourStep()">Next</button>
-      </div>
-    </div>
-  </div>
-</div>
+<div class="toast" id="toast"></div>
 
 <script>
-// ============================================================
-// GRAY CODE & GRID CONFIG
-// ============================================================
+const GRAY4 = ['00','01','11','10'];
+const GRAY2 = ['0','1'];
+
 const CONFIGS = {
-  2: {
-    vars: ['A','B'],
-    rowBits: ['0','1'], colBits: ['0','1'],
-    rowLabel: 'A', colLabel: 'B', totalVars: 2
-  },
-  3: {
-    vars: ['A','B','C'],
-    rowBits: ['0','1'], colBits: ['00','01','11','10'],
-    rowLabel: 'A', colLabel: 'BC', totalVars: 3
-  },
-  4: {
-    vars: ['A','B','C','D'],
-    rowBits: ['00','01','11','10'], colBits: ['00','01','11','10'],
-    rowLabel: 'AB', colLabel: 'CD', totalVars: 4
-  },
-  5: {
-    vars: ['A','B','C','D','E'],
-    rowBits: ['00','01','11','10'], colBits: ['000','001','011','010','110','111','101','100'],
-    rowLabel: 'AB', colLabel: 'CDE', totalVars: 5
-  },
-  6: {
-    vars: ['A','B','C','D','E','F'],
-    rowBits: ['000','001','011','010','110','111','101','100'], colBits: ['000','001','011','010','110','111','101','100'],
-    rowLabel: 'ABC', colLabel: 'DEF', totalVars: 6
-  }
+  2:{vars:['A','B'],   planes:1, rowG:GRAY2,  colG:GRAY2,  rowLbl:'A', colLbl:'B'},
+  3:{vars:['A','B','C'], planes:1, rowG:GRAY2, colG:GRAY4, rowLbl:'A', colLbl:'BC'},
+  4:{vars:['A','B','C','D'], planes:1, rowG:GRAY4, colG:GRAY4, rowLbl:'AB', colLbl:'CD'},
+  5:{vars:['A','B','C','D','E'], planes:2, rowG:GRAY4, colG:GRAY4, rowLbl:'AB', colLbl:'CD', planeLbl:'E', planeG:GRAY2},
+  6:{vars:['A','B','C','D','E','F'], planes:4, rowG:GRAY4, colG:GRAY4, rowLbl:'AB', colLbl:'CD', planeLbl:'EF', planeG:GRAY4},
 };
 
-let varCount = 3;
-let gridData = {};
+let V = 4;
+let grid = {};
 
-function initGrid() {
-  const cfg = CONFIGS[varCount];
-  gridData = {};
-  for(let r=0; r<cfg.rowBits.length; r++)
-    for(let c=0; c<cfg.colBits.length; c++)
-      gridData[`${r},${c}`] = '0';
+const COLORS = ['#f59e0b','#8b5cf6','#10b981','#ef4444','#3b82f6','#ec4899','#14b8a6','#f97316','#84cc16','#a78bfa'];
+
+function initGrid(){
+  grid = {};
+  const cfg = CONFIGS[V];
+  const P = cfg.planes, R = cfg.rowG.length, C = cfg.colG.length;
+  for(let p=0;p<P;p++) for(let r=0;r<R;r++) for(let c=0;c<C;c++) grid[`${p},${r},${c}`]='0';
 }
 
-function cellMinterm(r, c) {
-  const cfg = CONFIGS[varCount];
-  let bits = cfg.rowBits[r] + cfg.colBits[c];
-  return parseInt(bits, 2);
+function cellMinterm(p,r,c){
+  const cfg = CONFIGS[V];
+  let bits = '';
+  if(V===2){ bits = cfg.rowG[r]+cfg.colG[c]; }
+  else if(V===3){ bits = cfg.rowG[r]+cfg.colG[c]; }
+  else if(V===4){ bits = cfg.rowG[r]+cfg.colG[c]; }
+  else if(V===5){ bits = cfg.rowG[r]+cfg.colG[c]+cfg.planeG[p]; }
+  else if(V===6){ bits = cfg.rowG[r]+cfg.colG[c]+cfg.planeG[p]; }
+  return parseInt(bits,2);
 }
 
-// ============================================================
-// RENDER K-MAP TABLE
-// ============================================================
-function renderTable() {
-  const cfg = CONFIGS[varCount];
-  const table = document.getElementById('kmapTable');
-  table.className = 'kmap-table vars-' + varCount;
-  table.innerHTML = '';
-
-  const thead = document.createElement('thead');
-  const hr = document.createElement('tr');
-  const corner = document.createElement('th');
-  corner.className = 'corner';
-  corner.innerHTML = `<span style="color:#ef4444;font-size:11px">${cfg.rowLabel}↓ ${cfg.colLabel}→</span>`;
-  hr.appendChild(corner);
-
-  cfg.colBits.forEach(cb => {
-    const th = document.createElement('th');
-    th.textContent = cb;
-    hr.appendChild(th);
-  });
-  thead.appendChild(hr);
-  table.appendChild(thead);
-
-  const tbody = document.createElement('tbody');
-  for(let r=0; r<cfg.rowBits.length; r++) {
-    const tr = document.createElement('tr');
-    const rh = document.createElement('th');
-    rh.className = 'row-header';
-    rh.textContent = cfg.rowBits[r];
-    tr.appendChild(rh);
-
-    for(let c=0; c<cfg.colBits.length; c++) {
-      const td = document.createElement('td');
-      const val = gridData[`${r},${c}`] || '0';
-      const m = cellMinterm(r, c);
-      td.className = `kmap-cell val-${val.toLowerCase()}`;
-      td.dataset.r = r;
-      td.dataset.c = c;
-      td.innerHTML = `<span class="minterm-num">${m}</span>${val}`;
-      td.addEventListener('click', () => {
-        toggleCell(r, c);
-        if(typeof checkTourAction === 'function') checkTourAction('click-cell');
-      });
-      tr.appendChild(td);
+function renderMaps(){
+  const col = document.getElementById('mapsCol');
+  col.innerHTML='';
+  const cfg = CONFIGS[V];
+  const P=cfg.planes, R=cfg.rowG.length, C=cfg.colG.length;
+  for(let p=0;p<P;p++){
+    const div=document.createElement('div');
+    div.className='km-plane';
+    let planeName='';
+    if(V>=5){ planeName = `<span>${cfg.planeLbl} = ${cfg.planeG[p]}</span>`; }
+    div.innerHTML=`<div class="km-plane-lbl">Plane ${p+1} ${planeName}</div>`;
+    const wrap=document.createElement('div');
+    wrap.style.overflowX='auto';
+    const tbl=document.createElement('table');
+    tbl.className='kmtbl';
+    const thead=document.createElement('thead');
+    const hr=document.createElement('tr');
+    const corner=document.createElement('th');
+    corner.className='corner';
+    corner.innerHTML=`<span style="font-size:9px">${cfg.rowLbl}↓ ${cfg.colLbl}→</span>`;
+    hr.appendChild(corner);
+    cfg.colG.forEach(cb=>{const th=document.createElement('th');th.textContent=cb;hr.appendChild(th);});
+    thead.appendChild(hr); tbl.appendChild(thead);
+    const tbody=document.createElement('tbody');
+    for(let r=0;r<R;r++){
+      const tr=document.createElement('tr');
+      const rh=document.createElement('th');
+      rh.className='rhdr'; rh.textContent=cfg.rowG[r]; tr.appendChild(rh);
+      for(let c=0;c<C;c++){
+        const val=grid[`${p},${r},${c}`]||'0';
+        const m=cellMinterm(p,r,c);
+        const td=document.createElement('td');
+        td.className=`km-cell v${val.toLowerCase()}`;
+        td.dataset.p=p; td.dataset.r=r; td.dataset.c=c;
+        td.innerHTML=`<span class="mnum">${m}</span>${val}`;
+        td.addEventListener('click',()=>toggleCell(p,r,c));
+        tr.appendChild(td);
+      }
+      tbody.appendChild(tr);
     }
-    tbody.appendChild(tr);
+    tbl.appendChild(tbody);
+    wrap.appendChild(tbl); div.appendChild(wrap);
+    if(p===0){
+      div.innerHTML+=`<div class="km-legend">
+        <div class="leg-item"><div class="leg-dot" style="background:var(--surface-0);border:1px solid var(--border)"></div><span>0 — false</span></div>
+        <div class="leg-item"><div class="leg-dot" style="background:var(--bg-warning)"></div><span>1 — true</span></div>
+        <div class="leg-item"><div class="leg-dot" style="background:var(--bg-pro)"></div><span>X — don't care</span></div>
+      </div>`;
+      div.querySelector('.km-plane-lbl').insertAdjacentHTML('afterend','');
+      wrap.parentNode.insertBefore(wrap, div.querySelector('.km-legend'));
+    }
+    col.appendChild(div);
   }
-  table.appendChild(tbody);
 }
 
-function toggleCell(r, c) {
-  const cur = gridData[`${r},${c}`];
-  const next = cur === '0' ? '1' : cur === '1' ? 'X' : '0';
-  gridData[`${r},${c}`] = next;
-  renderTable();
+function toggleCell(p,r,c){
+  const cur=grid[`${p},${r},${c}`];
+  grid[`${p},${r},${c}`]=cur==='0'?'1':cur==='1'?'X':'0';
+  const td=document.querySelector(`[data-p="${p}"][data-r="${r}"][data-c="${c}"]`);
+  if(td){
+    const v=grid[`${p},${r},${c}`];
+    td.className=`km-cell v${v.toLowerCase()}`;
+    td.innerHTML=`<span class="mnum">${cellMinterm(p,r,c)}</span>${v}`;
+  }
   solve();
 }
 
-// ============================================================
-// QUINE-McCLUSKEY SOLVER
-// ============================================================
-function getBitPattern(m, bits) { return m.toString(2).padStart(bits,'0'); }
+function getBitPattern(m,bits){ return m.toString(2).padStart(bits,'0'); }
 
-function solveKMap(gridData, varCount) {
-  const cfg = CONFIGS[varCount];
-  const rows = cfg.rowBits.length;
-  const cols = cfg.colBits.length;
-  const bits = varCount;
-  const total = 1 << bits;
-
-  const ones = new Set();
-  const dontCares = new Set();
-  
-  // Also track minterms back to r,c for drawing
-  const mToCoords = {};
-
-  for(let r=0;r<rows;r++) {
-    for(let c=0;c<cols;c++) {
-      const v = gridData[`${r},${c}`] || '0';
-      const m = cellMinterm(r,c);
-      mToCoords[m] = {r,c};
-      if(v==='1') ones.add(m);
-      if(v==='X') dontCares.add(m);
-    }
+function solveKMap(){
+  const cfg=CONFIGS[V];
+  const P=cfg.planes, R=cfg.rowG.length, C=cfg.colG.length;
+  const bits=V;
+  const total=1<<bits;
+  const ones=new Set(), dcs=new Set();
+  for(let p=0;p<P;p++) for(let r=0;r<R;r++) for(let c=0;c<C;c++){
+    const v=grid[`${p},${r},${c}`]||'0';
+    const m=cellMinterm(p,r,c);
+    if(v==='1') ones.add(m);
+    if(v==='X') dcs.add(m);
   }
+  if(ones.size===0) return {sop:'0',terms:[],ones,dcs};
+  let allOne=true;
+  for(let i=0;i<total;i++) if(!ones.has(i)){allOne=false;break;}
+  if(allOne) return {sop:'1',terms:[{parts:[],minterms:ones,pattern:'-'.repeat(bits)}],ones,dcs};
 
-  if(ones.size === 0) return { sop: '0', terms: [], ones, dontCares, mToCoords };
-  
-  const totalOnes = [...ones].length;
-  if(totalOnes + [...dontCares].length === total) {
-    return { sop: '1', terms: [{ pattern: '-'.repeat(bits), minterms: ones, allMinterms: new Set([...ones, ...dontCares]) }], ones, dontCares, mToCoords };
-  }
+  const allForSolve=new Set([...ones,...dcs]);
 
-  const allForSolving = new Set([...ones, ...dontCares]);
-  let implicants = [...allForSolving].map(m => ({
-    pattern: getBitPattern(m, bits),
-    minterms: new Set([m]),
-    used: false
-  }));
+  let implicants=[...allForSolve].map(m=>({pattern:getBitPattern(m,bits),minterms:new Set([m]),used:false}));
+  const primes=[];
 
-  const primes = [];
-  function reducePass(impl) {
-    const next = [];
-    const used = new Set();
-    for(let i=0;i<impl.length;i++) {
-      for(let j=i+1;j<impl.length;j++) {
-        const a = impl[i], b = impl[j];
-        let dashMatch = true;
-        let diffs = [];
-        for(let k=0;k<bits;k++) {
-          if(a.pattern[k]==='-' && b.pattern[k]!=='-') { dashMatch=false; break; }
-          if(a.pattern[k]!=='-' && b.pattern[k]==='-') { dashMatch=false; break; }
-          if(a.pattern[k]!==b.pattern[k]) diffs.push(k);
-        }
-        if(!dashMatch || diffs.length!==1) continue;
-        const newPat = a.pattern.split('');
-        newPat[diffs[0]] = '-';
-        const newM = new Set([...a.minterms, ...b.minterms]);
-        const patStr = newPat.join('');
-        if(!next.find(x=>x.pattern===patStr)) next.push({ pattern: patStr, minterms: newM, used: false });
-        used.add(i); used.add(j);
-        impl[i].used = true; impl[j].used = true;
+  function reducePass(impl){
+    const next=[];
+    impl.forEach(i=>{i.used=false;});
+    const usedIdx=new Set();
+    for(let i=0;i<impl.length;i++) for(let j=i+1;j<impl.length;j++){
+      const a=impl[i],b=impl[j];
+      let ok=true,diffs=[];
+      for(let k=0;k<bits;k++){
+        if(a.pattern[k]==='-'&&b.pattern[k]!=='-'){ok=false;break;}
+        if(a.pattern[k]!=='-'&&b.pattern[k]==='-'){ok=false;break;}
+        if(a.pattern[k]!==b.pattern[k]) diffs.push(k);
       }
+      if(!ok||diffs.length!==1) continue;
+      const np=a.pattern.split('');np[diffs[0]]='-';
+      const ps=np.join('');
+      const nm=new Set([...a.minterms,...b.minterms]);
+      if(!next.find(x=>x.pattern===ps)) next.push({pattern:ps,minterms:nm,used:false});
+      usedIdx.add(i);usedIdx.add(j);
+      impl[i].used=true;impl[j].used=true;
     }
-    impl.forEach((imp, i) => { if(!imp.used) primes.push(imp); });
+    impl.forEach((imp,i)=>{if(!imp.used) primes.push(imp);});
     return next;
   }
 
-  let current = implicants;
-  for(let pass=0;pass<bits;pass++) {
-    const next = reducePass(current);
-    if(next.length===0) break;
-    current = next;
-  }
-  current.forEach(imp => { if(!imp.used) primes.push(imp); });
+  let cur=implicants;
+  for(let pass=0;pass<bits;pass++){const nxt=reducePass(cur);if(!nxt.length)break;cur=nxt;}
+  cur.forEach(imp=>{if(!imp.used) primes.push(imp);});
 
-  const primeSet = [];
-  const seen = new Set();
-  primes.forEach(p => {
-    if(!seen.has(p.pattern)) { seen.add(p.pattern); primeSet.push(p); }
-  });
+  const primeSet=[]; const seen=new Set();
+  primes.forEach(p=>{if(!seen.has(p.pattern)){seen.add(p.pattern);primeSet.push(p);}});
 
-  const onesList = [...ones];
-  const coverage = {};
-  onesList.forEach(m => { coverage[m] = primeSet.filter(p => p.minterms.has(m)); });
+  const onesList=[...ones];
+  const coverage={};
+  onesList.forEach(m=>{coverage[m]=primeSet.filter(p=>p.minterms.has(m));});
 
-  const essential = new Set();
-  const essentialPIs = [];
-  onesList.forEach(m => {
-    if(coverage[m].length === 1) {
-      const pi = coverage[m][0];
-      if(!essential.has(pi.pattern)) {
-        essential.add(pi.pattern);
-        essentialPIs.push(pi);
-      }
+  const essSet=new Set(),essPI=[];
+  onesList.forEach(m=>{
+    if(coverage[m]&&coverage[m].length===1){
+      const pi=coverage[m][0];
+      if(!essSet.has(pi.pattern)){essSet.add(pi.pattern);essPI.push(pi);}
     }
   });
 
-  let covered = new Set();
-  essentialPIs.forEach(pi => pi.minterms.forEach(m => { if(ones.has(m)) covered.add(m); }));
+  let covered=new Set();
+  essPI.forEach(pi=>pi.minterms.forEach(m=>{if(ones.has(m))covered.add(m);}));
 
-  const finalPIs = [...essentialPIs];
-  let remaining = onesList.filter(m => !covered.has(m));
-  
-  while(remaining.length > 0) {
-    let best = null, bestCount = 0;
-    primeSet.forEach(pi => {
-      if(essentialPIs.includes(pi)) return;
-      const cnt = remaining.filter(m => pi.minterms.has(m)).length;
-      if(cnt > bestCount) { bestCount = cnt; best = pi; }
+  const finalPIs=[...essPI];
+  let rem=onesList.filter(m=>!covered.has(m));
+  while(rem.length>0){
+    let best=null,bc=0;
+    primeSet.forEach(pi=>{
+      if(finalPIs.includes(pi)) return;
+      const cnt=rem.filter(m=>pi.minterms.has(m)).length;
+      if(cnt>bc){bc=cnt;best=pi;}
     });
-    if(!best || bestCount === 0) break;
+    if(!best||!bc) break;
     finalPIs.push(best);
-    best.minterms.forEach(m => { if(ones.has(m)) covered.add(m); });
-    remaining = onesList.filter(m => !covered.has(m));
+    best.minterms.forEach(m=>{if(ones.has(m))covered.add(m);});
+    rem=onesList.filter(m=>!covered.has(m));
   }
 
-  const vars = cfg.vars;
-  const terms = finalPIs.map(pi => {
-    const term = [];
-    for(let i=0;i<bits;i++) {
-      if(pi.pattern[i]==='0') term.push({ v: vars[i], comp: true });
-      else if(pi.pattern[i]==='1') term.push({ v: vars[i], comp: false });
+  const vars=cfg.vars;
+  const terms=finalPIs.map(pi=>{
+    const parts=[];
+    for(let i=0;i<bits;i++){
+      if(pi.pattern[i]==='0') parts.push({v:vars[i],comp:true});
+      else if(pi.pattern[i]==='1') parts.push({v:vars[i],comp:false});
     }
-    return { 
-      parts: term, 
-      pattern: pi.pattern, 
-      minterms: new Set([...pi.minterms].filter(m=>ones.has(m))),
-      allMinterms: pi.minterms
-    };
+    return {parts,pattern:pi.pattern,minterms:new Set([...pi.minterms].filter(m=>ones.has(m)))};
   });
 
-  return { terms, ones, dontCares, mToCoords };
+  return {terms,ones,dcs};
 }
 
-// ============================================================
-// VISUAL GROUPING (SVG)
-// ============================================================
-const GROUP_COLORS = ['rgba(239,68,68,', 'rgba(59,130,246,', 'rgba(34,197,94,', 'rgba(245,158,11,', 'rgba(168,85,247,', 'rgba(236,72,153,'];
-
-function getSegments(indices) {
-  if(!indices || indices.length===0) return [];
-  let segments = [];
-  let start = indices[0];
-  for(let i=1; i<=indices.length; i++) {
-    if(i === indices.length || indices[i] !== indices[i-1] + 1) {
-      segments.push({ min: start, max: indices[i-1] });
-      if(i < indices.length) start = indices[i];
-    }
-  }
-  return segments;
+function termToHTML(t){
+  if(t.parts.length===0) return '<span class="sop-one">1</span>';
+  return t.parts.map(p=>p.comp?`<span class="sop-t"><span class="sop-bar">${p.v}</span></span>`:`<span class="sop-t">${p.v}</span>`).join('');
 }
 
-function drawGroups(result) {
-  const svg = document.getElementById('kmap-svg-overlay');
-  svg.innerHTML = '';
-  if(!result.terms) return;
-  
-  const svgRect = svg.getBoundingClientRect();
-  const PADDING = 6;
-  
-  result.terms.forEach((t, i) => {
-    const colorRoot = GROUP_COLORS[i % GROUP_COLORS.length];
-    
-    // Find all r and c for this implicant
-    const rs = new Set(), cs = new Set();
-    t.allMinterms.forEach(m => {
-      const coords = result.mToCoords[m];
-      rs.add(coords.r);
-      cs.add(coords.c);
-    });
-    
-    const rSegs = getSegments([...rs].sort((a,b)=>a-b));
-    const cSegs = getSegments([...cs].sort((a,b)=>a-b));
-    
-    // Draw cartesian product of segments
-    rSegs.forEach(rsg => {
-      cSegs.forEach(csg => {
-        const cellMin = document.querySelector(`td[data-r="${rsg.min}"][data-c="${csg.min}"]`);
-        const cellMax = document.querySelector(`td[data-r="${rsg.max}"][data-c="${csg.max}"]`);
-        if(!cellMin || !cellMax) return;
-        
-        const minR = cellMin.getBoundingClientRect();
-        const maxR = cellMax.getBoundingClientRect();
-        
-        // Calculate offset based on term index to nest overlapping boxes
-        const offset = PADDING + (i * 3);
-        
-        const x = (minR.left - svgRect.left) + offset;
-        const y = (minR.top - svgRect.top) + offset;
-        const width = (maxR.right - minR.left) - (offset * 2);
-        const height = (maxR.bottom - minR.top) - (offset * 2);
-        
-        const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-        rect.setAttribute("x", x);
-        rect.setAttribute("y", y);
-        rect.setAttribute("width", width);
-        rect.setAttribute("height", height);
-        rect.setAttribute("rx", 10);
-        rect.setAttribute("ry", 10);
-        rect.setAttribute("fill", colorRoot + "0.15)");
-        rect.setAttribute("stroke", colorRoot + "0.8)");
-        rect.setAttribute("stroke-width", "2");
-        rect.setAttribute("class", `group-rect term-${i}`);
-        rect.style.transition = "all 0.2s";
-        svg.appendChild(rect);
-      });
-    });
-  });
+function termToVerilog(t){
+  if(t.parts.length===0) return "1'b1";
+  return t.parts.map(p=>p.comp?`~${p.v}`:p.v).join(' & ');
 }
 
-// ============================================================
-// RENDER RESULTS
-// ============================================================
-function termToHTML(term) {
-  if(term.parts.length === 0) return '<span class="one">1</span>';
-  return term.parts.map(p => {
-    if(p.comp) return `<span class="term"><span class="bar">${p.v}</span></span>`;
-    return `<span class="term">${p.v}</span>`;
-  }).join('');
-}
+function solve(){
+  const res=solveKMap();
+  window._lastRes=res;
+  const sopEl=document.getElementById('sopBox');
+  const implEl=document.getElementById('implList');
+  const mtEl=document.getElementById('mtBox');
 
-function solve() {
-  const result = solveKMap(gridData, varCount);
-  drawGroups(result);
-  
-  const sopEl = document.getElementById('sopDisplay');
-  const implEl = document.getElementById('implList');
-  const mintBox = document.getElementById('mintermBox');
-
-  if(result.sop === '0') {
-    sopEl.className = 'sop-display empty';
-    sopEl.textContent = 'F = 0  (no minterms)';
-  } else if(result.sop === '1') {
-    sopEl.className = 'sop-display';
-    sopEl.innerHTML = 'F = <span class="one">1</span>';
-  } else if(!result.terms || result.terms.length === 0) {
-    sopEl.className = 'sop-display empty';
-    sopEl.textContent = 'Click cells to begin solving...';
+  if(res.sop==='0'){
+    sopEl.className='sop-box empty-state';
+    sopEl.textContent='F = 0  (no minterms selected)';
+  } else if(res.sop==='1'){
+    sopEl.className='sop-box';
+    sopEl.innerHTML='F = <span class="sop-one">1</span>';
+  } else if(!res.terms||!res.terms.length){
+    sopEl.className='sop-box empty-state';
+    sopEl.textContent='Select minterms to solve…';
   } else {
-    sopEl.className = 'sop-display';
-    const termHTML = result.terms.map(t => termToHTML(t)).join('<span class="plus"> + </span>');
-    sopEl.innerHTML = `F = ${termHTML}`;
+    sopEl.className='sop-box';
+    sopEl.innerHTML='F = '+res.terms.map(t=>termToHTML(t)).join('<span class="sop-p"> + </span>');
   }
 
-  if(!result.terms || result.terms.length === 0) {
-    implEl.innerHTML = '<div style="color:var(--t3);font-size:13px;">No minterms selected</div>';
+  if(!res.terms||!res.terms.length){
+    implEl.innerHTML='<div style="color:var(--text-muted);font-size:11px;font-family:var(--font-sans)">None</div>';
   } else {
-    implEl.innerHTML = result.terms.map((t,i) => {
-      const col = GROUP_COLORS[i % GROUP_COLORS.length] + '1)';
-      const termStr = t.parts.length===0 ? '1' : t.parts.map(p=>p.comp?`${p.v}'`:p.v).join('');
-      const ms = [...t.minterms].sort((a,b)=>a-b).join(', ');
-      return `<div class="impl-item" onmouseenter="highlightGroup(${i}, true)" onmouseleave="highlightGroup(${i}, false)">
-        <div class="impl-dot" style="background:${col}"></div>
-        <span class="impl-term">${termStr}</span>
-        <span class="impl-minterms">m(${ms})</span>
-      </div>`;
+    implEl.innerHTML=res.terms.map((t,i)=>{
+      const col=COLORS[i%COLORS.length];
+      const ts=t.parts.length===0?'1':t.parts.map(p=>p.comp?`${p.v}'`:p.v).join('');
+      const ms=[...t.minterms].sort((a,b)=>a-b).join(',');
+      return `<div class="impl-item"><div class="impl-dot" style="background:${col}"></div><span class="impl-tm">${ts}</span><span class="impl-ms">m(${ms})</span></div>`;
     }).join('');
   }
 
-  const ones = [...(result.ones||[])].sort((a,b)=>a-b);
-  const dcs = [...(result.dontCares||[])].sort((a,b)=>a-b);
-  let mtStr = '';
-  if(ones.length) mtStr += `Σm(${ones.join(', ')})`;
-  if(dcs.length) mtStr += `${ones.length?' + ':''}d(${dcs.join(', ')})`;
-  mintBox.textContent = mtStr || '—';
-
-  window._lastResult = result;
+  const ones=[...(res.ones||[])].sort((a,b)=>a-b);
+  const dcs=[...(res.dcs||[])].sort((a,b)=>a-b);
+  let s='';
+  if(ones.length) s+=`Σm(${ones.join(', ')})`;
+  if(dcs.length) s+=`${ones.length?' + ':''}d(${dcs.join(', ')})`;
+  mtEl.textContent=s||'—';
 }
 
-function highlightGroup(index, highlight) {
-  document.querySelectorAll('.group-rect').forEach(el => {
-    if(el.classList.contains(`term-${index}`)) {
-      el.style.fillOpacity = highlight ? '0.4' : '1';
-      el.style.strokeWidth = highlight ? '4' : '2';
-    } else {
-      el.style.opacity = highlight ? '0.2' : '1';
-    }
+document.querySelectorAll('.vbtn[data-v]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    V=parseInt(btn.dataset.v);
+    document.querySelectorAll('.vbtn[data-v]').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');
+    initGrid(); renderMaps(); solve();
   });
-}
+});
 
-// Window resize must redraw SVG
-window.addEventListener('resize', () => { if(window._lastResult) drawGroups(window._lastResult); });
+document.getElementById('rstBtn').addEventListener('click',()=>{initGrid();renderMaps();solve();});
 
-// ============================================================
-// VERILOG EXPORT
-// ============================================================
-document.getElementById('verilogBtn').addEventListener('click', () => {
-  if(!window._lastResult || !window._lastResult.terms || !window._lastResult.terms.length) {
-    showToast('No expression to export');
-    return;
-  }
-  const cfg = CONFIGS[varCount];
-  const vars = cfg.vars;
-  const terms = window._lastResult.terms;
+document.getElementById('copyBtn').addEventListener('click',()=>{
+  const res=window._lastRes;
+  if(!res||!res.terms||!res.terms.length){showToast('Nothing to export');return;}
+  const cfg=CONFIGS[V];
+  const inp=cfg.vars.join(', ');
   let rhs;
-  if(window._lastResult.sop === '1') rhs = "1'b1";
-  else rhs = terms.map(t => {
-    if(t.parts.length === 0) return "1'b1";
-    return '(' + t.parts.map(p => p.comp ? `~${p.v}` : p.v).join(' & ') + ')';
-  }).join(' | ');
-
-  const verilog = `// Auto-generated by SQGATE K-Map Solver\nassign F = ${rhs};`;
-  navigator.clipboard.writeText(verilog).then(() => showToast('Copied!')).catch(() => showToast(verilog));
+  if(res.sop==='1') rhs="1'b1";
+  else rhs=res.terms.map(t=>{if(t.parts.length===0)return"1'b1";return'('+t.parts.map(p=>p.comp?`~${p.v}`:p.v).join(' & ')+')'}).join(' | ');
+  const code=`// Auto-generated by SQGATE K-Map Solver\n// Variables: ${inp}\nassign F = ${rhs};`;
+  navigator.clipboard.writeText(code).then(()=>showToast('Copied!')).catch(()=>showToast('Copy failed'));
 });
 
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2000);
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
 }
 
-// ============================================================
-// VARIABLE CONTROLS
-// ============================================================
-document.querySelectorAll('.var-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    varCount = parseInt(btn.dataset.v);
-    document.querySelectorAll('.var-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    initGrid();
-    renderTable();
-    solve();
-  });
-});
-
-
-// ============================================================
-// INTERACTIVE TOUR
-// ============================================================
-const KM_TOUR_STEPS = [
-  { sel: '#btn-guide', title: 'Interactive K-Map', text: 'Welcome! This tool helps you automatically simplify Boolean algebra using Karnaugh Maps.', action: null },
-  { sel: '#kmap-wrapper', title: 'The Grid', text: 'Click any cell on the grid to change its value. Click the top-left cell to set it to 1.', action: 'click-cell' },
-  { sel: '#sopDisplay', title: 'Instant Simplification', text: 'The engine instantly groups adjacent 1s and calculates the most simplified Sum-of-Products (SOP) expression.', action: null },
-  { sel: '#implList', title: 'Visual Implicants', text: 'Hover over the Prime Implicants listed here to see exactly which cells they bound on the grid!', action: null },
-  { sel: '#verilogBtn', title: 'Export', text: 'Once you are done, click this button to copy the simplified logic directly as Verilog code. That\'s it!', action: null }
-];
-let tourIndex = -1;
-
-function startTour() {
-  const guideBtn = document.getElementById('btn-guide');
-  if (guideBtn) guideBtn.classList.remove('guide-pulse');
-  
-  // Reset grid for tutorial
-  document.getElementById('v3-btn').click();
-  
-  document.getElementById('tour-overlay').style.display = 'block';
-  setTimeout(() => {
-    document.getElementById('tour-dialog').style.opacity = '1';
-    document.getElementById('tour-dialog').style.transform = 'translateY(0)';
-  }, 10);
-  tourIndex = -1;
-  nextTourStep();
-}
-
-function nextTourStep() {
-  tourIndex++;
-  if (tourIndex >= KM_TOUR_STEPS.length) {
-    endTour();
-    return;
-  }
-  const step = KM_TOUR_STEPS[tourIndex];
-  const el = document.querySelector(step.sel);
-  if (!el) { nextTourStep(); return; }
-
-  document.getElementById('tour-title-text').textContent = step.title;
-  document.getElementById('tour-text').textContent = step.text;
-  document.getElementById('tour-progress').textContent = (tourIndex + 1) + '/' + KM_TOUR_STEPS.length;
-  
-  const nextBtn = document.getElementById('tour-next-btn');
-  if (step.action) {
-    nextBtn.style.display = 'none';
-    document.getElementById('tour-text').innerHTML = step.text + '<br><br><span style="color:#ef4444;font-weight:bold;font-size:11px;text-transform:uppercase;letter-spacing:1px;">Waiting for your action...</span>';
-  } else {
-    nextBtn.style.display = 'block';
-    nextBtn.textContent = (tourIndex === KM_TOUR_STEPS.length - 1) ? 'Finish' : 'Next';
-  }
-
-  const hl = document.getElementById('tour-hl');
-  const rect = el.getBoundingClientRect();
-  hl.style.top = (rect.top - 6) + 'px';
-  hl.style.left = (rect.left - 6) + 'px';
-  hl.style.width = (rect.width + 12) + 'px';
-  hl.style.height = (rect.height + 12) + 'px';
-
-  const dlg = document.getElementById('tour-dialog');
-  let topPos = rect.bottom + 16;
-  if (topPos + 200 > window.innerHeight) topPos = rect.top - 216;
-  let leftPos = rect.left + rect.width / 2 - 160;
-  if (leftPos < 10) leftPos = 10;
-  if (leftPos + 320 > window.innerWidth) leftPos = window.innerWidth - 330;
-  
-  dlg.style.top = topPos + 'px';
-  dlg.style.left = leftPos + 'px';
-}
-
-function endTour() {
-  const dlg = document.getElementById('tour-dialog');
-  dlg.style.opacity = '0';
-  dlg.style.transform = 'translateY(10px)';
-  setTimeout(() => {
-    document.getElementById('tour-overlay').style.display = 'none';
-  }, 300);
-}
-
-function checkTourAction(actionName) {
-  if (tourIndex >= 0 && tourIndex < KM_TOUR_STEPS.length) {
-    if (KM_TOUR_STEPS[tourIndex].action === actionName) {
-      setTimeout(nextTourStep, 500);
-    }
-  }
-}
-
-// ============================================================
-// INIT
-// ============================================================
-initGrid();
-renderTable();
-solve();
+initGrid(); renderMaps(); solve();
 </script>
 </body>
 </html>
