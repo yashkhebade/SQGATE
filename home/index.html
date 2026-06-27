@@ -8241,6 +8241,44 @@ window.addEventListener('DOMContentLoaded', () => {
     });
   }
 </script>
+<!-- MOBILE PORTRAIT OVERLAY -->
+<style>
+#mobile-portrait-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--bg0);
+  z-index: 9999999;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 24px;
+}
+@media (max-width: 900px) and (orientation: portrait) {
+  #mobile-portrait-overlay { display: flex; }
+}
+@keyframes rotatePhone {
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(-90deg); }
+  100% { transform: rotate(-90deg); }
+}
+</style>
+<div id="mobile-portrait-overlay">
+  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--acb)" stroke-width="2" style="margin-bottom: 20px; animation: rotatePhone 2s infinite ease-in-out;">
+    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+    <line x1="12" y1="18" x2="12.01" y2="18"/>
+  </svg>
+  <h2 style="color:var(--t1); margin-bottom: 12px; font-family:var(--fmono);">Please Rotate Device</h2>
+  <p style="color:var(--t2); font-size:14px; max-width:300px; margin-bottom: 24px;">SQGATE is heavily optimized for landscape viewing. Please rotate your phone.</p>
+  
+  <div style="padding:16px; background:rgba(239, 68, 68, 0.1); border:1px solid rgba(239, 68, 68, 0.3); border-radius:8px; color:var(--t1); font-size:13px; max-width:300px;">
+    <strong style="color:#ef4444;">Note:</strong> This application is meant for desktop only. Touch screens may experience limited functionality.
+  </div>
+  
+  <button onclick="document.documentElement.requestFullscreen().then(() => screen.orientation.lock('landscape')).catch(e=>console.log(e)); document.getElementById('mobile-portrait-overlay').style.display='none';" class="tb-btn" style="margin-top: 32px; background: var(--acb); color: #fff; padding: 12px 24px; border: none; font-weight: bold; border-radius: 8px;">Force Landscape (Auto-Rotate)</button>
+  <button onclick="document.getElementById('mobile-portrait-overlay').style.display='none'" class="tb-btn" style="margin-top: 12px; background: transparent; color: var(--t3); padding: 8px 16px; border: none;">Dismiss</button>
+</div>
 
 </body>
 
