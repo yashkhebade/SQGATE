@@ -75,13 +75,13 @@ function captureTelemetry() {
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
     :root {
-      /* SQGATE Deep Space Blue Palette */
+      /* SQGATE Deep Space Blue Palette (Liquid Glass) */
       --bg0: #060813;
-      --bg1: #0c0f1c;
-      --bg2: #121626;
-      --bg3: #1a2035;
-      --b1: #1e243b;
-      --b2: #2b3453;
+      --bg1: rgba(12, 15, 28, 0.65);
+      --bg2: rgba(18, 22, 38, 0.65);
+      --bg3: rgba(26, 32, 53, 0.65);
+      --b1: rgba(255, 255, 255, 0.08);
+      --b2: rgba(255, 255, 255, 0.12);
       --t1: #ffffff;
       --t2: #94a3b8;
       --t3: #64748b;
@@ -801,8 +801,29 @@ function captureTelemetry() {
   /* Make sure app container handles relative positioning for absolute panel */
   #fsm-app { position: relative; overflow: hidden; }
 }
+/* LIQUID GLASS EFFECTS */
+.fsm-header, .fsm-panel, .tool-btn, .sqgate-em-box {
+  backdrop-filter: blur(16px) saturate(120%);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+}
+.fsm-panel, .sqgate-em-box { box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); }
+
+/* BACKGROUND ORBS */
+.bg-orbs { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; background: #060813; }
+.orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5; animation: float 20s infinite ease-in-out alternate; }
+.orb-1 { width: 400px; height: 400px; background: #8b5cf6; top: -100px; left: -100px; }
+.orb-2 { width: 500px; height: 500px; background: #10b981; bottom: -150px; right: -100px; animation-delay: -5s; }
+.orb-3 { width: 300px; height: 300px; background: #22d3ee; top: 40%; left: 30%; animation-delay: -10s; opacity: 0.3; }
+@keyframes float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(50px, 50px) scale(1.1); } }
 </style>
 
+<body>
+<!-- BACKGROUND ORBS -->
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
 <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;700&display=swap">
@@ -2170,38 +2191,46 @@ window.addEventListener('unhandledrejection', function(e) { showGlobalError(e.re
 #mobile-portrait-overlay {
   display: none;
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: var(--bg0);
-  z-index: 9999999;
+  inset: 0;
+  background: rgba(10, 10, 15, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 100000;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  text-align: center;
   padding: 24px;
 }
 @media (max-width: 900px) and (orientation: portrait) {
-  #mobile-portrait-overlay { display: flex; }
+  #mobile-portrait-overlay { display: flex; animation: fadeInOverlay 0.4s ease-out forwards; }
+}
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 @keyframes rotatePhone {
   0% { transform: rotate(0deg); }
-  50% { transform: rotate(-90deg); }
-  100% { transform: rotate(-90deg); }
+  40% { transform: rotate(-90deg); }
+  60% { transform: rotate(-90deg); }
+  100% { transform: rotate(0deg); }
 }
 </style>
 <div id="mobile-portrait-overlay">
-  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--acb)" stroke-width="2" style="margin-bottom: 20px; animation: rotatePhone 2s infinite ease-in-out;">
-    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
-    <line x1="12" y1="18" x2="12.01" y2="18"/>
-  </svg>
-  <h2 style="color:var(--t1); margin-bottom: 12px; font-family:var(--fmono);">Please Rotate Device</h2>
-  <p style="color:var(--t2); font-size:14px; max-width:300px; margin-bottom: 24px;">SQGATE is heavily optimized for landscape viewing. Please rotate your phone.</p>
-  
-  <div style="padding:16px; background:rgba(239, 68, 68, 0.1); border:1px solid rgba(239, 68, 68, 0.3); border-radius:8px; color:var(--t1); font-size:13px; max-width:300px;">
-    <strong style="color:#ef4444;">Note:</strong> This application is meant for desktop only. Touch screens may experience limited functionality.
+  <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 24px; padding: 40px 24px; max-width: 340px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
+    <div style="background: rgba(255, 255, 255, 0.05); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px auto; box-shadow: inset 0 2px 4px rgba(255,255,255,0.05);">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="animation: rotatePhone 2.5s infinite cubic-bezier(0.65, 0, 0.35, 1);">
+        <rect x="5" y="2" width="14" height="20" rx="3" ry="3"/>
+        <line x1="12" y1="18" x2="12.01" y2="18"/>
+      </svg>
+    </div>
+    
+    <h2 style="color:#fff; margin-bottom: 12px; font-family: 'Inter', sans-serif; font-size: 22px; font-weight: 600; letter-spacing: -0.5px;">Rotate Your Device</h2>
+    <p style="color: rgba(255,255,255,0.6); font-size: 15px; line-height: 1.5; margin-bottom: 32px; font-family: 'Inter', sans-serif;">SQGATE requires a wider screen to display the full simulator interface.</p>
+    
+    <button onclick="document.documentElement.requestFullscreen().then(() => screen.orientation.lock('landscape')).catch(e=>console.log(e)); document.getElementById('mobile-portrait-overlay').style.display='none';" style="cursor: pointer; background: var(--acb, #3b82f6); color: #fff; padding: 14px 28px; border: none; font-weight: 600; font-size: 15px; border-radius: 12px; font-family: 'Inter', sans-serif; width: 100%; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.5);" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">Force Auto-Rotate</button>
+    
+    <button onclick="document.getElementById('mobile-portrait-overlay').style.display='none'" style="cursor: pointer; margin-top: 16px; background: transparent; color: rgba(255,255,255,0.4); padding: 8px; border: none; font-family: 'Inter', sans-serif; font-size: 13px; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">Dismiss & Continue</button>
   </div>
-  
-  <button onclick="document.documentElement.requestFullscreen().then(() => screen.orientation.lock('landscape')).catch(e=>console.log(e)); document.getElementById('mobile-portrait-overlay').style.display='none';" style="cursor: pointer; margin-top: 32px; background: var(--acb); color: #fff; padding: 12px 24px; border: none; font-weight: bold; border-radius: 8px; font-family: inherit;">Force Landscape (Auto-Rotate)</button>
-  <button onclick="document.getElementById('mobile-portrait-overlay').style.display='none'" style="cursor: pointer; margin-top: 12px; background: transparent; color: var(--t3); padding: 8px 16px; border: none; font-family: inherit;">Dismiss</button>
 </div>
 
 <script src="/cookie-consent.js"></script>
