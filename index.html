@@ -1710,16 +1710,21 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
         The fastest visual logic gate simulator in your browser. Paste truth tables, connect wires, and export directly to Verilog & VHDL in milliseconds.
       </p>
       <div style="display:flex; flex-wrap: wrap; justify-content:center; align-items:center; gap:16px;">
-        <button onclick="createNewProject()" style="background: var(--t1); color: var(--bg0); border: none; padding: 14px 32px; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 8px 24px rgba(255,255,255,0.15);">
+        <button onclick="createNewProject()" class="hero-btn-primary">
           Launch Free Workspace
         </button>
-        <a href="#features" style="background: transparent; color: var(--t2); border: 1px solid var(--b2); padding: 13px 28px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; text-decoration: none;">
+        <a href="#features" class="hero-btn-secondary">
           Explore Features
         </a>
       </div>
 
       <!-- INTERACTIVE HERO CIRCUIT -->
       <style>
+        .hero-btn-primary { background: var(--t1); color: var(--bg0); border: none; padding: 14px 32px; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 8px 24px rgba(255,255,255,0.15); }
+        .hero-btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(255,255,255,0.25); filter: brightness(1.1); }
+        .hero-btn-secondary { background: transparent; color: var(--t2); border: 1px solid var(--b2); padding: 13px 28px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; text-decoration: none; }
+        .hero-btn-secondary:hover { transform: translateY(-3px); border-color: var(--t1); color: var(--t1); background: rgba(255,255,255,0.05); }
+
         .hero-sw { cursor: pointer; display: flex; align-items: center; gap: 12px; width: 100px; justify-content: flex-end; }
         .hero-sw-label { font-family: var(--fmono); font-size: 12px; color: var(--t2); font-weight: 600; transition: color 0.3s; }
         .hero-sw-track { width: 44px; height: 24px; background: var(--bg2); border: 2px solid var(--b2); border-radius: 12px; position: relative; transition: all 0.3s; flex-shrink: 0; }
