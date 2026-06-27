@@ -8076,7 +8076,7 @@ window.addEventListener('unhandledrejection', function(e) { showGlobalError(e.re
 </script>
 
 <style>
-#share-modal { position: fixed; inset: 0; z-index: 999999; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); font-family: 'Outfit', sans-serif; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+#share-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 999999; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); font-family: 'Outfit', sans-serif; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
 #share-modal.show { opacity: 1; pointer-events: auto; }
 .share-box { background: #1e293b; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 32px; max-width: 500px; width: 90%; box-shadow: 0 24px 64px rgba(0,0,0,0.6); text-align: center; color: #e2e8f0; transform: translateY(20px); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 #share-modal.show .share-box { transform: translateY(0); }
@@ -8097,6 +8097,7 @@ window.addEventListener('unhandledrejection', function(e) { showGlobalError(e.re
 
 <script>
 function shareCircuit() {
+  console.log("shareCircuit button clicked!");
   try {
     const snap = projDataSnapshot();
     const jsonStr = JSON.stringify({name: PROJ ? PROJ.name : 'Shared Circuit', data: snap});
@@ -8113,7 +8114,9 @@ function shareCircuit() {
     document.getElementById('share-copy-btn').textContent = "Copy Link";
   } catch (err) {
     console.error("Failed to generate share link:", err);
-    alert("Failed to generate link. The circuit might be too complex or contain invalid characters.");
+    document.getElementById('share-url-input').value = "Error generating link: " + err.message;
+    document.getElementById('share-modal').classList.add('show');
+    document.getElementById('share-copy-btn').textContent = "Failed";
   }
 }
 
