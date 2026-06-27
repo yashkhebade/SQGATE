@@ -1,7 +1,8 @@
-const CACHE_NAME = 'sqgate-cache-v5';
+const CACHE_NAME = 'sqgate-cache-v6';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
+  '/cookie-consent.js',
   '/home/index.html',
   '/circuit-simulator/index.html',
   '/fsm/index.html',

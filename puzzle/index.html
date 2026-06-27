@@ -394,6 +394,7 @@
 var TELEMETRY_ENDPOINT = "https://vemphsxvtlzfmeyjnbeq.supabase.co/rest/v1/puzzle";
 var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlbXBoc3h2dGx6Zm1leWpuYmVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMjU0MzEsImV4cCI6MjA5NzgwMTQzMX0.wGJ8PBs7ilfA6AD7zxwsmXoyZWGhMEkFgcHV_TvIio4";
 function captureTelemetry(level_idx, gates_used, is_random) {
+  if (localStorage.getItem('sqgate_cookie_consent') !== 'accepted') return;
   if (!TELEMETRY_ENDPOINT || !SUPABASE_ANON_KEY) return;
   fetch(TELEMETRY_ENDPOINT, {
     method: 'POST',
@@ -978,6 +979,7 @@ window.addEventListener('unhandledrejection', function(e) { showGlobalError(e.re
   }
 </script>
 
+<script src="/cookie-consent.js"></script>
 </body>
 
 </html>
