@@ -7,7 +7,7 @@
     "start": "electron .",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
-    "build:cf": "mkdir -p dist_cf && rsync -av --exclude='node_modules' --exclude='.git' --exclude='dist_cf' . dist_cf/"
+    "build:cf": "mkdir -p dist_cf && tar --exclude=node_modules --exclude=.git --exclude=dist_cf -cf - . | tar -xf - -C dist_cf"
   },
   "author": "Antigravity & User",
   "license": "MIT",
