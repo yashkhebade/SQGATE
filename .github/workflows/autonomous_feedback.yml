@@ -29,11 +29,9 @@ jobs:
           
       - name: Run Feedback Poller
         env:
-          # User must define this secret in their GitHub repository settings
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          # If using Gemini, define GEMINI_API_KEY and uncomment:
-          # GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          # AIDER_MODEL: gemini/gemini-1.5-pro-latest
+          # Google provides a completely FREE API tier via Google AI Studio
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          AIDER_MODEL: gemini/gemini-1.5-flash-latest
         run: |
           # Ensure git identity is set up for aider to commit
           git config --global user.name "SQGATE Automation Bot"
