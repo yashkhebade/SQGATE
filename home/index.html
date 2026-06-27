@@ -1781,7 +1781,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
           Launch Free Workspace
         </button>
         <a href="/pricing.html" class="hero-btn-secondary" style="border-color: var(--acc); color: var(--acc); text-decoration: none; display: inline-block;">
-          👑 Get SQGATE Pro
+          Get SQGATE Pro
         </a>
       </div>
 
@@ -1828,7 +1828,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
           </div>
 
           <!-- SVG Wires & Gate -->
-          <svg style="position: absolute; left: 100px; right: 0; top: 0; width: calc(100% - 100px); height: 120px; z-index: 1;">
+          <svg style="position: absolute; left: 100px; right: 0; top: 0; width: calc(100% - 150px); height: 120px; z-index: 1;">
             <defs>
               <filter id="glow" filterUnits="userSpaceOnUse" x="-50" y="-50" width="2000" height="200">
                 <feGaussianBlur stdDeviation="3" result="blur" />
@@ -2044,7 +2044,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
     <!-- Right Side Tools -->
     <div class="tb-group-right">
       <a href="/pricing.html" class="tb-btn-text" id="btn-pro-nav" style="border: 1px solid var(--acc); color: var(--acc); text-decoration: none; padding: 4px 10px; border-radius: 6px;">
-        👑 Upgrade to Pro
+        Upgrade to Pro
       </a>
       <button class="tb-btn" id="btn-drc" title="Design Rule Check" aria-label="DRC" style="display:none;">
         <svg viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg>
@@ -2182,7 +2182,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 <!-- PRO UPGRADE MODAL -->
 <div class="ov" id="pro-modal">
   <div class="ov-box" style="width: 440px; text-align: center; border: 1px solid var(--acc); background: var(--bg2); box-shadow: 0 0 40px rgba(139,92,246,0.2);">
-    <div style="font-size: 24px; font-weight: 800; color: white; margin-bottom: 8px;">👑 Pro Feature Locked</div>
+    <div style="font-size: 24px; font-weight: 800; color: white; margin-bottom: 8px;">Pro Feature Locked</div>
     <div style="font-size: 14px; color: var(--t2); margin-bottom: 24px;">
       You've reached a free tier limit: <strong style="color:var(--t1);" id="pro-feature-name">Unlimited Components</strong>. Upgrade to Pro to remove all limits.
     </div>
@@ -2729,6 +2729,7 @@ var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 var _lastTelemetryTime = 0;
 
 function captureTelemetry(data) {
+  if (localStorage.getItem('sqgate_cookie_consent') !== 'accepted') return;
   if (!TELEMETRY_ENDPOINT || !SUPABASE_ANON_KEY) return;
   
   // PRIVACY GUARD: Do not collect data if the user is signed in with a real email
@@ -8392,6 +8393,7 @@ window.addEventListener('DOMContentLoaded', () => {
   <button onclick="document.getElementById('mobile-portrait-overlay').style.display='none'" class="tb-btn" style="margin-top: 12px; background: transparent; color: var(--t3); padding: 8px 16px; border: none;">Dismiss</button>
 </div>
 
+<script src="/cookie-consent.js"></script>
 </body>
 
 </html>
