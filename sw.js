@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sqgate-cache-v1';
+const CACHE_NAME = 'sqgate-cache-v2';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -45,8 +45,8 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Only intercept GET requests
-  if (event.request.method !== 'GET') return;
+  // Only intercept GET requests and HTTP/HTTPS schemes (ignore chrome-extension, data, etc)
+  if (event.request.method !== 'GET' || !event.request.url.startsWith('http')) return;
 
   event.respondWith(
     caches.match(event.request)
@@ -58,7 +58,7 @@ self.addEventListener('fetch', (event) => {
         
         // Otherwise fetch from network
         return fetch(event.request).then((networkResponse) => {
-          // Cache the new fetched response for future
+          // Cache the new fetched response for future (only cache same-origin basic responses)
           if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
             const responseToCache = networkResponse.clone();
             caches.open(CACHE_NAME)
@@ -67,8 +67,10 @@ self.addEventListener('fetch', (event) => {
               });
           }
           return networkResponse;
-        }).catch(() => {
-          // If offline and not in cache, we could return a fallback page here
+        }).catch((err) => {
+          // If offline and not in cache, we MUST throw the error so the browser handles the failure natively
+          // Returning undefined would cause a TypeError that triggers the global error handler
+          throw err;
         });
       })
   );
