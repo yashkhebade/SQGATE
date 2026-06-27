@@ -7,7 +7,6 @@
   <link rel="canonical" href="https://sqgate.online/pricing.html">
   <meta name="description" content="Compare SQGATE Free and PRO plans. Upgrade for unlimited gates, VHDL to Verilog converter, C code converter, and more.">
   <meta name="keywords" content="SQGATE pricing, logic simulator PRO, VHDL converter, Verilog converter">
-  <meta name="google-adsense-account" content="ca-pub-7398330076279399">
   <!-- OG Tags -->
   <meta property="og:title" content="Pricing | SQGATE">
   <meta property="og:description" content="Upgrade to SQGATE PRO for unlimited gates, VHDL converters, and priority support.">
@@ -18,273 +17,315 @@
   <meta name="twitter:title" content="Pricing | SQGATE">
   <meta name="twitter:description" content="Upgrade to SQGATE PRO for unlimited gates, VHDL converters, and priority support.">
   <meta name="twitter:image" content="https://sqgate.online/og-image.png">
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-72EG9VJELZ"></script>
-  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-72EG9VJELZ');</script>
-  <!-- Google AdSense -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7398330076279399" crossorigin="anonymous"></script>
   <link rel="icon" href="./icon.webp" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap">
   <style>
-    
+    :root {
+      --bg0: #000000;
+      --bg1: #09090b;
+      --bg2: #18181b;
+      --bg3: #27272a;
+      --t1: #ffffff;
+      --t2: #a1a1aa;
+      --t3: #71717a;
+      --acc: #8b5cf6;
+      --hi: #22d3ee;
+      --b1: #27272a;
+      --b2: #3f3f46;
+    }
     body {
       margin: 0; padding: 0;
-      background: #09090b;
-      color: #e4e4e7;
+      background: var(--bg1);
+      color: var(--t1);
       font-family: 'Outfit', sans-serif;
       line-height: 1.6;
     }
     .container {
       max-width: 900px;
       margin: 0 auto;
-      padding: 40px 20px;
-    }
-    h1 {
-      color: #ffffff;
-      font-size: 36px;
-      text-align: center;
-      margin-bottom: 10px;
-    }
-    .subtitle {
-      text-align: center;
-      color: #a1a1aa;
-      margin-bottom: 50px;
-      font-size: 18px;
-    }
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 30px;
-      margin-top: 40px;
-    }
-    .pricing-card {
-      background: #18181b;
-      border: 1px solid #27272a;
-      border-radius: 12px;
-      padding: 40px;
-      display: flex;
-      flex-direction: column;
-    }
-    .pricing-card.pro {
-      border-color: #6366f1;
-      background: linear-gradient(180deg, rgba(99,102,241,0.05) 0%, rgba(24,24,27,0) 100%);
-      position: relative;
-    }
-    .pro-badge {
-      position: absolute;
-      top: -12px;
-      right: 30px;
-      background: #6366f1;
-      color: white;
-      font-size: 12px;
-      font-weight: 600;
-      padding: 4px 12px;
-      border-radius: 20px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    .tier-name {
-      font-size: 24px;
-      color: #fff;
-      font-weight: 600;
-      margin-bottom: 10px;
-    }
-    .price {
-      font-size: 48px;
-      color: #fff;
-      font-weight: 700;
-      margin-bottom: 20px;
-    }
-    .price span {
-      font-size: 16px;
-      color: #a1a1aa;
-      font-weight: 400;
-    }
-    .features {
-      list-style: none;
-      padding: 0;
-      margin: 0 0 40px 0;
-      flex-grow: 1;
-    }
-    .features li {
-      margin-bottom: 15px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: #d4d4d8;
-    }
-    .features li svg {
-      width: 20px;
-      height: 20px;
-      color: #10b981;
-      flex-shrink: 0;
-    }
-    .btn {
-      display: block;
-      text-align: center;
-      padding: 14px;
-      border-radius: 8px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.2s ease;
-    }
-    .btn-secondary {
-      background: #27272a;
-      color: #fff;
-    }
-    .btn-secondary:hover {
-      background: #3f3f46;
-    }
-    .btn-primary {
-      background: #6366f1;
-      color: #fff;
-    }
-    .btn-primary:hover {
-      background: #4f46e5;
+      padding: 60px 20px;
     }
     .back-btn {
       display: inline-block;
       margin-bottom: 30px;
-      background: #18181f;
-      color: #a1a1aa;
+      background: transparent;
+      color: var(--t2);
       padding: 8px 16px;
       border-radius: 6px;
-      border: 1px solid #323242;
+      border: 1px solid var(--b2);
       transition: all 0.2s ease;
       text-decoration: none;
+      font-weight: 500;
     }
     .back-btn:hover {
-      color: #ffffff;
-      border-color: #6366f1;
+      color: var(--t1);
+      border-color: var(--acc);
+      background: rgba(139,92,246,0.1);
     }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    .header h1 {
+      font-size: 42px;
+      font-weight: 800;
+      margin-bottom: 16px;
+      background: linear-gradient(to right, var(--acc), var(--hi));
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+    .header p {
+      font-size: 18px;
+      color: var(--t2);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .features-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .feature-pill {
+      background: var(--bg2);
+      border: 1px solid var(--b1);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      color: var(--t1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .feature-pill svg { width: 16px; height: 16px; color: #10b981; }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 60px;
+    }
+    
+    .pricing-card {
+      background: var(--bg2);
+      border: 1px solid var(--b1);
+      border-radius: 16px;
+      padding: 32px 24px;
+      text-align: center;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .pricing-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--acc);
+      box-shadow: 0 12px 32px rgba(139,92,246,0.15);
+    }
+    .pricing-card.popular {
+      background: linear-gradient(180deg, rgba(139,92,246,0.1) 0%, var(--bg2) 100%);
+      border-color: var(--acc);
+    }
+    .popular-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--acc);
+      color: white;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 12px;
+      letter-spacing: 1px;
+    }
+    
+    .tier-name {
+      font-size: 14px;
+      color: var(--t2);
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .pricing-card.popular .tier-name { color: var(--acc); }
+    
+    .price {
+      font-size: 48px;
+      font-weight: 800;
+      color: var(--t1);
+      margin-bottom: 24px;
+    }
+    
+    .card-btn {
+      margin-top: auto;
+      display: block;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+    .pricing-card .card-btn {
+      background: transparent;
+      border: 1px solid var(--acc);
+      color: var(--acc);
+    }
+    .pricing-card:hover .card-btn {
+      background: var(--acc);
+      color: white;
+    }
+    .pricing-card.popular .card-btn {
+      background: var(--acc);
+      color: white;
+    }
+
+    .license-section {
+      background: var(--bg2);
+      border: 1px solid var(--b1);
+      border-radius: 16px;
+      padding: 40px;
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .license-section h3 {
+      margin-top: 0;
+      font-size: 24px;
+      color: var(--t1);
+      margin-bottom: 12px;
+    }
+    .license-section p {
+      color: var(--t2);
+      margin-bottom: 24px;
+    }
+    .license-form {
+      display: flex;
+      gap: 12px;
+    }
+    .license-input {
+      flex: 1;
+      background: var(--bg0);
+      border: 1px solid var(--b2);
+      color: var(--t1);
+      padding: 14px 16px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-family: monospace;
+      transition: border-color 0.2s;
+    }
+    .license-input:focus {
+      outline: none;
+      border-color: var(--acc);
+    }
+    .license-btn {
+      background: var(--t1);
+      color: var(--bg0);
+      border: none;
+      padding: 0 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .license-btn:hover {
+      background: #e4e4e7;
+      transform: translateY(-2px);
+    }
+
     @media (max-width: 768px) {
-      .pricing-grid {
-        grid-template-columns: 1fr;
-      }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .license-form { flex-direction: column; }
+      .license-btn { padding: 14px; }
     }
   </style>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap">
 </head>
 <body>
+
   <div class="container">
-    <a href="index.html" class="back-btn">← Back to SQGATE</a>
+    <a href="/home/" class="back-btn">← Back to Workspace</a>
     
-    <h1>Simple, transparent pricing</h1>
-    <p class="subtitle">Choose the perfect plan for your digital logic design needs.</p>
+    <div class="header">
+      <h1>👑 Upgrade to SQGATE Pro</h1>
+      <p>Remove all limits and unlock the full potential of your logic designs.</p>
+    </div>
+
+    <div class="features-list">
+      <div class="feature-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Unlimited Components</div>
+      <div class="feature-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> 5 & 6 Variable K-Maps</div>
+      <div class="feature-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Priority Verilog Export</div>
+    </div>
 
     <div class="pricing-grid">
-      <!-- Free Tier -->
-      <div class="pricing-card">
-        <div class="tier-name">Free Simulator</div>
-        <div class="price">$0 <span>/ forever</span></div>
-        <ul class="features">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Basic Logic Gates (AND, OR, NOT)</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Local Browser Storage</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Up to 50 gates per project</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Truth Table Generator</li>
-        </ul>
-        <a href="index.html" class="btn btn-secondary">Current Plan</a>
-      </div>
+      <!-- 6 Months -->
+      <a href="https://rzp.io/rzp/wBZL6Vb" target="_blank" class="pricing-card">
+        <div class="tier-name">6 Months</div>
+        <div class="price">$5</div>
+        <div class="card-btn">Select Plan</div>
+      </a>
+      
+      <!-- 1 Year -->
+      <a href="https://rzp.io/rzp/wBZL6Vb" target="_blank" class="pricing-card popular">
+        <div class="popular-badge">MOST POPULAR</div>
+        <div class="tier-name">1 Year</div>
+        <div class="price">$8</div>
+        <div class="card-btn">Select Plan</div>
+      </a>
+      
+      <!-- Lifetime -->
+      <a href="https://rzp.io/rzp/wBZL6Vb" target="_blank" class="pricing-card">
+        <div class="tier-name">Lifetime</div>
+        <div class="price">$25</div>
+        <div class="card-btn">Select Plan</div>
+      </a>
+    </div>
 
-      <!-- Pro Tier -->
-      <div class="pricing-card pro">
-        <div class="pro-badge">Most Popular</div>
-        <div class="tier-name">SQGATE PRO</div>
-        <div class="price">$4.99 <span>/ month</span></div>
-        <ul class="features">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Everything in Free, plus:</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <strong>Unlimited Gates & Components</strong></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> VHDL to .v (Verilog) Converter</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> C Code Converter of Logic</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Automated Testbench Generation</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Priority Customer Support</li>
-        </ul>
-        <a href="#" class="btn btn-primary" id="btn-pro">🚀 Upgrade to PRO</a>
+    <div class="license-section">
+      <h3>Already Purchased?</h3>
+      <p>Enter the License Key you received via email to unlock your account immediately.</p>
+      <div class="license-form">
+        <input type="text" id="license-key" class="license-input" placeholder="SQGATE-PRO-...">
+        <button id="btn-unlock" class="license-btn" onclick="verifyLicense()">Unlock Pro</button>
       </div>
     </div>
   </div>
 
-
-
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const btnPro = document.getElementById('btn-pro');
+    // Extremely simple SHA-256 equivalent for client-side license checking
+    async function sha256(message) {
+      const msgBuffer = new TextEncoder().encode(message);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
 
-      // Get current user session
-      let session = null;
-      try { session = JSON.parse(localStorage.getItem('lgf_session')); } catch(e) {}
-
-      let userData = null;
-      if (session && session.email && session.email !== 'guest') {
-        try { userData = JSON.parse(localStorage.getItem('lgf_user_' + session.email) || '{}'); } catch(e) {}
-      }
-
-      // ── Already PRO ──
-      if (userData && userData.isPro) {
-        btnPro.textContent = '✅ Current Plan (PRO)';
-        btnPro.style.background = '#27272a';
-        btnPro.style.cursor = 'default';
-        btnPro.style.pointerEvents = 'none';
+    async function verifyLicense() {
+      const keyInput = document.getElementById('license-key').value.trim();
+      if (!keyInput) {
+        alert("Please enter a valid License Key.");
         return;
       }
 
-      // ── Coming Soon ──
-      btnPro.addEventListener('click', function(e) {
-        e.preventDefault();
-        alert('💎 PRO payments are coming soon! Stay tuned.');
-      });
-    });
+      // The valid hash for "SQGATE-PRO-2026"
+      const VALID_HASH = "815cc2b5753066df7bba53cc0bcfebf47fb488f24b806d2899dd47cc1de6fa34";
+      const inputHash = await sha256(keyInput);
+
+      if (inputHash === VALID_HASH) {
+        localStorage.setItem('sqgate_pro_status', 'active');
+        alert("🎉 Congratulations! SQGATE Pro is now Unlocked!");
+        window.location.href = '/home/';
+      } else {
+        alert("❌ Invalid License Key. Please check your purchase receipt.");
+      }
+    }
   </script>
 
-<!-- GLOBAL ERROR HANDLER -->
-<style>
-#sqgate-error-modal { position: fixed; inset: 0; z-index: 999999; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); font-family: 'Outfit', sans-serif; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
-#sqgate-error-modal.show { opacity: 1; pointer-events: auto; }
-.sqgate-em-box { background: #1e293b; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 32px; max-width: 420px; width: 90%; box-shadow: 0 24px 64px rgba(0,0,0,0.6); text-align: center; color: #e2e8f0; transform: translateY(20px); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-#sqgate-error-modal.show .sqgate-em-box { transform: translateY(0); }
-.sqgate-em-icon { font-size: 48px; color: #ef4444; margin-bottom: 16px; }
-.sqgate-em-title { font-size: 20px; font-weight: 700; margin-bottom: 12px; color: #fff; }
-.sqgate-em-msg { font-size: 14px; color: #94a3b8; margin-bottom: 24px; line-height: 1.6; }
-.sqgate-em-actions { display: flex; gap: 12px; justify-content: center; }
-.sqgate-em-btn { padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;}
-.sqgate-em-btn-primary { background: #7248b9; color: #fff; }
-.sqgate-em-btn-primary:hover { background: #5b3a94; transform: translateY(-2px); }
-.sqgate-em-btn-secondary { background: transparent; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.2); }
-.sqgate-em-btn-secondary:hover { background: rgba(255,255,255,0.05); color: #fff; }
-</style>
-<div id="sqgate-error-modal">
-  <div class="sqgate-em-box">
-    <div class="sqgate-em-icon">⚠️</div>
-    <div class="sqgate-em-title">Oops! Something went wrong.</div>
-    <div class="sqgate-em-msg">The application encountered an unexpected issue. You can report this to help us fix it!</div>
-    <div class="sqgate-em-actions">
-      <button class="sqgate-em-btn sqgate-em-btn-secondary" onclick="document.getElementById('sqgate-error-modal').classList.remove('show')">Dismiss</button>
-      <a class="sqgate-em-btn sqgate-em-btn-primary" href="https://docs.google.com/forms/d/e/1FAIpQLSc5AzzP2NccDkCbKAb5mVvefYFc5_X-EkJZx5RLWO7aqQ_8cw/viewform" target="_blank">Report Problem</a>
-    </div>
-  </div>
-</div>
-<script>
-function showGlobalError(msg) {
-  var m = document.getElementById('sqgate-error-modal');
-  if(m && !m.classList.contains('show')) m.classList.add('show');
-}
-window.addEventListener('error', function(e) { showGlobalError(e.message); });
-window.addEventListener('unhandledrejection', function(e) { showGlobalError(e.reason); });
-</script>
-
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js').then((registration) => {
-        console.log('ServiceWorker registration successful with scope: ', registration.scope);
-      }).catch((error) => {
-        console.log('ServiceWorker registration failed: ', error);
-      });
-    });
-  }
-</script>
-
 </body>
-
 </html>
