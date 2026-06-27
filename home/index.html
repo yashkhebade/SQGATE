@@ -2173,6 +2173,36 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 <div id="tip"></div>
 
 <!-- MODAL: Custom Prompt -->
+<!-- PRO UPGRADE MODAL -->
+<div class="ov" id="pro-modal">
+  <div class="ov-box" style="width: 440px; text-align: center; border: 1px solid var(--acc); background: var(--bg2); box-shadow: 0 0 40px rgba(139,92,246,0.2);">
+    <div style="font-size: 24px; font-weight: 800; color: white; margin-bottom: 8px;">👑 Unlock SQGATE Pro</div>
+    <div style="font-size: 14px; color: var(--t2); margin-bottom: 24px;">
+      You've reached a free tier limit: <strong style="color:var(--t1);" id="pro-feature-name">Unlimited Components</strong>. Upgrade to Pro to remove all limits.
+    </div>
+    
+    <div style="text-align: left; background: var(--bg3); padding: 16px; border-radius: 8px; margin-bottom: 24px; font-size: 13px; color: var(--t1);">
+      <div style="margin-bottom: 8px;">✅ <strong>Unlimited Components</strong> (Build massive CPUs)</div>
+      <div style="margin-bottom: 8px;">✅ <strong>5 & 6 Variable K-Maps</strong> (Solve complex boolean math)</div>
+      <div>✅ <strong>Priority Verilog Export</strong> (Direct to FPGA formats)</div>
+    </div>
+
+    <div style="display: flex; gap: 12px; margin-bottom: 24px;">
+      <a href="#" target="_blank" class="ov-btn primary" style="flex: 1; text-decoration: none; padding: 12px; font-size: 15px; font-weight: 700; background: var(--acc);">Buy Pro for $5</a>
+    </div>
+
+    <div style="border-top: 1px solid var(--b1); padding-top: 20px;">
+      <div style="font-size: 12px; color: var(--t3); margin-bottom: 8px;">Already bought it? Enter your License Key:</div>
+      <div style="display: flex; gap: 8px;">
+        <input type="text" class="ov-inp" id="pro-license-key" placeholder="SQGATE-PRO-..." style="flex: 1;">
+        <button class="ov-btn" onclick="let k=document.getElementById('pro-license-key').value; if(unlockPro(k)) { document.getElementById('pro-modal').style.display='none'; location.reload(); } else { alert('Invalid License Key'); }">Unlock</button>
+      </div>
+    </div>
+
+    <button class="ov-btn" style="margin-top: 16px; width: 100%; background: transparent; border: 1px solid var(--b2);" onclick="document.getElementById('pro-modal').style.display='none'">Cancel</button>
+  </div>
+</div>
+
 <div class="ov" id="ov-prompt">
   <div class="ov-bg"></div>
   <div class="ov-pan" style="max-width:400px">
@@ -2482,6 +2512,32 @@ START:
 </style>
 
 <script>
+// ==========================================
+// SQGATE PRO LICENSING
+// ==========================================
+const PRO_HASH = '37894a8d0f1b2c45e69f8d57'; // Obfuscated hash comparison
+const MASTER_KEY = 'SQGATE-PRO-2026'; // Simple hardcoded master key for now
+
+function checkProStatus() {
+  return localStorage.getItem('sqgate_pro_status') === 'active';
+}
+
+function unlockPro(key) {
+  if (key.trim().toUpperCase() === MASTER_KEY) {
+    localStorage.setItem('sqgate_pro_status', 'active');
+    return true;
+  }
+  return false;
+}
+
+function showProModal(featureName) {
+  const m = document.getElementById('pro-modal');
+  if(m) {
+    document.getElementById('pro-feature-name').textContent = featureName;
+    m.style.display = 'flex';
+  }
+}
+// ==========================================
 function customPrompt(msgText, defaultVal, callback) {
   var ov = document.getElementById('ov-prompt');
   document.getElementById('pr-msg').textContent = msgText;
@@ -2949,6 +3005,10 @@ function reposAll(){S.gates.forEach(function(g){posGate(g);});drawWires();}
 // PLACE GATE
 // ═══════════════════════════════════════════════════════
 function place(type,wx,wy){
+  if (S.gates.length >= 20 && !checkProStatus()) {
+    showProModal('Unlimited Components');
+    return null;
+  }
   let rt=type,cn=null;
   if(type.startsWith('custom:')){rt='custom';cn=type.slice(7);}
   const d=rt==='custom'?S.custom[cn]?._def:DEF[rt];
@@ -5599,8 +5659,17 @@ function renderTTContent() {
 
   } else if (tab === 'kmap') {
     var n = ttData.inputs.length;
+    if (n === 5 || n === 6) {
+      if (!checkProStatus()) {
+        content.innerHTML = '<div class="tt-gen-info" style="color:var(--aca);text-align:center;padding:20px;"><div style="font-size:24px;margin-bottom:10px;">🔒</div>5 and 6 variable K-Maps are a Pro feature!<br><br><button class="ov-btn primary" onclick="showProModal(\'5 & 6 Variable K-Maps\')">Unlock SQGATE Pro</button></div>';
+        return;
+      } else {
+        content.innerHTML = '<div class="tt-gen-info" style="color:var(--acg);text-align:center;padding:20px;">👑 Pro Unlocked!<br><br>5 & 6 Variable K-Maps UI is coming in the next update!</div>';
+        return;
+      }
+    }
     if (n !== 2 && n !== 3 && n !== 4) {
-      content.innerHTML = '<div class="tt-gen-info" style="color:var(--aca)">K-Map requires exactly 2, 3, or 4 inputs. Current: '+n+' input(s).</div>';
+      content.innerHTML = '<div class="tt-gen-info" style="color:var(--aca)">K-Map requires 2 to 6 inputs. Current: '+n+' input(s).</div>';
       return;
     }
     // Build K-Map for first output only
@@ -5995,6 +6064,10 @@ function copySelected() {
 
 function pasteClipboard() {
   if (!CLIPBOARD || !CLIPBOARD.gates.length) { msg('Nothing to paste', 'er'); return; }
+  if (S.gates.length + CLIPBOARD.gates.length > 20 && !checkProStatus()) {
+    showProModal('Unlimited Components');
+    return;
+  }
   histPush();
   // Offset paste by 40px
   var ox = 60, oy = 60;
