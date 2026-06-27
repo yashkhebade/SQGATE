@@ -2673,6 +2673,25 @@ function getUserData(email) {
 }
 function setUserData(email, data) {
   localStorage.setItem('lgf_user_' + email, JSON.stringify(data));
+  
+  // Sync to Supabase in the background
+  if (email !== 'guest' && SUPABASE_ANON_KEY) {
+    fetch('https://vemphsxvtlzfmeyjnbeq.supabase.co/rest/v1/users', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'Prefer': 'resolution=merge-duplicates'
+      },
+      body: JSON.stringify({
+        email: email,
+        name: data.name || '',
+        is_pro: data.isPro || false,
+        projects: data.projects || {}
+      })
+    }).catch(e => console.error('Sync error:', e));
+  }
 }
 function registerUser(email, name) {
   const existing = getUserData(email);
@@ -4805,7 +4824,7 @@ document.getElementById('guest-btn').addEventListener('click', function(){
 document.getElementById('login-email').addEventListener('keydown', function(e){ if(e.key==='Enter') document.getElementById('login-name').focus(); });
 document.getElementById('login-name').addEventListener('keydown',  function(e){ if(e.key==='Enter') doLogin(); });
 
-function doLogin(){
+async function doLogin(){
   var email = document.getElementById('login-email').value.trim().toLowerCase();
   var name  = document.getElementById('login-name').value.trim();
   var err   = document.getElementById('login-err');
@@ -4826,7 +4845,36 @@ function doLogin(){
   err.textContent='';
   CU = {email:email, name:name};
   authSave();
-  registerUser(email, name);
+  
+  let btn = document.getElementById('login-btn');
+  let oldText = btn.textContent;
+  btn.textContent = 'Syncing...';
+  
+  try {
+    let res = await fetch('https://vemphsxvtlzfmeyjnbeq.supabase.co/rest/v1/users?email=eq.' + encodeURIComponent(email), {
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+      }
+    });
+    let data = await res.json();
+    if (data && data.length > 0) {
+      let cloudUser = data[0];
+      let localData = {
+        name: cloudUser.name,
+        isPro: cloudUser.is_pro,
+        projects: cloudUser.projects || {}
+      };
+      localStorage.setItem('lgf_user_' + email, JSON.stringify(localData));
+    } else {
+      registerUser(email, name);
+    }
+  } catch(e) {
+    console.error("Login sync failed", e);
+    registerUser(email, name);
+  }
+  
+  btn.textContent = oldText;
   showProjects();
 }
 
