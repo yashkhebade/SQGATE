@@ -391,6 +391,20 @@
 </head>
 <body>
 
+<!-- LIQUID RADIO SVG FILTER -->
+<svg class="hidden" style="display:none;">
+  <defs>
+    <filter id="radio-glass" x="0%" y="0%" width="100%" height="100%" colorInterpolationFilters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05 0.05" numOctaves="1" seed="1" result="turbulence" />
+      <feGaussianBlur in="turbulence" stdDeviation="2" result="blurredNoise" />
+      <feDisplacementMap in="SourceGraphic" in2="blurredNoise" scale="30" xChannelSelector="R" yChannelSelector="B" result="displaced" />
+      <feGaussianBlur in="displaced" stdDeviation="2" result="finalBlur" />
+      <feComposite in="finalBlur" in2="finalBlur" operator="over" />
+    </filter>
+  </defs>
+</svg>
+
+
 <!-- HEADER -->
 <div id="kmap-header">
   <a href="/" class="site-brand">
@@ -575,429 +589,7 @@
 .orb-2 { width: 500px; height: 500px; background: #10b981; bottom: -150px; right: -100px; animation-delay: -5s; }
 .orb-3 { width: 300px; height: 300px; background: #22d3ee; top: 40%; left: 30%; animation-delay: -10s; opacity: 0.3; }
 @keyframes float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(50px, 50px) scale(1.1); } }
-</style>
 
-<body>
-<!-- BACKGROUND ORBS -->
-<div class="bg-orbs">
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
-</div>
-<div class="km-root">
-  <div class="km-ctrl-row">
-    <span class="km-lbl">Variables</span>
-    <button class="vbtn" data-v="2">2 · AB</button>
-    <button class="vbtn" data-v="3">3 · ABC</button>
-    <button class="vbtn on" data-v="4">4 · ABCD</button>
-    <button class="vbtn" data-v="5">5 · ABCDE</button>
-    <button class="vbtn" data-v="6">6 · ABCDEF</button>
-    <button class="rstbtn" id="rstBtn"><i class="ti ti-refresh" aria-hidden="true"></i> Reset</button>
-  </div>
-
-  <div class="km-body">
-    <div class="km-maps-col" id="mapsCol"></div>
-    <div class="km-panel">
-      <div class="panel-card">
-        <div class="pc-lbl">Simplified SOP</div>
-        <div class="sop-box empty-state" id="sopBox">Select minterms to solve…</div>
-      </div>
-      <div class="panel-card">
-        <div class="pc-lbl">Prime implicants</div>
-        <div class="impl-list" id="implList"><div style="color:var(--text-muted);font-size:11px;font-family:var(--font-sans)">None</div></div>
-      </div>
-      <div class="panel-card">
-        <div class="pc-lbl">Minterms &amp; don't cares</div>
-        <div class="mt-box" id="mtBox">—</div>
-      </div>
-      <button class="vbtn2" id="copyBtn"><i class="ti ti-copy" aria-hidden="true"></i> Copy Verilog assign</button>
-      <div class="tip-box">
-        <b>5-var:</b> Two 4×4 maps (E=0 left, E=1 right).<br>
-        <b>6-var:</b> Four 4×4 maps (EF = 00, 01, 11, 10).<br>
-        Groups wrap within <i>and across</i> planes. Powers of 2 only (1→2→4→8→16→32→64). Click cells: <b>0 → 1 → X → 0</b>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
-<script>
-// TELEMETRY
-var TELEMETRY_ENDPOINT = "https://vemphsxvtlzfmeyjnbeq.supabase.co/rest/v1/kmap";
-var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlbXBoc3h2dGx6Zm1leWpuYmVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMjU0MzEsImV4cCI6MjA5NzgwMTQzMX0.wGJ8PBs7ilfA6AD7zxwsmXoyZWGhMEkFgcHV_TvIio4";
-function captureTelemetry(variables_count, minterm_count, dontcare_count) {
-  if (localStorage.getItem('sqgate_cookie_consent') !== 'accepted') return;
-  if (!TELEMETRY_ENDPOINT || !SUPABASE_ANON_KEY) return;
-  fetch(TELEMETRY_ENDPOINT, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY, 'Prefer': 'return=minimal' },
-    body: JSON.stringify({
-      timestamp: Date.now(),
-      variables_count: variables_count,
-      minterm_count: minterm_count,
-      dontcare_count: dontcare_count
-    })
-  }).catch(function(e){});
-}
-
-const GRAY4 = ['00','01','11','10'];
-const GRAY2 = ['0','1'];
-
-const CONFIGS = {
-  2:{vars:['A','B'],   planes:1, rowG:GRAY2,  colG:GRAY2,  rowLbl:'A', colLbl:'B'},
-  3:{vars:['A','B','C'], planes:1, rowG:GRAY2, colG:GRAY4, rowLbl:'A', colLbl:'BC'},
-  4:{vars:['A','B','C','D'], planes:1, rowG:GRAY4, colG:GRAY4, rowLbl:'AB', colLbl:'CD'},
-  5:{vars:['A','B','C','D','E'], planes:2, rowG:GRAY4, colG:GRAY4, rowLbl:'AB', colLbl:'CD', planeLbl:'E', planeG:GRAY2},
-  6:{vars:['A','B','C','D','E','F'], planes:4, rowG:GRAY4, colG:GRAY4, rowLbl:'AB', colLbl:'CD', planeLbl:'EF', planeG:GRAY4},
-};
-
-let V = 4;
-let grid = {};
-
-const COLORS = ['#f59e0b','#8b5cf6','#10b981','#ef4444','#3b82f6','#ec4899','#14b8a6','#f97316','#84cc16','#a78bfa'];
-
-function initGrid(){
-  grid = {};
-  const cfg = CONFIGS[V];
-  const P = cfg.planes, R = cfg.rowG.length, C = cfg.colG.length;
-  for(let p=0;p<P;p++) for(let r=0;r<R;r++) for(let c=0;c<C;c++) grid[`${p},${r},${c}`]='0';
-}
-
-function cellMinterm(p,r,c){
-  const cfg = CONFIGS[V];
-  let bits = '';
-  if(V===2){ bits = cfg.rowG[r]+cfg.colG[c]; }
-  else if(V===3){ bits = cfg.rowG[r]+cfg.colG[c]; }
-  else if(V===4){ bits = cfg.rowG[r]+cfg.colG[c]; }
-  else if(V===5){ bits = cfg.rowG[r]+cfg.colG[c]+cfg.planeG[p]; }
-  else if(V===6){ bits = cfg.rowG[r]+cfg.colG[c]+cfg.planeG[p]; }
-  return parseInt(bits,2);
-}
-
-function renderMaps(){
-  const col = document.getElementById('mapsCol');
-  col.innerHTML='';
-  const cfg = CONFIGS[V];
-  const P=cfg.planes, R=cfg.rowG.length, C=cfg.colG.length;
-  for(let p=0;p<P;p++){
-    const div=document.createElement('div');
-    div.className='km-plane';
-    let planeName='';
-    if(V>=5){ planeName = `<span>${cfg.planeLbl} = ${cfg.planeG[p]}</span>`; }
-    div.innerHTML=`<div class="km-plane-lbl">Plane ${p+1} ${planeName}</div>`;
-    const wrap=document.createElement('div');
-    wrap.style.overflowX='auto';
-    const tbl=document.createElement('table');
-    tbl.className='kmtbl';
-    const thead=document.createElement('thead');
-    const hr=document.createElement('tr');
-    const corner=document.createElement('th');
-    corner.className='corner';
-    corner.innerHTML=`<span style="font-size:9px">${cfg.rowLbl}↓ ${cfg.colLbl}→</span>`;
-    hr.appendChild(corner);
-    cfg.colG.forEach(cb=>{const th=document.createElement('th');th.textContent=cb;hr.appendChild(th);});
-    thead.appendChild(hr); tbl.appendChild(thead);
-    const tbody=document.createElement('tbody');
-    for(let r=0;r<R;r++){
-      const tr=document.createElement('tr');
-      const rh=document.createElement('th');
-      rh.className='rhdr'; rh.textContent=cfg.rowG[r]; tr.appendChild(rh);
-      for(let c=0;c<C;c++){
-        const val=grid[`${p},${r},${c}`]||'0';
-        const m=cellMinterm(p,r,c);
-        const td=document.createElement('td');
-        td.className=`km-cell v${val.toLowerCase()}`;
-        td.dataset.p=p; td.dataset.r=r; td.dataset.c=c;
-        td.innerHTML=`<span class="mnum">${m}</span>${val}`;
-        td.addEventListener('click',()=>toggleCell(p,r,c));
-        tr.appendChild(td);
-      }
-      tbody.appendChild(tr);
-    }
-    tbl.appendChild(tbody);
-    wrap.appendChild(tbl); div.appendChild(wrap);
-    if(p===0){
-      div.insertAdjacentHTML('beforeend', `<div class="km-legend">
-        <div class="leg-item"><div class="leg-dot" style="background:var(--surface-0);border:1px solid var(--border)"></div><span>0 — false</span></div>
-        <div class="leg-item"><div class="leg-dot" style="background:var(--bg-warning)"></div><span>1 — true</span></div>
-        <div class="leg-item"><div class="leg-dot" style="background:var(--bg-pro)"></div><span>X — don't care</span></div>
-      </div>`);
-    }
-    col.appendChild(div);
-  }
-}
-
-function toggleCell(p,r,c){
-  const cur=grid[`${p},${r},${c}`];
-  grid[`${p},${r},${c}`]=cur==='0'?'1':cur==='1'?'X':'0';
-  const td=document.querySelector(`[data-p="${p}"][data-r="${r}"][data-c="${c}"]`);
-  if(td){
-    const v=grid[`${p},${r},${c}`];
-    td.className=`km-cell v${v.toLowerCase()}`;
-    td.innerHTML=`<span class="mnum">${cellMinterm(p,r,c)}</span>${v}`;
-  }
-  solve();
-}
-
-function getBitPattern(m,bits){ return m.toString(2).padStart(bits,'0'); }
-
-function solveKMap(){
-  const cfg=CONFIGS[V];
-  const P=cfg.planes, R=cfg.rowG.length, C=cfg.colG.length;
-  const bits=V;
-  const total=1<<bits;
-  const ones=new Set(), dcs=new Set();
-  for(let p=0;p<P;p++) for(let r=0;r<R;r++) for(let c=0;c<C;c++){
-    const v=grid[`${p},${r},${c}`]||'0';
-    const m=cellMinterm(p,r,c);
-    if(v==='1') ones.add(m);
-    if(v==='X') dcs.add(m);
-  }
-  if(ones.size===0) return {sop:'0',terms:[],ones,dcs};
-  let allOne=true;
-  for(let i=0;i<total;i++) if(!ones.has(i)){allOne=false;break;}
-  if(allOne) return {sop:'1',terms:[{parts:[],minterms:ones,pattern:'-'.repeat(bits)}],ones,dcs};
-
-  const allForSolve=new Set([...ones,...dcs]);
-
-  let implicants=[...allForSolve].map(m=>({pattern:getBitPattern(m,bits),minterms:new Set([m]),used:false}));
-  const primes=[];
-
-  function reducePass(impl){
-    const next=[];
-    impl.forEach(i=>{i.used=false;});
-    const usedIdx=new Set();
-    for(let i=0;i<impl.length;i++) for(let j=i+1;j<impl.length;j++){
-      const a=impl[i],b=impl[j];
-      let ok=true,diffs=[];
-      for(let k=0;k<bits;k++){
-        if(a.pattern[k]==='-'&&b.pattern[k]!=='-'){ok=false;break;}
-        if(a.pattern[k]!=='-'&&b.pattern[k]==='-'){ok=false;break;}
-        if(a.pattern[k]!==b.pattern[k]) diffs.push(k);
-      }
-      if(!ok||diffs.length!==1) continue;
-      const np=a.pattern.split('');np[diffs[0]]='-';
-      const ps=np.join('');
-      const nm=new Set([...a.minterms,...b.minterms]);
-      if(!next.find(x=>x.pattern===ps)) next.push({pattern:ps,minterms:nm,used:false});
-      usedIdx.add(i);usedIdx.add(j);
-      impl[i].used=true;impl[j].used=true;
-    }
-    impl.forEach((imp,i)=>{if(!imp.used) primes.push(imp);});
-    return next;
-  }
-
-  let cur=implicants;
-  for(let pass=0;pass<bits;pass++){const nxt=reducePass(cur);if(!nxt.length)break;cur=nxt;}
-  cur.forEach(imp=>{if(!imp.used) primes.push(imp);});
-
-  const primeSet=[]; const seen=new Set();
-  primes.forEach(p=>{if(!seen.has(p.pattern)){seen.add(p.pattern);primeSet.push(p);}});
-
-  const onesList=[...ones];
-  const coverage={};
-  onesList.forEach(m=>{coverage[m]=primeSet.filter(p=>p.minterms.has(m));});
-
-  const essSet=new Set(),essPI=[];
-  onesList.forEach(m=>{
-    if(coverage[m]&&coverage[m].length===1){
-      const pi=coverage[m][0];
-      if(!essSet.has(pi.pattern)){essSet.add(pi.pattern);essPI.push(pi);}
-    }
-  });
-
-  let covered=new Set();
-  essPI.forEach(pi=>pi.minterms.forEach(m=>{if(ones.has(m))covered.add(m);}));
-
-  const finalPIs=[...essPI];
-  let rem=onesList.filter(m=>!covered.has(m));
-  while(rem.length>0){
-    let best=null,bc=0;
-    primeSet.forEach(pi=>{
-      if(finalPIs.includes(pi)) return;
-      const cnt=rem.filter(m=>pi.minterms.has(m)).length;
-      if(cnt>bc){bc=cnt;best=pi;}
-    });
-    if(!best||!bc) break;
-    finalPIs.push(best);
-    best.minterms.forEach(m=>{if(ones.has(m))covered.add(m);});
-    rem=onesList.filter(m=>!covered.has(m));
-  }
-
-  const vars=cfg.vars;
-  const terms=finalPIs.map(pi=>{
-    const parts=[];
-    for(let i=0;i<bits;i++){
-      if(pi.pattern[i]==='0') parts.push({v:vars[i],comp:true});
-      else if(pi.pattern[i]==='1') parts.push({v:vars[i],comp:false});
-    }
-    return {parts,pattern:pi.pattern,minterms:new Set([...pi.minterms].filter(m=>ones.has(m)))};
-  });
-
-  return {terms,ones,dcs};
-}
-
-function termToHTML(t){
-  if(t.parts.length===0) return '<span class="sop-one">1</span>';
-  return t.parts.map(p=>p.comp?`<span class="sop-t"><span class="sop-bar">${p.v}</span></span>`:`<span class="sop-t">${p.v}</span>`).join('');
-}
-
-function termToVerilog(t){
-  if(t.parts.length===0) return "1'b1";
-  return t.parts.map(p=>p.comp?`~${p.v}`:p.v).join(' & ');
-}
-
-function solve(){
-  const res=solveKMap();
-  window._lastRes=res;
-  if(res && res.terms && res.terms.length > 0) {
-    let mt_count = 0, dc_count = 0;
-    for(let i=0; i<NUM_CELLS; i++) {
-       if(state.cells[i]===1) mt_count++;
-       if(state.cells[i]==='X') dc_count++;
-    }
-    captureTelemetry(VARS, mt_count, dc_count);
-  }
-  const sopEl=document.getElementById('sopBox');
-  const implEl=document.getElementById('implList');
-  const mtEl=document.getElementById('mtBox');
-
-  if(res.sop==='0'){
-    sopEl.className='sop-box empty-state';
-    sopEl.textContent='F = 0  (no minterms selected)';
-  } else if(res.sop==='1'){
-    sopEl.className='sop-box';
-    sopEl.innerHTML='F = <span class="sop-one">1</span>';
-  } else if(!res.terms||!res.terms.length){
-    sopEl.className='sop-box empty-state';
-    sopEl.textContent='Select minterms to solve…';
-  } else {
-    sopEl.className='sop-box';
-    sopEl.innerHTML='F = '+res.terms.map(t=>termToHTML(t)).join('<span class="sop-p"> + </span>');
-  }
-
-  if(!res.terms||!res.terms.length){
-    implEl.innerHTML='<div style="color:var(--text-muted);font-size:11px;font-family:var(--font-sans)">None</div>';
-  } else {
-    implEl.innerHTML=res.terms.map((t,i)=>{
-      const col=COLORS[i%COLORS.length];
-      const ts=t.parts.length===0?'1':t.parts.map(p=>p.comp?`${p.v}'`:p.v).join('');
-      const ms=[...t.minterms].sort((a,b)=>a-b).join(',');
-      return `<div class="impl-item"><div class="impl-dot" style="background:${col}"></div><span class="impl-tm">${ts}</span><span class="impl-ms">m(${ms})</span></div>`;
-    }).join('');
-  }
-
-  const ones=[...(res.ones||[])].sort((a,b)=>a-b);
-  const dcs=[...(res.dcs||[])].sort((a,b)=>a-b);
-  let s='';
-  if(ones.length) s+=`Σm(${ones.join(', ')})`;
-  if(dcs.length) s+=`${ones.length?' + ':''}d(${dcs.join(', ')})`;
-  mtEl.textContent=s||'—';
-}
-
-document.querySelectorAll('.vbtn[data-v]').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    let newV = parseInt(btn.dataset.v);
-    if (newV > 4 && !checkProStatus()) {
-      showProModal('5 & 6 Variable K-Maps');
-      return;
-    }
-    V = newV;
-    document.querySelectorAll('.vbtn[data-v]').forEach(b=>b.classList.remove('on'));
-    btn.classList.add('on');
-    initGrid(); renderMaps(); solve();
-  });
-});
-
-document.getElementById('rstBtn').addEventListener('click',()=>{initGrid();renderMaps();solve();});
-
-document.getElementById('copyBtn').addEventListener('click',()=>{
-  const res=window._lastRes;
-  if(!res||!res.terms||!res.terms.length){showToast('Nothing to export');return;}
-  const cfg=CONFIGS[V];
-  const inp=cfg.vars.join(', ');
-  let rhs;
-  if(res.sop==='1') rhs="1'b1";
-  else rhs=res.terms.map(t=>{if(t.parts.length===0)return"1'b1";return'('+t.parts.map(p=>p.comp?`~${p.v}`:p.v).join(' & ')+')'}).join(' | ');
-  const code=`// Auto-generated by SQGATE K-Map Solver\n// Variables: ${inp}\nassign F = ${rhs};`;
-  navigator.clipboard.writeText(code).then(()=>showToast('Copied!')).catch(()=>showToast('Copy failed'));
-});
-
-function showToast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2000);
-}
-
-initGrid(); renderMaps(); solve();
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "@id": "https://sqgate.online/#website",
-  "name": "SQGate",
-  "description": "Free online digital electronics and logic design toolkit for engineering students and hobbyists. Includes a visual circuit simulator, FSM designer with Verilog export, Karnaugh map solver, and logic gate puzzle game.",
-  "url": "https://sqgate.online/",
-  "inLanguage": ["en-IN", "en-US"],
-  "keywords": "logic gate simulator, FSM designer, Karnaugh map solver, digital electronics, Verilog generator, online EDA tool, GATE exam prep, BTech ECE tools",
-  "publisher": {
-    "@type": "Organization",
-    "@id": "https://sqgate.online/#organization",
-    "name": "SQGate",
-    "url": "https://sqgate.online/",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://sqgate.online/icon.webp",
-      "width": 512,
-      "height": 512
-    }
-  },
-  "potentialAction": {
-    "@type": "SearchAction",
-    "target": {
-      "@type": "EntryPoint",
-      "urlTemplate": "https://sqgate.online/search?q={search_term_string}"
-    },
-    "query-input": "required name=search_term_string"
-  }
-}
-</script>\n<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "@id": "https://sqgate.online/k-map#app",
-  "name": "Interactive K-Map Solver",
-  "alternateName": "Karnaugh Map Solver",
-  "description": "Simplify Boolean expressions visually using interactive Karnaugh maps supporting 2 to 6 variables. Features automatic prime implicant grouping and Sum-of-Products / Product-of-Sums output — free online tool for GATE prep and digital electronics study.",
-  "url": "https://sqgate.online/k-map",
-  "applicationCategory": "EducationalApplication",
-  "applicationSubCategory": "Digital Logic Tool",
-  "operatingSystem": "Web Browser",
-  "browserRequirements": "Requires JavaScript. Works in Chrome, Firefox, Safari, Edge.",
-  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR", "availability": "https://schema.org/InStock" },
-  "featureList": ["2 to 6 variable Karnaugh map support", "Automatic prime implicant identification and grouping", "Sum-of-Products (SOP) output", "Product-of-Sums (POS) output", "Visual cell grouping with color coding", "Minterm and maxterm input", "Don't care condition support", "No installation required"],
-  "audience": { "@type": "EducationalAudience", "educationalRole": "student", "audienceType": "B.Tech / BE Electronics, ECE, CS students; GATE aspirants" },
-  "isAccessibleForFree": true,
-  "educationalUse": ["practice", "self-study", "teaching"],
-  "isPartOf": { "@id": "https://sqgate.online/#website" },
-  "provider": { "@id": "https://sqgate.online/#organization" }
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://sqgate.online/" },
-    { "@type": "ListItem", "position": 2, "name": "K-Map Solver", "item": "https://sqgate.online/k-map" }
-  ]
-}
-</script>
-
-<!-- PRO UPGRADE MODAL -->
-<style>
 .ov { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 999999; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
 .ov-box { width: 440px; text-align: center; border: 1px solid var(--border-accent); background: var(--surface-1); box-shadow: 0 0 40px rgba(99,102,241,0.2); border-radius: 12px; padding: 30px; font-family: var(--font-sans); }
 .ov-btn { padding: 12px; font-size: 15px; font-weight: 700; border-radius: 8px; cursor: pointer; display: block; width: 100%; border: none; font-family: var(--font-sans); color: var(--text-primary); }
@@ -1043,6 +635,32 @@ function showProModal(featureName) {
 .sqgate-em-btn-primary:hover { background: #5b3a94; transform: translateY(-2px); }
 .sqgate-em-btn-secondary { background: transparent; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.2); }
 .sqgate-em-btn-secondary:hover { background: rgba(255,255,255,0.05); color: #fff; }
+
+  /* GLOBAL LIQUID GLASS EFFECTS - DISTORTION */
+  .panel-card, .vbtn, .vbtn2, .ov-box, .sqgate-em-box, .tb-btn, .step-btn, .puzzle-card, .pz-btn {
+    position: relative;
+    z-index: 1;
+  }
+  .panel-card > *, .vbtn > *, .vbtn2 > *, .ov-box > *, .sqgate-em-box > *, .tb-btn > *, .step-btn > *, .puzzle-card > *, .pz-btn > * {
+    position: relative;
+    z-index: 2;
+  }
+  .panel-card::before, .vbtn::before, .vbtn2::before, .ov-box::before, .sqgate-em-box::before, .tb-btn::before, .step-btn::before, .puzzle-card::before, .pz-btn::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: inherit;
+    background: rgba(255,255,255,0.02);
+    filter: url("#radio-glass");
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.8; 
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .panel-card:hover::before, .vbtn:hover::before, .vbtn2:hover::before, .tb-btn:hover::before, .step-btn:hover::before, .puzzle-card:hover::before, .pz-btn:hover::before {
+    opacity: 1;
+    background: rgba(255,255,255,0.06);
+  }
 </style>
 <div id="sqgate-error-modal">
   <div class="sqgate-em-box">

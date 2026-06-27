@@ -307,6 +307,20 @@
 </head>
 <body>
 
+<!-- LIQUID RADIO SVG FILTER -->
+<svg class="hidden" style="display:none;">
+  <defs>
+    <filter id="radio-glass" x="0%" y="0%" width="100%" height="100%" colorInterpolationFilters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05 0.05" numOctaves="1" seed="1" result="turbulence" />
+      <feGaussianBlur in="turbulence" stdDeviation="2" result="blurredNoise" />
+      <feDisplacementMap in="SourceGraphic" in2="blurredNoise" scale="30" xChannelSelector="R" yChannelSelector="B" result="displaced" />
+      <feGaussianBlur in="displaced" stdDeviation="2" result="finalBlur" />
+      <feComposite in="finalBlur" in2="finalBlur" operator="over" />
+    </filter>
+  </defs>
+</svg>
+
+
 <!-- HEADER -->
 <div id="lq-header">
   <a href="/home" class="site-brand">
@@ -960,6 +974,32 @@ function checkTourAction(actionName) {
 .orb-2 { width: 500px; height: 500px; background: #10b981; bottom: -150px; right: -100px; animation-delay: -5s; }
 .orb-3 { width: 300px; height: 300px; background: #22d3ee; top: 40%; left: 30%; animation-delay: -10s; opacity: 0.3; }
 @keyframes float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(50px, 50px) scale(1.1); } }
+
+  /* GLOBAL LIQUID GLASS EFFECTS - DISTORTION */
+  .panel-card, .vbtn, .vbtn2, .ov-box, .sqgate-em-box, .tb-btn, .step-btn, .puzzle-card, .pz-btn {
+    position: relative;
+    z-index: 1;
+  }
+  .panel-card > *, .vbtn > *, .vbtn2 > *, .ov-box > *, .sqgate-em-box > *, .tb-btn > *, .step-btn > *, .puzzle-card > *, .pz-btn > * {
+    position: relative;
+    z-index: 2;
+  }
+  .panel-card::before, .vbtn::before, .vbtn2::before, .ov-box::before, .sqgate-em-box::before, .tb-btn::before, .step-btn::before, .puzzle-card::before, .pz-btn::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: inherit;
+    background: rgba(255,255,255,0.02);
+    filter: url("#radio-glass");
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.8; 
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .panel-card:hover::before, .vbtn:hover::before, .vbtn2:hover::before, .tb-btn:hover::before, .step-btn:hover::before, .puzzle-card:hover::before, .pz-btn:hover::before {
+    opacity: 1;
+    background: rgba(255,255,255,0.06);
+  }
 </style>
 <body>
 <!-- BACKGROUND ORBS -->

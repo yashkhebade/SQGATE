@@ -1689,6 +1689,44 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
   #ed-topbar::-webkit-scrollbar { display: none; }
   
   /* Make touch target for canvas wires slightly bigger if possible, but standard is fine */
+  
+  /* GLOBAL LIQUID GLASS EFFECTS */
+  .proj-card, .g-btn, .hero-btn, .hero-btn-primary, .ov-box, .login-box, .ed-topbar, .sb-left, .custom-pane, .mbox {
+    backdrop-filter: blur(16px) saturate(120%);
+    -webkit-backdrop-filter: blur(16px) saturate(120%);
+    position: relative;
+    z-index: 1;
+    /* overflow: hidden; Removed to not break dropdowns if any exist inside cards/boxes */
+  }
+  
+  /* Ensure all content inside stays above the pseudo element */
+  .proj-card > *, .g-btn > *, .hero-btn > *, .hero-btn-primary > *, .ov-box > *, .login-box > *, .ed-topbar > *, .sb-left > *, .custom-pane > *, .mbox > * {
+    position: relative;
+    z-index: 2;
+  }
+  
+  /* Apply the liquid SVG distortion only to the background via pseudo-element */
+  .proj-card::before, .g-btn::before, .hero-btn::before, .hero-btn-primary::before, .ov-box::before, .login-box::before, .mbox::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: rgba(255,255,255,0.02);
+    filter: url("#radio-glass");
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.8; 
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  /* Hover interactions */
+  .proj-card:hover::before, .g-btn:hover::before, .hero-btn:hover::before, .hero-btn-primary:hover::before {
+    opacity: 1;
+    background: rgba(255,255,255,0.06);
+  }
+
+  .proj-card { box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); }
+  .g-btn, .hero-btn, .hero-btn-primary { box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.2); }
 }
 </style>
 
@@ -1984,6 +2022,21 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
         <svg viewBox="0 0 24 24"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
         Props
       </button>
+      
+      <!-- LIQUID RADIO COMPONENT -->
+      <div class="lr-container" style="margin-left:8px;">
+        <div class="lr-group">
+          <input type="radio" id="lr-test" name="env-toggle" value="test" checked onchange="msg('Environment switched to: TEST', 'ok')">
+          <input type="radio" id="lr-prod" name="env-toggle" value="prod" onchange="msg('Environment switched to: PROD', 'wa')">
+          
+          <div class="lr-glass-filter"></div>
+          
+          <label for="lr-test" class="lr-label lr-label-test">Test</label>
+          <label for="lr-prod" class="lr-label lr-label-prod">Prod</label>
+          
+          <div class="lr-slider"></div>
+        </div>
+      </div>
     </div>
 
     <div class="tsep"></div>
@@ -7712,6 +7765,25 @@ function initHistory() { HIST.stack=[]; HIST.idx=-1; histPush(); histUpdateButto
     if(!dragging) return;
     // Dragging up = increasing height
     var delta = startY - e.clientY;
+<!-- LIQUID RADIO SVG FILTER -->
+<svg class="hidden" style="display:none;">
+  <defs>
+    <filter id="radio-glass" x="0%" y="0%" width="100%" height="100%" colorInterpolationFilters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05 0.05" numOctaves="1" seed="1" result="turbulence" />
+      <feGaussianBlur in="turbulence" stdDeviation="2" result="blurredNoise" />
+      <feDisplacementMap in="SourceGraphic" in2="blurredNoise" scale="30" xChannelSelector="R" yChannelSelector="B" result="displaced" />
+      <feGaussianBlur in="displaced" stdDeviation="2" result="finalBlur" />
+      <feComposite in="finalBlur" in2="finalBlur" operator="over" />
+    </filter>
+  </defs>
+</svg>
+
+<!-- BACKGROUND ORBS -->
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
     var newH = Math.max(28, Math.min(500, startH + delta));
     wp.style.transition='none';
     wp.style.height=newH+'px';

@@ -815,19 +815,7 @@ function captureTelemetry() {
 .orb-2 { width: 500px; height: 500px; background: #10b981; bottom: -150px; right: -100px; animation-delay: -5s; }
 .orb-3 { width: 300px; height: 300px; background: #22d3ee; top: 40%; left: 30%; animation-delay: -10s; opacity: 0.3; }
 @keyframes float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(50px, 50px) scale(1.1); } }
-</style>
 
-<body>
-<!-- BACKGROUND ORBS -->
-<div class="bg-orbs">
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
-</div>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;700&display=swap">
-<style>
 /* ── UI POLISH & MOBILE REDESIGN ── */
 #fsm-header {
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
@@ -884,6 +872,20 @@ function captureTelemetry() {
 </style>
 </head>
 <body>
+
+<!-- LIQUID RADIO SVG FILTER -->
+<svg class="hidden" style="display:none;">
+  <defs>
+    <filter id="radio-glass" x="0%" y="0%" width="100%" height="100%" colorInterpolationFilters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05 0.05" numOctaves="1" seed="1" result="turbulence" />
+      <feGaussianBlur in="turbulence" stdDeviation="2" result="blurredNoise" />
+      <feDisplacementMap in="SourceGraphic" in2="blurredNoise" scale="30" xChannelSelector="R" yChannelSelector="B" result="displaced" />
+      <feGaussianBlur in="displaced" stdDeviation="2" result="finalBlur" />
+      <feComposite in="finalBlur" in2="finalBlur" operator="over" />
+    </filter>
+  </defs>
+</svg>
+
 
 <div id="fsm-app">
 
@@ -2214,6 +2216,32 @@ window.addEventListener('unhandledrejection', function(e) { showGlobalError(e.re
   60% { transform: rotate(-90deg); }
   100% { transform: rotate(0deg); }
 }
+
+  /* GLOBAL LIQUID GLASS EFFECTS - DISTORTION */
+  .panel-card, .vbtn, .vbtn2, .ov-box, .sqgate-em-box, .tb-btn, .step-btn, .puzzle-card, .pz-btn {
+    position: relative;
+    z-index: 1;
+  }
+  .panel-card > *, .vbtn > *, .vbtn2 > *, .ov-box > *, .sqgate-em-box > *, .tb-btn > *, .step-btn > *, .puzzle-card > *, .pz-btn > * {
+    position: relative;
+    z-index: 2;
+  }
+  .panel-card::before, .vbtn::before, .vbtn2::before, .ov-box::before, .sqgate-em-box::before, .tb-btn::before, .step-btn::before, .puzzle-card::before, .pz-btn::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: inherit;
+    background: rgba(255,255,255,0.02);
+    filter: url("#radio-glass");
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.8; 
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .panel-card:hover::before, .vbtn:hover::before, .vbtn2:hover::before, .tb-btn:hover::before, .step-btn:hover::before, .puzzle-card:hover::before, .pz-btn:hover::before {
+    opacity: 1;
+    background: rgba(255,255,255,0.06);
+  }
 </style>
 <div id="mobile-portrait-overlay">
   <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 24px; padding: 40px 24px; max-width: 340px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
