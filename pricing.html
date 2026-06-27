@@ -265,14 +265,14 @@
 
     <div class="pricing-grid">
       <!-- 6 Months -->
-      <a href="https://rzp.io/rzp/wBZL6Vb" target="_blank" class="pricing-card">
+      <a href="https://rzp.io/rzp/wBZL6Vb" target="_blank" class="pricing-card" onclick="return requireLogin(event)">
         <div class="tier-name">6 Months</div>
         <div class="price">$5</div>
         <div class="card-btn">Select Plan</div>
       </a>
       
       <!-- 1 Year -->
-      <a href="https://rzp.io/rzp/FR7IOfRN" target="_blank" class="pricing-card popular">
+      <a href="https://rzp.io/rzp/FR7IOfRN" target="_blank" class="pricing-card popular" onclick="return requireLogin(event)">
         <div class="popular-badge">MOST POPULAR</div>
         <div class="tier-name">1 Year (Pro+)</div>
         <div class="price">$8</div>
@@ -280,7 +280,7 @@
       </a>
       
       <!-- Lifetime -->
-      <a href="https://rzp.io/rzp/JfhEa7eC" target="_blank" class="pricing-card">
+      <a href="https://rzp.io/rzp/JfhEa7eC" target="_blank" class="pricing-card" onclick="return requireLogin(event)">
         <div class="tier-name">Lifetime</div>
         <div class="price">$25</div>
         <div class="card-btn">Select Plan</div>
@@ -298,6 +298,18 @@
   </div>
 
   <script>
+    function requireLogin(event) {
+      let session = null;
+      try { session = JSON.parse(localStorage.getItem('lgf_session')); } catch(e) {}
+      if (!session || !session.email || session.email === 'guest') {
+        event.preventDefault();
+        alert("Please sign in or create an account first to upgrade to SQGATE Pro.");
+        window.location.href = '/home/';
+        return false;
+      }
+      return true;
+    }
+
     // Extremely simple SHA-256 equivalent for client-side license checking
     async function sha256(message) {
       const msgBuffer = new TextEncoder().encode(message);
@@ -307,6 +319,14 @@
     }
 
     async function verifyLicense() {
+      let session = null;
+      try { session = JSON.parse(localStorage.getItem('lgf_session')); } catch(e) {}
+      if (!session || !session.email || session.email === 'guest') {
+        alert("Please sign in or create an account first to unlock SQGATE Pro.");
+        window.location.href = '/home/';
+        return;
+      }
+
       const keyInput = document.getElementById('license-key').value.trim();
       if (!keyInput) {
         alert("Please enter a valid License Key.");
@@ -323,6 +343,12 @@
 
       if (VALID_HASHES.includes(inputHash)) {
         localStorage.setItem('sqgate_pro_status', 'active');
+        
+        let ud = {};
+        try { ud = JSON.parse(localStorage.getItem('lgf_user_' + session.email) || '{}'); } catch(e){}
+        ud.isPro = true;
+        localStorage.setItem('lgf_user_' + session.email, JSON.stringify(ud));
+        
         alert("🎉 Congratulations! SQGATE Pro is now Unlocked!");
         window.location.href = '/home/';
       } else {
