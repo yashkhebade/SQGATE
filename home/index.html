@@ -94,7 +94,7 @@
   --shadow:0 4px 20px rgba(0,0,0,.55);
   --shadow-lg:0 12px 52px rgba(0,0,0,.72);
 }
-html,body{width:100%;height:100%;overflow:hidden;background:var(--bg0);font-family:var(--fsans);color:var(--t1);font-size:13px;user-select:none;-webkit-font-smoothing:antialiased}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg0);font-family:var(--fsans);color:var(--t1);font-size:14px;user-select:none;-webkit-font-smoothing:antialiased}
 
 /* ══ LOGIN PAGE ══════════════════════════════════════════════════ */
 /* Old login CSS removed */
@@ -4015,7 +4015,11 @@ function genVerilog(){
         const gn=gate.type.replace('ff','_ff').replace('dlatch','d_latch');
         code+='\nmodule '+gn+'('+allPorts.join(', ')+');\n';
         if(iPorts.length)code+='  input '+iPorts.join(', ')+';\n';
-        if(oPorts.length)code+='  output '+(isSeq(gate.type)?'reg':'wire')+' '+oPorts.join(', ')+';\n';
+        if(gate.type === 'count8'){
+          code+='  output reg [7:0] o0;\n  output wire o1;\n';
+        } else if(oPorts.length) {
+          code+='  output '+(isSeq(gate.type)?'reg':'wire')+' '+oPorts.join(', ')+';\n';
+        }
         code+=verilogPrimBody(gate.type,iPorts,oPorts);
         code+='endmodule\n';
       });
@@ -4047,7 +4051,7 @@ function genVerilog(){
   document.getElementById('vcode').textContent=code;
 }
 
-function isSeq(type){return['sr','dlatch','dff','jkff','tff'].includes(type);}
+function isSeq(type){return['sr','dlatch','dff','jkff','tff','count8'].includes(type);}
 
 function verilogExpr(type,ins,outIdx){
   const a=ins[0]||"1'b0",b=ins[1]||"1'b0",c=ins[2]||"1'b0";
@@ -4079,6 +4083,17 @@ function verilogPrimBody(type,iPorts,oPorts){
     case 'xnor':return'  assign '+o0+' = ~('+a+' ^ '+b+');\n';
     case 'ha':  return'  assign '+o0+' = '+a+' ^ '+b+';\n  assign '+o1+' = '+a+' & '+b+';\n';
     case 'mux2':return'  assign '+o0+' = '+c+'?'+b+':'+a+';\n';
+    case 'count8': {
+      const clk=iPorts[0], en=iPorts[1], clr=iPorts[2], up=iPorts[3];
+      return '  always @(posedge '+clk+' or posedge '+clr+') begin\n'+
+             '    if ('+clr+') o0 <= 8\'d0;\n'+
+             '    else if ('+en+') begin\n'+
+             '      if ('+up+') o0 <= o0 + 1;\n'+
+             '      else o0 <= o0 - 1;\n'+
+             '    end\n'+
+             '  end\n'+
+             '  assign o1 = ('+up+' && o0 == 8\'d255) || (!'+up+' && o0 == 8\'d0);\n';
+    }
     default: return'  // '+type+'\n';
   }
 }
