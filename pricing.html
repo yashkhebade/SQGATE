@@ -272,9 +272,9 @@
       </a>
       
       <!-- 1 Year -->
-      <a href="https://rzp.io/rzp/wBZL6Vb" target="_blank" class="pricing-card popular">
+      <a href="https://rzp.io/rzp/FR7IOfRN" target="_blank" class="pricing-card popular">
         <div class="popular-badge">MOST POPULAR</div>
-        <div class="tier-name">1 Year</div>
+        <div class="tier-name">1 Year (Pro+)</div>
         <div class="price">$8</div>
         <div class="card-btn">Select Plan</div>
       </a>
@@ -313,11 +313,14 @@
         return;
       }
 
-      // The valid hash for "SQGATE-PRO-2026"
-      const VALID_HASH = "815cc2b5753066df7bba53cc0bcfebf47fb488f24b806d2899dd47cc1de6fa34";
+      // The valid hashes for "SQGATE-PRO-2026" and "SQGATE-PRO plus-2026"
+      const VALID_HASHES = [
+        "815cc2b5753066df7bba53cc0bcfebf47fb488f24b806d2899dd47cc1de6fa34",
+        "fee161445359a5ab4ce2a5f0e7ecfe4a9ef838fa6412e6e091cbeed8aa3ed007"
+      ];
       const inputHash = await sha256(keyInput);
 
-      if (inputHash === VALID_HASH) {
+      if (VALID_HASHES.includes(inputHash)) {
         localStorage.setItem('sqgate_pro_status', 'active');
         alert("🎉 Congratulations! SQGATE Pro is now Unlocked!");
         window.location.href = '/home/';
