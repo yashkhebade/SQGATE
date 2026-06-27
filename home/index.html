@@ -1780,9 +1780,9 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
         <button onclick="createNewProject()" class="hero-btn-primary">
           Launch Free Workspace
         </button>
-        <a href="https://rzp.io/rzp/wBZL6Vb" target="_blank" class="hero-btn-secondary" style="border-color: var(--acc); color: var(--acc);">
+        <button onclick="showProModal('Upgrade to Pro')" class="hero-btn-secondary" style="border-color: var(--acc); color: var(--acc);">
           👑 Get SQGATE Pro
-        </a>
+        </button>
       </div>
 
       <!-- INTERACTIVE HERO CIRCUIT -->
@@ -2043,9 +2043,9 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 
     <!-- Right Side Tools -->
     <div class="tb-group-right">
-      <a href="https://rzp.io/rzp/wBZL6Vb" target="_blank" class="tb-btn-text" id="btn-pro-nav" style="border: 1px solid var(--acc); color: var(--acc); text-decoration: none; padding: 4px 10px; border-radius: 6px;">
+      <button onclick="showProModal('Upgrade to Pro')" class="tb-btn-text" id="btn-pro-nav" style="border: 1px solid var(--acc); color: var(--acc); text-decoration: none; padding: 4px 10px; border-radius: 6px; background: transparent; cursor: pointer;">
         👑 Upgrade to Pro
-      </a>
+      </button>
       <button class="tb-btn" id="btn-drc" title="Design Rule Check" aria-label="DRC" style="display:none;">
         <svg viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg>
       </button>
@@ -2193,8 +2193,32 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       <div>✅ <strong>Priority Verilog Export</strong> (Direct to FPGA formats)</div>
     </div>
 
-    <div style="display: flex; gap: 12px; margin-bottom: 24px;">
-      <a href="https://rzp.io/rzp/wBZL6Vb" target="_blank" class="ov-btn primary" style="flex: 1; text-decoration: none; padding: 12px; font-size: 15px; font-weight: 700; background: var(--acc);">Buy Pro (Starts at $5)</a>
+    <style>
+      .pro-card { text-decoration: none; background: var(--bg3); border: 1px solid var(--b2); border-radius: 8px; padding: 16px 12px; transition: all 0.2s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; cursor: pointer; }
+      .pro-card:hover { border-color: var(--acc); background: rgba(139,92,246,0.05); transform: translateY(-2px); }
+      .pro-card.popular { background: rgba(139,92,246,0.1); border-color: var(--acc); position: relative; }
+      .pro-card.popular:hover { background: rgba(139,92,246,0.15); }
+      .pro-card-btn { width: 100%; padding: 6px; font-size: 12px; font-weight: 700; border-radius: 4px; background: transparent; border: 1px solid var(--acc); color: var(--acc); transition: all 0.2s; }
+      .pro-card:hover .pro-card-btn { background: var(--acc); color: white; }
+      .pro-card.popular .pro-card-btn { background: var(--acc); color: white; }
+    </style>
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 24px;">
+      <a href="https://rzp.io/rzp/wBZL6Vb" target="_blank" class="pro-card">
+        <div style="font-size: 11px; color: var(--t2); margin-bottom: 4px; font-weight: 700; letter-spacing: 0.5px;">6 MONTHS</div>
+        <div style="font-size: 24px; font-weight: 800; color: var(--t1); margin-bottom: 12px;">$5</div>
+        <div class="pro-card-btn">Select</div>
+      </a>
+      <a href="https://rzp.io/rzp/wBZL6Vb" target="_blank" class="pro-card popular">
+        <div style="position: absolute; top: -10px; background: var(--acc); color: white; font-size: 9px; font-weight: 800; padding: 2px 8px; border-radius: 10px; letter-spacing: 0.5px;">POPULAR</div>
+        <div style="font-size: 11px; color: var(--acc); margin-bottom: 4px; font-weight: 700; letter-spacing: 0.5px;">1 YEAR</div>
+        <div style="font-size: 24px; font-weight: 800; color: var(--t1); margin-bottom: 12px;">$8</div>
+        <div class="pro-card-btn">Select</div>
+      </a>
+      <a href="https://rzp.io/rzp/wBZL6Vb" target="_blank" class="pro-card">
+        <div style="font-size: 11px; color: var(--t2); margin-bottom: 4px; font-weight: 700; letter-spacing: 0.5px;">LIFETIME</div>
+        <div style="font-size: 24px; font-weight: 800; color: var(--t1); margin-bottom: 12px;">$25</div>
+        <div class="pro-card-btn">Select</div>
+      </a>
     </div>
 
     <div style="border-top: 1px solid var(--b1); padding-top: 20px;">
