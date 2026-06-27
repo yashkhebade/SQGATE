@@ -329,9 +329,6 @@
     <h1 style="font-size:inherit; font-weight:inherit; margin:0; display:inline;">K-Map Solver</h1>
   </div>
   <div class="header-sep"></div>
-  <button class="hdr-btn guide-pulse" id="btn-guide" onclick="startTour()" title="How to use" style="background:transparent; border:1px solid var(--b2); color:var(--t2); padding:6px 12px; border-radius:8px; cursor:pointer; display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; margin-left:16px;">
-    <i class="ti ti-help" aria-hidden="true"></i> Guide
-  </button>
 </div>
 
 <style>
@@ -609,13 +606,11 @@ function renderMaps(){
     tbl.appendChild(tbody);
     wrap.appendChild(tbl); div.appendChild(wrap);
     if(p===0){
-      div.innerHTML+=`<div class="km-legend">
+      div.insertAdjacentHTML('beforeend', `<div class="km-legend">
         <div class="leg-item"><div class="leg-dot" style="background:var(--surface-0);border:1px solid var(--border)"></div><span>0 — false</span></div>
         <div class="leg-item"><div class="leg-dot" style="background:var(--bg-warning)"></div><span>1 — true</span></div>
         <div class="leg-item"><div class="leg-dot" style="background:var(--bg-pro)"></div><span>X — don't care</span></div>
-      </div>`;
-      div.querySelector('.km-plane-lbl').insertAdjacentHTML('afterend','');
-      wrap.parentNode.insertBefore(wrap, div.querySelector('.km-legend'));
+      </div>`);
     }
     col.appendChild(div);
   }
