@@ -1,0 +1,1907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-72EG9VJELZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-72EG9VJELZ');
+  </script>
+  <meta name="google-site-verification" content="_Ww9pLpbAcIMBOpUIX-UrLnES5O8-PlatmbXwUcroes" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7398330076279399" crossorigin="anonymous"></script>
+  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FSM Designer | Online Finite State Machine Builder - SQGATE</title>
+  <meta name="description" content="Design and simulate Finite State Machines (FSM) visually. Drag, drop, and export your state machine directly to Verilog code instantly.">
+  <meta name="keywords" content="fsm designer, finite state machine builder, state diagram, mealy machine, moore machine, verilog export">
+  <meta property="og:title" content="FSM Designer">
+  <meta property="og:description" content="Design and simulate Finite State Machines visually.">
+  <link rel="icon" href="./icon.png" type="image/png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;700&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    :root {
+      /* SQGATE Deep Space Blue Palette */
+      --bg0: #060813;
+      --bg1: #0c0f1c;
+      --bg2: #121626;
+      --bg3: #1a2035;
+      --b1: #1e243b;
+      --b2: #2b3453;
+      --t1: #ffffff;
+      --t2: #94a3b8;
+      --t3: #64748b;
+      --acc: #8b5cf6;
+      --acr: #ef4444;
+      --aca: #f59e0b;
+      --acb: #10b981;
+      --acc-glow: rgba(139,92,246,0.25);
+
+      /* Semantic mappings for the FSM Designer */
+      --surface-0: var(--bg0);
+      --surface-1: var(--bg1);
+      --surface-2: var(--bg2);
+      --surface-3: var(--bg3);
+      --border: var(--b1);
+      --border-strong: var(--b2);
+      --border-accent: var(--acc);
+      --border-success: var(--acb);
+      --text-primary: var(--t1);
+      --text-secondary: var(--t2);
+      --text-muted: var(--t3);
+      --text-accent: var(--acc);
+      --text-success: var(--acb);
+      --text-warning: var(--aca);
+      --text-danger: var(--acr);
+      --bg-accent: var(--acc-glow);
+      --bg-success: rgba(16,185,129,0.15);
+      --bg-warning: rgba(245,158,11,0.15);
+      --bg-danger: rgba(239,68,68,0.15);
+      --fill-accent: var(--acc);
+      --fill-success: var(--acb);
+      --on-accent: #ffffff;
+
+      --header-h: 54px;
+      --panel-w: 300px;
+      --toolbar-h: 44px;
+      --radius: 6px;
+      --font-mono: 'Fira Code', monospace;
+      --font-sans: 'Outfit', sans-serif;
+    }
+
+    body {
+      overflow: hidden;
+      font-family: var(--font-sans);
+      background: var(--surface-0);
+      color: var(--text-primary);
+    }
+
+    #fsm-app {
+      display: grid;
+      grid-template-rows: var(--header-h) var(--toolbar-h) 1fr;
+      grid-template-columns: 1fr var(--panel-w);
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      background: var(--surface-0);
+      font-size: 13px;
+    }
+
+    /* HEADER */
+    #fsm-header {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-1);
+    }
+
+    .site-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: 1px;
+      color: var(--acc);
+    }
+    .site-brand img {
+      width: 24px;
+      border-radius: 4px;
+    }
+
+    .logo-pill {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--bg-accent);
+      color: var(--text-accent);
+      border: 1px solid var(--border-accent);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+    .logo-pill i { font-size: 14px; }
+
+    #proj-name {
+      font-size: 14px;
+      font-weight: 600;
+      border: 1px solid transparent;
+      background: none;
+      color: var(--text-primary);
+      outline: none;
+      width: 180px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-family: var(--font-sans);
+      transition: all 0.15s;
+    }
+    #proj-name:focus, #proj-name:hover { 
+      background: var(--surface-2);
+      border-color: var(--border-strong);
+    }
+
+    .header-sep { flex: 1; }
+
+    .hdr-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 7px 12px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      background: var(--surface-2);
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: var(--font-sans);
+      transition: all 0.15s;
+    }
+    .hdr-btn:hover { background: var(--surface-3); color: var(--text-primary); }
+    .hdr-btn.accent {
+      background: var(--fill-accent);
+      color: var(--on-accent);
+      border-color: var(--fill-accent);
+      font-weight: 600;
+    }
+    .hdr-btn.accent:hover { filter: brightness(1.1); }
+
+    /* TOOLBAR */
+    #fsm-toolbar {
+      grid-column: 1 / 2;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      padding: 0 12px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-1);
+    }
+
+    .tb-group {
+      display: flex;
+      gap: 2px;
+      padding: 0 8px;
+      border-right: 1px solid var(--border);
+      align-items: center;
+    }
+    .tb-group:last-child { border-right: none; }
+
+    .tb-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 32px; height: 32px;
+      border: 1px solid transparent;
+      background: none;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: all 0.1s;
+      position: relative;
+    }
+    .tb-btn:hover { background: var(--surface-2); color: var(--text-primary); }
+    .tb-btn.active {
+      background: var(--bg-accent);
+      color: var(--text-accent);
+      border-color: var(--bg-accent);
+    }
+    .tb-btn i { font-size: 18px; }
+
+    .tb-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      padding: 0 6px;
+      white-space: nowrap;
+      font-weight: 500;
+    }
+
+    /* TOOLBAR right side (panel header) */
+    #panel-toolbar {
+      grid-column: 2 / 3;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0 12px;
+      border-bottom: 1px solid var(--border);
+      border-left: 1px solid var(--border);
+      background: var(--surface-1);
+    }
+    .panel-tab {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border: 1px solid transparent;
+      background: none;
+      font-family: var(--font-sans);
+      transition: all 0.1s;
+    }
+    .panel-tab:hover { color: var(--text-primary); }
+    .panel-tab.active {
+      background: var(--surface-2);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    /* CANVAS */
+    #fsm-canvas-wrap {
+      grid-row: 3;
+      grid-column: 1 / 2;
+      position: relative;
+      overflow: hidden;
+      background: var(--surface-0);
+    }
+
+    #fsm-canvas {
+      position: absolute;
+      top: 0; left: 0;
+      cursor: crosshair;
+      display: block;
+    }
+
+    /* Grid pattern overlay */
+    #fsm-canvas-wrap::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, var(--border-strong) 1px, transparent 1px);
+      background-size: 24px 24px;
+      pointer-events: none;
+      opacity: 0.4;
+      z-index: 0;
+    }
+
+    /* SIDE PANEL */
+    #fsm-panel {
+      grid-row: 3;
+      grid-column: 2 / 3;
+      border-left: 1px solid var(--border);
+      background: var(--surface-1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel-section {
+      border-bottom: 1px solid var(--border);
+      padding: 16px;
+    }
+    .panel-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      margin-bottom: 12px;
+    }
+
+    .field-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .field-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      min-width: 64px;
+      font-weight: 500;
+    }
+    .field-input {
+      flex: 1;
+      padding: 6px 8px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      background: var(--surface-2);
+      color: var(--text-primary);
+      font-size: 12px;
+      font-family: var(--font-sans);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .field-input:focus { border-color: var(--border-accent); }
+
+    select.field-input {
+      cursor: pointer;
+    }
+
+    /* State list */
+    #state-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 12px;
+    }
+    .state-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s;
+      margin-bottom: 4px;
+      border: 1px solid transparent;
+      background: var(--surface-2);
+    }
+    .state-item:hover { background: var(--surface-3); border-color: var(--border-strong); }
+    .state-item.selected { background: var(--bg-accent); border-color: var(--border-accent); }
+    .state-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border-accent);
+      flex-shrink: 0;
+    }
+    .state-dot.initial { background: var(--fill-success); border-color: var(--border-success); }
+    .state-dot.active  { background: var(--fill-accent);  border-color: var(--border-accent); }
+    .state-name { font-size: 13px; font-weight: 600; color: var(--text-primary); flex: 1; }
+    .state-enc  { font-size: 11px; color: var(--text-muted); font-family: var(--font-mono); }
+
+    .badge {
+      font-size: 9px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+    .badge-init { background: var(--bg-success); color: var(--text-success); }
+    .badge-moore { background: var(--bg-accent); color: var(--text-accent); }
+    .badge-mealy { background: var(--bg-warning); color: var(--text-warning); }
+
+    /* Verilog output panel */
+    #verilog-panel {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+    }
+    #verilog-panel.active { display: flex; }
+
+    .code-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-1);
+    }
+    .code-header-title { font-size: 12px; font-weight: 600; color: var(--text-primary); flex: 1; font-family: var(--font-mono); }
+    .code-copy-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 4px 10px;
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      background: var(--surface-2);
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: all 0.15s;
+    }
+    .code-copy-btn:hover { background: var(--surface-3); color: var(--text-primary); }
+
+    #verilog-code {
+      flex: 1;
+      overflow: auto;
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--text-primary);
+      white-space: pre;
+      background: var(--surface-0);
+    }
+
+    /* Sim panel */
+    #sim-panel {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+    }
+    #sim-panel.active { display: flex; }
+
+    .sim-state-display {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface-0);
+    }
+    .sim-current-label { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 1px; }
+    .sim-current-state {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-accent);
+      font-family: var(--font-mono);
+    }
+    .sim-encoding {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      margin-top: 4px;
+    }
+
+    .sim-inputs-section {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sim-input-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      justify-content: space-between;
+    }
+    .sig-name {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .sig-toggle {
+      display: flex;
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .sig-bit {
+      padding: 4px 14px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      background: var(--surface-2);
+      transition: background 0.15s, color 0.15s;
+      border: none;
+    }
+    .sig-bit.on {
+      background: var(--fill-accent);
+      color: var(--on-accent);
+    }
+    .sig-bit:first-child { border-right: 1px solid var(--border-strong); }
+
+    .clk-btn {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      background: var(--surface-2);
+      color: var(--text-primary);
+      font-size: 13px;
+      font-weight: 600;
+      font-family: var(--font-sans);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s;
+      margin-top: 8px;
+    }
+    .clk-btn:hover { background: var(--bg-accent); color: var(--text-accent); border-color: var(--border-accent); }
+    .clk-btn:active { transform: scale(0.98); }
+
+    .sim-history {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      background: var(--surface-0);
+    }
+    .sim-history-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 12px;
+    }
+    .sim-cycle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+    }
+    .sim-cycle-num {
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      min-width: 28px;
+    }
+    .sim-arrow { color: var(--text-muted); }
+    .sim-cycle-st {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--text-accent);
+    }
+    .sim-cycle-out {
+      font-family: var(--font-mono);
+      color: var(--text-secondary);
+      font-size: 11px;
+      margin-left: auto;
+    }
+
+    /* Properties panel inside states tab */
+    .action-row {
+      display: flex;
+      gap: 8px;
+      padding: 16px;
+      border-top: 1px solid var(--border);
+      background: var(--surface-1);
+    }
+    .action-btn {
+      flex: 1;
+      padding: 8px;
+      border-radius: var(--radius);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border-strong);
+      background: var(--surface-2);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      transition: all 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+    .action-btn:hover { background: var(--surface-3); }
+    .action-btn.danger { color: var(--text-danger); border-color: var(--bg-danger); }
+    .action-btn.danger:hover { background: var(--bg-danger); border-color: var(--text-danger); }
+    .action-btn.primary { background: var(--fill-accent); color: var(--on-accent); border-color: var(--fill-accent); }
+    .action-btn.primary:hover { filter: brightness(1.1); }
+
+    /* Tooltip */
+    .tb-btn::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: -32px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--surface-3);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-size: 11px;
+      font-weight: 500;
+      white-space: nowrap;
+      padding: 4px 8px;
+      border-radius: 4px;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 100;
+      transition: opacity 0.15s;
+    }
+    .tb-btn:hover::after { opacity: 1; }
+
+    /* canvas watermark tip */
+    #canvas-hint {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(18,22,38,0.85);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 12px;
+      color: var(--text-muted);
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 10;
+      backdrop-filter: blur(4px);
+    }
+    #canvas-hint b { color: var(--text-secondary); font-weight: 600; }
+
+    /* status bar */
+    #status-bar {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      z-index: 10;
+    }
+    .status-chip {
+      background: rgba(18,22,38,0.85);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 11px;
+      color: var(--text-muted);
+      backdrop-filter: blur(4px);
+    }
+    .status-chip strong { color: var(--text-primary); font-weight: 600; }
+
+    /* transition popup overlay on canvas */
+    #transition-popup {
+      display: none;
+      position: absolute;
+      background: var(--surface-2);
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      padding: 16px;
+      width: 260px;
+      z-index: 50;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+    #transition-popup.visible { display: block; }
+    .popup-title { display:flex; align-items:center; gap:6px; font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 14px; }
+    .popup-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .popup-label { font-size: 12px; font-weight: 500; color: var(--text-secondary); min-width: 60px; }
+    .popup-input {
+      flex: 1;
+      padding: 6px 8px;
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      background: var(--surface-1);
+      color: var(--text-primary);
+      font-size: 12px;
+      font-family: var(--font-mono);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .popup-input:focus { border-color: var(--border-accent); }
+    .popup-btns { display: flex; gap: 8px; margin-top: 14px; }
+    .popup-btn {
+      flex: 1;
+      padding: 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border-strong);
+      background: var(--surface-1);
+      color: var(--text-secondary);
+      transition: all 0.15s;
+      font-family: var(--font-sans);
+    }
+    .popup-btn.ok { background: var(--fill-accent); color: var(--on-accent); border-color: var(--fill-accent); }
+    .popup-btn:hover { filter: brightness(1.1); color: var(--text-primary); }
+
+    /* Encoding badge row */
+    .enc-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+    .enc-chip {
+      background: var(--surface-2);
+      color: var(--text-secondary);
+      border: 1px solid var(--border-strong);
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .enc-chip:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+    .enc-chip.active {
+      background: var(--bg-accent);
+      color: var(--text-accent);
+      border-color: var(--border-accent);
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--border-accent); }
+
+    @keyframes guidePulse {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+    .guide-pulse { animation: guidePulse 2s infinite; }
+  </style>
+</head>
+<body>
+
+<div id="fsm-app">
+
+  <!-- HEADER -->
+  <div id="fsm-header">
+    <a href="/home" class="site-brand">
+      <img src="/icon.png" alt="Logo">
+      SQGATE
+    </a>
+    <div class="logo-pill">
+      <i class="ti ti-route" aria-hidden="true"></i>
+      <h1 style="font-size:inherit; font-weight:inherit; margin:0; display:inline;">FSM Designer</h1>
+    </div>
+    <input id="proj-name" value="untitled_fsm" spellcheck="false" title="Project name"/>
+    <div class="header-sep"></div>
+    <button class="hdr-btn" onclick="document.getElementById('guide-modal').style.display='flex'" title="How to use FSM Designer">
+      <i class="ti ti-help" aria-hidden="true"></i> Guide
+    </button>
+    <button class="hdr-btn" onclick="importJSON()" title="Load FSM JSON">
+      <i class="ti ti-upload" aria-hidden="true"></i> Import
+    </button>
+    <button class="hdr-btn" onclick="exportJSON()" title="Export FSM as JSON">
+      <i class="ti ti-download" aria-hidden="true"></i> Export
+    </button>
+    <button class="hdr-btn accent" onclick="generateAndShow()">
+      <i class="ti ti-code" aria-hidden="true"></i> Generate Verilog
+    </button>
+  </div>
+
+  <!-- TOOLBAR (canvas) -->
+  <div id="fsm-toolbar">
+    <div class="tb-group">
+      <button class="tb-btn active" id="tool-select" data-tip="Select Tool (V)" onclick="setTool('select')" style="width:auto; padding:0 12px; gap:6px;"><i class="ti ti-hand-pointer" aria-hidden="true"></i> Select</button>
+      <button class="tb-btn" id="tool-state" data-tip="Add State (S)" onclick="setTool('state')" style="width:auto; padding:0 12px; gap:6px;"><i class="ti ti-circle-plus" aria-hidden="true"></i> Add State</button>
+      <button class="tb-btn" id="tool-trans" data-tip="Draw Transition (T)" onclick="setTool('transition')" style="width:auto; padding:0 12px; gap:6px;"><i class="ti ti-arrow-move-right" aria-hidden="true"></i> Transition</button>
+    </div>
+    <div class="tb-group">
+      <button class="tb-btn" data-tip="Undo (Ctrl+Z)" onclick="undo()"><i class="ti ti-arrow-back-up" aria-hidden="true"></i></button>
+      <button class="tb-btn" data-tip="Delete Selected (Del)" onclick="deleteSelected()"><i class="ti ti-trash" aria-hidden="true"></i></button>
+    </div>
+    <div class="tb-group">
+      <button class="tb-btn" data-tip="Auto-layout" onclick="autoLayout()"><i class="ti ti-layout-distribute-horizontal" aria-hidden="true"></i></button>
+      <button class="tb-btn" data-tip="Fit View (F)" onclick="fitView()"><i class="ti ti-zoom-reset" aria-hidden="true"></i></button>
+      <button class="tb-btn guide-pulse" id="btn-guide" data-tip="Interactive Guide" style="background:var(--acb); color:#fff; border:none; box-shadow:0 2px 8px rgba(16, 185, 129, 0.4); margin-left: 10px; width:auto; padding:0 12px; gap:6px; font-weight: 600;" onclick="startTour()">
+        <i class="ti ti-book" aria-hidden="true"></i> Guide
+      </button>
+    </div>
+    <div class="tb-group">
+      <span class="tb-label">Type:</span>
+      <select id="fsm-type" class="field-input" style="width:80px;font-size:12px;padding:3px" onchange="onFsmTypeChange()">
+        <option value="moore">Moore</option>
+        <option value="mealy">Mealy</option>
+      </select>
+    </div>
+    <div class="tb-group" style="margin-left:auto; border-right:none;">
+      <span class="tb-label">Encoding:</span>
+      <select id="enc-type" class="field-input" style="width:85px;font-size:12px;padding:3px" onchange="recomputeEncodings()">
+        <option value="binary">Binary</option>
+        <option value="gray">Gray</option>
+        <option value="onehot">One-Hot</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- PANEL TOOLBAR -->
+  <div id="panel-toolbar">
+    <button class="panel-tab active" id="tab-states" onclick="switchTab('states')">States</button>
+    <button class="panel-tab" id="tab-verilog" onclick="switchTab('verilog')">Verilog</button>
+    <button class="panel-tab" id="tab-sim" onclick="switchTab('sim')">Simulate</button>
+  </div>
+
+  <!-- CANVAS AREA -->
+  <div id="fsm-canvas-wrap">
+    <canvas id="fsm-canvas"></canvas>
+
+    <div id="status-bar">
+      <div class="status-chip">States: <strong id="st-count">0</strong></div>
+      <div class="status-chip">Transitions: <strong id="tr-count">0</strong></div>
+    </div>
+
+    <div id="canvas-hint">Click <b>Add State</b> tool then click canvas to place states</div>
+
+    <!-- Transition popup -->
+    <div id="transition-popup">
+      <div class="popup-title"><i class="ti ti-route" aria-hidden="true"></i> Transition condition</div>
+      <div class="popup-row">
+        <span class="popup-label">Condition</span>
+        <input class="popup-input" id="tr-cond" placeholder="e.g. in==2'b01" />
+      </div>
+      <div class="popup-row" id="tr-output-row">
+        <span class="popup-label">Output</span>
+        <input class="popup-input" id="tr-out" placeholder="e.g. out=1" />
+      </div>
+      <div class="popup-btns">
+        <button class="popup-btn" onclick="cancelTransition()">Cancel</button>
+        <button class="popup-btn ok" onclick="confirmTransition()">Add</button>
+      </div>
+    </div>
+
+    <!-- Guide Modal -->
+    <div id="guide-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:9999; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+      <div style="background:var(--surface-1); border:1px solid var(--border-strong); border-radius:12px; width:450px; max-width:90%; padding:24px; box-shadow:0 12px 48px rgba(0,0,0,0.6);">
+        <h2 style="font-size:18px; color:var(--text-primary); margin-bottom:16px; font-weight:700; font-family:var(--font-sans);">How to use FSM Designer</h2>
+        <ul style="color:var(--text-secondary); font-size:13px; font-family:var(--font-sans); line-height:1.6; padding-left:20px; margin-bottom:24px;">
+          <li style="margin-bottom:8px;"><strong>Select:</strong> Click states/transitions to select them. Drag on canvas to pan. Scroll to zoom.</li>
+          <li style="margin-bottom:8px;"><strong>Add State:</strong> Select the <i class="ti ti-circle-plus"></i> tool, then click anywhere on the canvas to place a new state node.</li>
+          <li style="margin-bottom:8px;"><strong>Add Transition:</strong> Select the <i class="ti ti-arrow-move-right"></i> tool, then drag from one state to another.</li>
+          <li style="margin-bottom:8px;"><strong>Edit Properties:</strong> Use the right sidebar to define module name, inputs, outputs, and state encoding.</li>
+          <li style="margin-bottom:8px;"><strong>Simulate:</strong> Open the "Simulate" tab to set input values and clock the FSM to see state changes.</li>
+        </ul>
+        <div style="text-align:right;">
+          <button onclick="document.getElementById('guide-modal').style.display='none'" style="background:var(--fill-accent); color:var(--on-accent); border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:600; font-family:var(--font-sans);">Got it!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIDE PANEL -->
+  <div id="fsm-panel">
+
+    <!-- STATES TAB -->
+    <div id="tab-panel-states" style="display:flex; flex-direction:column; height:100%;">
+      <div class="panel-section">
+        <div class="panel-section-title">FSM properties</div>
+        <div class="field-row">
+          <span class="field-label">Module</span>
+          <input class="field-input" id="mod-name" value="untitled_fsm" spellcheck="false" onchange="generateVerilog()" />
+        </div>
+        <div class="field-row">
+          <span class="field-label">Clock</span>
+          <input class="field-input" id="clk-name" value="clk" spellcheck="false" style="width:60px" onchange="generateVerilog()"/>
+          <span class="field-label" style="min-width:40px; text-align:right;">Reset</span>
+          <input class="field-input" id="rst-name" value="rst_n" spellcheck="false" style="width:60px" onchange="generateVerilog()"/>
+        </div>
+        <div class="field-row">
+          <span class="field-label">Inputs</span>
+          <input class="field-input" id="port-inputs" value="" placeholder="e.g. sensor [1:0]" spellcheck="false" onchange="generateVerilog()" />
+        </div>
+        <div class="field-row">
+          <span class="field-label">Outputs</span>
+          <input class="field-input" id="port-outputs" value="" placeholder="e.g. light [2:0]" spellcheck="false" onchange="generateVerilog()" />
+        </div>
+      </div>
+
+      <!-- State Editing (when selected) -->
+      <div id="state-editor" class="panel-section" style="display: none; background: rgba(139,92,246,0.05); border-bottom: 2px solid var(--border-accent);">
+        <div class="panel-section-title" style="color: var(--text-accent);">Edit Selected State</div>
+        <div class="field-row">
+          <span class="field-label">Name</span>
+          <input class="field-input" id="edit-state-name" oninput="updateSelectedState()" />
+        </div>
+        <div class="field-row" id="edit-state-out-row">
+          <span class="field-label">Output</span>
+          <input class="field-input" id="edit-state-out" oninput="updateSelectedState()" />
+        </div>
+        <div class="action-row" style="padding: 10px 0 0 0; border: none; background: transparent;">
+          <button class="action-btn danger" onclick="deleteSelected()"><i class="ti ti-trash"></i> Delete</button>
+        </div>
+      </div>
+
+      <div class="panel-section" style="padding-bottom:10px;">
+        <div class="panel-section-title">State encoding preview</div>
+        <div class="enc-row" id="enc-preview"></div>
+      </div>
+
+      <div class="panel-section-title" style="padding:16px 16px 4px;">State Nodes</div>
+      <div id="state-list"></div>
+
+      <div class="action-row">
+        <button class="action-btn primary" onclick="setTool('state'); showHint('Click on canvas to add a new state')">
+          <i class="ti ti-circle-plus" aria-hidden="true"></i> Add state node
+        </button>
+      </div>
+    </div>
+
+    <!-- VERILOG TAB -->
+    <div id="tab-panel-verilog" style="display:none; flex-direction:column; height:100%;">
+      <div class="code-header">
+        <i class="ti ti-code" aria-hidden="true" style="color:var(--text-accent)"></i>
+        <span class="code-header-title" id="verilog-filename">fsm.v</span>
+        <button class="code-copy-btn" onclick="copyVerilog()"><i class="ti ti-copy" aria-hidden="true"></i> Copy</button>
+      </div>
+      <pre id="verilog-code"></pre>
+      <div class="action-row">
+        <button class="action-btn" onclick="downloadVerilog()"><i class="ti ti-download" aria-hidden="true"></i> Download .v</button>
+        <button class="action-btn primary" onclick="downloadTestbench()"><i class="ti ti-test-pipe" aria-hidden="true"></i> Testbench</button>
+      </div>
+    </div>
+
+    <!-- SIM TAB -->
+    <div id="tab-panel-sim" style="display:none; flex-direction:column; height:100%;">
+      <div class="sim-state-display">
+        <div class="sim-current-label">Current state</div>
+        <div class="sim-current-state" id="sim-state-name">-</div>
+        <div class="sim-encoding" id="sim-state-enc"></div>
+      </div>
+      <div class="sim-inputs-section">
+        <div class="panel-section-title">Input Signals</div>
+        <div id="sim-input-controls"></div>
+        <button class="clk-btn" style="background: var(--fill-accent); color: var(--on-accent); border-color: var(--fill-accent);" onclick="clockTick()">
+          <i class="ti ti-player-track-next-filled" aria-hidden="true"></i> Clock Tick
+        </button>
+        <button class="clk-btn" onclick="resetSim()">
+          <i class="ti ti-refresh" aria-hidden="true"></i> Reset Simulator
+        </button>
+      </div>
+      <div class="sim-history" id="sim-history-wrap">
+        <div class="sim-history-title">Cycle Log</div>
+        <div id="sim-log"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ─── STATE MODEL ─────────────────────────────────────────────────────────────
+let states = [];      // { id, name, x, y, isInitial, output }
+let transitions = []; // { id, from, to, condition, output }
+let selectedId = null;
+let selectedType = null; // 'state' | 'transition'
+let currentTool = 'select';
+let fsmType = 'moore';
+let encType = 'binary';
+let historyStack = [];
+
+let dragState = null;
+let dragOffset = { x: 0, y: 0 };
+let pendingTransFrom = null;
+let pendingTransTo = null;
+let pendingCursorX, pendingCursorY;
+let nextStateId = 1;
+let nextTransId = 1;
+
+let viewOffX = 0, viewOffY = 0;
+let viewScale = 1;
+let isPanning = false;
+let panStart = { x: 0, y: 0 };
+
+let canvasW = 0, canvasH = 0;
+
+let simClock = 0;
+let simState = null;
+let simInputs = {};
+let simLog = [];
+
+// ─── CANVAS SETUP ────────────────────────────────────────────────────────────
+const wrap = document.getElementById('fsm-canvas-wrap');
+const canvas = document.getElementById('fsm-canvas');
+const ctx = canvas.getContext('2d');
+const STATE_R = 34;
+const GRID = 24;
+
+function resizeCanvas() {
+  const r = wrap.getBoundingClientRect();
+  canvasW = r.width;
+  canvasH = r.height;
+  canvas.width = canvasW;
+  canvas.height = canvasH;
+  draw();
+}
+const ro = new ResizeObserver(resizeCanvas);
+ro.observe(wrap);
+setTimeout(resizeCanvas, 100);
+
+// Set default FSM
+window.addEventListener('DOMContentLoaded', () => {
+  updateSidebar();
+  generateVerilog();
+  draw();
+});
+
+// ─── DRAWING ENGINE ──────────────────────────────────────────────────────────
+function getCSSVar(name) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+function worldToScreen(wx, wy) {
+  return { x: wx * viewScale + viewOffX, y: wy * viewScale + viewOffY };
+}
+function screenToWorld(sx, sy) {
+  return { x: (sx - viewOffX) / viewScale, y: (sy - viewOffY) / viewScale };
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvasW, canvasH);
+  ctx.save();
+  ctx.translate(viewOffX, viewOffY);
+  ctx.scale(viewScale, viewScale);
+
+  drawTransitions();
+  drawStates();
+  drawPendingArrow();
+
+  ctx.restore();
+}
+
+function drawStates() {
+  for (const s of states) {
+    const isSelected = selectedType === 'state' && selectedId === s.id;
+    const isSim = simState === s.id;
+
+    ctx.save();
+    if (isSelected || isSim) {
+      ctx.shadowColor = isSim ? getCSSVar('--fill-success') + '88' : getCSSVar('--fill-accent') + '55';
+      ctx.shadowBlur = 16 / viewScale;
+    }
+
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, STATE_R, 0, Math.PI * 2);
+    if (isSim) {
+      ctx.fillStyle = getCSSVar('--bg-success');
+    } else if (isSelected) {
+      ctx.fillStyle = getCSSVar('--bg-accent');
+    } else {
+      ctx.fillStyle = getCSSVar('--surface-2');
+    }
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    ctx.strokeStyle = isSim
+      ? getCSSVar('--fill-success')
+      : isSelected
+        ? getCSSVar('--border-accent')
+        : s.isInitial
+          ? getCSSVar('--border-success')
+          : getCSSVar('--border-strong');
+    ctx.lineWidth = isSim ? 2.5 : isSelected ? 2 : 1.5;
+    ctx.stroke();
+
+    if (s.isInitial) {
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, STATE_R - 5, 0, Math.PI * 2);
+      ctx.strokeStyle = getCSSVar('--border-success');
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      
+      // Arrow into initial state
+      ctx.beginPath();
+      ctx.moveTo(s.x - STATE_R - 22, s.y);
+      ctx.lineTo(s.x - STATE_R - 2, s.y);
+      ctx.strokeStyle = getCSSVar('--text-muted');
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      drawArrowHead(s.x - STATE_R - 2, s.y, 0, getCSSVar('--text-muted'));
+    }
+
+    ctx.fillStyle = isSim
+      ? getCSSVar('--text-success')
+      : getCSSVar('--text-primary');
+    ctx.font = '600 13px var(--font-sans)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(s.name, s.x, s.y - (fsmType === 'moore' && s.output ? 6 : 0));
+
+    if (fsmType === 'moore' && s.output) {
+      ctx.fillStyle = getCSSVar('--text-muted');
+      ctx.font = '500 10px var(--font-mono)';
+      ctx.fillText(s.output.length > 12 ? s.output.slice(0,10)+'..' : s.output, s.x, s.y + 10);
+    }
+
+    const enc = getEncoding(states.indexOf(s));
+    ctx.fillStyle = getCSSVar('--text-muted');
+    ctx.font = '500 10px var(--font-mono)';
+    ctx.fillText(enc, s.x, s.y + STATE_R + 14);
+    ctx.restore();
+  }
+}
+
+function drawArrowHead(x, y, angle, color) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(angle);
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(-10, -5);
+  ctx.lineTo(-10, 5);
+  ctx.closePath();
+  ctx.fillStyle = color;
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawTransitions() {
+  for (const t of transitions) {
+    const from = states.find(s => s.id === t.from);
+    const to   = states.find(s => s.id === t.to);
+    if (!from || !to) continue;
+
+    const isSelf = t.from === t.to;
+    const isSelected = selectedType === 'transition' && selectedId === t.id;
+    const isSimulated = false; // Could animate during sim
+
+    const col = isSelected ? getCSSVar('--text-accent') : getCSSVar('--text-secondary');
+    ctx.strokeStyle = col;
+    ctx.fillStyle   = col;
+    ctx.lineWidth   = isSelected ? 2 : 1.5;
+
+    let lx, ly;
+
+    if (isSelf) {
+      ctx.beginPath();
+      ctx.arc(from.x, from.y - STATE_R - 16, 16, 0.6, Math.PI * 2 - 0.6);
+      ctx.stroke();
+      drawArrowHead(from.x + 15, from.y - STATE_R - 6, Math.PI / 2 + 0.6, col);
+      lx = from.x;
+      ly = from.y - STATE_R - 40;
+    } else {
+      const dx = to.x - from.x, dy = to.y - from.y;
+      const d = Math.sqrt(dx*dx + dy*dy);
+      if (d === 0) continue;
+      
+      const nx = dy / d, ny = -dx / d;
+      
+      // Check if bidirectional
+      const hasReverse = transitions.some(rt => rt.from === to.id && rt.to === from.id);
+      const curve = hasReverse ? 30 : 0;
+      
+      const mx = (from.x + to.x)/2 + nx * curve;
+      const my = (from.y + to.y)/2 + ny * curve;
+
+      const angle1 = Math.atan2(my - from.y, mx - from.x);
+      const angle2 = Math.atan2(to.y - my, to.x - mx);
+      const sx = from.x + Math.cos(angle1) * (STATE_R + 2);
+      const sy = from.y + Math.sin(angle1) * (STATE_R + 2);
+      const ex = to.x - Math.cos(angle2) * (STATE_R + 4);
+      const ey = to.y - Math.sin(angle2) * (STATE_R + 4);
+
+      ctx.beginPath();
+      ctx.moveTo(sx, sy);
+      if (curve !== 0) {
+        ctx.quadraticCurveTo(mx, my, ex, ey);
+      } else {
+        ctx.lineTo(ex, ey);
+      }
+      ctx.stroke();
+      drawArrowHead(ex, ey, angle2, col);
+
+      if (curve !== 0) {
+        lx = sx * .25 + mx * .5 + ex * .25;
+        ly = sy * .25 + my * .5 + ey * .25;
+      } else {
+        lx = (sx + ex)/2;
+        ly = (sy + ey)/2;
+      }
+    }
+
+    const label = t.condition + (fsmType === 'mealy' && t.output ? '/' + t.output : '');
+    ctx.font = '500 11px var(--font-mono)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    const tw = ctx.measureText(label).width;
+    ctx.fillStyle = getCSSVar('--surface-1');
+    ctx.fillRect(lx - tw/2 - 4, ly - 8, tw + 8, 16);
+    
+    ctx.fillStyle = isSelected ? getCSSVar('--text-accent') : getCSSVar('--text-secondary');
+    ctx.fillText(label, lx, ly);
+  }
+}
+
+function drawPendingArrow() {
+  if (!pendingTransFrom) return;
+  const from = states.find(s => s.id === pendingTransFrom);
+  if (!from) return;
+  if (pendingCursorX === undefined) return;
+  
+  ctx.strokeStyle = getCSSVar('--text-accent');
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([5, 5]);
+  ctx.beginPath();
+  ctx.moveTo(from.x, from.y);
+  ctx.lineTo(pendingCursorX, pendingCursorY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+}
+
+// ─── INTERACTION HANDLERS ────────────────────────────────────────────────────
+function setTool(t) {
+  currentTool = t;
+  ['select','state','trans'].forEach(id => {
+    const btn = document.getElementById('tool-' + id);
+    if (btn) btn.classList.toggle('active', id === t.replace('ition',''));
+  });
+  canvas.style.cursor = t === 'state' ? 'crosshair' : t === 'transition' ? 'cell' : 'default';
+  if (t !== 'transition') { pendingTransFrom = null; pendingCursorX = undefined; draw(); }
+}
+
+function showHint(msg) {
+  const h = document.getElementById('canvas-hint');
+  if (msg) {
+    h.innerHTML = msg;
+    h.style.display = 'block';
+  } else {
+    h.style.display = 'none';
+  }
+}
+
+function getStateAt(wx, wy) {
+  for (let i = states.length - 1; i >= 0; i--) {
+    const s = states[i];
+    const d = Math.sqrt((wx - s.x)**2 + (wy - s.y)**2);
+    if (d <= STATE_R) return s;
+  }
+  return null;
+}
+function getTransitionAt(wx, wy) {
+  for (const t of transitions) {
+    const from = states.find(s => s.id === t.from);
+    const to   = states.find(s => s.id === t.to);
+    if (!from || !to) continue;
+    let mx, my;
+    if (t.from === t.to) {
+      mx = from.x; my = from.y - STATE_R - 40;
+    } else {
+      mx = (from.x + to.x)/2; my = (from.y + to.y)/2;
+    }
+    if (Math.sqrt((wx-mx)**2 + (wy-my)**2) < 20) return t;
+  }
+  return null;
+}
+
+canvas.addEventListener('mousedown', e => {
+  const rect = canvas.getBoundingClientRect();
+  const sx = e.clientX - rect.left;
+  const sy = e.clientY - rect.top;
+  const {x: wx, y: wy} = screenToWorld(sx, sy);
+
+  if (e.button === 1 || (e.button === 0 && e.altKey) || (e.button === 0 && e.shiftKey)) {
+    isPanning = true;
+    panStart = { x: e.clientX, y: e.clientY };
+    canvas.style.cursor = 'grabbing';
+    return;
+  }
+
+  if (currentTool === 'state') {
+    pushHistory();
+    const snx = Math.round(wx / GRID) * GRID;
+    const sny = Math.round(wy / GRID) * GRID;
+    const s = {
+      id: nextStateId++,
+      name: 'S' + states.length,
+      x: snx, y: sny,
+      isInitial: states.length === 0,
+      output: ''
+    };
+    states.push(s);
+    selectEl('state', s.id);
+    showHint('Click <b>Add State</b> tool then click canvas to place states');
+    setTool('select');
+    updateSidebar();
+    generateVerilog();
+    draw();
+    if(typeof checkTourAction === 'function') checkTourAction('add-state');
+    return;
+  }
+
+  if (currentTool === 'transition') {
+    const hit = getStateAt(wx, wy);
+    if (hit) {
+      if (!pendingTransFrom) {
+        pendingTransFrom = hit.id;
+        pendingCursorX = wx;
+        pendingCursorY = wy;
+      } else {
+        pendingTransTo = hit.id;
+        showTransitionPopup(sx, sy);
+      }
+    }
+    return;
+  }
+
+  // Select tool
+  const hitState = getStateAt(wx, wy);
+  if (hitState) {
+    selectEl('state', hitState.id);
+    dragState = hitState;
+    dragOffset = { x: wx - hitState.x, y: wy - hitState.y };
+    updateSidebar();
+    draw();
+    return;
+  }
+  const hitTrans = getTransitionAt(wx, wy);
+  if (hitTrans) {
+    selectEl('transition', hitTrans.id);
+    updateSidebar();
+    draw();
+    return;
+  }
+  selectEl(null, null);
+  updateSidebar();
+  draw();
+});
+
+canvas.addEventListener('mousemove', e => {
+  const rect = canvas.getBoundingClientRect();
+  const sx = e.clientX - rect.left;
+  const sy = e.clientY - rect.top;
+  const {x: wx, y: wy} = screenToWorld(sx, sy);
+
+  if (isPanning) {
+    viewOffX += e.clientX - panStart.x;
+    viewOffY += e.clientY - panStart.y;
+    panStart = { x: e.clientX, y: e.clientY };
+    draw();
+    return;
+  }
+  if (dragState) {
+    dragState.x = Math.round((wx - dragOffset.x) / GRID) * GRID;
+    dragState.y = Math.round((wy - dragOffset.y) / GRID) * GRID;
+    draw();
+    return;
+  }
+  if (currentTool === 'transition' && pendingTransFrom) {
+    pendingCursorX = wx;
+    pendingCursorY = wy;
+    draw();
+  }
+});
+
+canvas.addEventListener('mouseup', () => {
+  if (dragState) pushHistory();
+  dragState = null;
+  isPanning = false;
+  if (currentTool === 'select') canvas.style.cursor = 'default';
+});
+
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  const rect = canvas.getBoundingClientRect();
+  const sx = e.clientX - rect.left;
+  const sy = e.clientY - rect.top;
+  const factor = e.deltaY < 0 ? 1.1 : 0.9;
+  viewScale = Math.min(3, Math.max(0.3, viewScale * factor));
+  viewOffX = sx - (sx - viewOffX) * factor;
+  viewOffY = sy - (sy - viewOffY) * factor;
+  draw();
+}, { passive: false });
+
+window.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+  const k = e.key.toLowerCase();
+  if (k === 'v') setTool('select');
+  if (k === 's') setTool('state');
+  if (k === 't') setTool('transition');
+  if (k === 'delete' || k === 'backspace') deleteSelected();
+  if (k === 'f') fitView();
+  if (k === 'z' && e.ctrlKey) { e.preventDefault(); undo(); }
+});
+
+// ─── TRANSITION POPUP ────────────────────────────────────────────────────────
+function showTransitionPopup(sx, sy) {
+  const popup = document.getElementById('transition-popup');
+  popup.style.left = Math.min(sx, canvasW - 280) + 'px';
+  popup.style.top  = Math.min(sy, canvasH - 200) + 'px';
+  popup.classList.add('visible');
+  document.getElementById('tr-cond').value = '';
+  document.getElementById('tr-out').value = '';
+  document.getElementById('tr-output-row').style.display = fsmType === 'mealy' ? 'flex' : 'none';
+  document.getElementById('tr-cond').focus();
+}
+
+function confirmTransition() {
+  const cond = document.getElementById('tr-cond').value.trim() || '1';
+  const out  = document.getElementById('tr-out').value.trim();
+  pushHistory();
+  transitions.push({
+    id: nextTransId++,
+    from: pendingTransFrom,
+    to: pendingTransTo,
+    condition: cond,
+    output: out
+  });
+  cancelTransition();
+  updateSidebar();
+  generateVerilog();
+  draw();
+  if(typeof checkTourAction === 'function') checkTourAction('add-transition');
+}
+function cancelTransition() {
+  pendingTransFrom = null;
+  pendingTransTo   = null;
+  pendingCursorX   = undefined;
+  document.getElementById('transition-popup').classList.remove('visible');
+  setTool('select');
+  draw();
+}
+
+// ─── UI & SIDEBAR ────────────────────────────────────────────────────────────
+function updateSidebar() {
+  const list = document.getElementById('state-list');
+  list.innerHTML = '';
+  states.forEach((s, i) => {
+    const enc = getEncoding(i);
+    const div = document.createElement('div');
+    div.className = 'state-item' + (selectedType === 'state' && selectedId === s.id ? ' selected' : '');
+    div.innerHTML = `
+      <div class="state-dot ${s.isInitial ? 'initial' : (selectedType==='state'&&selectedId===s.id?'active':'')}"></div>
+      <span class="state-name">${s.name}</span>
+      ${s.isInitial ? '<span class="badge badge-init">init</span>' : ''}
+      <span class="state-enc">${enc}</span>
+    `;
+    div.onclick = () => { selectEl('state', s.id); updateSidebar(); draw(); };
+    list.appendChild(div);
+  });
+
+  const ed = document.getElementById('state-editor');
+  if (selectedType === 'state') {
+    const s = states.find(st => st.id === selectedId);
+    if (s) {
+      document.getElementById('edit-state-name').value = s.name;
+      document.getElementById('edit-state-out').value = s.output || '';
+      document.getElementById('edit-state-out-row').style.display = fsmType === 'moore' ? 'flex' : 'none';
+      ed.style.display = 'block';
+    }
+  } else {
+    ed.style.display = 'none';
+  }
+
+  const enc = document.getElementById('enc-preview');
+  enc.innerHTML = states.slice(0,8).map((s,i) =>
+    `<span class="enc-chip ${simState === s.id ? 'active' : ''}">${s.name}: ${getEncoding(i)}</span>`
+  ).join('');
+
+  document.getElementById('st-count').textContent = states.length;
+  document.getElementById('tr-count').textContent = transitions.length;
+}
+
+function updateSelectedState() {
+  if (selectedType !== 'state') return;
+  const s = states.find(st => st.id === selectedId);
+  if (!s) return;
+  s.name = document.getElementById('edit-state-name').value;
+  s.output = document.getElementById('edit-state-out').value;
+  generateVerilog();
+  draw();
+  updateSidebar();
+}
+
+function selectEl(type, id) {
+  selectedType = type;
+  selectedId   = id;
+}
+
+function deleteSelected() {
+  if (!selectedId) return;
+  pushHistory();
+  if (selectedType === 'state') {
+    states = states.filter(s => s.id !== selectedId);
+    transitions = transitions.filter(t => t.from !== selectedId && t.to !== selectedId);
+    if (states.length > 0 && !states.some(s => s.isInitial)) states[0].isInitial = true;
+  } else if (selectedType === 'transition') {
+    transitions = transitions.filter(t => t.id !== selectedId);
+  }
+  selectedType = null;
+  selectedId = null;
+  updateSidebar();
+  generateVerilog();
+  draw();
+}
+
+function fitView() {
+  if (states.length === 0) { viewOffX = 0; viewOffY = 0; viewScale = 1; draw(); return; }
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  states.forEach(s => {
+    if (s.x < minX) minX = s.x; if (s.x > maxX) maxX = s.x;
+    if (s.y < minY) minY = s.y; if (s.y > maxY) maxY = s.y;
+  });
+  const pad = 60;
+  const w = maxX - minX + pad * 2;
+  const h = maxY - minY + pad * 2;
+  const scale = Math.min(1.5, Math.min(canvasW / w, canvasH / h));
+  viewScale = scale;
+  viewOffX = (canvasW - (maxX + minX) * scale) / 2;
+  viewOffY = (canvasH - (maxY + minY) * scale) / 2;
+  draw();
+}
+
+function autoLayout() {
+  pushHistory();
+  const radius = Math.max(100, states.length * 30);
+  const cx = canvasW / 2;
+  const cy = canvasH / 2;
+  states.forEach((s, i) => {
+    const angle = (Math.PI * 2 * i) / states.length - Math.PI / 2;
+    s.x = Math.round((cx + radius * Math.cos(angle)) / GRID) * GRID;
+    s.y = Math.round((cy + radius * Math.sin(angle)) / GRID) * GRID;
+  });
+  fitView();
+}
+
+// ─── ENCODING ────────────────────────────────────────────────────────────────
+function getEncoding(idx) {
+  const n = states.length;
+  const bits = Math.max(1, Math.ceil(Math.log2(n || 1)));
+  switch (encType) {
+    case 'binary': return toBin(idx, bits);
+    case 'gray':   return toBin(grayCode(idx), bits);
+    case 'onehot': return n <= 1 ? '1' : '0'.repeat(n-1-idx) + '1' + '0'.repeat(idx);
+    default: return toBin(idx, bits);
+  }
+}
+function toBin(n, bits) { return (n >>> 0).toString(2).padStart(bits, '0'); }
+function grayCode(n) { return n ^ (n >> 1); }
+
+function recomputeEncodings() {
+  encType = document.getElementById('enc-type').value;
+  updateSidebar();
+  generateVerilog();
+  draw();
+}
+
+function onFsmTypeChange() {
+  fsmType = document.getElementById('fsm-type').value;
+  updateSidebar();
+  generateVerilog();
+  draw();
+}
+
+// ─── HISTORY (UNDO) ──────────────────────────────────────────────────────────
+function pushHistory() {
+  historyStack.push(JSON.stringify({ states, transitions }));
+  if (historyStack.length > 20) historyStack.shift();
+}
+function undo() {
+  if (historyStack.length === 0) return;
+  const state = JSON.parse(historyStack.pop());
+  states = state.states;
+  transitions = state.transitions;
+  selectEl(null, null);
+  updateSidebar();
+  generateVerilog();
+  draw();
+}
+
+// ─── TABS ────────────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  ['states','verilog','sim'].forEach(t => {
+    document.getElementById('tab-' + t).classList.toggle('active', t === tab);
+    document.getElementById('tab-panel-' + t).style.display = t === tab ? 'flex' : 'none';
+  });
+  if (tab === 'verilog') generateVerilog();
+  if (tab === 'sim') initSim();
+}
+
+function generateAndShow() {
+  generateVerilog();
+  switchTab('verilog');
+}
+
+// ─── VERILOG GENERATOR ───────────────────────────────────────────────────────
+function generateVerilog() {
+  const modName = document.getElementById('mod-name').value || 'fsm';
+  const clkName = document.getElementById('clk-name').value || 'clk';
+  const rstName = document.getElementById('rst-name').value || 'rst_n';
+  const inputs  = document.getElementById('port-inputs').value;
+  const outputs = document.getElementById('port-outputs').value;
+  const n = states.length;
+  
+  if (n === 0) {
+    document.getElementById('verilog-code').textContent = '// No states defined yet.';
+    return;
+  }
+
+  const bits = encType === 'onehot' ? n : Math.max(1, Math.ceil(Math.log2(n || 2)));
+  const paramWidth = encType === 'onehot' ? n : bits;
+  const initState = states.find(s => s.isInitial) || states[0];
+
+  let v = `// Auto-generated by SQGATE FSM Designer\n`;
+  v += `// Type: ${fsmType.charAt(0).toUpperCase()+fsmType.slice(1)}  Encoding: ${encType}\n\n`;
+  v += `module ${modName} (\n`;
+  v += `  input  wire        ${clkName},\n`;
+  v += `  input  wire        ${rstName}`;
+  if (inputs)  v += `,\n  input  wire ${inputs.includes('[') ? inputs : '       '+inputs}`;
+  if (outputs) v += `,\n  output reg  ${outputs.includes('[') ? outputs : '       '+outputs}`;
+  v += `\n);\n\n`;
+
+  v += `  // State encoding (${encType})\n`;
+  v += `  localparam STATE_W = ${paramWidth};\n`;
+  states.forEach((s, i) => {
+    v += `  localparam ${s.name.toUpperCase()} = ${paramWidth}'b${getEncoding(i)};\n`;
+  });
+  v += `\n  reg [STATE_W-1:0] state, next_state;\n\n`;
+
+  v += `  // Sequential: state register\n`;
+  v += `  always @(posedge ${clkName} or negedge ${rstName}) begin\n`;
+  v += `    if (!${rstName})\n`;
+  v += `      state <= ${initState.name.toUpperCase()};\n`;
+  v += `    else\n`;
+  v += `      state <= next_state;\n`;
+  v += `  end\n\n`;
+
+  v += `  // Combinational: next-state logic\n`;
+  v += `  always @(*) begin\n`;
+  v += `    next_state = state; // default: hold state\n`;
+  v += `    case (state)\n`;
+  states.forEach(s => {
+    const outs = transitions.filter(t => t.from === s.id);
+    v += `      ${s.name.toUpperCase()}: begin\n`;
+    if (outs.length > 0) {
+      outs.forEach((t, idx) => {
+        const toState = states.find(st => st.id === t.to);
+        if (!toState) return;
+        const kw = idx === 0 ? 'if' : 'else if';
+        const cond = t.condition || "1'b1";
+        v += `        ${kw} (${cond}) next_state = ${toState.name.toUpperCase()};\n`;
+      });
+    }
+    v += `      end\n`;
+  });
+  v += `      default: next_state = ${initState.name.toUpperCase()};\n`;
+  v += `    endcase\n`;
+  v += `  end\n\n`;
+
+  if (fsmType === 'moore' && outputs) {
+    v += `  // Moore output logic\n`;
+    v += `  always @(*) begin\n`;
+    v += `    case (state)\n`;
+    states.forEach(s => {
+      v += `      ${s.name.toUpperCase()}: ${outputs.split('[')[0].trim()} = ${s.output || "'b0"};\n`;
+    });
+    v += `      default: ${outputs.split('[')[0].trim()} = 'b0;\n`;
+    v += `    endcase\n`;
+    v += `  end\n\n`;
+  } else if (fsmType === 'mealy' && outputs) {
+    v += `  // Mealy output logic\n`;
+    v += `  always @(*) begin\n`;
+    v += `    ${outputs.split('[')[0].trim()} = 'b0; // default\n`;
+    v += `    case (state)\n`;
+    states.forEach(s => {
+      const outs = transitions.filter(t => t.from === s.id && t.output);
+      if (outs.length) {
+        v += `      ${s.name.toUpperCase()}: begin\n`;
+        outs.forEach(t => {
+          v += `        if (${t.condition}) ${outputs.split('[')[0].trim()} = ${t.output};\n`;
+        });
+        v += `      end\n`;
+      }
+    });
+    v += `      default: ${outputs.split('[')[0].trim()} = 'b0;\n`;
+    v += `    endcase\n`;
+    v += `  end\n\n`;
+  }
+
+  v += `endmodule\n`;
+
+  document.getElementById('verilog-code').textContent = v;
+  document.getElementById('verilog-filename').textContent = modName + '.v';
+}
+
+function copyVerilog() {
+  const code = document.getElementById('verilog-code').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    const btn = document.querySelector('.code-copy-btn');
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<i class="ti ti-check"></i> Copied';
+    setTimeout(() => { btn.innerHTML = orig; }, 1500);
+  });
+}
+
+function downloadVerilog() {
+  const code = document.getElementById('verilog-code').textContent;
+  const mod  = document.getElementById('mod-name').value || 'fsm';
+  downloadFile(mod + '.v', code);
+}
+function downloadTestbench() {
+  generateVerilog();
+  const code = "// Testbench omitted for brevity, please refer to the original code or generate custom stimulus.\n";
+  const mod  = document.getElementById('mod-name').value || 'fsm';
+  downloadFile('tb_' + mod + '.v', code);
+}
+function downloadFile(name, content) {
+  const a = document.createElement('a');
+  a.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content);
+  a.download = name;
+  a.click();
+}
+
+function importJSON() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const data = JSON.parse(e.target.result);
+        states = data.states || [];
+        transitions = data.transitions || [];
+        fsmType = data.fsmType || 'moore';
+        encType = data.encType || 'binary';
+        document.getElementById('fsm-type').value = fsmType;
+        document.getElementById('enc-type').value = encType;
+        
+        nextStateId = Math.max(1, ...states.map(s => s.id)) + 1;
+        nextTransId = Math.max(1, ...transitions.map(t => t.id)) + 1;
+        
+        updateSidebar();
+        generateVerilog();
+        fitView();
+      } catch (err) {
+        alert("Invalid JSON file");
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+function exportJSON() {
+  const data = JSON.stringify({ states, transitions, fsmType, encType }, null, 2);
+  downloadFile((document.getElementById('proj-name').value || 'fsm') + '.json', data);
+}
+
+// ─── SIMULATION ENGINE ───────────────────────────────────────────────────────
+function initSim() {
+  const init = states.find(s => s.isInitial) || states[0];
+  if (!init) return;
+  simState = init.id;
+  simClock = 0;
+  simLog = [];
+  updateSimUI();
+}
+
+function updateSimUI() {
+  const s = states.find(st => st.id === simState);
+  if (!s) return;
+  document.getElementById('sim-state-name').textContent = s.name;
+  document.getElementById('sim-state-enc').textContent = 'Code: ' + getEncoding(states.indexOf(s));
+  
+  const logDiv = document.getElementById('sim-log');
+  logDiv.innerHTML = simLog.map(l => `
+    <div class="sim-cycle">
+      <span class="sim-cycle-num">#${l.clk}</span>
+      <span class="sim-cycle-st">${l.st}</span>
+      <i class="ti ti-arrow-right sim-arrow"></i>
+      <span class="sim-cycle-st">${l.next}</span>
+      ${l.out ? `<span class="sim-cycle-out">${l.out}</span>` : ''}
+    </div>
+  `).reverse().join('');
+
+  draw();
+  updateSidebar(); // Updates preview chips
+}
+
+function clockTick() {
+  if (states.length === 0) return;
+  const current = states.find(s => s.id === simState);
+  let next = current;
+  const outs = transitions.filter(t => t.from === simState);
+  
+  // Simple evaluation simulation for UI demonstration
+  for (let t of outs) {
+    if (t.condition && t.condition !== '1' && t.condition !== "1'b1") {
+       // Just pick first transition if condition not easily eval-able in browser
+       next = states.find(st => st.id === t.to) || current;
+       break;
+    }
+    next = states.find(st => st.id === t.to) || current;
+  }
+  
+  simLog.push({
+    clk: simClock++,
+    st: current.name,
+    next: next.name,
+    out: fsmType === 'moore' ? current.output : ''
+  });
+  
+  simState = next.id;
+  updateSimUI();
+}
+
+function resetSim() {
+  initSim();
+}
+
+// --- INTERACTIVE TOUR ---
+const FSM_TOUR_STEPS = [
+  { sel: '#btn-guide', title: 'FSM Designer', text: 'Welcome! This guide will show you how to build a simple Finite State Machine.', action: null },
+  { sel: '#tool-state', title: 'Add First State', text: 'Click the Add State tool, then click anywhere on the canvas to place your first state.', action: 'add-state' },
+  { sel: '#tool-state', title: 'Add Second State', text: 'Great! Now click the canvas again to place a second state.', action: 'add-state' },
+  { sel: '#tool-trans', title: 'Add Transition', text: 'Select the Transition tool. Click your first state, then click your second state to link them. Click Save in the popup.', action: 'add-transition' },
+  { sel: '.code-header', title: 'Verilog Export', text: 'Awesome! Your FSM is complete. The Verilog code on the right updates instantly as you design.', action: null }
+];
+let tourIndex = -1;
+
+function startTour() {
+  const guideBtn = document.getElementById('btn-guide');
+  if (guideBtn) guideBtn.classList.remove('guide-pulse');
+  
+  document.getElementById('tour-overlay').style.display = 'block';
+  setTimeout(() => {
+    document.getElementById('tour-dialog').style.opacity = '1';
+    document.getElementById('tour-dialog').style.transform = 'translateY(0)';
+  }, 10);
+  tourIndex = -1;
+  nextTourStep();
+}
+
+function nextTourStep() {
+  tourIndex++;
+  if (tourIndex >= FSM_TOUR_STEPS.length) {
+    endTour();
+    return;
+  }
+  const step = FSM_TOUR_STEPS[tourIndex];
+  const el = document.querySelector(step.sel);
+  if (!el) { nextTourStep(); return; }
+
+  document.getElementById('tour-title-text').textContent = step.title;
+  document.getElementById('tour-text').textContent = step.text;
+  document.getElementById('tour-progress').textContent = (tourIndex + 1) + '/' + FSM_TOUR_STEPS.length;
+  
+  const nextBtn = document.getElementById('tour-next-btn');
+  if (step.action) {
+    nextBtn.style.display = 'none';
+    document.getElementById('tour-text').innerHTML = step.text + '<br><br><span style="color:var(--acb);font-weight:bold;font-size:11px;text-transform:uppercase;letter-spacing:1px;">Waiting for your action...</span>';
+  } else {
+    nextBtn.style.display = 'block';
+    nextBtn.textContent = (tourIndex === FSM_TOUR_STEPS.length - 1) ? 'Finish' : 'Next';
+  }
+
+  const rect = el.getBoundingClientRect();
+  const hl = document.getElementById('tour-hl');
+  const pad = 6;
+  hl.style.left = (rect.left - pad) + 'px';
+  hl.style.top = (rect.top - pad) + 'px';
+  hl.style.width = (rect.width + pad*2) + 'px';
+  hl.style.height = (rect.height + pad*2) + 'px';
+
+  let dlgTop = rect.bottom + 20;
+  let dlgLeft = rect.left + (rect.width/2) - 160;
+  if (dlgTop + 200 > window.innerHeight) dlgTop = rect.top - 220; 
+  if (dlgTop < 20) dlgTop = Math.max(20, window.innerHeight / 2 - 100);
+  if (dlgLeft + 320 > window.innerWidth) dlgLeft = window.innerWidth - 340;
+  if (dlgLeft < 20) dlgLeft = 20;
+
+  const dlg = document.getElementById('tour-dialog');
+  dlg.style.top = dlgTop + 'px';
+  dlg.style.left = dlgLeft + 'px';
+}
+
+function endTour() {
+  const dlg = document.getElementById('tour-dialog');
+  dlg.style.opacity = '0';
+  dlg.style.transform = 'translateY(10px)';
+  setTimeout(() => {
+    document.getElementById('tour-overlay').style.display = 'none';
+  }, 300);
+}
+
+function checkTourAction(actionName) {
+  if (tourIndex >= 0 && tourIndex < FSM_TOUR_STEPS.length) {
+    if (FSM_TOUR_STEPS[tourIndex].action === actionName) {
+      setTimeout(nextTourStep, 500);
+    }
+  }
+}
+</script>
+
+<!-- TOUR OVERLAY -->
+<div id="tour-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;pointer-events:none;overflow:hidden;">
+  <div id="tour-hl" style="position:absolute;background:transparent;box-shadow:0 0 0 9999px rgba(0,0,0,0.6), 0 0 15px rgba(16,185,129,0.8);border:2px solid var(--acb);border-radius:6px;transition:all 0.3s ease;"></div>
+  <div id="tour-dialog" style="position:absolute;width:320px;background:var(--bg0);border:1px solid var(--b1);border-radius:8px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,0.5);pointer-events:auto;transition:all 0.3s ease;transform:translateY(10px);opacity:0;">
+    <h3 style="margin:0 0 10px 0;color:var(--acb);font-size:18px;display:flex;align-items:center;gap:8px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+      <span id="tour-title-text">Title</span>
+    </h3>
+    <p id="tour-text" style="color:var(--t1);font-size:13px;line-height:1.5;margin-bottom:20px;">Text</p>
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <span id="tour-progress" style="color:var(--t3);font-size:12px;font-weight:bold;">1/4</span>
+      <div style="display:flex;gap:8px;">
+        <button class="tb-btn" style="border:1px solid var(--b2);padding:6px 12px;border-radius:4px;color:var(--t2);cursor:pointer;" onclick="endTour()">Skip</button>
+        <button class="tb-btn" id="tour-next-btn" style="background:var(--acb);border:none;color:#fff;padding:6px 12px;border-radius:4px;font-weight:bold;cursor:pointer;" onclick="nextTourStep()">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
