@@ -1,19 +1,8 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; url=/fsm">
-    <link rel="canonical" href="https://sqgate.online/fsm">
-    <title>Redirecting...</title>
-    <style>
-      body { background-color: #060813; color: #94a3b8; font-family: 'Inter', sans-serif; text-align: center; padding-top: 20vh; }
-      a { color: #ef4444; text-decoration: none; }
-      a:hover { text-decoration: underline; }
-    </style>
-  </head>
-  <body>
-    <p>This page has moved to <a href="/fsm">/fsm</a>.</p>
-  
+import os
+
+old_script = "<script>window.onerror=function(msg,u,l,c,e){var err=document.createElement('div');err.style.cssText='position:fixed;top:0;left:0;width:100%;background:red;color:white;z-index:999999;padding:10px;font-family:monospace';err.innerText='ERROR: '+msg+' at line '+l;document.body.appendChild(err);};</script>"
+
+new_error_handler = """
 <!-- GLOBAL ERROR HANDLER -->
 <style>
 #sqgate-error-modal { position: fixed; inset: 0; z-index: 999999; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); font-family: 'Outfit', sans-serif; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
@@ -50,5 +39,27 @@ window.addEventListener('error', function(e) { showGlobalError(e.message); });
 window.addEventListener('unhandledrejection', function(e) { showGlobalError(e.reason); });
 </script>
 </body>
+"""
 
-</html>
+def patch_file(filepath):
+    with open(filepath, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    # 1. Remove old script
+    if old_script in content:
+        content = content.replace(old_script, '')
+        
+    # 2. Inject new handler before </body>
+    if '<!-- GLOBAL ERROR HANDLER -->' not in content and '</body>' in content:
+        content = content.replace('</body>', new_error_handler)
+        
+    with open(filepath, 'w', encoding='utf-8') as f:
+        f.write(content)
+    print(f"Patched {filepath}")
+
+for root, _, files in os.walk('.'):
+    if '.git' in root or 'node_modules' in root:
+        continue
+    for file in files:
+        if file.endswith('.html'):
+            patch_file(os.path.join(root, file))
