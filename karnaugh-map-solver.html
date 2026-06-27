@@ -2,9 +2,9 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Interactive K-Map Solver | Karnaugh Map Simplifier - SQGATE</title>
-<meta name="description" content="Solve and simplify boolean algebra instantly with our interactive Karnaugh Map (K-Map) Solver. Supports 2, 3, and 4 variables with visual grouping and Verilog export.">
-<meta name="keywords" content="karnaugh map, k-map solver, boolean algebra simplifier, sum of products, quine-mccluskey, digital logic">
+<title>Interactive K-Map Solver | 2-6 Variable Karnaugh Map Simplifier - SQGATE</title>
+<meta name="description" content="Solve and simplify boolean algebra instantly with our interactive Karnaugh Map (K-Map) Solver. Supports 2, 3, 4, 5, and 6 variables with visual grouping and Verilog export.">
+<meta name="keywords" content="karnaugh map, k-map solver, 5 variable k-map, 6 variable k-map, boolean algebra simplifier, sum of products, quine-mccluskey, digital logic">
 <meta property="og:title" content="Interactive K-Map Solver">
 <meta property="og:description" content="Solve and simplify boolean algebra instantly with our interactive Karnaugh Map Solver.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -330,6 +330,8 @@
     <button class="var-btn" data-v="2" id="v2-btn">2 — AB</button>
     <button class="var-btn active" data-v="3" id="v3-btn">3 — ABC</button>
     <button class="var-btn" data-v="4" id="v4-btn">4 — ABCD</button>
+    <button class="var-btn" data-v="5" id="v5-btn">5 — ABCDE</button>
+    <button class="var-btn" data-v="6" id="v6-btn">6 — ABCDEF</button>
     <button class="reset-btn" id="resetBtn" onclick="initGrid(); renderTable(); solve();">
       <i class="ti ti-refresh"></i> Clear Map
     </button>
@@ -415,6 +417,16 @@ const CONFIGS = {
     vars: ['A','B','C','D'],
     rowBits: ['00','01','11','10'], colBits: ['00','01','11','10'],
     rowLabel: 'AB', colLabel: 'CD', totalVars: 4
+  },
+  5: {
+    vars: ['A','B','C','D','E'],
+    rowBits: ['00','01','11','10'], colBits: ['000','001','011','010','110','111','101','100'],
+    rowLabel: 'AB', colLabel: 'CDE', totalVars: 5
+  },
+  6: {
+    vars: ['A','B','C','D','E','F'],
+    rowBits: ['000','001','011','010','110','111','101','100'], colBits: ['000','001','011','010','110','111','101','100'],
+    rowLabel: 'ABC', colLabel: 'DEF', totalVars: 6
   }
 };
 
