@@ -2538,7 +2538,7 @@ const GCOL={
 let CU = null; // current user { email, name }
 
 // ── GUEST FALLBACK: always have a working user so simulator needs no login ──
-var GUEST_USER = {email: 'guest', name: 'Local Workspace'};
+var GUEST_USER = {email: 'guest', name: 'Guest Session'};
 
 function authLoad() {
   try { CU = JSON.parse(localStorage.getItem('lgf_session') || 'null'); } catch(e){ CU = null; }
@@ -4702,8 +4702,8 @@ function showProjects(){
   showPage('pg-projects');
   var ud = getUserData(CU.email);
   var isGuest = (CU.email === 'guest');
-  var nameText = isGuest ? 'Local Workspace' : CU.email;
-  var avatarChar = isGuest ? '✦' : (CU.name||CU.email)[0].toUpperCase();
+  var nameText = isGuest ? 'Guest Session' : CU.email;
+  var avatarChar = isGuest ? '👾' : (CU.name||CU.email)[0].toUpperCase();
 
   if (ud.isPro) {
     document.getElementById('pu-email').innerHTML = nameText + ' <span style="background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700;margin-left:8px;vertical-align:middle;box-shadow:0 2px 4px rgba(99,102,241,0.3);">PRO</span>';
