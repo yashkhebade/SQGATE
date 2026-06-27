@@ -8075,27 +8075,61 @@ window.addEventListener('error', function(e) { showGlobalError(e.message); });
 window.addEventListener('unhandledrejection', function(e) { showGlobalError(e.reason); });
 </script>
 
+<style>
+#share-modal { position: fixed; inset: 0; z-index: 999999; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); font-family: 'Outfit', sans-serif; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+#share-modal.show { opacity: 1; pointer-events: auto; }
+.share-box { background: #1e293b; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 32px; max-width: 500px; width: 90%; box-shadow: 0 24px 64px rgba(0,0,0,0.6); text-align: center; color: #e2e8f0; transform: translateY(20px); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+#share-modal.show .share-box { transform: translateY(0); }
+.share-input { width: 100%; padding: 12px; border-radius: 8px; background: #0f172a; border: 1px solid #334155; color: #fff; margin-bottom: 16px; font-family: monospace; font-size: 13px; box-sizing: border-box;}
+</style>
+<div id="share-modal">
+  <div class="share-box">
+    <div class="sqgate-em-icon" style="color:#3b82f6; font-size:40px;">🔗</div>
+    <div class="sqgate-em-title">Share Circuit</div>
+    <div class="sqgate-em-msg">Copy the link below to share your design.</div>
+    <input type="text" id="share-url-input" class="share-input" readonly onclick="this.select()">
+    <div class="sqgate-em-actions">
+      <button class="sqgate-em-btn sqgate-em-btn-secondary" onclick="document.getElementById('share-modal').classList.remove('show')">Close</button>
+      <button class="sqgate-em-btn sqgate-em-btn-primary" id="share-copy-btn" onclick="copyShareUrl()">Copy Link</button>
+    </div>
+  </div>
+</div>
+
 <script>
 function shareCircuit() {
   try {
     const snap = projDataSnapshot();
     const jsonStr = JSON.stringify({name: PROJ ? PROJ.name : 'Shared Circuit', data: snap});
-    const b64 = btoa(encodeURIComponent(jsonStr));
+    
+    // We do not encodeURIComponent here, btoa works fine with ascii from stringify
+    // except stringify might have non-ascii. We use a safe base64 encoding method:
+    const safeJson = unescape(encodeURIComponent(jsonStr));
+    const b64 = btoa(safeJson);
+    
     const url = window.location.origin + window.location.pathname + '#load=' + b64;
     
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(url).then(() => {
-        msg("Link copied to clipboard!", "ok");
-      }).catch(err => {
-        console.error("Clipboard API failed:", err);
-        prompt("Copy this link to share your circuit:", url);
-      });
-    } else {
-      prompt("Copy this link to share your circuit:", url);
-    }
+    document.getElementById('share-url-input').value = url;
+    document.getElementById('share-modal').classList.add('show');
+    document.getElementById('share-copy-btn').textContent = "Copy Link";
   } catch (err) {
     console.error("Failed to generate share link:", err);
-    msg("Failed to generate link.", "er");
+    alert("Failed to generate link. The circuit might be too complex or contain invalid characters.");
+  }
+}
+
+function copyShareUrl() {
+  const input = document.getElementById('share-url-input');
+  input.select();
+  input.setSelectionRange(0, 99999);
+  try {
+    document.execCommand('copy');
+    document.getElementById('share-copy-btn').textContent = "Copied!";
+  } catch(e) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(input.value).then(() => {
+        document.getElementById('share-copy-btn').textContent = "Copied!";
+      });
+    }
   }
 }
 
@@ -8103,8 +8137,8 @@ window.addEventListener('DOMContentLoaded', () => {
   if (window.location.hash.startsWith('#load=')) {
     try {
       const b64 = window.location.hash.substring(6);
-      const jsonStr = decodeURIComponent(atob(b64));
-      const sharedData = JSON.parse(jsonStr);
+      const decodedStr = decodeURIComponent(escape(atob(b64)));
+      const sharedData = JSON.parse(decodedStr);
       
       setTimeout(() => {
         openProject({
@@ -8112,11 +8146,21 @@ window.addEventListener('DOMContentLoaded', () => {
           name: sharedData.name || 'Shared Circuit',
           data: sharedData.data
         });
-        msg("Loaded shared circuit successfully!", "#4caf50");
+        msg("Loaded shared circuit successfully!", "ok");
         history.replaceState(null, null, window.location.pathname);
       }, 300);
     } catch(err) {
       console.error("Failed to load shared circuit", err);
+      // Fallback in case they used the old link format
+      try {
+        const jsonStr = decodeURIComponent(atob(window.location.hash.substring(6)));
+        const sharedData = JSON.parse(jsonStr);
+        setTimeout(() => {
+          openProject({ id: genId(), name: sharedData.name, data: sharedData.data });
+          msg("Loaded shared circuit successfully!", "ok");
+          history.replaceState(null, null, window.location.pathname);
+        }, 300);
+      } catch(e2) {}
     }
   }
 });
