@@ -8326,8 +8326,6 @@ function showGlobalError(msg) {
   var m = document.getElementById('sqgate-error-modal');
   if(m && !m.classList.contains('show')) m.classList.add('show');
 }
-window.addEventListener('error', function(e) { showGlobalError(e.message); });
-window.addEventListener('unhandledrejection', function(e) { showGlobalError(e.reason); });
 </script>
 
 <style>
