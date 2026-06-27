@@ -8155,13 +8155,15 @@ function submitWaitlist() {
     }
   ]
 }
-
+</script>
+<script>
 // MOBILE INIT
 if (window.innerWidth <= 768) {
-  document.getElementById('sidebar').classList.add('off');
-  document.getElementById('rp').classList.add('off');
+  var sb = document.getElementById('sidebar');
+  var rp = document.getElementById('rp');
+  if(sb) sb.classList.add('off');
+  if(rp) rp.classList.add('off');
 }
-
 </script>
 </body>
 </html>
