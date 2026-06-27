@@ -2216,7 +2216,6 @@ window.addEventListener('unhandledrejection', function(e) { showGlobalError(e.re
   60% { transform: rotate(-90deg); }
   100% { transform: rotate(0deg); }
 }
-
   /* GLOBAL LIQUID GLASS EFFECTS - DISTORTION */
   .panel-card, .vbtn, .vbtn2, .ov-box, .sqgate-em-box, .tb-btn, .step-btn, .puzzle-card, .pz-btn {
     position: relative;
@@ -2229,7 +2228,7 @@ window.addEventListener('unhandledrejection', function(e) { showGlobalError(e.re
   .panel-card::before, .vbtn::before, .vbtn2::before, .ov-box::before, .sqgate-em-box::before, .tb-btn::before, .step-btn::before, .puzzle-card::before, .pz-btn::before {
     content: '';
     position: absolute;
-    inset: -4px;
+    inset: 0;
     border-radius: inherit;
     background: rgba(255,255,255,0.02);
     filter: url("#radio-glass");

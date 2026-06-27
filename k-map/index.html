@@ -635,7 +635,6 @@ function showProModal(featureName) {
 .sqgate-em-btn-primary:hover { background: #5b3a94; transform: translateY(-2px); }
 .sqgate-em-btn-secondary { background: transparent; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.2); }
 .sqgate-em-btn-secondary:hover { background: rgba(255,255,255,0.05); color: #fff; }
-
   /* GLOBAL LIQUID GLASS EFFECTS - DISTORTION */
   .panel-card, .vbtn, .vbtn2, .ov-box, .sqgate-em-box, .tb-btn, .step-btn, .puzzle-card, .pz-btn {
     position: relative;
@@ -648,7 +647,7 @@ function showProModal(featureName) {
   .panel-card::before, .vbtn::before, .vbtn2::before, .ov-box::before, .sqgate-em-box::before, .tb-btn::before, .step-btn::before, .puzzle-card::before, .pz-btn::before {
     content: '';
     position: absolute;
-    inset: -4px;
+    inset: 0;
     border-radius: inherit;
     background: rgba(255,255,255,0.02);
     filter: url("#radio-glass");
