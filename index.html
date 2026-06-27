@@ -7831,6 +7831,41 @@ document.getElementById('mobile-fullscreen-btn').addEventListener('click', funct
 .wl-close:hover { color: var(--t1); }
 @keyframes fade-in { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 </style>
+<script>
+// Hero Interactive Circuit Logic
+let hsw1 = false;
+let hsw2 = false;
+function toggleHeroSw(id) {
+  if (id === 1) hsw1 = !hsw1;
+  if (id === 2) hsw2 = !hsw2;
+  
+  const sw1El = document.getElementById('hero-sw1');
+  const sw2El = document.getElementById('hero-sw2');
+  const wire1 = document.getElementById('hero-wire1');
+  const wire2 = document.getElementById('hero-wire2');
+  const wireOut = document.getElementById('hero-wire-out');
+  const gate = document.getElementById('hero-gate');
+  const bulb = document.getElementById('hero-bulb-out');
+  
+  hsw1 ? sw1El.classList.add('active') : sw1El.classList.remove('active');
+  hsw2 ? sw2El.classList.add('active') : sw2El.classList.remove('active');
+  
+  hsw1 ? wire1.classList.add('hero-wire-active') : wire1.classList.remove('hero-wire-active');
+  hsw2 ? wire2.classList.add('hero-wire-active') : wire2.classList.remove('hero-wire-active');
+  
+  if (hsw1 && hsw2) {
+    wireOut.classList.add('hero-wire-active');
+    bulb.classList.add('active');
+    gate.querySelector('path').setAttribute('fill', 'rgba(34,211,238,0.25)');
+    gate.style.filter = 'url(#glow)';
+  } else {
+    wireOut.classList.remove('hero-wire-active');
+    bulb.classList.remove('active');
+    gate.querySelector('path').setAttribute('fill', 'rgba(34,211,238,0.05)');
+    gate.style.filter = 'none';
+  }
+}
+</script>
 
 <script>
 function openWaitlist(toolName) {
