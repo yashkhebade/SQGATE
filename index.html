@@ -1004,10 +1004,13 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 .proj-avatar{width:30px;height:30px;border-radius:50%;background:var(--b2);
               display:flex;align-items:center;justify-content:center;
               font-weight:700;font-size:13px;color:var(--acc)}
-.proj-logout{background:none;border:1px solid var(--b1);color:var(--t3);
-              font-size:11px;padding:3px 9px;border-radius:3px;cursor:pointer;
-              font-family:var(--fsans);transition:all .12s}
-.proj-logout:hover{border-color:var(--acr);color:var(--acr)}
+.proj-logout{background:none;border:1px solid var(--b2);color:var(--t2);
+              font-size:13px;padding:6px 16px;border-radius:6px;cursor:pointer;font-weight:600;
+              font-family:var(--fsans);transition:all .2s ease}
+.proj-logout:hover{border-color:var(--t1);color:var(--t1);transform:translateY(-2px);background:rgba(255,255,255,0.05);box-shadow:0 4px 12px rgba(0,0,0,0.2)}
+
+.nav-link { color: var(--t2); text-decoration: none; font-weight: 600; font-size: 14px; padding: 6px 12px; border-radius: 6px; transition: all 0.2s ease; margin-right: 4px; }
+.nav-link:hover { color: var(--t1); background: rgba(255,255,255,0.05); transform: translateY(-1px); }
 .proj-body{flex:1;overflow-y:auto;padding:32px 24px;max-width:900px;margin:0 auto;width:100%}
 .proj-section-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;
                      color:var(--t3);margin-bottom:14px}
@@ -1685,13 +1688,12 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
     </div>
     <div class="proj-user">
       <div style="display:flex;align-items:center;gap:12px;margin-right:16px;">
-        <button id="btn-nav-login" style="background:var(--acc);color:white;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-weight:600;display:none;transition:all 0.2s ease;">Sign In</button>
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLSc5AzzP2NccDkCbKAb5mVvefYFc5_X-EkJZx5RLWO7aqQ_8cw/viewform" target="_blank" id="btn-feedback-dash" title="Feedback / Contact" style="text-decoration:none;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:6px;background:var(--bg2);border:1px solid var(--b1);color:var(--t2);transition:all .2s ease;" onmouseover="this.style.borderColor='#7248b9';this.style.color='#7248b9'" onmouseout="this.style.borderColor='var(--b1)';this.style.color='var(--t2)'">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSc5AzzP2NccDkCbKAb5mVvefYFc5_X-EkJZx5RLWO7aqQ_8cw/viewform" target="_blank" id="btn-feedback-dash" title="Feedback / Contact" style="text-decoration:none;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:6px;background:var(--bg2);border:1px solid var(--b1);color:var(--t2);transition:all .2s ease;" onmouseover="this.style.borderColor='#7248b9';this.style.color='#7248b9';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--b1)';this.style.color='var(--t2)';this.style.transform='none'">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="17" y2="8"></line><line x1="12" y1="12" x2="17" y2="12"></line><line x1="12" y1="16" x2="17" y2="16"></line><line x1="8" y1="8" x2="8.01" y2="8"></line><line x1="8" y1="12" x2="8.01" y2="12"></line><line x1="8" y1="16" x2="8.01" y2="16"></line></svg>
         </a>
       </div>
-      <a href="#features" style="color:var(--t2);text-decoration:none;font-weight:600;transition:color 0.15s;" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t2)'">Features</a>
-      <a href="#tools" style="color:var(--t2);text-decoration:none;font-weight:600;margin-right:12px;transition:color 0.15s;" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t2)'">Tools</a>
+      <a href="#features" class="nav-link">Features</a>
+      <a href="#tools" class="nav-link" style="margin-right:12px;">Tools</a>
       <span id="pu-email" style="color:var(--t3)"></span>
       <div class="proj-avatar" id="pu-avatar">?</div>
       <button class="proj-logout" id="btn-logout">Sign out</button>
@@ -4725,15 +4727,13 @@ function showProjects(){
   var logoutBtn = document.getElementById('btn-logout');
   if (logoutBtn) {
     if (isGuest) {
-      logoutBtn.textContent = '→ Sign In';
+      logoutBtn.textContent = 'Sign In';
       logoutBtn.onclick = function(){ showPage('pg-login'); };
     } else {
       logoutBtn.textContent = 'Sign out';
       logoutBtn.onclick = null; // restored to original event listener
     }
   }
-  var navLoginBtn = document.getElementById('btn-nav-login');
-  if (navLoginBtn) navLoginBtn.style.display = isGuest ? 'block' : 'none';
 
   // Workspace subtitle: hint guests to sign in, hide for logged-in users
   var wsSub = document.getElementById('workspace-subtitle');
