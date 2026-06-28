@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sqgate-cache-v11';
+const CACHE_NAME = 'sqgate-cache-v12';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -25,7 +25,12 @@ self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        return cache.addAll(ASSETS_TO_CACHE);
+        // Cache each asset individually so one failure doesn't block the whole install
+        return Promise.allSettled(
+          ASSETS_TO_CACHE.map(url => cache.add(url).catch(err => {
+            console.warn('SW: Failed to cache', url, err);
+          }))
+        );
       })
       .then(() => self.skipWaiting())
   );
@@ -46,33 +51,51 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Only intercept GET requests and HTTP/HTTPS schemes (ignore chrome-extension, data, etc)
+  // Only intercept GET requests and HTTP/HTTPS schemes
   if (event.request.method !== 'GET' || !event.request.url.startsWith('http')) return;
 
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Return cached response if found
-        if (response) {
-          return response;
-        }
-        
-        // Otherwise fetch from network
-        return fetch(event.request).then((networkResponse) => {
-          // Cache the new fetched response for future (only cache same-origin basic responses)
+  const url = new URL(event.request.url);
+  const isHTML = event.request.mode === 'navigate' ||
+                 url.pathname.endsWith('.html') ||
+                 url.pathname.endsWith('/');
+
+  if (isHTML) {
+    // NETWORK-FIRST for HTML pages: always try network, fall back to cache
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
           if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
             const responseToCache = networkResponse.clone();
-            caches.open(CACHE_NAME)
-              .then((cache) => {
-                cache.put(event.request, responseToCache);
-              });
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseToCache);
+            });
           }
           return networkResponse;
-        }).catch((err) => {
-          // If offline and not in cache, we MUST throw the error so the browser handles the failure natively
-          // Returning undefined would cause a TypeError that triggers the global error handler
+        })
+        .catch(() => {
+          // Offline: fall back to cache
+          return caches.match(event.request);
+        })
+    );
+  } else {
+    // CACHE-FIRST for static assets (images, JS, CSS, fonts)
+    event.respondWith(
+      caches.match(event.request)
+        .then((response) => {
+          if (response) return response;
+          return fetch(event.request).then((networkResponse) => {
+            if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+              const responseToCache = networkResponse.clone();
+              caches.open(CACHE_NAME).then((cache) => {
+                cache.put(event.request, responseToCache);
+              });
+            }
+            return networkResponse;
+          });
+        })
+        .catch((err) => {
           throw err;
-        });
-      })
-  );
+        })
+    );
+  }
 });
