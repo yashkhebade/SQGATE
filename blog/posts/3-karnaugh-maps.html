@@ -3,24 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Karnaugh Maps (K-Maps) Simplified</title>
-  <meta name="description" content="Stop struggling with boolean algebra! Learn how to visually minimize logic expressions using 2, 3, and 4 variable Karnaugh Maps.">
-  <meta name="keywords" content="Karnaugh map, K-map solver, boolean algebra, logic minimization, digital design">
+  <title>Comprehensive Masterclass Part 3: Karnaugh Maps Simplified</title>
+  <meta name="description" content="Master Karnaugh Maps, Boolean simplification, Gray code sequencing, and Don't Care conditions for logic minimization.">
+  <meta name="keywords" content="Karnaugh map, K-map, Boolean minimization, digital logic, Don't Care condition">
   <link rel="canonical" href="https://sqgate.online/blog/posts/3-karnaugh-maps.html">
-  <meta name="robots" content="index, follow, max-image-preview:large">
   <link rel="icon" href="/icon.webp">
-  
-  <meta property="og:title" content="Karnaugh Maps (K-Maps) Simplified">
-  <meta property="og:description" content="Stop struggling with boolean algebra! Learn how to visually minimize logic expressions using Karnaugh Maps.">
-  <meta property="og:type" content="article">
-  <meta property="og:url" content="https://sqgate.online/blog/posts/3-karnaugh-maps.html">
-  <meta property="og:image" content="https://sqgate.online/og-image.png">
-  
-  <meta name="twitter:card" content="summary_large_image">
-  
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/liquid-glass.css">
-  
   <style>
     :root{
       --bg0:#060813;--bg1:rgba(12, 15, 28, 0.65);
@@ -28,6 +16,7 @@
       --t1:#ffffff;--t2:#94a3b8;--t3:#64748b;
       --acc:#8b5cf6;--hi:#22d3ee;
       --fsans:'Inter', -apple-system, sans-serif;
+      --fmono:'Fira Code', monospace;
     }
     body { background: var(--bg0); color: var(--t2); font-family: var(--fsans); margin: 0; padding: 0; line-height: 1.7; overflow-x: hidden; }
     .nav { padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; background: rgba(12, 15, 28, 0.65); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--b1); position: sticky; top: 0; z-index: 100; }
@@ -36,20 +25,22 @@
     .nav-links a:hover { color: var(--t1); }
     .article-header { max-width: 800px; margin: 80px auto 40px; padding: 0 20px; text-align: center; position: relative; }
     .article-header::before { content: ''; position: absolute; top: -50%; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%); pointer-events: none; z-index: -1; }
-    .article-tag { display: inline-block; background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 4px 10px; border-radius: 20px; margin-bottom: 16px; }
-    .article-header h1 { font-family: 'Outfit', sans-serif; font-size: 48px; font-weight: 800; color: var(--t1); margin: 0 0 20px 0; line-height: 1.2; }
+    .article-tag { display: inline-block; background: rgba(139, 92, 246, 0.15); color: var(--acc); border: 1px solid rgba(139, 92, 246, 0.3); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 4px 10px; border-radius: 20px; margin-bottom: 16px; }
+    .article-header h1 { font-family: 'Outfit', sans-serif; font-size: 42px; font-weight: 800; color: var(--t1); margin: 0 0 20px 0; line-height: 1.2; }
     .article-meta { color: var(--t3); font-size: 14px; font-family: 'Fira Code', monospace; }
     .article-content { max-width: 760px; margin: 0 auto 100px; padding: 40px; background: rgba(255,255,255,0.01); border: 1px solid var(--b1); border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
     .article-content p { margin-bottom: 24px; font-size: 17px; color: #cbd5e1; }
-    .article-content h2 { font-family: 'Outfit', sans-serif; font-size: 28px; color: var(--t1); margin: 48px 0 20px; }
+    .article-content h2 { font-family: 'Outfit', sans-serif; font-size: 28px; color: var(--t1); margin: 48px 0 20px; border-bottom: 1px solid var(--b1); padding-bottom: 10px; }
+    .article-content h3 { font-family: 'Outfit', sans-serif; font-size: 22px; color: var(--hi); margin: 32px 0 16px; }
+    .article-image { width: 100%; border-radius: 12px; margin: 32px 0; border: 1px solid var(--b2); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     
     /* Interactive Demo CSS */
     .demo-box { background: rgba(0,0,0,0.4); border: 1px solid var(--b2); border-radius: 12px; padding: 40px; margin: 32px 0; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
     .kmap-grid { display: grid; grid-template-columns: repeat(2, 60px); grid-template-rows: repeat(2, 60px); gap: 2px; background: var(--b2); padding: 2px; border-radius: 8px; position: relative; }
     .kmap-cell { background: var(--bg0); display: flex; align-items: center; justify-content: center; font-family: var(--fmono); font-size: 24px; font-weight: bold; color: var(--t2); user-select: none; transition: all 0.3s; }
     .kmap-cell.one { color: var(--t1); }
+    .kmap-cell.dontcare { color: #f59e0b; }
     
-    /* The grouping animation overlay */
     .kmap-group { position: absolute; border: 3px solid transparent; border-radius: 6px; pointer-events: none; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
     .kmap-group.active { border-color: var(--hi); box-shadow: 0 0 15px rgba(34,211,238,0.4) inset, 0 0 15px rgba(34,211,238,0.4); background: rgba(34,211,238,0.1); }
     
@@ -73,48 +64,62 @@
   </nav>
 
   <header class="article-header">
-    <div class="article-tag">Tutorial</div>
-    <h1>Karnaugh Maps (K-Maps) Simplified</h1>
-    <div class="article-meta">June 30, 2026 • 8 min read</div>
+    <div class="article-tag">Masterclass Series - Part 3</div>
+    <h1>Module 3: Karnaugh Maps Simplified</h1>
+    <div class="article-meta">July 3, 2026 • 9 min read</div>
   </header>
 
   <main class="article-content">
-    <p>Simplifying logic expressions using pure Boolean Algebra can be tedious and prone to human error. Enter the <strong>Karnaugh Map</strong> (or K-Map), a visual method for minimizing boolean equations.</p>
-    
-    <h2>What is a K-Map?</h2>
-    <p>A Karnaugh Map is basically a truth table wrapped into a grid. The cells are arranged in Gray Code order, meaning only one bit changes between adjacent cells. This physical arrangement ensures that any adjacent cells containing a `1` can be mathematically reduced by eliminating the variable that changed!</p>
+    <img src="/blog/posts/images/module3_boolean_math_1782750565960.png" alt="Futuristic digital chalkboard with Boolean algebra equations" class="article-image">
 
-    <h2>Visual Grouping</h2>
-    <p>To solve a K-Map, you group adjacent 1s into rectangles. The rules are simple: groups must be sized in powers of two (1, 2, 4, 8), and you want to make the groups as large as possible.</p>
+    <p>The raw translation of a functional requirement into a truth table typically yields highly expansive, unoptimized Boolean expressions, often written in canonical Sum of Products (SOP) or Product of Sums (POS) forms. Implementing these raw expressions directly into hardware results in excessive gate counts, increased thermal dissipation, higher manufacturing costs, and severe propagation delays.</p>
+    
+    <p>Therefore, logic minimization is a mandatory phase of hardware design. While basic algebraic manipulation can simplify small expressions, it is prone to human error and lacks a systematic guarantee of finding the absolute minimal form. To solve this, engineers utilize the Karnaugh Map (K-Map), a visual and systematic algorithm for Boolean simplification.</p>
+
+    <h2>The Power of Gray Code</h2>
+    <p>The K-Map transforms a standard one-dimensional truth table into a two-dimensional grid of cells. The critical architectural feature of the K-Map is its grid labeling system, which strictly adheres to a Gray code sequence. In a standard binary sequence, adjacent numbers can differ by multiple bits (e.g., from binary 1 (01) to binary 2 (10), two bits change states). In a Gray code sequence (00, 01, 11, 10), any two adjacent values differ by exactly one single bit.</p>
+    
+    <p>By labeling the rows and columns of the K-Map with Gray code, the map ensures that any two physically adjacent cells on the grid are also logically adjacent. This physical-to-logical mapping is the engine of the K-Map's power: it allows engineers to visually identify redundant variables and eliminate them through geometric grouping.</p>
+
+    <img src="/blog/posts/images/module3_kmap_grid_1782750553464.png" alt="Abstract 3D Karnaugh Map grid floating in cyberspace" class="article-image">
+
+    <h2>Visual Grouping and Dimensional Wraparound</h2>
+    <p>A 2-variable K-Map consists of a 2×2 grid containing 4 cells. A 3-variable K-Map forms a 2×4 grid containing 8 cells. A 4-variable K-Map is a 4×4 grid comprising 16 cells. The boundaries of the K-Map are conceptualized as toroidal; meaning the top row is considered logically adjacent to the bottom row, and the extreme left column is logically adjacent to the extreme right column. This wrap-around property ensures continuous logical adjacency across the entire mathematical space.</p>
+    
+    <p>The minimization algorithm proceeds by placing a logical '1' in the cells corresponding to the minterms generated by the truth table. Once plotted, the engineer identifies and circles contiguous geometric groupings of 1s. These groups must be rectangular and their size must strictly be a power of two (i.e., groups of 1, 2, 4, 8, or 16 cells). The larger the group, the more variables are eliminated from the final expression.</p>
+    
+    <h2>The "Don't Care" Condition</h2>
+    <p>Furthermore, K-Maps introduce the extraordinarily powerful concept of "Don't Care" conditions. In many digital systems, certain input combinations are physically impossible or behaviorally irrelevant. For example, a system processing 4-bit Binary Coded Decimal (BCD) will only ever encounter binary values from 0000 to 1001 (decimal 0 to 9); the values 1010 through 1111 will never occur.</p>
+    
+    <p>These impossible states are plotted on the K-Map using an 'X' to signify a Don't Care state. During the grouping phase, the engineer possesses the absolute mathematical freedom to treat any 'X' as either a '1' or a '0'—whichever choice allows for the formation of the largest possible geometric grouping.</p>
     
     <!-- Interactive Demo -->
     <div class="demo-box">
+      <h3 style="margin-top:0; margin-bottom: 20px; font-family: var(--fmono); font-size: 14px; color: var(--t2);">Grouping with Don't Care (X)</h3>
       <div style="margin-bottom: 20px; font-family: var(--fmono); font-size: 14px; color: var(--t2); text-align: left;">
         <span style="display: inline-block; width: 30px;"></span>B=0 B=1<br>
-        A=0 <span style="color:var(--t1);">[ 1 ] [ 1 ]</span><br>
+        A=0 <span style="color:var(--t1);">[ 1 ] <span style="color:#f59e0b;">[ X ]</span></span><br>
         A=1 <span style="color:var(--t2);">[ 0 ] [ 0 ]</span>
       </div>
       
       <div class="kmap-grid">
         <div class="kmap-cell one" id="c00">1</div>
-        <div class="kmap-cell one" id="c01">1</div>
+        <div class="kmap-cell dontcare" id="c01">X</div>
         <div class="kmap-cell" id="c10">0</div>
         <div class="kmap-cell" id="c11">0</div>
         
-        <!-- The highlighter group -->
         <div class="kmap-group" id="kmap-highlight" style="top:2px; left:2px; width:0; height:0; opacity:0;"></div>
       </div>
       
       <div class="demo-controls">
-        <button class="demo-btn" onclick="highlightGroup()">Find the Grouping</button>
+        <button class="demo-btn" onclick="highlightGroup()">Group using X as a '1'</button>
       </div>
       <p id="kmap-result" style="margin-top:20px; font-size:16px; font-weight:bold; color:var(--hi); opacity:0; transition:opacity 0.5s;">Result: Out = A'</p>
     </div>
     
-    <h2>SQGATE's Built-In K-Map Solver</h2>
-    <p>While solving 2 and 3 variable K-Maps by hand is fun, 4, 5, and 6 variable K-Maps get incredibly complex. Luckily, SQGATE features an automated K-Map solver that will instantly group and minimize expressions for you.</p>
-    
-    <p>Click the <strong>Free Simulator</strong> button to try it out!</p>
+    <div style="text-align: right; margin-top: 50px;">
+      <a href="/blog/posts/4-combinational-adders.html" style="color: var(--hi); text-decoration: none; font-weight: bold; font-size: 18px;">Next Part: Combinational Logic - Adders & Math →</a>
+    </div>
   </main>
 
   <script>
@@ -123,7 +128,8 @@
       const res = document.getElementById('kmap-result');
       
       // Since it's a 2x2 grid, each cell is 60x60. The gap is 2px.
-      // Top row is two 1s. Width = 120 + 2 = 122. Height = 60.
+      // Top row has a 1 and an X. By treating X as 1, we get a group of 2.
+      // Width = 120 + 2 = 122. Height = 60.
       hl.style.width = '122px';
       hl.style.height = '60px';
       hl.style.opacity = '1';

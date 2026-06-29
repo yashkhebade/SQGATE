@@ -3,24 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Building Blocks of Computers: Logic Gates</title>
-  <meta name="description" content="A deep dive into AND, OR, NOT, and XOR gates. Master the fundamental boolean logic that powers every computer processor.">
-  <meta name="keywords" content="logic gates tutorial, AND gate, OR gate, boolean logic, digital electronics basics">
+  <title>Comprehensive Masterclass Part 1: Digital Systems and Logic Gates</title>
+  <meta name="description" content="Introduction to Digital Systems, Boolean Foundations, and The Building Blocks of Computers.">
+  <meta name="keywords" content="logic gates, digital systems, boolean algebra, AND gate, OR gate, masterclass">
   <link rel="canonical" href="https://sqgate.online/blog/posts/1-logic-gates.html">
-  <meta name="robots" content="index, follow, max-image-preview:large">
   <link rel="icon" href="/icon.webp">
-  
-  <meta property="og:title" content="The Building Blocks of Computers: Logic Gates">
-  <meta property="og:description" content="A deep dive into AND, OR, NOT, and XOR gates. Master the fundamental boolean logic that powers every computer processor.">
-  <meta property="og:type" content="article">
-  <meta property="og:url" content="https://sqgate.online/blog/posts/1-logic-gates.html">
-  <meta property="og:image" content="https://sqgate.online/og-image.png">
-  
-  <meta name="twitter:card" content="summary_large_image">
-  
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/liquid-glass.css">
-  
   <style>
     :root{
       --bg0:#060813;--bg1:rgba(12, 15, 28, 0.65);
@@ -28,6 +16,7 @@
       --t1:#ffffff;--t2:#94a3b8;--t3:#64748b;
       --acc:#8b5cf6;--hi:#22d3ee;
       --fsans:'Inter', -apple-system, sans-serif;
+      --fmono:'Fira Code', monospace;
     }
     body { background: var(--bg0); color: var(--t2); font-family: var(--fsans); margin: 0; padding: 0; line-height: 1.7; overflow-x: hidden; }
     .nav { padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; background: rgba(12, 15, 28, 0.65); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--b1); position: sticky; top: 0; z-index: 100; }
@@ -36,14 +25,14 @@
     .nav-links a:hover { color: var(--t1); }
     .article-header { max-width: 800px; margin: 80px auto 40px; padding: 0 20px; text-align: center; position: relative; }
     .article-header::before { content: ''; position: absolute; top: -50%; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%); pointer-events: none; z-index: -1; }
-    .article-tag { display: inline-block; background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 4px 10px; border-radius: 20px; margin-bottom: 16px; }
-    .article-header h1 { font-family: 'Outfit', sans-serif; font-size: 48px; font-weight: 800; color: var(--t1); margin: 0 0 20px 0; line-height: 1.2; }
+    .article-tag { display: inline-block; background: rgba(139, 92, 246, 0.15); color: var(--acc); border: 1px solid rgba(139, 92, 246, 0.3); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 4px 10px; border-radius: 20px; margin-bottom: 16px; }
+    .article-header h1 { font-family: 'Outfit', sans-serif; font-size: 42px; font-weight: 800; color: var(--t1); margin: 0 0 20px 0; line-height: 1.2; }
     .article-meta { color: var(--t3); font-size: 14px; font-family: 'Fira Code', monospace; }
     .article-content { max-width: 760px; margin: 0 auto 100px; padding: 40px; background: rgba(255,255,255,0.01); border: 1px solid var(--b1); border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
     .article-content p { margin-bottom: 24px; font-size: 17px; color: #cbd5e1; }
-    .article-content h2 { font-family: 'Outfit', sans-serif; font-size: 28px; color: var(--t1); margin: 48px 0 20px; }
-    .article-content h3 { font-family: 'Outfit', sans-serif; font-size: 22px; color: var(--hi); margin: 32px 0 16px; }
-
+    .article-content h2 { font-family: 'Outfit', sans-serif; font-size: 28px; color: var(--t1); margin: 48px 0 20px; border-bottom: 1px solid var(--b1); padding-bottom: 10px; }
+    .article-image { width: 100%; border-radius: 12px; margin: 32px 0; border: 1px solid var(--b2); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    
     /* Interactive Demo CSS */
     .demo-box { background: rgba(0,0,0,0.4); border: 1px solid var(--b2); border-radius: 12px; padding: 40px; margin: 32px 0; text-align: center; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 250px; }
     .wire { stroke-width: 4; stroke-linecap: round; transition: stroke 0.3s; }
@@ -51,12 +40,10 @@
     .wire.on { stroke: #22d3ee; filter: drop-shadow(0 0 8px rgba(34,211,238,0.6)); }
     .gate-body { fill: rgba(255,255,255,0.05); stroke: var(--t3); stroke-width: 2; transition: all 0.3s; }
     .gate-body.active { stroke: var(--acc); fill: rgba(139,92,246,0.1); filter: drop-shadow(0 0 12px rgba(139,92,246,0.4)); }
-    
     .demo-controls { display: flex; gap: 20px; margin-top: 30px; }
     .demo-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--b2); color: var(--t1); padding: 8px 24px; border-radius: 8px; font-size: 16px; font-family: var(--fmono); cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; }
     .demo-btn:hover { background: rgba(255,255,255,0.1); }
     .demo-btn.active { border-color: var(--hi); background: rgba(34,211,238,0.1); color: var(--hi); box-shadow: 0 0 12px rgba(34,211,238,0.2); }
-    
     .gate-label { font-family: var(--fsans); font-weight: 700; fill: var(--t1); font-size: 14px; user-select: none; }
     .io-label { font-family: var(--fmono); font-size: 12px; fill: var(--t2); font-weight: bold; }
   </style>
@@ -76,30 +63,39 @@
   </nav>
 
   <header class="article-header">
-    <div class="article-tag">Tutorial</div>
-    <h1>The Building Blocks of Computers: Logic Gates</h1>
-    <div class="article-meta">June 30, 2026 • 6 min read</div>
+    <div class="article-tag">Masterclass Series - Part 1</div>
+    <h1>Introduction to Digital Systems and Boolean Foundations</h1>
+    <div class="article-meta">July 1, 2026 • 10 min read</div>
   </header>
 
   <main class="article-content">
-    <p>Every smartphone, laptop, and supercomputer on Earth is built using the same fundamental components: Logic Gates. At their core, processors are simply billions of microscopic logic gates arranged in extremely clever patterns.</p>
-    
-    <h2>What is a Logic Gate?</h2>
-    <p>A logic gate is a physical (or simulated) device implementing a Boolean function; it performs a logical operation on one or more binary inputs and produces a single binary output. In digital electronics, these binary states are represented by voltage levels: High (1) and Low (0).</p>
+    <img src="/blog/posts/images/module1_processor_core_1782750403295.png" alt="Futuristic computer processor core with glowing binary signals" class="article-image">
 
-    <h2>The AND Gate</h2>
-    <p>The AND gate outputs a 1 (True) only if <strong>both</strong> of its inputs are 1. You can think of it like two switches in series: the light bulb only turns on if you close Switch A <em>and</em> Switch B.</p>
+    <p>The modern computing era is fundamentally anchored in the principles of digital electronics, a discipline that abstracts the continuous, analogue nature of electrical voltages into discrete binary states. These binary states, conventionally represented as logical '1' (high voltage) and logical '0' (low voltage), form the atomic vocabulary of all digital processing systems, from the simplest embedded microcontrollers to the most advanced supercomputing clusters. By strictly operating within this binary paradigm, digital systems achieve remarkable immunity to electrical noise and signal degradation, ensuring absolute computational deterministic behavior over billions of sequential operations.</p>
+    
+    <p>To architect and analyze these systems, engineers rely upon Boolean algebra, a branch of mathematical logic introduced by George Boole in the mid-19th century. Boolean algebra provides the rigorous theoretical framework necessary for formulating, simplifying, and analyzing the logical expressions that dictate digital circuit behavior. Unlike traditional algebra, which deals with continuous numeric variables and arithmetic operators, Boolean algebra operates exclusively on binary variables and logical operators. This mathematical abstraction allows engineers to translate highly complex human-level computational requirements into exact, minimal hardware schematics.</p>
+    
+    <p>The physical realization of these Boolean expressions is achieved through digital logic circuits. These circuits are broadly demarcated into two primary classifications: combinational logic and sequential logic. Combinational logic circuits are defined by the strict parameter that their current output is determined entirely and instantaneously by the current combination of inputs applied to their terminals, with total disregard for any past state or historical input sequence. They contain no memory elements and no internal feedback loops. Conversely, sequential logic circuits introduce the dimension of time and memory. Sequential circuits utilize specialized memory elements, such as flip-flops, alongside combinational logic, meaning their outputs depend not only on the present inputs but also on the historical sequence of past inputs.</p>
+
+    <p>This exhaustive report will systematically journey through the hierarchy of these digital structures, beginning with foundational atomic gates and culminating in complex combinatorial data paths and sequential memory elements, while also exploring modern browser-based simulation tools like SQGATE designed to visualize these architectures.</p>
+
+    <h2>Module 1: The Building Blocks of Computers - Basic Logic Gates</h2>
+    
+    <img src="/blog/posts/images/module1_logic_gate_1782750413437.png" alt="Stylized 3D render of a digital AND logic gate" class="article-image">
+
+    <p>At the lowest level of digital abstraction, the intricate architectures of computer processors are synthesized from a shockingly small vocabulary of foundational components known as basic logic gates. These gates are physical electronic devices—typically constructed from interconnected networks of Complementary Metal-Oxide-Semiconductor (CMOS) transistors—that implement the most elementary Boolean functions. The fundamental gates are AND, OR, and NOT, which are frequently supplemented by the Exclusive-OR (XOR) gate to manage specialized parity and arithmetic operations.</p>
+
+    <h3>The AND Gate</h3>
+    <p>The AND gate is a basic logic gate that implements logical conjunction. It requires two or more inputs and produces a single output. The behavior of an AND gate dictates that its output will be a logical '1' (True) if and only if all of its inputs are simultaneously at a logical '1' state. If any single input is '0', the output immediately resolves to '0'. In Boolean algebra, the AND operation is represented by a dot (⋅) or simply by adjacent variables, such as Y=A⋅B or Y=AB. Structurally, this can be analogized to two mechanical switches placed in series within an electrical circuit; current can only flow to the load if both switches are actively closed.</p>
     
     <!-- Interactive Demo -->
     <div class="demo-box">
+      <h3 style="margin-top:0; margin-bottom: 20px; font-family: var(--fmono); font-size: 14px; color: var(--t2);">Interactive AND Gate Simulation</h3>
       <svg width="240" height="120" viewBox="0 0 240 120">
-        <!-- Wires -->
         <line x1="20" y1="40" x2="80" y2="40" class="wire off" id="wire-a" />
         <line x1="20" y1="80" x2="80" y2="80" class="wire off" id="wire-b" />
         <line x1="160" y1="60" x2="220" y2="60" class="wire off" id="wire-out" />
-        <!-- Gate -->
         <path d="M 80 20 L 120 20 A 40 40 0 0 1 160 60 A 40 40 0 0 1 120 100 L 80 100 Z" class="gate-body" id="gate-and" />
-        <!-- Labels -->
         <text x="100" y="65" class="gate-label">AND</text>
         <text x="5" y="44" class="io-label">A</text>
         <text x="5" y="84" class="io-label">B</text>
@@ -110,37 +106,35 @@
         <button class="demo-btn" id="btn-b" onclick="toggleB()">Input B <span style="font-size: 24px; font-weight: bold; margin-top: 4px;">0</span></button>
       </div>
     </div>
-    
-    <h2>The OR Gate</h2>
-    <p>The OR gate outputs a 1 if <strong>at least one</strong> of its inputs is 1. This is equivalent to two switches in parallel. If either switch is closed, current flows to the light bulb.</p>
 
-    <h2>The NOT Gate (Inverter)</h2>
-    <p>The simplest gate of all. The NOT gate takes a single input and flips it. If you feed it a 1, it outputs a 0. If you feed it a 0, it outputs a 1.</p>
+    <h3>The OR Gate</h3>
+    <p>The OR gate implements logical disjunction. Like the AND gate, it accepts two or more inputs and produces a single output. However, the OR gate's output will resolve to a logical '1' if at least one of its inputs is at a logical '1'. The output evaluates to '0' only when every single input is '0'. Mathematically, the OR operation is denoted by a plus sign (+), written as Y=A+B. Returning to the mechanical analogy, the OR gate represents switches arranged in a parallel configuration; closing any single switch provides a valid path for electrical current to reach the load.</p>
+
+    <h3>The NOT Gate</h3>
+    <p>The NOT gate, frequently referred to as an inverter, is unique among the primary gates because it strictly accepts a single input. Its function is to perform logical negation or complementation. The NOT gate actively reverses the logic state of its input: an input of '1' produces an output of '0', and an input of '0' produces an output of '1'. In Boolean notation, the inversion is typically represented by an overline, a prime mark (A'), or a tilde (~A). In physical CMOS layout, the NOT gate is the simplest structure to fabricate, consisting of a single p-type MOSFET and a single n-type MOSFET arranged in a complementary configuration.</p>
     
-    <h2>The XOR Gate (Exclusive OR)</h2>
-    <p>XOR is incredibly useful for binary addition. It outputs a 1 only if the inputs are <strong>different</strong> from each other (i.e., one is 1 and the other is 0). If both are the same, the output is 0.</p>
+    <h3>The XOR Gate</h3>
+    <p>The Exclusive-OR (XOR) gate is a highly specialized, derived gate that is critical for arithmetic operations and cryptographic algorithms. The XOR gate typically accepts two inputs and produces a logical '1' output if and only if the inputs are strictly different from one another (i.e., one input is '1' and the other is '0'). If both inputs are the same (both '0' or both '1'), the output evaluates to '0'. The XOR operation is mathematically denoted by a circled plus symbol (⊕), written as Y=A⊕B. In terms of foundational gates, the XOR expression can be expanded into the sum-of-products form. The XOR gate essentially functions as an inequality detector or a modulo-2 adder, forming the absolute cornerstone of all binary addition architectures.</p>
     
-    <p>Ready to build your first circuit using these gates? Click the <strong>Free Simulator</strong> button at the top to jump into SQGATE's interactive canvas.</p>
+    <div style="text-align: right; margin-top: 50px;">
+      <a href="/blog/posts/2-universal-gates.html" style="color: var(--hi); text-decoration: none; font-weight: bold; font-size: 18px;">Next Part: The Power of Universal Gates →</a>
+    </div>
   </main>
 
   <script>
     let stateA = false;
     let stateB = false;
-
     function updateLogic() {
       const wa = document.getElementById('wire-a');
       const wb = document.getElementById('wire-b');
       const wout = document.getElementById('wire-out');
       const gate = document.getElementById('gate-and');
-      
       wa.className.baseVal = stateA ? 'wire on' : 'wire off';
       wb.className.baseVal = stateB ? 'wire on' : 'wire off';
-      
       const outState = stateA && stateB;
       wout.className.baseVal = outState ? 'wire on' : 'wire off';
       gate.className.baseVal = outState ? 'gate-body active' : 'gate-body';
     }
-
     function toggleA() {
       stateA = !stateA;
       const btn = document.getElementById('btn-a');
@@ -148,7 +142,6 @@
       btn.querySelector('span').innerText = stateA ? '1' : '0';
       updateLogic();
     }
-
     function toggleB() {
       stateB = !stateB;
       const btn = document.getElementById('btn-b');

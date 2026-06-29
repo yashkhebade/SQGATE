@@ -3,24 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Power of Universal Gates: NAND & NOR</title>
-  <meta name="description" content="Learn why NAND and NOR are called universal gates and see how to build any logic circuit using just one type of gate.">
-  <meta name="keywords" content="universal gates, NAND gate, NOR gate, digital electronics, logic circuit design">
+  <title>Comprehensive Masterclass Part 2: The Power of Universal Gates</title>
+  <meta name="description" content="Learn why NAND and NOR are Universal Gates and how they are used to build any logic circuit in industrial semiconductor manufacturing.">
+  <meta name="keywords" content="universal gates, NAND gate, NOR gate, DeMorgan's Theorem, digital electronics, logic circuit design">
   <link rel="canonical" href="https://sqgate.online/blog/posts/2-universal-gates.html">
-  <meta name="robots" content="index, follow, max-image-preview:large">
   <link rel="icon" href="/icon.webp">
-  
-  <meta property="og:title" content="The Power of Universal Gates: NAND & NOR">
-  <meta property="og:description" content="Learn why NAND and NOR are called universal gates and see how to build any logic circuit using just one type of gate.">
-  <meta property="og:type" content="article">
-  <meta property="og:url" content="https://sqgate.online/blog/posts/2-universal-gates.html">
-  <meta property="og:image" content="https://sqgate.online/og-image.png">
-  
-  <meta name="twitter:card" content="summary_large_image">
-  
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/liquid-glass.css">
-  
   <style>
     :root{
       --bg0:#060813;--bg1:rgba(12, 15, 28, 0.65);
@@ -28,6 +16,7 @@
       --t1:#ffffff;--t2:#94a3b8;--t3:#64748b;
       --acc:#8b5cf6;--hi:#22d3ee;
       --fsans:'Inter', -apple-system, sans-serif;
+      --fmono:'Fira Code', monospace;
     }
     body { background: var(--bg0); color: var(--t2); font-family: var(--fsans); margin: 0; padding: 0; line-height: 1.7; overflow-x: hidden; }
     .nav { padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; background: rgba(12, 15, 28, 0.65); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--b1); position: sticky; top: 0; z-index: 100; }
@@ -36,15 +25,17 @@
     .nav-links a:hover { color: var(--t1); }
     .article-header { max-width: 800px; margin: 80px auto 40px; padding: 0 20px; text-align: center; position: relative; }
     .article-header::before { content: ''; position: absolute; top: -50%; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%); pointer-events: none; z-index: -1; }
-    .article-tag { display: inline-block; background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 4px 10px; border-radius: 20px; margin-bottom: 16px; }
-    .article-header h1 { font-family: 'Outfit', sans-serif; font-size: 48px; font-weight: 800; color: var(--t1); margin: 0 0 20px 0; line-height: 1.2; }
+    .article-tag { display: inline-block; background: rgba(139, 92, 246, 0.15); color: var(--acc); border: 1px solid rgba(139, 92, 246, 0.3); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 4px 10px; border-radius: 20px; margin-bottom: 16px; }
+    .article-header h1 { font-family: 'Outfit', sans-serif; font-size: 42px; font-weight: 800; color: var(--t1); margin: 0 0 20px 0; line-height: 1.2; }
     .article-meta { color: var(--t3); font-size: 14px; font-family: 'Fira Code', monospace; }
     .article-content { max-width: 760px; margin: 0 auto 100px; padding: 40px; background: rgba(255,255,255,0.01); border: 1px solid var(--b1); border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
     .article-content p { margin-bottom: 24px; font-size: 17px; color: #cbd5e1; }
-    .article-content h2 { font-family: 'Outfit', sans-serif; font-size: 28px; color: var(--t1); margin: 48px 0 20px; }
+    .article-content h2 { font-family: 'Outfit', sans-serif; font-size: 28px; color: var(--t1); margin: 48px 0 20px; border-bottom: 1px solid var(--b1); padding-bottom: 10px; }
+    .article-content h3 { font-family: 'Outfit', sans-serif; font-size: 22px; color: var(--hi); margin: 32px 0 16px; }
+    .article-image { width: 100%; border-radius: 12px; margin: 32px 0; border: 1px solid var(--b2); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     
     /* Interactive Demo CSS */
-    .demo-box { background: rgba(0,0,0,0.4); border: 1px solid var(--b2); border-radius: 12px; padding: 40px; margin: 32px 0; text-align: center; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 250px; }
+    .demo-box { background: rgba(0,0,0,0.4); border: 1px solid var(--b2); border-radius: 12px; padding: 40px; margin: 32px 0; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 250px; }
     .wire { stroke-width: 4; stroke-linecap: round; transition: stroke 0.3s; }
     .wire.off { stroke: #1e293b; }
     .wire.on { stroke: #22d3ee; filter: drop-shadow(0 0 8px rgba(34,211,238,0.6)); }
@@ -77,40 +68,43 @@
   </nav>
 
   <header class="article-header">
-    <div class="article-tag">Tutorial</div>
-    <h1>The Power of Universal Gates: NAND & NOR</h1>
-    <div class="article-meta">June 30, 2026 • 7 min read</div>
+    <div class="article-tag">Masterclass Series - Part 2</div>
+    <h1>Module 2: The Power of Universal Gates - NAND & NOR</h1>
+    <div class="article-meta">July 2, 2026 • 8 min read</div>
   </header>
 
   <main class="article-content">
-    <p>Did you know that you don't actually need AND, OR, and NOT gates to build a computer? In fact, many real-world processors and memory chips are built using almost entirely <strong>NAND gates</strong>. Why? Because NAND and NOR gates are <strong>Universal Gates</strong>.</p>
-    
-    <h2>What is a Universal Gate?</h2>
-    <p>A universal gate is a logic gate that can be used to construct all other logic functions. This means you can build an AND gate out of NAND gates, an OR gate out of NAND gates, and a NOT gate out of NAND gates. This is incredibly efficient for hardware manufacturing, as it allows silicon fabricators to stamp out billions of identical transistors.</p>
+    <img src="/blog/posts/images/module2_silicon_wafer_1782750482868.png" alt="Macro shot of a highly polished silicon wafer" class="article-image">
 
-    <h2>The NAND Gate (NOT-AND)</h2>
-    <p>A NAND gate produces a 0 only if <strong>both</strong> inputs are 1. In all other cases (if either input is 0), it produces a 1.</p>
+    <p>While the AND, OR, and NOT gates represent the conceptual foundations of Boolean logic, physical hardware design frequently relies on an entirely different standard: the Universal Gates. The NAND (NOT-AND) and NOR (NOT-OR) gates are elevated to the status of "universal" because any conceivable Boolean function, no matter how profoundly complex, can be physically implemented using only one type of these gates.</p>
     
+    <p>This principle of functional completeness is massively advantageous in industrial semiconductor manufacturing. Fabricating a silicon wafer comprising millions of identical NAND gates is vastly more economical and yields a higher structural density than fabricating a heterogeneous mixture of distinct AND, OR, and NOT gates.</p>
+
+    <h3>The NAND and NOR Gates</h3>
+    <p>The NAND gate is a compound logic gate that represents an AND gate followed sequentially by a NOT gate. Its output is '0' if and only if all inputs are '1'; in all other permutations, its output is '1'. The Boolean expression is Y=(A⋅B)'.</p>
+    
+    <p>Conversely, the NOR gate represents an OR gate followed by an inverter. Its output is '1' if and only if all inputs are strictly '0'; otherwise, its output is '0'. The mathematical expression is Y=(A+B)'.</p>
+
+    <img src="/blog/posts/images/module2_nand_schematic_1782750496959.png" alt="Stylized digital schematic of a NAND gate" class="article-image">
+
     <h2>Building a NOT Gate from a NAND Gate</h2>
-    <p>How do we turn a NAND gate into an inverter (NOT gate)? We simply tie both of its inputs together! When both inputs are fed the same signal `A`, the NAND gate acts exactly like a NOT gate. Try the interactive demo below to see this in action.</p>
+    <p>To demonstrate the staggering power of universal gates, one can mathematically prove how a simple NAND gate can be reconfigured to emulate every basic logical operation. To create a NOT gate from a NAND gate, an engineer simply ties all input terminals of the NAND gate together.</p>
     
-    <!-- Interactive Demo -->
+    <p>If the unified input A is '0', the NAND evaluates (0⋅0)' = 0' = 1. If the input is '1', it evaluates (1⋅1)' = 1' = 0. Thus, a single NAND gate acts as a perfect inverter.</p>
+    
+    <!-- Interactive Demo 1 -->
     <div class="demo-box">
+      <h3 style="margin-top:0; margin-bottom: 20px; font-family: var(--fmono); font-size: 14px; color: var(--t2);">NAND configured as NOT</h3>
       <svg width="240" height="120" viewBox="0 0 240 120">
-        <!-- Input Wire merging -->
         <line x1="20" y1="60" x2="60" y2="60" class="wire off" id="wire-in" />
         <line x1="60" y1="40" x2="60" y2="80" class="wire off" id="wire-split" />
-        <line x1="60" y1="40" x2="80" y2="40" class="wire off" id="wire-a" />
-        <line x1="60" y1="80" x2="80" y2="80" class="wire off" id="wire-b" />
+        <line x1="60" y1="40" x2="80" y2="40" class="wire off" id="wire-a1" />
+        <line x1="60" y1="80" x2="80" y2="80" class="wire off" id="wire-b1" />
+        <line x1="170" y1="60" x2="220" y2="60" class="wire on" id="wire-out1" />
         
-        <!-- Output Wire -->
-        <line x1="170" y1="60" x2="220" y2="60" class="wire on" id="wire-out" />
+        <path d="M 80 20 L 120 20 A 40 40 0 0 1 160 60 A 40 40 0 0 1 120 100 L 80 100 Z" class="gate-body active" id="gate-nand1" />
+        <circle cx="165" cy="60" r="5" class="gate-bubble active" id="gate-nand-bubble1" />
         
-        <!-- NAND Gate -->
-        <path d="M 80 20 L 120 20 A 40 40 0 0 1 160 60 A 40 40 0 0 1 120 100 L 80 100 Z" class="gate-body active" id="gate-nand" />
-        <circle cx="165" cy="60" r="5" class="gate-bubble active" id="gate-nand-bubble" />
-        
-        <!-- Labels -->
         <text x="100" y="65" class="gate-label">NAND</text>
         <text x="5" y="64" class="io-label">A</text>
         <circle cx="60" cy="60" r="3" fill="#64748b" />
@@ -119,13 +113,18 @@
       <div class="demo-controls">
         <button class="demo-btn" id="btn-in" onclick="toggleInput()">Input A <span style="font-size: 24px; font-weight: bold; margin-top: 4px;">0</span></button>
       </div>
-      <p style="margin-top:20px; font-size:14px; color:var(--t3);">Notice how tying the inputs together inverses the signal.</p>
     </div>
     
-    <h2>Building an AND Gate from NAND Gates</h2>
-    <p>To build an AND gate, you simply take a NAND gate and invert its output. Since we just learned how to build an inverter out of a NAND gate, you just connect the output of the first NAND gate into both inputs of a second NAND gate.</p>
+    <h2>Synthesizing AND and OR using NAND</h2>
+    <p>Synthesizing an AND gate using NAND logic requires two sequential NAND gates. The primary inputs A and B are fed into the first NAND gate, which produces the intermediate signal (A⋅B)'. This intermediate signal is then routed into a second NAND gate configured as an inverter. The double inversion cancels out, yielding A⋅B.</p>
     
-    <p>Want to prove it yourself? Open the <strong>Free Simulator</strong> via the button above, drag two NAND gates onto the canvas, and wire them up!</p>
+    <p>Synthesizing an OR gate from NAND logic is slightly more complex and relies heavily on DeMorgan's Theorems. DeMorgan's Theorems are absolute pillars of digital logic, stating that the complement of a logical product is equal to the logical sum of the complements, and the complement of a logical sum is equal to the logical product of the complements.</p>
+    
+    <p>To build an OR gate utilizing NANDs, the primary inputs A and B are first individually inverted using two NAND gates configured as NOT gates, producing A' and B'. These inverted signals are then fed into a third NAND gate. The final expression evaluates as (A'⋅B')'. By applying DeMorgan's Theorem, the double negations are broken, resulting in A+B, successfully achieving the OR operation utilizing exclusively NAND architecture.</p>
+    
+    <div style="text-align: right; margin-top: 50px;">
+      <a href="/blog/posts/3-karnaugh-maps.html" style="color: var(--hi); text-decoration: none; font-weight: bold; font-size: 18px;">Next Part: Karnaugh Maps Simplified →</a>
+    </div>
   </main>
 
   <script>
@@ -137,24 +136,16 @@
       btn.className = inputState ? 'demo-btn active' : 'demo-btn';
       btn.querySelector('span').innerText = inputState ? '1' : '0';
       
-      const wireIn = document.getElementById('wire-in');
-      const wireSplit = document.getElementById('wire-split');
-      const wireA = document.getElementById('wire-a');
-      const wireB = document.getElementById('wire-b');
-      const wireOut = document.getElementById('wire-out');
-      const gate = document.getElementById('gate-nand');
-      const bubble = document.getElementById('gate-nand-bubble');
-      
       const wireClass = inputState ? 'wire on' : 'wire off';
-      wireIn.className.baseVal = wireClass;
-      wireSplit.className.baseVal = wireClass;
-      wireA.className.baseVal = wireClass;
-      wireB.className.baseVal = wireClass;
+      document.getElementById('wire-in').className.baseVal = wireClass;
+      document.getElementById('wire-split').className.baseVal = wireClass;
+      document.getElementById('wire-a1').className.baseVal = wireClass;
+      document.getElementById('wire-b1').className.baseVal = wireClass;
       
       const outState = !(inputState && inputState);
-      wireOut.className.baseVal = outState ? 'wire on' : 'wire off';
-      gate.className.baseVal = outState ? 'gate-body active' : 'gate-body';
-      bubble.className.baseVal = outState ? 'gate-bubble active' : 'gate-bubble';
+      document.getElementById('wire-out1').className.baseVal = outState ? 'wire on' : 'wire off';
+      document.getElementById('gate-nand1').className.baseVal = outState ? 'gate-body active' : 'gate-body';
+      document.getElementById('gate-nand-bubble1').className.baseVal = outState ? 'gate-bubble active' : 'gate-bubble';
     }
   </script>
 </body>

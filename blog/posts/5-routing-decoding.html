@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comprehensive Masterclass Part 5: Advanced Combinational Routing and Decoding</title>
+  <meta name="description" content="Understand Multiplexers, Demultiplexers, Decoders, and Priority Encoders for advanced digital traffic management.">
+  <meta name="keywords" content="multiplexer, MUX, demultiplexer, decoder, priority encoder, combinational logic">
+  <link rel="canonical" href="https://sqgate.online/blog/posts/5-routing-decoding.html">
+  <link rel="icon" href="/icon.webp">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg0:#060813;--bg1:rgba(12, 15, 28, 0.65);
+      --b1:rgba(255,255,255,0.08);--b2:rgba(255,255,255,0.12);
+      --t1:#ffffff;--t2:#94a3b8;--t3:#64748b;
+      --acc:#8b5cf6;--hi:#22d3ee;
+      --fsans:'Inter', -apple-system, sans-serif;
+      --fmono:'Fira Code', monospace;
+    }
+    body { background: var(--bg0); color: var(--t2); font-family: var(--fsans); margin: 0; padding: 0; line-height: 1.7; overflow-x: hidden; }
+    .nav { padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; background: rgba(12, 15, 28, 0.65); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--b1); position: sticky; top: 0; z-index: 100; }
+    .logo { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 22px; color: var(--t1); text-decoration: none; display: flex; align-items: center; gap: 12px; }
+    .nav-links a { color: var(--t2); text-decoration: none; font-weight: 500; font-size: 14px; transition: color 0.2s; margin-left: 24px; }
+    .nav-links a:hover { color: var(--t1); }
+    .article-header { max-width: 800px; margin: 80px auto 40px; padding: 0 20px; text-align: center; position: relative; }
+    .article-header::before { content: ''; position: absolute; top: -50%; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%); pointer-events: none; z-index: -1; }
+    .article-tag { display: inline-block; background: rgba(139, 92, 246, 0.15); color: var(--acc); border: 1px solid rgba(139, 92, 246, 0.3); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 4px 10px; border-radius: 20px; margin-bottom: 16px; }
+    .article-header h1 { font-family: 'Outfit', sans-serif; font-size: 42px; font-weight: 800; color: var(--t1); margin: 0 0 20px 0; line-height: 1.2; }
+    .article-meta { color: var(--t3); font-size: 14px; font-family: 'Fira Code', monospace; }
+    .article-content { max-width: 760px; margin: 0 auto 100px; padding: 40px; background: rgba(255,255,255,0.01); border: 1px solid var(--b1); border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+    .article-content p { margin-bottom: 24px; font-size: 17px; color: #cbd5e1; }
+    .article-content h2 { font-family: 'Outfit', sans-serif; font-size: 28px; color: var(--t1); margin: 48px 0 20px; border-bottom: 1px solid var(--b1); padding-bottom: 10px; }
+    .article-content h3 { font-family: 'Outfit', sans-serif; font-size: 22px; color: var(--hi); margin: 32px 0 16px; }
+    .article-image { width: 100%; border-radius: 12px; margin: 32px 0; border: 1px solid var(--b2); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    
+    /* Interactive Demo CSS */
+    .demo-box { background: rgba(0,0,0,0.4); border: 1px solid var(--b2); border-radius: 12px; padding: 40px; margin: 32px 0; text-align: center; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    
+    .mux-layout { display: flex; align-items: center; justify-content: center; gap: 40px; }
+    .mux-inputs { display: flex; flex-direction: column; gap: 20px; }
+    .mux-body { width: 120px; height: 200px; background: rgba(255,255,255,0.05); border: 2px solid var(--t3); clip-path: polygon(0 0, 100% 20%, 100% 80%, 0 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; }
+    .mux-outputs { display: flex; align-items: center; }
+    
+    .data-line { display: flex; align-items: center; gap: 10px; font-family: var(--fmono); font-weight: bold; }
+    .data-val { padding: 4px 12px; border-radius: 4px; background: rgba(255,255,255,0.1); border: 1px solid var(--b2); transition: all 0.3s; }
+    .data-val.active { background: rgba(34,211,238,0.2); color: var(--hi); border-color: var(--hi); box-shadow: 0 0 10px rgba(34,211,238,0.3); }
+    
+    .sel-controls { display: flex; gap: 10px; margin-top: 30px; }
+    .sel-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--b2); color: var(--t1); padding: 6px 16px; border-radius: 6px; font-size: 14px; font-family: var(--fmono); cursor: pointer; transition: all 0.2s; }
+    .sel-btn.active { border-color: var(--acc); background: rgba(139,92,246,0.2); color: var(--acc); }
+
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="/" class="logo">
+      <img src="/icon.webp" alt="SQGATE Logo" width="28" height="28" style="border-radius: 6px;">
+      SQGATE
+    </a>
+    <div class="nav-links" style="display: flex; align-items: center;">
+      <a href="/">Dashboard</a>
+      <a href="/pricing.html">Pricing</a>
+      <a href="/blog" style="color: var(--t1);">Blog</a>
+      <a href="/" class="free-sim-btn" style="margin-left: 24px; text-decoration: none; padding: 8px 16px; border-radius: 8px; background: linear-gradient(135deg, var(--acc) 0%, var(--hi) 100%); color: #fff; font-weight: 600; font-size: 14px; box-shadow: 0 4px 12px rgba(139,92,246,0.3); transition: all 0.2s;">Free Simulator</a>
+    </div>
+  </nav>
+
+  <header class="article-header">
+    <div class="article-tag">Masterclass Series - Part 5</div>
+    <h1>Module 5: Advanced Combinational Routing and Decoding</h1>
+    <div class="article-meta">July 5, 2026 • 14 min read</div>
+  </header>
+
+  <main class="article-content">
+    <img src="/blog/posts/images/module5_multiplexer_1782750687705.png" alt="Futuristic digital switchboard representing a data multiplexer" class="article-image">
+
+    <p>While ALUs process mathematical data, a digital system requires a massive infrastructure of routing, steering, and decoding circuits to move that data between registers, memory banks, and output peripherals. This traffic management is executed by multiplexers, demultiplexers, encoders, and decoders.</p>
+
+    <h2>Multiplexers (MUX)</h2>
+    <p>A multiplexer (often abbreviated as MUX) is a combinational logic circuit that functions as an intelligent digital switch, colloquially known as a data selector. It possesses multiple data input lines but only a single output line. The operational state of the MUX—determining exactly which input line is actively connected to the output—is dynamically controlled by a separate set of digital inputs known as select lines.</p>
+    
+    <p>The geometric architecture of a MUX is strictly defined by powers of two: an array utilizing `m` select lines can seamlessly manage a maximum of `n=2^m` input data lines. Therefore, standard industrial configurations include 2:1, 4:1, 8:1, and 16:1 multiplexers.</p>
+
+    <!-- Interactive Demo -->
+    <div class="demo-box">
+      <h3 style="margin-top:0; margin-bottom: 20px; font-family: var(--fmono); font-size: 14px; color: var(--t2);">4:1 Multiplexer Router</h3>
+      <div class="mux-layout">
+        <div class="mux-inputs">
+          <div class="data-line">D0 <div class="data-val" id="d0-val">0</div></div>
+          <div class="data-line">D1 <div class="data-val" id="d1-val">1</div></div>
+          <div class="data-line">D2 <div class="data-val" id="d2-val">1</div></div>
+          <div class="data-line">D3 <div class="data-val" id="d3-val">0</div></div>
+        </div>
+        
+        <div class="mux-body">
+          <span style="font-family: var(--fsans); font-weight: bold; color: var(--t1);">MUX</span>
+          <span style="font-family: var(--fmono); font-size: 12px; color: var(--t3); margin-top: 5px;">4:1</span>
+        </div>
+        
+        <div class="mux-outputs">
+          <div class="data-line">OUT <div class="data-val active" id="out-val">0</div></div>
+        </div>
+      </div>
+      
+      <div class="sel-controls">
+        <button class="sel-btn" id="s1-btn" onclick="toggleS1()">S1: 0</button>
+        <button class="sel-btn" id="s0-btn" onclick="toggleS0()">S0: 0</button>
+      </div>
+      <p style="margin-top:20px; font-size:14px; color:var(--t3);">Change the Select Lines (S1, S0) to route different Data inputs (D0-D3) to the OUT pin.</p>
+    </div>
+
+    <h2>Demultiplexers (DEMUX)</h2>
+    <p>The demultiplexer functions as the precise structural antithesis to the multiplexer. It receives a singular stream of data on its single input line and distributes it to one of `n` available output lines. At any given clock cycle, the data propagates strictly to the single targeted output, while all unselected outputs are forced to an inactive state.</p>
+
+    <img src="/blog/posts/images/module5_priority_encoder_1782750700751.png" alt="Priority encoder conceptual cybersecurity art" class="article-image">
+
+    <h2>Encoders and Priority Resolution</h2>
+    <p>Operating inversely to the decoder, an encoder is a combinational circuit designed to monitor multiple input lines, isolate the single active signal, and compress that spatial location into a dense n-bit binary output code. Encoders are strictly utilized for dimensionality reduction, translating discrete human inputs into machine-readable binary logic.</p>
+    
+    <p>However, standard encoders harbor a catastrophic architectural flaw: if two or more input lines are simultaneously driven to a logic high state, the naive combinational logic will incorrectly merge the outputs. To definitively eliminate these fatal flaws, engineers deploy the <strong>Priority Encoder</strong>.</p>
+    
+    <p>A priority encoder modifies the internal logic array such that every input line is mathematically assigned a strict, non-negotiable hierarchical priority. If multiple inputs are triggered simultaneously in an uncontrolled environment, the logic circuit inherently suppresses all lower-priority signals and evaluates strictly the active input possessing the highest priority. Priority encoders are utterly vital within computer architecture, acting as the primary controllers for microprocessor interrupt requests (IRQs).</p>
+    
+    <div style="text-align: right; margin-top: 50px;">
+      <a href="/blog/posts/6-code-converters.html" style="color: var(--hi); text-decoration: none; font-weight: bold; font-size: 18px;">Next Part: Code Converters - BCD to Excess-3 →</a>
+    </div>
+  </main>
+
+  <script>
+    let s1 = 0;
+    let s0 = 0;
+    const data = [0, 1, 1, 0]; // D0, D1, D2, D3
+    
+    function updateMux() {
+      // Clear highlights
+      for(let i=0; i<4; i++) {
+        document.getElementById(`d${i}-val`).classList.remove('active');
+      }
+      
+      const selectedIndex = (s1 * 2) + s0;
+      document.getElementById(`d${selectedIndex}-val`).classList.add('active');
+      document.getElementById('out-val').innerText = data[selectedIndex];
+    }
+    
+    function toggleS1() {
+      s1 = s1 === 0 ? 1 : 0;
+      const btn = document.getElementById('s1-btn');
+      btn.innerText = `S1: ${s1}`;
+      btn.className = s1 ? 'sel-btn active' : 'sel-btn';
+      updateMux();
+    }
+    
+    function toggleS0() {
+      s0 = s0 === 0 ? 1 : 0;
+      const btn = document.getElementById('s0-btn');
+      btn.innerText = `S0: ${s0}`;
+      btn.className = s0 ? 'sel-btn active' : 'sel-btn';
+      updateMux();
+    }
+    
+    // Init
+    updateMux();
+  </script>
+</body>
+</html>

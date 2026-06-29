@@ -3,24 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Combinational Logic: Adders & Math</title>
-  <meta name="description" content="How do computers calculate? We break down the Half Adder and Full Adder circuits to show how binary addition works at the hardware level.">
-  <meta name="keywords" content="combinational logic, half adder, full adder, binary addition, digital electronics">
+  <title>Comprehensive Masterclass Part 4: Combinational Logic - Adders & Math</title>
+  <meta name="description" content="Explore the Half Adder, Full Adder, Ripple Carry Adder, and the blazing fast Carry Look-Ahead Adder (CLA).">
+  <meta name="keywords" content="combinational logic, half adder, full adder, carry look ahead adder, binary math, subtractor">
   <link rel="canonical" href="https://sqgate.online/blog/posts/4-combinational-adders.html">
-  <meta name="robots" content="index, follow, max-image-preview:large">
   <link rel="icon" href="/icon.webp">
-  
-  <meta property="og:title" content="Combinational Logic: Adders & Math">
-  <meta property="og:description" content="How do computers calculate? We break down the Half Adder and Full Adder circuits to show how binary addition works at the hardware level.">
-  <meta property="og:type" content="article">
-  <meta property="og:url" content="https://sqgate.online/blog/posts/4-combinational-adders.html">
-  <meta property="og:image" content="https://sqgate.online/og-image.png">
-  
-  <meta name="twitter:card" content="summary_large_image">
-  
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/liquid-glass.css">
-  
   <style>
     :root{
       --bg0:#060813;--bg1:rgba(12, 15, 28, 0.65);
@@ -28,6 +16,7 @@
       --t1:#ffffff;--t2:#94a3b8;--t3:#64748b;
       --acc:#8b5cf6;--hi:#22d3ee;
       --fsans:'Inter', -apple-system, sans-serif;
+      --fmono:'Fira Code', monospace;
     }
     body { background: var(--bg0); color: var(--t2); font-family: var(--fsans); margin: 0; padding: 0; line-height: 1.7; overflow-x: hidden; }
     .nav { padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; background: rgba(12, 15, 28, 0.65); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--b1); position: sticky; top: 0; z-index: 100; }
@@ -36,12 +25,14 @@
     .nav-links a:hover { color: var(--t1); }
     .article-header { max-width: 800px; margin: 80px auto 40px; padding: 0 20px; text-align: center; position: relative; }
     .article-header::before { content: ''; position: absolute; top: -50%; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%); pointer-events: none; z-index: -1; }
-    .article-tag { display: inline-block; background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 4px 10px; border-radius: 20px; margin-bottom: 16px; }
-    .article-header h1 { font-family: 'Outfit', sans-serif; font-size: 48px; font-weight: 800; color: var(--t1); margin: 0 0 20px 0; line-height: 1.2; }
+    .article-tag { display: inline-block; background: rgba(139, 92, 246, 0.15); color: var(--acc); border: 1px solid rgba(139, 92, 246, 0.3); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 4px 10px; border-radius: 20px; margin-bottom: 16px; }
+    .article-header h1 { font-family: 'Outfit', sans-serif; font-size: 42px; font-weight: 800; color: var(--t1); margin: 0 0 20px 0; line-height: 1.2; }
     .article-meta { color: var(--t3); font-size: 14px; font-family: 'Fira Code', monospace; }
     .article-content { max-width: 760px; margin: 0 auto 100px; padding: 40px; background: rgba(255,255,255,0.01); border: 1px solid var(--b1); border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
     .article-content p { margin-bottom: 24px; font-size: 17px; color: #cbd5e1; }
-    .article-content h2 { font-family: 'Outfit', sans-serif; font-size: 28px; color: var(--t1); margin: 48px 0 20px; }
+    .article-content h2 { font-family: 'Outfit', sans-serif; font-size: 28px; color: var(--t1); margin: 48px 0 20px; border-bottom: 1px solid var(--b1); padding-bottom: 10px; }
+    .article-content h3 { font-family: 'Outfit', sans-serif; font-size: 22px; color: var(--hi); margin: 32px 0 16px; }
+    .article-image { width: 100%; border-radius: 12px; margin: 32px 0; border: 1px solid var(--b2); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     
     /* Interactive Demo CSS */
     .demo-box { background: rgba(0,0,0,0.4); border: 1px solid var(--b2); border-radius: 12px; padding: 40px; margin: 32px 0; text-align: center; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 300px; }
@@ -79,23 +70,24 @@
   </nav>
 
   <header class="article-header">
-    <div class="article-tag">Tutorial</div>
-    <h1>Combinational Logic: Adders & Math</h1>
-    <div class="article-meta">June 30, 2026 • 6 min read</div>
+    <div class="article-tag">Masterclass Series - Part 4</div>
+    <h1>Module 4: Combinational Logic - Adders & Math</h1>
+    <div class="article-meta">July 4, 2026 • 12 min read</div>
   </header>
 
   <main class="article-content">
-    <p>We know logic gates process bits, but how do computers actually do math? The answer lies in Combinational Logic, specifically Adder circuits.</p>
+    <img src="/blog/posts/images/module4_alu_render_1782750594712.png" alt="3D Render of an Arithmetic Logic Unit" class="article-image">
+
+    <p>With a firm grasp of gates and minimization, we enter the realm of functional combinational logic. The quintessential application of combinational architecture is the execution of binary arithmetic, forming the beating heart of the Arithmetic Logic Unit (ALU) within every digital processor.</p>
+
+    <h2>The Half Adder and Full Adder</h2>
+    <p>The most rudimentary arithmetic circuit is the Half Adder, a combinational logic device engineered to perform the addition of two single-bit binary numbers, designated as variables A and B. Because adding two binary digits can generate a result requiring two bits (e.g., 1+1=10 in binary), the Half Adder demands two output terminals: the Sum (S) and the Carry (C).</p>
     
-    <h2>The Half Adder</h2>
-    <p>To add two 1-bit numbers, we need a circuit that outputs a <strong>Sum</strong> and a <strong>Carry</strong>. If you add 1 + 1 in binary, the result is 10 (0 for the Sum, 1 for the Carry).</p>
-    <ul>
-      <li><strong>Sum:</strong> The XOR gate perfectly models the Sum. 1 + 0 = 1, but 1 + 1 = 0.</li>
-      <li><strong>Carry:</strong> The AND gate perfectly models the Carry. It only outputs a 1 if both inputs are 1.</li>
-    </ul>
+    <p>The logical derivation of the Half Adder is extracted directly from basic binary addition rules. The Sum output is high only when the inputs are strictly different. This perfectly matches the Boolean profile of the Exclusive-OR (XOR) gate, yielding the equation S=A⊕B. Conversely, the Carry output is high only when both inputs are high, matching the Boolean profile of the AND gate, yielding C=A⋅B.</p>
     
     <!-- Interactive Demo -->
     <div class="demo-box">
+      <h3 style="margin-top:0; margin-bottom: 20px; font-family: var(--fmono); font-size: 14px; color: var(--t2);">Half Adder Logic Block</h3>
       <div class="circuit">
         <div class="inputs">
           <div style="font-size: 12px; color: var(--t3);">Input A</div>
@@ -116,17 +108,32 @@
           <div class="io-label" id="lbl-out-carry">0</div>
         </div>
       </div>
-      
       <div class="demo-controls">
         <button class="demo-btn" id="btn-a" onclick="toggleA()">Toggle A</button>
         <button class="demo-btn" id="btn-b" onclick="toggleB()">Toggle B</button>
       </div>
     </div>
     
-    <h2>The Full Adder</h2>
-    <p>A Half Adder is great, but what if you need to add multi-bit numbers? You need to account for a "Carry In" from the previous column. This is where the Full Adder comes in. It takes 3 inputs (A, B, Carry-In) and outputs Sum and Carry-Out.</p>
+    <p>However, the Half Adder suffers from a catastrophic architectural limitation: it possesses only two inputs and therefore cannot accept an incoming carry bit from a preceding, less-significant stage of addition. It is strictly limited to adding the lowest-order bits. To achieve multi-bit parallel addition, the Full Adder is mandatory.</p>
     
-    <p>Want to chain multiple Full Adders together to create a 4-bit Ripple Carry Adder? Open the <strong>Free Simulator</strong> and build one in minutes!</p>
+    <p>The Full Adder expands upon the Half Adder by incorporating a third input: the Carry-In. This combinational circuit accepts three bits and generates a Sum and Carry-Out. To add larger binary words—such as two 32-bit numbers—engineers cascade multiple Full Adders in series, connecting the Carry-Out of one stage directly to the Carry-In of the next. This is the <strong>Ripple Carry Adder</strong>.</p>
+    
+    <img src="/blog/posts/images/module4_binary_math_1782750607126.png" alt="Binary arithmetic falling digits" class="article-image">
+
+    <h2>The Propagation Delay Bottleneck</h2>
+    <p>While the Ripple Carry Adder is structurally elegant, it introduces a severe performance bottleneck known as propagation delay. In a 32-bit Ripple Carry Adder, the Full Adder responsible for computing the 31st bit cannot finalize its mathematical operation until the carry signal has literally rippled through all 30 preceding stages from right to left. Every logic gate introduces a tiny, distinct delay (measured in picoseconds). As these delays accumulate linearly across the N-bit width of the adder, the total calculation time scales in O(n) time complexity.</p>
+
+    <h2>The Carry Look-Ahead Adder (CLA)</h2>
+    <p>To shatter the linear time constraint of the Ripple Carry Adder, hardware architects invented the Carry Look-Ahead Adder (CLA), widely regarded as one of the fastest implementations of digital combinational adders. The CLA fundamentally revolutionizes the addition paradigm by computing all carry bits simultaneously using massively parallel, purely combinatorial logic, thereby completely bypassing the sequential rippling effect.</p>
+    
+    <p>The mathematical theory of the CLA rests on extracting two localized, independent variables for each bit position: the Generate signal (g) and the Propagate signal (p). These signals evaluate conditions exclusively at their specific digit position, completely independent of any incoming carries from lower stages. By recursively substituting these equations, the carries do not ripple; they are calculated in parallel via a two-level AND-OR logic tree, dropping the calculation time to logarithmic scaling O(log n).</p>
+    
+    <h2>Binary Subtractors</h2>
+    <p>While dedicated subtractor hardware exists, industrial Arithmetic Logic Units almost universally prefer to discard discrete subtractor circuits entirely. Instead, they leverage existing Full Adder logic arrays combined with two's complement arithmetic. To compute A−B, the ALU routes operand B through a bank of parallel NOT gates (obtaining the one's complement) and forces the initial Carry-In of the Full Adder to a logical '1' (which completes the two's complement). The Full Adder then computes A + (Two’s Complement of B), brilliantly unifying addition and subtraction within a single, optimized combinational hardware block.</p>
+    
+    <div style="text-align: right; margin-top: 50px;">
+      <a href="/blog/posts/5-routing-decoding.html" style="color: var(--hi); text-decoration: none; font-weight: bold; font-size: 18px;">Next Part: Advanced Combinational Routing and Decoding →</a>
+    </div>
   </main>
 
   <script>
@@ -136,7 +143,6 @@
     function updateLogic() {
       const lblA = document.getElementById('lbl-in-a');
       const lblB = document.getElementById('lbl-in-b');
-      
       lblA.innerText = stateA ? '1' : '0';
       lblA.className = stateA ? 'io-label active' : 'io-label';
       lblB.innerText = stateB ? '1' : '0';
@@ -145,18 +151,13 @@
       const sum = stateA !== stateB;
       const carry = stateA && stateB;
       
-      const symXor = document.getElementById('sym-xor');
-      const symAnd = document.getElementById('sym-and');
-      
-      symXor.className = sum ? 'logic-symbol active' : 'logic-symbol';
-      symAnd.className = carry ? 'logic-symbol active' : 'logic-symbol';
+      document.getElementById('sym-xor').className = sum ? 'logic-symbol active' : 'logic-symbol';
+      document.getElementById('sym-and').className = carry ? 'logic-symbol active' : 'logic-symbol';
       
       const lblSum = document.getElementById('lbl-out-sum');
       const lblCarry = document.getElementById('lbl-out-carry');
-      
       lblSum.innerText = sum ? '1' : '0';
       lblSum.className = sum ? 'io-label active' : 'io-label';
-      
       lblCarry.innerText = carry ? '1' : '0';
       lblCarry.className = carry ? 'io-label active' : 'io-label';
     }
