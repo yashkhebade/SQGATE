@@ -260,10 +260,11 @@
       <img src="/icon.webp" alt="SQGATE Logo" width="28" height="28" style="border-radius: 6px;">
       SQGATE
     </a>
-    <div class="nav-links">
+    <div class="nav-links" style="display: flex; align-items: center;">
       <a href="/">Dashboard</a>
       <a href="/pricing.html">Pricing</a>
       <a href="/blog" style="color: var(--t1);">Blog</a>
+      <a href="/" class="free-sim-btn" style="margin-left: 24px; text-decoration: none; padding: 8px 16px; border-radius: 8px; background: linear-gradient(135deg, var(--acc) 0%, var(--hi) 100%); color: #fff; font-weight: 600; font-size: 14px; box-shadow: 0 4px 12px rgba(139,92,246,0.3); transition: all 0.2s;">Free Simulator</a>
     </div>
   </nav>
 
@@ -292,11 +293,51 @@
   <script>
     const BLOG_POSTS = [
       { 
-        title: "Getting Started with SQGATE: The Ultimate Logic Simulator", 
-        date: "June 29, 2026", 
-        desc: "Learn how to build, simulate, and export digital logic circuits right in your browser using SQGATE's powerful visualization engine.", 
+        title: "The Building Blocks of Computers: Logic Gates", 
+        date: "June 30, 2026", 
+        desc: "A deep dive into AND, OR, NOT, and XOR gates. Master the fundamental boolean logic that powers every computer processor.", 
         tag: "Tutorial",
         class: "tag-tutorial",
+        url: "/blog/posts/1-logic-gates.html"
+      },
+      { 
+        title: "The Power of Universal Gates: NAND & NOR", 
+        date: "June 30, 2026", 
+        desc: "Learn why NAND and NOR are called universal gates and see how to build any logic circuit using just one type of gate.", 
+        tag: "Tutorial",
+        class: "tag-tutorial",
+        url: "/blog/posts/2-universal-gates.html"
+      },
+      { 
+        title: "Karnaugh Maps (K-Maps) Simplified", 
+        date: "June 30, 2026", 
+        desc: "Stop struggling with boolean algebra! Learn how to visually minimize logic expressions using 2, 3, and 4 variable K-Maps.", 
+        tag: "Tutorial",
+        class: "tag-tutorial",
+        url: "/blog/posts/3-karnaugh-maps.html"
+      },
+      { 
+        title: "Combinational Logic: Adders & Math", 
+        date: "June 30, 2026", 
+        desc: "How do computers calculate? We break down the Half Adder and Full Adder circuits to show how binary addition works at the hardware level.", 
+        tag: "Tutorial",
+        class: "tag-tutorial",
+        url: "/blog/posts/4-combinational-adders.html"
+      },
+      { 
+        title: "Sequential Logic: Master the D-Flip Flop", 
+        date: "June 30, 2026", 
+        desc: "Discover how computers remember data. We explain clocks, edge-triggering, and how the D-Flip Flop stores bits of memory.", 
+        tag: "Tutorial",
+        class: "tag-tutorial",
+        url: "/blog/posts/5-sequential-flip-flops.html"
+      },
+      { 
+        title: "Getting Started with SQGATE", 
+        date: "June 29, 2026", 
+        desc: "Learn how to build, simulate, and export digital logic circuits right in your browser using SQGATE's powerful visualization engine.", 
+        tag: "Guide",
+        class: "tag-update",
         url: "/blog/posts/getting-started-sqgate.html"
       }
     ];

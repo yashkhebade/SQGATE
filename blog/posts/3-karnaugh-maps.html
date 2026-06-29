@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Karnaugh Maps (K-Maps) Simplified</title>
+  <meta name="description" content="Stop struggling with boolean algebra! Learn how to visually minimize logic expressions using 2, 3, and 4 variable Karnaugh Maps.">
+  <meta name="keywords" content="Karnaugh map, K-map solver, boolean algebra, logic minimization, digital design">
+  <link rel="canonical" href="https://sqgate.online/blog/posts/3-karnaugh-maps.html">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="icon" href="/icon.webp">
+  
+  <meta property="og:title" content="Karnaugh Maps (K-Maps) Simplified">
+  <meta property="og:description" content="Stop struggling with boolean algebra! Learn how to visually minimize logic expressions using Karnaugh Maps.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sqgate.online/blog/posts/3-karnaugh-maps.html">
+  <meta property="og:image" content="https://sqgate.online/og-image.png">
+  
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/liquid-glass.css">
+  
+  <style>
+    :root{
+      --bg0:#060813;--bg1:rgba(12, 15, 28, 0.65);
+      --b1:rgba(255,255,255,0.08);--b2:rgba(255,255,255,0.12);
+      --t1:#ffffff;--t2:#94a3b8;--t3:#64748b;
+      --acc:#8b5cf6;--hi:#22d3ee;
+      --fsans:'Inter', -apple-system, sans-serif;
+    }
+    body { background: var(--bg0); color: var(--t2); font-family: var(--fsans); margin: 0; padding: 0; line-height: 1.7; overflow-x: hidden; }
+    .nav { padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; background: rgba(12, 15, 28, 0.65); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--b1); position: sticky; top: 0; z-index: 100; }
+    .logo { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 22px; color: var(--t1); text-decoration: none; display: flex; align-items: center; gap: 12px; }
+    .nav-links a { color: var(--t2); text-decoration: none; font-weight: 500; font-size: 14px; transition: color 0.2s; margin-left: 24px; }
+    .nav-links a:hover { color: var(--t1); }
+    .article-header { max-width: 800px; margin: 80px auto 40px; padding: 0 20px; text-align: center; position: relative; }
+    .article-header::before { content: ''; position: absolute; top: -50%; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%); pointer-events: none; z-index: -1; }
+    .article-tag { display: inline-block; background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 4px 10px; border-radius: 20px; margin-bottom: 16px; }
+    .article-header h1 { font-family: 'Outfit', sans-serif; font-size: 48px; font-weight: 800; color: var(--t1); margin: 0 0 20px 0; line-height: 1.2; }
+    .article-meta { color: var(--t3); font-size: 14px; font-family: 'Fira Code', monospace; }
+    .article-content { max-width: 760px; margin: 0 auto 100px; padding: 40px; background: rgba(255,255,255,0.01); border: 1px solid var(--b1); border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+    .article-content p { margin-bottom: 24px; font-size: 17px; color: #cbd5e1; }
+    .article-content h2 { font-family: 'Outfit', sans-serif; font-size: 28px; color: var(--t1); margin: 48px 0 20px; }
+    
+    /* Interactive Demo CSS */
+    .demo-box { background: rgba(0,0,0,0.4); border: 1px solid var(--b2); border-radius: 12px; padding: 40px; margin: 32px 0; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .kmap-grid { display: grid; grid-template-columns: repeat(2, 60px); grid-template-rows: repeat(2, 60px); gap: 2px; background: var(--b2); padding: 2px; border-radius: 8px; position: relative; }
+    .kmap-cell { background: var(--bg0); display: flex; align-items: center; justify-content: center; font-family: var(--fmono); font-size: 24px; font-weight: bold; color: var(--t2); user-select: none; transition: all 0.3s; }
+    .kmap-cell.one { color: var(--t1); }
+    
+    /* The grouping animation overlay */
+    .kmap-group { position: absolute; border: 3px solid transparent; border-radius: 6px; pointer-events: none; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+    .kmap-group.active { border-color: var(--hi); box-shadow: 0 0 15px rgba(34,211,238,0.4) inset, 0 0 15px rgba(34,211,238,0.4); background: rgba(34,211,238,0.1); }
+    
+    .demo-controls { margin-top: 30px; }
+    .demo-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--b2); color: var(--t1); padding: 10px 24px; border-radius: 8px; font-size: 14px; font-family: var(--fsans); font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .demo-btn:hover { background: rgba(255,255,255,0.1); }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="/" class="logo">
+      <img src="/icon.webp" alt="SQGATE Logo" width="28" height="28" style="border-radius: 6px;">
+      SQGATE
+    </a>
+    <div class="nav-links" style="display: flex; align-items: center;">
+      <a href="/">Dashboard</a>
+      <a href="/pricing.html">Pricing</a>
+      <a href="/blog" style="color: var(--t1);">Blog</a>
+      <a href="/" class="free-sim-btn" style="margin-left: 24px; text-decoration: none; padding: 8px 16px; border-radius: 8px; background: linear-gradient(135deg, var(--acc) 0%, var(--hi) 100%); color: #fff; font-weight: 600; font-size: 14px; box-shadow: 0 4px 12px rgba(139,92,246,0.3); transition: all 0.2s;">Free Simulator</a>
+    </div>
+  </nav>
+
+  <header class="article-header">
+    <div class="article-tag">Tutorial</div>
+    <h1>Karnaugh Maps (K-Maps) Simplified</h1>
+    <div class="article-meta">June 30, 2026 • 8 min read</div>
+  </header>
+
+  <main class="article-content">
+    <p>Simplifying logic expressions using pure Boolean Algebra can be tedious and prone to human error. Enter the <strong>Karnaugh Map</strong> (or K-Map), a visual method for minimizing boolean equations.</p>
+    
+    <h2>What is a K-Map?</h2>
+    <p>A Karnaugh Map is basically a truth table wrapped into a grid. The cells are arranged in Gray Code order, meaning only one bit changes between adjacent cells. This physical arrangement ensures that any adjacent cells containing a `1` can be mathematically reduced by eliminating the variable that changed!</p>
+
+    <h2>Visual Grouping</h2>
+    <p>To solve a K-Map, you group adjacent 1s into rectangles. The rules are simple: groups must be sized in powers of two (1, 2, 4, 8), and you want to make the groups as large as possible.</p>
+    
+    <!-- Interactive Demo -->
+    <div class="demo-box">
+      <div style="margin-bottom: 20px; font-family: var(--fmono); font-size: 14px; color: var(--t2); text-align: left;">
+        <span style="display: inline-block; width: 30px;"></span>B=0 B=1<br>
+        A=0 <span style="color:var(--t1);">[ 1 ] [ 1 ]</span><br>
+        A=1 <span style="color:var(--t2);">[ 0 ] [ 0 ]</span>
+      </div>
+      
+      <div class="kmap-grid">
+        <div class="kmap-cell one" id="c00">1</div>
+        <div class="kmap-cell one" id="c01">1</div>
+        <div class="kmap-cell" id="c10">0</div>
+        <div class="kmap-cell" id="c11">0</div>
+        
+        <!-- The highlighter group -->
+        <div class="kmap-group" id="kmap-highlight" style="top:2px; left:2px; width:0; height:0; opacity:0;"></div>
+      </div>
+      
+      <div class="demo-controls">
+        <button class="demo-btn" onclick="highlightGroup()">Find the Grouping</button>
+      </div>
+      <p id="kmap-result" style="margin-top:20px; font-size:16px; font-weight:bold; color:var(--hi); opacity:0; transition:opacity 0.5s;">Result: Out = A'</p>
+    </div>
+    
+    <h2>SQGATE's Built-In K-Map Solver</h2>
+    <p>While solving 2 and 3 variable K-Maps by hand is fun, 4, 5, and 6 variable K-Maps get incredibly complex. Luckily, SQGATE features an automated K-Map solver that will instantly group and minimize expressions for you.</p>
+    
+    <p>Click the <strong>Free Simulator</strong> button to try it out!</p>
+  </main>
+
+  <script>
+    function highlightGroup() {
+      const hl = document.getElementById('kmap-highlight');
+      const res = document.getElementById('kmap-result');
+      
+      // Since it's a 2x2 grid, each cell is 60x60. The gap is 2px.
+      // Top row is two 1s. Width = 120 + 2 = 122. Height = 60.
+      hl.style.width = '122px';
+      hl.style.height = '60px';
+      hl.style.opacity = '1';
+      hl.classList.add('active');
+      
+      setTimeout(() => {
+        res.style.opacity = '1';
+      }, 500);
+    }
+  </script>
+</body>
+</html>
