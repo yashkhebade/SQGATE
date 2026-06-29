@@ -97,7 +97,48 @@
 html,body{width:100%;height:100%;overflow:hidden;background:var(--bg0);font-family:var(--fsans);color:var(--t1);font-size:14px;user-select:none;-webkit-font-smoothing:antialiased}
 
 /* ══ LOGIN PAGE ══════════════════════════════════════════════════ */
-/* Old login CSS removed */
+/* PRO BUTTON UPGRADE */
+.btn-pro-premium {
+  display: inline-flex; align-items: center; justify-content: center;
+  text-decoration: none; padding: 6px 14px; border-radius: 8px;
+  background: linear-gradient(135deg, rgba(139,92,246,0.1) 0%, rgba(139,92,246,0.3) 100%);
+  border: 1px solid rgba(139,92,246,0.5);
+  color: #fff; font-size: 13px; font-weight: 600; font-family: var(--fsans);
+  margin-right: 12px; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 10px rgba(139,92,246,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
+  position: relative; overflow: hidden;
+}
+.btn-pro-premium::before {
+  content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: all 0.5s;
+}
+.btn-pro-premium:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(135deg, rgba(139,92,246,0.3) 0%, rgba(139,92,246,0.6) 100%);
+  border-color: rgba(139,92,246,0.8);
+  box-shadow: 0 4px 15px rgba(139,92,246,0.4), inset 0 1px 0 rgba(255,255,255,0.2);
+}
+.btn-pro-premium:hover::before { left: 100%; }
+
+/* BLOG LINK ENHANCEMENT */
+.nav-link-blog {
+  text-decoration: none; color: var(--t2); font-size: 14px; font-weight: 500;
+  margin-right: 12px; padding: 6px 12px; border-radius: 6px;
+  display: inline-flex; align-items: center; gap: 6px;
+  transition: all 0.2s; background: transparent; border: 1px solid transparent;
+}
+.nav-link-blog:hover {
+  color: var(--t1);
+  background: rgba(255,255,255,0.05);
+  border-color: var(--b1);
+}
+.nav-link-blog svg {
+  width: 16px; height: 16px; opacity: 0.7; transition: all 0.2s;
+}
+.nav-link-blog:hover svg {
+  opacity: 1; transform: scale(1.1); color: var(--acc);
+}
 .login-card{
   background:rgba(17,21,32,.9);
   border:1px solid var(--b2);border-radius:14px;
@@ -1824,8 +1865,11 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="17" y2="8"></line><line x1="12" y1="12" x2="17" y2="12"></line><line x1="12" y1="16" x2="17" y2="16"></line><line x1="8" y1="8" x2="8.01" y2="8"></line><line x1="8" y1="12" x2="8.01" y2="12"></line><line x1="8" y1="16" x2="8.01" y2="16"></line></svg>
         </a>
       </div>
-      <a href="/pricing.html" id="btn-upgrade-pro-dash" style="text-decoration:none; padding: 6px 12px; border-radius: 6px; border: 1px solid var(--acc); color: var(--acc); font-size: 12px; font-weight: 600; margin-right: 12px; transition: all 0.2s;" onmouseover="this.style.background='var(--acc)';this.style.color='white'" onmouseout="this.style.background='transparent';this.style.color='var(--acc)'">Get SQGATE Pro</a>
-      <a href="/blog" class="nav-link" style="margin-right:12px;">Blog</a>
+      <a href="/pricing.html" id="btn-upgrade-pro-dash" class="btn-pro-premium">Get SQGATE Pro</a>
+      <a href="/blog" class="nav-link-blog">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z"/><path d="M14 3v5h5M16 13H8M16 17H8M10 9H8"/></svg>
+        Blog
+      </a>
       <span id="pu-email" style="color:var(--t2)"></span>
       <div class="proj-avatar" id="pu-avatar">?</div>
       <button class="proj-logout" id="btn-logout">Sign out</button>
