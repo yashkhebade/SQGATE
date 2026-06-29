@@ -292,46 +292,12 @@
   <script>
     const BLOG_POSTS = [
       { 
-        title: "SQGATE Pro is Now Available!", 
-        date: "June 28, 2026", 
-        desc: "Take your digital designs to the next level. Unlock unlimited components, 6-variable Karnaugh Maps, and premium starter templates with SQGATE Pro.", 
-        tag: "New",
-        class: "tag-new"
-      },
-      { 
-        title: "Mastering the FSM Designer", 
-        date: "June 15, 2026", 
-        desc: "A comprehensive guide on how to build Moore and Mealy Finite State Machines, run live clock simulations, and generate synthesizable Verilog instantly.", 
+        title: "Getting Started with SQGATE: The Ultimate Logic Simulator", 
+        date: "June 29, 2026", 
+        desc: "Learn how to build, simulate, and export digital logic circuits right in your browser using SQGATE's powerful visualization engine.", 
         tag: "Tutorial",
-        class: "tag-tutorial"
-      },
-      { 
-        title: "Liquid Glass UI Overhaul", 
-        date: "June 05, 2026", 
-        desc: "We've completely revamped the user interface for a cleaner, modern look. Experience the new dark mode, glassmorphism overlays, and smooth animations.", 
-        tag: "Update",
-        class: "tag-update"
-      },
-      { 
-        title: "Logic Quest: Learn by Playing", 
-        date: "May 20, 2026", 
-        desc: "Announcing our new interactive puzzle game designed to teach digital logic. Solve increasingly complex puzzles using a restricted set of logic gates.", 
-        tag: "New",
-        class: "tag-new"
-      },
-      { 
-        title: "Truth Table Generator Live", 
-        date: "May 10, 2026", 
-        desc: "You can now instantly generate complete truth tables for any combinational circuit you build. Great for verifying your logic before exporting.", 
-        tag: "Update",
-        class: "tag-update"
-      },
-      { 
-        title: "Why Web-Based EDA is the Future", 
-        date: "April 28, 2026", 
-        desc: "Say goodbye to heavy desktop installations. We explore the benefits of client-side simulation and how web technologies are revolutionizing hardware design education.", 
-        tag: "Tutorial",
-        class: "tag-tutorial"
+        class: "tag-tutorial",
+        url: "/blog/posts/getting-started-sqgate.html"
       }
     ];
 
@@ -373,6 +339,7 @@
             card.style.transform = 'scale(0.98)';
             setTimeout(() => {
               card.style.transform = '';
+              if(b.url) window.location.href = b.url;
             }, 150);
           });
           

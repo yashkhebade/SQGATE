@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Getting Started with SQGATE: The Ultimate Web-Based Logic Simulator</title>
+  <meta name="description" content="A comprehensive beginner's guide to building, simulating, and exporting digital logic circuits using SQGATE's free online simulator.">
+  <meta name="keywords" content="SQGATE tutorial, logic gate simulator guide, digital electronics tutorial, web-based EDA, Verilog export, BTech ECE tools">
+  <link rel="canonical" href="https://sqgate.online/blog/posts/getting-started-sqgate.html">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="icon" href="/icon.webp">
+  
+  <!-- OG Tags -->
+  <meta property="og:title" content="Getting Started with SQGATE: The Ultimate Web-Based Logic Simulator">
+  <meta property="og:description" content="A comprehensive beginner's guide to building, simulating, and exporting digital logic circuits using SQGATE's free online simulator.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sqgate.online/blog/posts/getting-started-sqgate.html">
+  <meta property="og:image" content="https://sqgate.online/og-image.png">
+  
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/liquid-glass.css">
+  
+  <style>
+    :root{
+      /* SQGATE - Deep Space Blue Palette (Liquid Glass) */
+      --bg0:#060813;--bg1:rgba(12, 15, 28, 0.65);--bg2:rgba(18, 22, 38, 0.65);--bg3:rgba(26, 32, 53, 0.65);
+      --b1:rgba(255,255,255,0.08);--b2:rgba(255,255,255,0.12);
+      --t1:#ffffff;--t2:#94a3b8;--t3:#64748b;
+      --acc:#8b5cf6;--hi:#22d3ee;
+      --fsans:'Inter', -apple-system, sans-serif;
+    }
+    body {
+      background: var(--bg0);
+      color: var(--t2);
+      font-family: var(--fsans);
+      margin: 0;
+      padding: 0;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    .nav {
+      padding: 16px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(12, 15, 28, 0.65);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--b1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 22px;
+      color: var(--t1);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      letter-spacing: 1px;
+    }
+    .nav-links a {
+      color: var(--t2);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 14px;
+      transition: color 0.2s;
+      margin-left: 24px;
+    }
+    .nav-links a:hover { color: var(--t1); }
+
+    .article-header {
+      max-width: 800px;
+      margin: 80px auto 40px;
+      padding: 0 20px;
+      text-align: center;
+      position: relative;
+    }
+    .article-header::before {
+      content: ''; position: absolute; top: -50%; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 600px; background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+      pointer-events: none; z-index: -1;
+    }
+    .article-tag {
+      display: inline-block;
+      background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3);
+      font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 4px 10px; border-radius: 20px;
+      margin-bottom: 16px;
+    }
+    .article-header h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 48px;
+      font-weight: 800;
+      color: var(--t1);
+      margin: 0 0 20px 0;
+      line-height: 1.2;
+    }
+    .article-meta {
+      color: var(--t3);
+      font-size: 14px;
+      font-family: 'Fira Code', monospace;
+    }
+    
+    .article-content {
+      max-width: 760px;
+      margin: 0 auto 100px;
+      padding: 40px;
+      background: rgba(255,255,255,0.01);
+      border: 1px solid var(--b1);
+      border-radius: 16px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+    .article-content p { margin-bottom: 24px; font-size: 17px; color: #cbd5e1; }
+    .article-content h2 { font-family: 'Outfit', sans-serif; font-size: 28px; color: var(--t1); margin: 48px 0 20px; }
+    .article-content h3 { font-family: 'Outfit', sans-serif; font-size: 22px; color: var(--hi); margin: 32px 0 16px; }
+    
+    /* Code Blocks */
+    .article-content pre {
+      background: rgba(0,0,0,0.5);
+      padding: 20px; border-radius: 12px;
+      overflow-x: auto; font-family: 'Fira Code', monospace;
+      font-size: 14px; border: 1px solid var(--b1); margin-bottom: 32px;
+    }
+    
+    @media (max-width: 768px) {
+      .article-header h1 { font-size: 36px; }
+      .article-content { padding: 24px; margin: 0 16px 80px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="nav">
+    <a href="/" class="logo">
+      <img src="/icon.webp" alt="SQGATE Logo" width="28" height="28" style="border-radius: 6px;">
+      SQGATE
+    </a>
+    <div class="nav-links">
+      <a href="/">Dashboard</a>
+      <a href="/pricing.html">Pricing</a>
+      <a href="/blog" style="color: var(--t1);">Blog</a>
+    </div>
+  </nav>
+
+  <header class="article-header">
+    <div class="article-tag">Tutorial</div>
+    <h1>Getting Started with SQGATE: The Ultimate Logic Simulator</h1>
+    <div class="article-meta">June 29, 2026 • 5 min read</div>
+  </header>
+
+  <main class="article-content">
+    <p>Welcome to SQGATE! If you're studying digital electronics, computer architecture, or just looking to build some cool hardware logic, you're in the right place. SQGATE is a lightning-fast, entirely web-based logic gate simulator that lets you design, test, and export circuits without ever downloading heavy desktop software.</p>
+    
+    <h2>1. The Workspace Overview</h2>
+    <p>When you launch a free workspace, you are greeted with a clean, dark-themed infinite canvas. On your left is the <strong>Component Library</strong>, containing everything from basic logic gates (AND, OR, XOR) to advanced sequential components like D-Flip Flops, Registers, and RAM.</p>
+    
+    <p>To add a component, simply drag it from the library onto the canvas. You can click on any component to reveal its properties in the right-hand panel—allowing you to adjust bit-widths, toggle states, or rename labels.</p>
+    
+    <h2>2. Wiring It Up</h2>
+    <p>Connecting components in SQGATE is intuitive. Just click on an output node of one component, and drag the wire to an input node of another. The <strong>Liquid Glass UI</strong> engine visualizes active signals instantly: a glowing cyan wire means the signal is HIGH (1), while a dark blue wire means the signal is LOW (0).</p>
+    
+    <h2>3. Exporting to Verilog</h2>
+    <p>One of SQGATE's most powerful features is its real-time HDL translation. Once your circuit is behaving as expected, click the <strong>Verilog</strong> button in the top navigation bar. SQGATE will instantly generate clean, synthesizable Verilog code that maps perfectly to your schematic.</p>
+    
+    <pre><code>module circuit (
+  input A,
+  input B,
+  output OUT
+);
+  assign OUT = A & B;
+endmodule</code></pre>
+    
+    <h2>4. Next Steps</h2>
+    <p>Now that you know the basics, try building a simple Half Adder! If you want to dive deeper, check out our premium tools like the 6-Variable K-Map Solver and the FSM Designer.</p>
+    <p>Happy designing!</p>
+  </main>
+</body>
+</html>
