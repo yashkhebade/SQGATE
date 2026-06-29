@@ -14,7 +14,7 @@
 }
 
 /* Interactive elements (Buttons) */
-.liquid-btn, .hero-btn-primary, .hero-btn-secondary, 
+.liquid-btn, 
 .mbtn, .pbtn, .proj-action-btn, .proj-logout, .login-sub-btn, .cta-button, .back-btn, .wh-btn, .kp-btn, .step-btn {
   cursor: pointer;
   display: inline-flex;
@@ -31,7 +31,7 @@
   padding: 8px 16px;
 }
 
-.liquid-btn:hover, .hero-btn-primary:hover, .hero-btn-secondary:hover, 
+.liquid-btn:hover, 
 .mbtn:hover, .pbtn:hover, .proj-action-btn:hover, .proj-logout:hover, .login-sub-btn:hover, .cta-button:hover, .back-btn:hover, .wh-btn:hover, .kp-btn:hover, .step-btn:hover {
   background: #242a47; /* Lighten on hover */
   border-color: rgba(255, 255, 255, 0.2);
