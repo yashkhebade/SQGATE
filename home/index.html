@@ -1710,7 +1710,6 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
     inset: 0;
     border-radius: inherit;
     background: rgba(255,255,255,0.08);
-    filter: url("#radio-glass");
     z-index: -1;
     pointer-events: none;
     opacity: 0.8; 
@@ -1860,10 +1859,10 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 
         .hero-sw { cursor: pointer; display: flex; align-items: center; gap: 12px; width: 100px; justify-content: flex-end; }
         .hero-sw-label { font-family: var(--fmono); font-size: 12px; color: var(--t2); font-weight: 600; transition: color 0.3s; }
-        .hero-sw-track { width: 44px; height: 24px; background: rgba(34,211,238,0.1); border: 2px solid var(--b2); border-radius: 12px; position: relative; transition: all 0.3s; flex-shrink: 0; filter: url('#radio-glass'); overflow: visible; }
+        .hero-sw-track { width: 44px; height: 24px; background: rgba(34,211,238,0.1); border: 2px solid var(--b2); border-radius: 12px; position: relative; transition: all 0.3s; flex-shrink: 0; overflow: visible; }
         .hero-sw-knob { width: 16px; height: 16px; background: var(--t3); border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1); }
         
-        .hero-sw:hover .hero-sw-track { width: 44px; height: 24px; background: rgba(34,211,238,0.1); border: 2px solid var(--b2); border-radius: 12px; position: relative; transition: all 0.3s; flex-shrink: 0; filter: url('#radio-glass'); overflow: visible; }
+        .hero-sw:hover .hero-sw-track { width: 44px; height: 24px; background: rgba(34,211,238,0.1); border: 2px solid var(--b2); border-radius: 12px; position: relative; transition: all 0.3s; flex-shrink: 0; overflow: visible; }
         .hero-sw.active .hero-sw-track { background: rgba(34,211,238,0.2); border-color: #22d3ee; box-shadow: 0 0 12px rgba(34,211,238,0.3); }
         .hero-sw.active .hero-sw-knob { background: #22d3ee; transform: translateX(20px); box-shadow: 0 0 8px #22d3ee; }
         .hero-sw.active .hero-sw-label { color: #22d3ee; }
