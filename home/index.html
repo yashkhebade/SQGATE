@@ -33,7 +33,6 @@
   <meta name="twitter:description" content="Logic gate simulator, FSM designer with Verilog export, 6-variable K-map solver, and logic puzzle game — all free in your browser." />
   <meta name="twitter:image" content="https://sqgate.online/og-image.png" />
   <meta name="twitter:image:alt" content="SQGate Digital Electronics Toolkit" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="icon" type="image/png" href="/icon.webp" sizes="32x32" />
   <link rel="apple-touch-icon" href="/icon.webp" sizes="180x180" />
   <link rel="manifest" href="/manifest.json" />
@@ -1732,8 +1731,21 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="/css/liquid-glass.css">
 </head>
 <body>
+
+<!-- LIQUID GLASS SVGS -->
+<svg class="liquid-glass-svg-filter" style="position: absolute; width: 0; height: 0; pointer-events: none;">
+  <defs>
+    <filter id="liquid-glass-filter" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05 0.05" numOctaves="3" result="noise" />
+      <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.15 0" in="noise" result="coloredNoise" />
+      <feBlend in="SourceGraphic" in2="coloredNoise" mode="screen" />
+    </filter>
+  </defs>
+</svg>
+
 <!-- BACKGROUND ORBS -->
 <div class="bg-orbs">
   <div class="orb orb-1"></div>
@@ -8282,39 +8294,6 @@ if (window.innerWidth <= 768) {
 }
 </script>
 
-<!-- GLOBAL ERROR HANDLER -->
-<style>
-#sqgate-error-modal { position: fixed; inset: 0; z-index: 999999; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); font-family: 'Outfit', sans-serif; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
-#sqgate-error-modal.show { opacity: 1; pointer-events: auto; }
-.sqgate-em-box { background: #1e293b; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 32px; max-width: 420px; width: 90%; box-shadow: 0 24px 64px rgba(0,0,0,0.6); text-align: center; color: #e2e8f0; transform: translateY(20px); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-#sqgate-error-modal.show .sqgate-em-box { transform: translateY(0); }
-.sqgate-em-icon { font-size: 48px; color: #ef4444; margin-bottom: 16px; }
-.sqgate-em-title { font-size: 20px; font-weight: 700; margin-bottom: 12px; color: #fff; }
-.sqgate-em-msg { font-size: 14px; color: #94a3b8; margin-bottom: 24px; line-height: 1.6; }
-.sqgate-em-actions { display: flex; gap: 12px; justify-content: center; }
-.sqgate-em-btn { padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; border: none; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;}
-.sqgate-em-btn-primary { background: #7248b9; color: #fff; }
-.sqgate-em-btn-primary:hover { background: #5b3a94; transform: translateY(-2px); }
-.sqgate-em-btn-secondary { background: transparent; color: #cbd5e1; border: 1px solid rgba(255,255,255,0.2); }
-.sqgate-em-btn-secondary:hover { background: rgba(255,255,255,0.05); color: #fff; }
-</style>
-<div id="sqgate-error-modal">
-  <div class="sqgate-em-box">
-    <div class="sqgate-em-icon">⚠️</div>
-    <div class="sqgate-em-title">Oops! Something went wrong.</div>
-    <div class="sqgate-em-msg">The application encountered an unexpected issue. You can report this to help us fix it!</div>
-    <div class="sqgate-em-actions">
-      <button class="sqgate-em-btn sqgate-em-btn-secondary" onclick="document.getElementById('sqgate-error-modal').classList.remove('show')">Dismiss</button>
-      <a class="sqgate-em-btn sqgate-em-btn-primary" href="https://docs.google.com/forms/d/e/1FAIpQLSc5AzzP2NccDkCbKAb5mVvefYFc5_X-EkJZx5RLWO7aqQ_8cw/viewform" target="_blank">Report Problem</a>
-    </div>
-  </div>
-</div>
-<script>
-function showGlobalError(msg) {
-  var m = document.getElementById('sqgate-error-modal');
-  if(m && !m.classList.contains('show')) m.classList.add('show');
-}
-</script>
 
 <style>
 #share-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 999999; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); font-family: 'Outfit', sans-serif; opacity: 0; pointer-events: none; transition: opacity 0.3s; }

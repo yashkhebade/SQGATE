@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQGATE Blog — Digital Electronics Tutorials & Guides</title>
+  <meta name="description" content="Learn digital electronics, logic design, Boolean algebra, and Karnaugh maps with SQGATE's comprehensive tutorials and guides.">
+  <meta name="keywords" content="digital electronics blog, logic gates tutorial, Karnaugh map guide, Boolean algebra tips">
+  <link rel="canonical" href="https://sqgate.online/blog/">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="/icon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/liquid-glass.css">
+  <style>
+    body {
+      background-color: #060813;
+      color: #94a3b8;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    .nav {
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(12, 15, 28, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 24px;
+      color: #fff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .main-content {
+      max-width: 1200px;
+      margin: 60px auto;
+      padding: 0 20px;
+    }
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 48px;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+    .subtitle {
+      font-size: 18px;
+      margin-bottom: 48px;
+      max-width: 600px;
+    }
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .blog-card {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .blog-card h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 24px;
+      color: #fff;
+      margin: 0;
+    }
+    .blog-meta {
+      font-size: 13px;
+      color: #64748b;
+    }
+    .blog-excerpt {
+      line-height: 1.6;
+    }
+    /* INJECT_POSTS_HERE */
+  </style>
+</head>
+<body>
+  <svg class="liquid-glass-svg-filter" style="position: absolute; width: 0; height: 0; pointer-events: none;">
+    <defs>
+      <filter id="liquid-glass-filter" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.05 0.05" numOctaves="3" result="noise" />
+        <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.15 0" in="noise" result="coloredNoise" />
+        <feBlend in="SourceGraphic" in2="coloredNoise" mode="screen" />
+      </filter>
+    </defs>
+  </svg>
+
+  <nav class="nav">
+    <a href="/home/" class="logo">
+      <img src="/icon.webp" width="32" height="32" alt="SQGATE Logo">
+      SQGATE
+    </a>
+    <a href="/home/" class="liquid-btn">Launch Simulator</a>
+  </nav>
+
+  <main class="main-content">
+    <h1>Learn Digital Electronics</h1>
+    <p class="subtitle">Tutorials, guides, and insights to master logic gates, state machines, and circuit design.</p>
+    
+    <div class="blog-grid" id="blog-grid">
+      <!-- Posts will be injected here by the build script -->
+
+      <div class="liquid-panel blog-card">
+        <h2>The Complete Guide to Finite State Machine (FSM) Design & Verilog Code</h2>
+        <div class="blog-meta">By Yash Khebade • June 29, 2026</div>
+        <p class="blog-excerpt">This is a placeholder article because no API key was provided....</p>
+        <a href="/blog/posts/fsm-design-verilog-guide.html" class="liquid-btn" style="align-self: flex-start; margin-top: auto;">Read Article</a>
+      </div>
+
+
+      <div class="liquid-panel blog-card">
+        <h2>How to Solve Karnaugh Maps (K-Maps) Step-by-Step</h2>
+        <div class="blog-meta">By Yash Khebade • June 29, 2026</div>
+        <p class="blog-excerpt">This is a placeholder article because no API key was provided....</p>
+        <a href="/blog/posts/how-to-solve-karnaugh-maps.html" class="liquid-btn" style="align-self: flex-start; margin-top: auto;">Read Article</a>
+      </div>
+
+
+      <div class="liquid-panel blog-card">
+        <h2>Why the NAND Gate is the Universal Gate of Digital Electronics</h2>
+        <div class="blog-meta">By Yash Khebade • June 29, 2026</div>
+        <p class="blog-excerpt">This is a placeholder article because no API key was provided....</p>
+        <a href="/blog/posts/understanding-nand-gate-universal.html" class="liquid-btn" style="align-self: flex-start; margin-top: auto;">Read Article</a>
+      </div>
+
+      <div class="liquid-panel blog-card">
+        <h2>Getting Started with Logic Gates</h2>
+        <div class="blog-meta">By Yash Khebade • June 29, 2026</div>
+        <p class="blog-excerpt">An introductory guide to AND, OR, NOT, NAND, and NOR gates with interactive examples.</p>
+        <a href="#" class="liquid-btn" style="align-self: flex-start; margin-top: auto;">Read Article</a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
