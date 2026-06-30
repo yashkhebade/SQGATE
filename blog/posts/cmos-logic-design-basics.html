@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{META_TITLE}}</title>
-  <meta name="description" content="{{META_DESCRIPTION}}">
-  <meta name="keywords" content="{{META_KEYWORDS}}">
-  <link rel="canonical" href="{{CANONICAL_URL}}">
+  <title>CMOS Logic Design Basics: Pull-Up and Pull-Down Networks | SQGATE Blog</title>
+  <meta name="description" content="This is a placeholder article because no API key was provided....">
+  <meta name="keywords" content="cmos logic, pull up network, pull down network, pmos nmos logic gates">
+  <link rel="canonical" href="https://sqgate.online/blog/posts/cmos-logic-design-basics.html">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <link rel="icon" href="/icon.ico">
   
   <!-- OG Tags -->
-  <meta property="og:title" content="{{META_TITLE}}">
-  <meta property="og:description" content="{{META_DESCRIPTION}}">
+  <meta property="og:title" content="CMOS Logic Design Basics: Pull-Up and Pull-Down Networks | SQGATE Blog">
+  <meta property="og:description" content="This is a placeholder article because no API key was provided....">
   <meta property="og:type" content="article">
-  <meta property="og:url" content="{{CANONICAL_URL}}">
+  <meta property="og:url" content="https://sqgate.online/blog/posts/cmos-logic-design-basics.html">
   <meta property="og:image" content="https://sqgate.online/og-image.png">
   
   <meta name="twitter:card" content="summary_large_image">
@@ -177,7 +177,17 @@
   </style>
   
   <script type="application/ld+json">
-    {{SCHEMA_JSON}}
+    {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "CMOS Logic Design Basics: Pull-Up and Pull-Down Networks",
+  "author": {
+    "@type": "Person",
+    "name": "Yash Khebade",
+    "url": "https://sqgate.online"
+  },
+  "datePublished": "2026-06-30T12:54:53.279401"
+}
   </script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1234567890123456" crossorigin="anonymous"></script>
 </head>
@@ -211,14 +221,29 @@
 
     <div class="main-column">
       <header class="article-header">
-        <h1>{{TITLE}}</h1>
+        <h1>CMOS Logic Design Basics: Pull-Up and Pull-Down Networks</h1>
         <div class="article-meta">
-          By {{AUTHOR}} | Published on {{DATE}} | {{READ_TIME}}
+          By Yash Khebade | Published on June 30, 2026 | 1 min read
         </div>
       </header>
 
       <main class="article-content liquid-panel">
-        {{CONTENT}}
+        <h2>Introduction to CMOS Technology</h2>
+        <img src="/blog/posts/images/cmos_transistor_network_1782804326937.png" alt="CMOS Transistor Network" />
+        <p>Complementary Metal-Oxide-Semiconductor (CMOS) is the foundational technology for modern integrated circuits. Every microchip, from your smartphone processor to simple logic gates, heavily relies on CMOS design because of its near-zero static power dissipation and high noise immunity.</p>
+
+        <h3>Pull-Up and Pull-Down Networks (PUN and PDN)</h3>
+        <p>A standard CMOS logic gate consists of two complementary networks:</p>
+        <ul>
+            <li><strong>Pull-Up Network (PUN):</strong> Constructed entirely of PMOS transistors. This network connects the output node to VDD (Power) when the logic evaluates to True (1).</li>
+            <li><strong>Pull-Down Network (PDN):</strong> Constructed entirely of NMOS transistors. This network connects the output node to Ground (GND) when the logic evaluates to False (0).</li>
+        </ul>
+
+        <h3>De Morgan's Laws in Silicon</h3>
+        <p>When designing CMOS circuits, PMOS and NMOS behave oppositely. NMOS transistors are excellent at passing a strong '0', while PMOS transistors are excellent at passing a strong '1'. Furthermore, when PMOS transistors are in parallel, the corresponding NMOS transistors MUST be in series, effectively hardwiring De Morgan's laws directly into the silicon!</p>
+
+        <h3>Try it in SQGATE!</h3>
+        <p>While SQGATE abstracts away the transistors to let you focus on logic gates, understanding the underlying CMOS structure is vital when optimizing gate delays and power in your Verilog exports.</p>
         
         <div class="cta-banner">
           <h3>Ready to test this out?</h3>

@@ -44,6 +44,16 @@
       "slug": "fsm-design-verilog-guide",
       "title": "The Complete Guide to Finite State Machine (FSM) Design & Verilog Code",
       "keywords": "FSM designer, finite state machine verilog, mealy moore machine, digital electronics state machine"
+    },
+    {
+      "slug": "hazards-in-combinational-circuits",
+      "title": "Static and Dynamic Hazards in Combinational Circuits Explained",
+      "keywords": "static hazard, dynamic hazard, combinational circuit hazard, digital glitch"
+    },
+    {
+      "slug": "cmos-logic-design-basics",
+      "title": "CMOS Logic Design Basics: Pull-Up and Pull-Down Networks",
+      "keywords": "cmos logic, pull up network, pull down network, pmos nmos logic gates"
     }
   ]
 }

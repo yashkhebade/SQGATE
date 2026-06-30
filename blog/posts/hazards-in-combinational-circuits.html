@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{META_TITLE}}</title>
-  <meta name="description" content="{{META_DESCRIPTION}}">
-  <meta name="keywords" content="{{META_KEYWORDS}}">
-  <link rel="canonical" href="{{CANONICAL_URL}}">
+  <title>Static and Dynamic Hazards in Combinational Circuits Explained | SQGATE Blog</title>
+  <meta name="description" content="This is a placeholder article because no API key was provided....">
+  <meta name="keywords" content="static hazard, dynamic hazard, combinational circuit hazard, digital glitch">
+  <link rel="canonical" href="https://sqgate.online/blog/posts/hazards-in-combinational-circuits.html">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <link rel="icon" href="/icon.ico">
   
   <!-- OG Tags -->
-  <meta property="og:title" content="{{META_TITLE}}">
-  <meta property="og:description" content="{{META_DESCRIPTION}}">
+  <meta property="og:title" content="Static and Dynamic Hazards in Combinational Circuits Explained | SQGATE Blog">
+  <meta property="og:description" content="This is a placeholder article because no API key was provided....">
   <meta property="og:type" content="article">
-  <meta property="og:url" content="{{CANONICAL_URL}}">
+  <meta property="og:url" content="https://sqgate.online/blog/posts/hazards-in-combinational-circuits.html">
   <meta property="og:image" content="https://sqgate.online/og-image.png">
   
   <meta name="twitter:card" content="summary_large_image">
@@ -177,7 +177,17 @@
   </style>
   
   <script type="application/ld+json">
-    {{SCHEMA_JSON}}
+    {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Static and Dynamic Hazards in Combinational Circuits Explained",
+  "author": {
+    "@type": "Person",
+    "name": "Yash Khebade",
+    "url": "https://sqgate.online"
+  },
+  "datePublished": "2026-06-30T12:54:53.275765"
+}
   </script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1234567890123456" crossorigin="anonymous"></script>
 </head>
@@ -211,14 +221,29 @@
 
     <div class="main-column">
       <header class="article-header">
-        <h1>{{TITLE}}</h1>
+        <h1>Static and Dynamic Hazards in Combinational Circuits Explained</h1>
         <div class="article-meta">
-          By {{AUTHOR}} | Published on {{DATE}} | {{READ_TIME}}
+          By Yash Khebade | Published on June 30, 2026 | 1 min read
         </div>
       </header>
 
       <main class="article-content liquid-panel">
-        {{CONTENT}}
+        <h2>Understanding Hazards in Digital Logic</h2>
+        <img src="/blog/posts/images/digital_glitch_hazard_1782804315213.png" alt="Digital Glitch Hazard" />
+        <p>In ideal digital electronics, gates react instantly to input changes. In reality, every physical gate has a propagation delay. When inputs to a combinational circuit change, these tiny delays can cause momentary, unwanted spikes in the output known as <strong>hazards</strong> or <strong>glitches</strong>.</p>
+
+        <h3>Static vs. Dynamic Hazards</h3>
+        <ul>
+            <li><strong>Static 1-Hazard:</strong> The output is supposed to remain at logic 1, but dips momentarily to 0 before recovering to 1.</li>
+            <li><strong>Static 0-Hazard:</strong> The output is supposed to remain at logic 0, but spikes momentarily to 1 before recovering to 0.</li>
+            <li><strong>Dynamic Hazard:</strong> The output is supposed to change state (e.g., from 0 to 1), but bounces back and forth (0 -> 1 -> 0 -> 1) before settling.</li>
+        </ul>
+
+        <h3>Detecting and Eliminating Hazards</h3>
+        <p>Hazards occur when adjacent terms in a Boolean expression (or adjacent 1s in a Karnaugh Map) are not covered by a single prime implicant. To eliminate a static hazard, designers introduce a <strong>redundant term</strong>—an extra logic gate that bridges the gap between the two terms, ensuring the output never drops while the input transitions.</p>
+
+        <h3>Simulating Hazards in SQGATE</h3>
+        <p>In the SQGATE Simulator, you can visualize logical transitions. For advanced engineering, recognizing when to add redundant gates via K-Map overlapping is a crucial skill for producing clean Verilog code!</p>
         
         <div class="cta-banner">
           <h3>Ready to test this out?</h3>
