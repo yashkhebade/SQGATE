@@ -8487,14 +8487,13 @@ window.addEventListener('DOMContentLoaded', () => {
 #mobile-portrait-overlay {
   display: none;
   position: fixed;
-  inset: 0;
-  background: rgba(10, 10, 15, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--bg0, #0f111a);
   z-index: 100000;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  text-align: center;
   padding: 24px;
 }
 @media (max-width: 900px) and (orientation: portrait) {
@@ -8506,27 +8505,24 @@ window.addEventListener('DOMContentLoaded', () => {
 }
 @keyframes rotatePhone {
   0% { transform: rotate(0deg); }
-  40% { transform: rotate(-90deg); }
-  60% { transform: rotate(-90deg); }
-  100% { transform: rotate(0deg); }
+  50% { transform: rotate(-90deg); }
+  100% { transform: rotate(-90deg); }
 }
 </style>
 <div id="mobile-portrait-overlay">
-  <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 24px; padding: 40px 24px; max-width: 340px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
-    <div style="background: rgba(255, 255, 255, 0.05); width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px auto; box-shadow: inset 0 2px 4px rgba(255,255,255,0.05);">
-      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="animation: rotatePhone 2.5s infinite cubic-bezier(0.65, 0, 0.35, 1);">
-        <rect x="5" y="2" width="14" height="20" rx="3" ry="3"/>
-        <line x1="12" y1="18" x2="12.01" y2="18"/>
-      </svg>
-    </div>
-    
-    <h2 style="color:#fff; margin-bottom: 12px; font-family: 'Inter', sans-serif; font-size: 22px; font-weight: 600; letter-spacing: -0.5px;">Rotate Your Device</h2>
-    <p style="color: rgba(255,255,255,0.6); font-size: 15px; line-height: 1.5; margin-bottom: 32px; font-family: 'Inter', sans-serif;">SQGATE requires a wider screen to display the full simulator interface.</p>
-    
-    <button onclick="window.forceLandscapeFullscreen(); document.getElementById('mobile-portrait-overlay').style.display='none';" style="cursor: pointer; background: var(--acb, #3b82f6); color: #fff; padding: 14px 28px; border: none; font-weight: 600; font-size: 15px; border-radius: 12px; font-family: 'Inter', sans-serif; width: 100%; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.5);" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">Force Auto-Rotate</button>
-    
-    <button onclick="document.getElementById('mobile-portrait-overlay').style.display='none'" style="cursor: pointer; margin-top: 16px; background: transparent; color: rgba(255,255,255,0.4); padding: 8px; border: none; font-family: 'Inter', sans-serif; font-size: 13px; transition: color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">Dismiss & Continue</button>
+  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--acb, #3dba6e)" stroke-width="2" style="margin-bottom: 20px; animation: rotatePhone 2s infinite ease-in-out;">
+    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+    <line x1="12" y1="18" x2="12.01" y2="18"/>
+  </svg>
+  <h2 style="color:var(--t1, #fff); margin-bottom: 12px; font-family:var(--fmono, monospace);">Please Rotate Device</h2>
+  <p style="color:var(--t2, #aaa); font-size:14px; max-width:300px; margin-bottom: 24px;">SQGATE is heavily optimized for landscape viewing. Please rotate your phone.</p>
+  
+  <div style="padding:16px; background:rgba(239, 68, 68, 0.1); border:1px solid rgba(239, 68, 68, 0.3); border-radius:8px; color:var(--t1, #fff); font-size:13px; max-width:300px;">
+    <strong style="color:#ef4444;">Note:</strong> This application is meant for desktop only. Touch screens may experience limited functionality.
   </div>
+  
+  <button onclick="window.forceLandscapeFullscreen(); document.getElementById('mobile-portrait-overlay').style.display='none';" style="cursor: pointer; margin-top: 32px; background: var(--acb, #3dba6e); color: #fff; padding: 12px 24px; border: none; font-weight: bold; border-radius: 8px; font-family: inherit; width: 100%; max-width: 250px;">Force Landscape (Auto-Rotate)</button>
+  <button onclick="document.getElementById('mobile-portrait-overlay').style.display='none'" style="cursor: pointer; margin-top: 12px; background: transparent; color: var(--t3, #888); padding: 8px 16px; border: none; font-family: inherit;">Dismiss</button>
 </div>
 
 <script src="/cookie-consent.js"></script>
