@@ -27,3 +27,11 @@
 - This includes `<title>`, `<meta name="description">`, `<meta name="keywords">`, canonical links, and Open Graph (`og:`) tags.
 - You must also inject the `<script>` tags for Google AdSense and Google Analytics (gtag.js) into the `<head>` or body as appropriate.
 - Do not publish or save any new content pages without ensuring these tags are populated.
+
+# Automated User Feedback Monitoring
+- The user collects bug reports and feature requests via a Google Form linked to a Google Sheet.
+- The live CSV export URL for these responses is: `https://docs.google.com/spreadsheets/d/1oIKIRt-ZeGUSKnFN7F43dcOndOFqby44k79mPvyqcr4/export?format=csv`
+- You MUST proactively keep an eye on this feedback. Whenever you have downtime or when explicitly asked, use `read_url_content` to fetch this CSV.
+- Compare the timestamp of the latest rows against the previously solved issues.
+- If there is a new, unresolved request, automatically analyze it and propose/implement a solution strictly adhering to the project's constitution (Pure Vanilla JS, no build steps, client-side execution, consistent UI/UX).
+- After fixing an issue from the form, document that it was solved so it is not repeated.

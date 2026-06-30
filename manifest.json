@@ -4,6 +4,7 @@
   "description": "Free Online Digital Logic and Circuit Simulator",
   "start_url": "./index.html",
   "display": "standalone",
+  "orientation": "landscape",
   "background_color": "#09090b",
   "theme_color": "#2a50a8",
   "icons": [
