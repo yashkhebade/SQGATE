@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Metastability and Clock Domain Crossing (CDC) in Digital Design | SQGATE Blog</title>
+  <meta name="description" content="This is a placeholder article because no API key was provided....">
+  <meta name="keywords" content="metastability, clock domain crossing, CDC synchronizer, setup and hold time, digital electronics metastability">
+  <link rel="canonical" href="https://sqgate.online/blog/posts/understanding-metastability-clock-domain-crossing.html">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="icon" href="/icon.ico">
+  
+  <!-- OG Tags -->
+  <meta property="og:title" content="Metastability and Clock Domain Crossing (CDC) in Digital Design | SQGATE Blog">
+  <meta property="og:description" content="Learn what metastability is, why it occurs in digital circuits, and how to safely cross clock domains using synchronizers.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sqgate.online/blog/posts/understanding-metastability-clock-domain-crossing.html">
+  <meta property="og:image" content="https://sqgate.online/blog/assets/metastability_cdc_cover.png">
+  
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/liquid-glass.css">
+  
+  <style>
+    body {
+      background-color: #060813;
+      color: #cbd5e1;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.7;
+    }
+    .nav {
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(12, 15, 28, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 24px;
+      color: #fff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .article-header {
+      max-width: 800px;
+      margin: 60px auto 40px;
+      padding: 0 20px;
+      text-align: center;
+    }
+    .article-header h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 42px;
+      color: #fff;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+    .article-meta {
+      color: #64748b;
+      font-size: 14px;
+    }
+    .article-content {
+      max-width: 800px;
+      margin: 0 auto 80px;
+      padding: 40px;
+    }
+    .article-content h2, .article-content h3, .article-content h4 {
+      font-family: 'Outfit', sans-serif;
+      color: #fff;
+      margin-top: 40px;
+      margin-bottom: 16px;
+    }
+    .article-content a {
+      color: #3b82f6;
+      text-decoration: none;
+    }
+    .article-content a:hover {
+      text-decoration: underline;
+    }
+    .article-content pre {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: 'Fira Code', monospace;
+      font-size: 14px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .article-content code {
+      font-family: 'Fira Code', monospace;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    .article-content pre code {
+      background: none;
+      padding: 0;
+    }
+    .article-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      margin: 24px 0;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .cta-banner {
+      margin-top: 60px;
+      padding: 40px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .cta-banner h3 {
+      margin: 0;
+      font-family: 'Outfit', sans-serif;
+      font-size: 28px;
+    }
+    .blog-layout {
+      display: grid;
+      grid-template-columns: 250px 1fr 250px;
+      gap: 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .main-column {
+      min-width: 0;
+    }
+    .ad-sidebar {
+      position: sticky;
+      top: 100px;
+      height: calc(100vh - 120px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: rgba(20, 25, 45, 0.4);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 15px;
+      overflow: hidden;
+    }
+    .ad-label {
+      font-size: 10px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+    @media (max-width: 1100px) {
+      .blog-layout {
+        grid-template-columns: 1fr;
+      }
+      .ad-sidebar {
+        position: static;
+        height: auto;
+        min-height: 250px;
+        margin-bottom: 20px;
+      }
+    }
+  </style>
+  
+  <script type="application/ld+json">
+    {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Metastability and Clock Domain Crossing (CDC) in Digital Design",
+  "author": {
+    "@type": "Person",
+    "name": "Yash Khebade",
+    "url": "https://sqgate.online"
+  },
+  "datePublished": "2026-07-01T00:08:03.244859"
+}
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1234567890123456" crossorigin="anonymous"></script>
+</head>
+<body>
+  <svg class="liquid-glass-svg-filter" style="position: absolute; width: 0; height: 0; pointer-events: none;">
+    <defs>
+      <filter id="liquid-glass-filter" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.05 0.05" numOctaves="3" result="noise" />
+        <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.15 0" in="noise" result="coloredNoise" />
+        <feBlend in="SourceGraphic" in2="coloredNoise" mode="screen" />
+      </filter>
+    </defs>
+  </svg>
+
+  <nav class="nav">
+    <a href="/home/" class="logo">
+      <img src="/icon.webp" width="32" height="32" alt="SQGATE Logo">
+      SQGATE
+    </a>
+    <a href="/blog/" style="color: #94a3b8; text-decoration: none; font-weight: 500; margin-left: 20px;">← Back to Blog</a>
+    <div style="flex-grow: 1;"></div>
+    <a href="/home/" class="liquid-btn">Launch Simulator</a>
+  </nav>
+
+  <div class="blog-layout">
+    <aside class="ad-sidebar">
+      <div class="ad-label">Advertisement</div>
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1234567890123456" data-ad-slot="1111111111" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </aside>
+
+    <div class="main-column">
+      <header class="article-header">
+        <h1>Metastability and Clock Domain Crossing (CDC) in Digital Design</h1>
+        <div class="article-meta">
+          By Yash Khebade | Published on July 01, 2026 | 1 min read
+        </div>
+      </header>
+
+      <main class="article-content liquid-panel">
+        <img src="/blog/assets/metastability_cdc_cover.png" alt="Concept art of Metastability and Clock Domain Crossing" style="width: 100%; border-radius: 12px; margin-bottom: 30px;">
+        <h2>Introduction to Metastability</h2>
+        <p>In digital electronics, flip-flops are designed to output either a distinct logic HIGH (1) or a LOW (0). However, if the input data changes precisely at the moment the clock edge triggers (violating the setup or hold time), the flip-flop can enter an unstable, intermediate state known as <strong>metastability</strong>.</p>
+        <p>During metastability, the output voltage hovers unpredictably between 0 and 1 before eventually settling to a valid state. This unpredictable delay can cause downstream logic to read incorrect or conflicting values, leading to catastrophic system failure.</p>
+        
+        <h2>Clock Domain Crossing (CDC)</h2>
+        <p>Metastability typically occurs when a signal travels from one clock domain to another asynchronous clock domain. Because the two clocks have different frequencies or phase alignments, it's impossible to guarantee that the signal will not violate the destination flip-flop's setup or hold time.</p>
+        
+        <h3>The Two-Flop Synchronizer</h3>
+        <p>The standard solution to mitigate metastability is the <strong>Two-Flop Synchronizer</strong>. By chaining two flip-flops back-to-back in the destination clock domain, we give the metastable signal an entire clock cycle to settle before it is sampled by the rest of the circuit.</p>
+        <p>While this introduces a delay (latency of two clock cycles), it exponentially increases the Mean Time Between Failures (MTBF) from mere milliseconds to billions of years, making the circuit reliable.</p>
+        <div class="cta-banner">
+          <h3>Ready to test this out?</h3>
+          <p>Simulate logic gates, export Verilog, and solve Karnaugh maps instantly in your browser.</p>
+          <a href="/home/" class="liquid-btn" style="font-size: 16px; padding: 12px 24px;">Open SQGATE Simulator (Free)</a>
+        </div>
+      </main>
+    </div>
+
+    <aside class="ad-sidebar">
+      <div class="ad-label">Advertisement</div>
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1234567890123456" data-ad-slot="2222222222" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </aside>
+  </div>
+</body>
+</html>

@@ -59,6 +59,11 @@
       "slug": "mastering-multiplexers-alu-design",
       "title": "Mastering Multiplexers (MUX): From Boolean Functions to Advanced ALU Design",
       "keywords": "multiplexer, MUX, ALU design, digital electronics multiplexer, boolean function implementation"
+    },
+    {
+      "slug": "understanding-metastability-clock-domain-crossing",
+      "title": "Metastability and Clock Domain Crossing (CDC) in Digital Design",
+      "keywords": "metastability, clock domain crossing, CDC synchronizer, setup and hold time, digital electronics metastability"
     }
   ]
 }
