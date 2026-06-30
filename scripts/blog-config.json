@@ -54,6 +54,11 @@
       "slug": "cmos-logic-design-basics",
       "title": "CMOS Logic Design Basics: Pull-Up and Pull-Down Networks",
       "keywords": "cmos logic, pull up network, pull down network, pmos nmos logic gates"
+    },
+    {
+      "slug": "mastering-multiplexers-alu-design",
+      "title": "Mastering Multiplexers (MUX): From Boolean Functions to Advanced ALU Design",
+      "keywords": "multiplexer, MUX, ALU design, digital electronics multiplexer, boolean function implementation"
     }
   ]
 }
