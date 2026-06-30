@@ -35,3 +35,8 @@
 - Compare the timestamp of the latest rows against the previously solved issues.
 - If there is a new, unresolved request, automatically analyze it and propose/implement a solution strictly adhering to the project's constitution (Pure Vanilla JS, no build steps, client-side execution, consistent UI/UX).
 - After fixing an issue from the form, document that it was solved so it is not repeated.
+
+# Dynamic Blog Images Policy
+- Do NOT use generic or repeated placeholder images (like the default green circuit) when creating or updating blog posts.
+- Every time you create a new blog post, you MUST use the `generate_image` tool to create a visually stunning, highly relevant, and unique image specific to that post's topic (e.g., a state machine diagram for FSM posts, or a dynamic CMOS visualization for logic gates).
+- Ensure the generated image is properly saved and referenced in both the blog index page and the post's `<meta property="og:image">` tags.
