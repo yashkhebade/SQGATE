@@ -8139,11 +8139,18 @@ document.getElementById('cvwrap').addEventListener("touchend", touchHandler, {pa
 // Mobile Fullscreen Toggle
 document.getElementById('mobile-fullscreen-btn').addEventListener('click', function() {
   if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen().catch(err => {
+    document.documentElement.requestFullscreen().then(() => {
+      if (screen.orientation && screen.orientation.lock) {
+        screen.orientation.lock('landscape').catch(e => console.log('Orientation lock failed:', e));
+      }
+    }).catch(err => {
       console.log('Error attempting to enable fullscreen:', err.message);
     });
   } else {
     if (document.exitFullscreen) document.exitFullscreen();
+    if (screen.orientation && screen.orientation.unlock) {
+      screen.orientation.unlock();
+    }
   }
 });
 </script>
