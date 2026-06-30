@@ -67,12 +67,20 @@ def inject_post_into_archive(slug, title, author, date, excerpt):
         return
         
     card_html = f"""
-      <div class="liquid-panel blog-card">
-        <h2>{title}</h2>
-        <div class="blog-meta">By {author} • {date}</div>
-        <p class="blog-excerpt">{excerpt}</p>
-        <a href="/blog/posts/{slug}.html" class="liquid-btn" style="align-self: flex-start; margin-top: auto;">Read Article</a>
+    <a href="/blog/posts/{slug}.html" class="card">
+      <div class="card-img-container">
+        <img src="/blog/posts/images/{slug}.png" alt="{title}" class="card-img" onerror="this.src='/og-image.png'">
       </div>
+      <div class="card-content">
+        <span class="card-tag">Latest Updates</span>
+        <h2 class="card-title">{title}</h2>
+        <p class="card-desc">{excerpt}</p>
+        <div class="card-meta">
+          <span>{date}</span>
+          <span>By {author}</span>
+        </div>
+      </div>
+    </a>
 """
     
     # Inject right after <!-- Posts will be injected here by the build script -->
@@ -100,9 +108,20 @@ def main():
         
         print(f"Processing: {title}")
         
-        # Skip if already generated to save API calls
         if os.path.exists(post_path):
-            print(f"Skipping {slug} (already exists)")
+            print(f"Skipping {slug} HTML generation (already exists)")
+            
+            # Still attempt to inject into archive if missing
+            with open(post_path, 'r', encoding='utf-8') as f:
+                content_html = f.read()
+            import re
+            excerpt_match = re.search(r'<p>(.*?)</p>', content_html)
+            excerpt = excerpt_match.group(1)[:120] + "..." if excerpt_match else "A comprehensive guide on " + title
+            excerpt = re.sub(r'<[^>]+>', '', excerpt)
+            date_str = "Recently Published"
+            print("Injecting into archive...")
+            inject_post_into_archive(slug, title, config['author']['name'], date_str, excerpt)
+            
             continue
             
         full_prompt = f"{system_prompt}\n\nWrite a comprehensive article about: '{title}'.\nTarget Keywords: {keywords}.\nMake sure it is pure HTML. No markdown."
