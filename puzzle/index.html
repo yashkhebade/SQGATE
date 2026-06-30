@@ -456,27 +456,26 @@ function getGateInputs(type) {
 
 // --- PUZZLE DATA ---
 const PUZZLE_LEVELS = [
-  {
-    id: 1, title: "NOT from NAND",
-    description: "Construct a NOT gate using exactly 1 NAND gate. Tie both inputs to the same signal.",
-    inputs: ["A"],
-    targetTruthTable: [1, 0], // A=0->1, A=1->0
-    allowedComponents: { NAND: 1, AND: 0, OR: 0, NOT: 0, NOR: 0, XOR: 0 }
-  },
-  {
-    id: 2, title: "AND from NAND",
-    description: "Build an AND gate using 2 NAND gates.",
-    inputs: ["A", "B"],
-    targetTruthTable: [0, 0, 0, 1],
-    allowedComponents: { NAND: 2, AND: 0, OR: 0, NOT: 0, NOR: 0, XOR: 0 }
-  },
-  {
-    id: 3, title: "OR from NAND",
-    description: "Build an OR gate using 3 NAND gates. Hint: Invert the inputs first.",
-    inputs: ["A", "B"],
-    targetTruthTable: [0, 1, 1, 1],
-    allowedComponents: { NAND: 3, AND: 0, OR: 0, NOT: 0, NOR: 0, XOR: 0 }
-  }
+  // NANDS ONLY
+  { id: 1, title: "NOT from NAND", description: "Construct a NOT gate using exactly 1 NAND gate. Tie both inputs to the same signal.", inputs: ["A"], targetTruthTable: [1, 0], allowedComponents: { NAND: 1, AND: 0, OR: 0, NOT: 0, NOR: 0, XOR: 0 } },
+  { id: 2, title: "AND from NAND", description: "Build an AND gate using 2 NAND gates.", inputs: ["A", "B"], targetTruthTable: [0, 0, 0, 1], allowedComponents: { NAND: 2, AND: 0, OR: 0, NOT: 0, NOR: 0, XOR: 0 } },
+  { id: 3, title: "OR from NAND", description: "Build an OR gate using 3 NAND gates. Hint: Invert the inputs first.", inputs: ["A", "B"], targetTruthTable: [0, 1, 1, 1], allowedComponents: { NAND: 3, AND: 0, OR: 0, NOT: 0, NOR: 0, XOR: 0 } },
+  { id: 4, title: "NOR from NAND", description: "Build a NOR gate using exactly 4 NAND gates.", inputs: ["A", "B"], targetTruthTable: [1, 0, 0, 0], allowedComponents: { NAND: 4, AND: 0, OR: 0, NOT: 0, NOR: 0, XOR: 0 } },
+  { id: 5, title: "XOR from NAND", description: "Build an XOR gate using exactly 4 NAND gates. This is a classic challenge!", inputs: ["A", "B"], targetTruthTable: [0, 1, 1, 0], allowedComponents: { NAND: 4, AND: 0, OR: 0, NOT: 0, NOR: 0, XOR: 0 } },
+  
+  // NORS ONLY
+  { id: 6, title: "NOT from NOR", description: "Construct a NOT gate using exactly 1 NOR gate.", inputs: ["A"], targetTruthTable: [1, 0], allowedComponents: { NAND: 0, AND: 0, OR: 0, NOT: 0, NOR: 1, XOR: 0 } },
+  { id: 7, title: "OR from NOR", description: "Build an OR gate using 2 NOR gates.", inputs: ["A", "B"], targetTruthTable: [0, 1, 1, 1], allowedComponents: { NAND: 0, AND: 0, OR: 0, NOT: 0, NOR: 2, XOR: 0 } },
+  { id: 8, title: "AND from NOR", description: "Build an AND gate using 3 NOR gates.", inputs: ["A", "B"], targetTruthTable: [0, 0, 0, 1], allowedComponents: { NAND: 0, AND: 0, OR: 0, NOT: 0, NOR: 3, XOR: 0 } },
+  { id: 9, title: "NAND from NOR", description: "Build a NAND gate using exactly 4 NOR gates.", inputs: ["A", "B"], targetTruthTable: [1, 1, 1, 0], allowedComponents: { NAND: 0, AND: 0, OR: 0, NOT: 0, NOR: 4, XOR: 0 } },
+  { id: 10, title: "XOR from NOR", description: "Build an XOR gate using 5 NOR gates.", inputs: ["A", "B"], targetTruthTable: [0, 1, 1, 0], allowedComponents: { NAND: 0, AND: 0, OR: 0, NOT: 0, NOR: 5, XOR: 0 } },
+  
+  // ADVANCED LOGIC
+  { id: 11, title: "Implication (A → B)", description: "Build a circuit that outputs 1 unless A is 1 and B is 0. You can use any gates.", inputs: ["A", "B"], targetTruthTable: [1, 1, 0, 1], allowedComponents: { NAND: 2, AND: 2, OR: 2, NOT: 2, NOR: 2, XOR: 0 } },
+  { id: 12, title: "XNOR (Equality)", description: "Output 1 only when A and B are equal.", inputs: ["A", "B"], targetTruthTable: [1, 0, 0, 1], allowedComponents: { NAND: 2, AND: 2, OR: 2, NOT: 2, NOR: 2, XOR: 1 } },
+  { id: 13, title: "2-to-1 Multiplexer", description: "S is the selector. If S=0 output A, if S=1 output B.", inputs: ["S", "A", "B"], targetTruthTable: [0, 1, 0, 1, 0, 0, 1, 1], allowedComponents: { NAND: 0, AND: 2, OR: 1, NOT: 1, NOR: 0, XOR: 0 } },
+  { id: 14, title: "Majority Gate", description: "Output 1 if two or more of the inputs (A, B, C) are 1.", inputs: ["A", "B", "C"], targetTruthTable: [0, 0, 0, 1, 0, 1, 1, 1], allowedComponents: { NAND: 0, AND: 3, OR: 2, NOT: 0, NOR: 0, XOR: 0 } },
+  { id: 15, title: "Odd Parity", description: "Output 1 if an odd number of inputs are 1. Hint: Use XOR.", inputs: ["A", "B", "C"], targetTruthTable: [0, 1, 1, 0, 1, 0, 0, 1], allowedComponents: { NAND: 0, AND: 0, OR: 0, NOT: 0, NOR: 0, XOR: 2 } }
 ];
 
 // Random Level Generator
@@ -537,13 +536,19 @@ function generateRandomLevel() {
 
 
 // --- STATE ---
+const savedLevels = localStorage.getItem('sqgate_lq_completed');
+let initialCompleted = new Set();
+if (savedLevels) {
+  try { initialCompleted = new Set(JSON.parse(savedLevels)); } catch(e) {}
+}
+
 let state = {
   levelIdx: 0, // 'R' for random
   isRandom: false,
   randomLevel: null,
   placedGates: [], // { id, type, in1, in2 }
   allowedRemaining: {},
-  completedLevels: new Set()
+  completedLevels: initialCompleted
 };
 
 function getActivePuzzle() {
@@ -615,6 +620,34 @@ function handleUndo() {
   render();
 }
 
+// --- CONFETTI ---
+function triggerConfetti() {
+  const colors = ['#f59e0b', '#3b82f6', '#10b981', '#ec4899', '#8b5cf6'];
+  for (let i = 0; i < 50; i++) {
+    const confetti = document.createElement('div');
+    confetti.style.position = 'fixed';
+    confetti.style.width = '10px';
+    confetti.style.height = '10px';
+    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    confetti.style.left = Math.random() * 100 + 'vw';
+    confetti.style.top = '-10px';
+    confetti.style.zIndex = '9999';
+    confetti.style.pointerEvents = 'none';
+    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+    document.body.appendChild(confetti);
+    
+    const anim = confetti.animate([
+      { transform: `translate3d(0,0,0) rotate(0deg)`, opacity: 1 },
+      { transform: `translate3d(${Math.random()*200 - 100}px, ${window.innerHeight}px, 0) rotate(${Math.random()*720}deg)`, opacity: 0 }
+    ], {
+      duration: Math.random() * 2000 + 1000,
+      easing: 'cubic-bezier(.37,0,.63,1)'
+    });
+    
+    anim.onfinish = () => confetti.remove();
+  }
+}
+
 // --- SIMULATION ENGINE ---
 function evaluateCircuit() {
   const p = getActivePuzzle();
@@ -644,8 +677,27 @@ function evaluateCircuit() {
   
   const isComplete = state.placedGates.length > 0 && failedRows.length === 0;
   if(isComplete && !state.isRandom) {
-    if(!state.completedLevels.has(state.levelIdx)) captureTelemetry(state.levelIdx, state.placedGates.length, false);
-    state.completedLevels.add(state.levelIdx);
+    if(!state.completedLevels.has(state.levelIdx)) {
+      captureTelemetry(state.levelIdx, state.placedGates.length, false);
+      state.completedLevels.add(state.levelIdx);
+      localStorage.setItem('sqgate_lq_completed', JSON.stringify(Array.from(state.completedLevels)));
+      
+      // Auto-unlock logic trigger (optional UI effects can go here)
+      const isLastLevel = state.levelIdx >= PUZZLE_LEVELS.length - 1;
+      
+      // If we just beat a level and there is a next level, show confetti and transition!
+      triggerConfetti();
+      
+      if (!isLastLevel) {
+        setTimeout(() => {
+          if(confirm("Level Complete! Proceed to the next level?")) {
+            initLevel(state.levelIdx + 1);
+          }
+        }, 1500);
+      } else {
+        setTimeout(() => alert("Congratulations! You have mastered Logic Quest!"), 1500);
+      }
+    }
   }
   if(isComplete && state.isRandom) {
     if(window._lastRand !== state.targetTruthTable.join('')) {
@@ -663,12 +715,26 @@ function render() {
   
   // Level selector
   const ls = document.getElementById('level-selector');
-  let lsHtml = PUZZLE_LEVELS.map((pl, i) => `
-    <button class="lq-lvl-btn ${!state.isRandom && i === state.levelIdx ? 'active' : ''}" onclick="initLevel(${i})">
-      <div class="lq-lvl-num">Level ${pl.id} ${state.completedLevels.has(i) ? '<span class="lq-lvl-done">✓</span>' : ''}</div>
-      <div class="lq-lvl-title">${pl.title}</div>
-    </button>
-  `).join('');
+  let lsHtml = PUZZLE_LEVELS.map((pl, i) => {
+    const isCompleted = state.completedLevels.has(i);
+    const isUnlocked = i === 0 || state.completedLevels.has(i - 1);
+    
+    if (!isUnlocked) {
+      return `
+        <button class="lq-lvl-btn" style="opacity: 0.5; cursor: not-allowed;" title="Complete Level ${i} to unlock">
+          <div class="lq-lvl-num">Level ${pl.id} <span style="float:right; opacity:0.6;">🔒</span></div>
+          <div class="lq-lvl-title" style="color:var(--t3)">Locked</div>
+        </button>
+      `;
+    }
+    
+    return `
+      <button class="lq-lvl-btn ${state.levelIdx === i && !state.isRandom ? 'active' : ''}" onclick="initLevel(${i})">
+        <div class="lq-lvl-num">Level ${pl.id} ${isCompleted ? '<span class="lq-lvl-done">✓</span>' : ''}</div>
+        <div class="lq-lvl-title">${pl.title}</div>
+      </button>
+    `;
+  }).join('');
   
   lsHtml += `
     <button class="lq-lvl-btn btn-random ${state.isRandom ? 'active' : ''}" onclick="initLevel('R')">
