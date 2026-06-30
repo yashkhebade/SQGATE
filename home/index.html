@@ -8502,8 +8502,8 @@ window.addEventListener('DOMContentLoaded', () => {
   text-align: center;
   padding: 24px;
 }
-@media (max-width: 900px) and (orientation: portrait) {
-  #mobile-portrait-overlay { display: flex; animation: fadeInOverlay 0.4s ease-out forwards; }
+@media (orientation: portrait) {
+  #mobile-portrait-overlay { display: flex !important; animation: fadeInOverlay 0.4s ease-out forwards; }
 }
 @keyframes fadeInOverlay {
   from { opacity: 0; }
@@ -8527,8 +8527,8 @@ window.addEventListener('DOMContentLoaded', () => {
     <strong style="color:#ef4444;">Note:</strong> This application is meant for desktop only. Touch screens may experience limited functionality.
   </div>
   
-  <button onclick="window.forceLandscapeFullscreen(); document.getElementById('mobile-portrait-overlay').style.display='none';" style="cursor: pointer; margin-top: 32px; background: var(--acb, #3dba6e); color: #fff; padding: 12px 24px; border: none; font-weight: bold; border-radius: 8px; font-family: inherit; width: 100%; max-width: 250px;">Force Landscape (Auto-Rotate)</button>
-  <button onclick="document.getElementById('mobile-portrait-overlay').style.display='none'" style="cursor: pointer; margin-top: 12px; background: transparent; color: var(--t3, #888); padding: 8px 16px; border: none; font-family: inherit;">Dismiss</button>
+  <button onclick="window.forceLandscapeFullscreen(); document.getElementById('mobile-portrait-overlay').setAttribute('style', 'display: none !important;');" style="cursor: pointer; margin-top: 32px; background: var(--acb, #3dba6e); color: #fff; padding: 12px 24px; border: none; font-weight: bold; border-radius: 8px; font-family: inherit; width: 100%; max-width: 250px;">Force Landscape (Auto-Rotate)</button>
+  <button onclick="document.getElementById('mobile-portrait-overlay').setAttribute('style', 'display: none !important;');" style="cursor: pointer; margin-top: 12px; background: transparent; color: var(--t3, #888); padding: 8px 16px; border: none; font-family: inherit;">Dismiss</button>
 </div>
 
 <script src="/cookie-consent.js"></script>
