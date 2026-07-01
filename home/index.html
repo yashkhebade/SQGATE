@@ -8213,7 +8213,7 @@ loadProjData = function(data){
 // ═══════════════════════════════════════════════════════
 // FEATURE C: LIGHT / DARK THEME TOGGLE
 // ═══════════════════════════════════════════════════════
-var isLightTheme = false; // Default simulation to dark theme
+var isLightTheme = true; // Default simulation to light theme
 
 document.getElementById('btn-theme').addEventListener('click', function() {
   isLightTheme = !isLightTheme;
@@ -8225,20 +8225,8 @@ document.getElementById('btn-theme').addEventListener('click', function() {
 });
 
 (function(){
-  try {
-    var saved = localStorage.getItem('lgf_theme');
-    if (saved==='light') {
-      isLightTheme=true;
-    }
-  } catch(e){}
-  
   if(isLightTheme) {
     document.getElementById('pg-editor').classList.add('theme-light');
-    var tb=document.getElementById('btn-theme');
-    if(tb) tb.textContent='◑ Dark';
-  } else {
-    var tb=document.getElementById('btn-theme');
-    if(tb) tb.textContent='◑ Light';
   }
 })();
 
