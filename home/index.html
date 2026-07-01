@@ -1139,7 +1139,15 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 
 @media (max-width: 900px) {
   .login-left { display: none; }
-  .login-right { width: 100%; padding: 0 40px; background: url('/login_bg_v3.png') center/cover no-repeat; }
+  .login-right { 
+    width: 100%; 
+    padding: 40px 24px; 
+    background: linear-gradient(rgba(10, 15, 35, 0.75), rgba(5, 10, 25, 0.9)), url('/login_bg_v3.png') center/cover no-repeat; 
+  }
+  .login-input {
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
 }
 
 /* ══ PROJECTS PAGE ═══════════════════════════════════════════════ */
@@ -1990,6 +1998,9 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
     </div>
     <div class="proj-user">
       <div style="display:flex;align-items:center;gap:12px;margin-right:16px;">
+        <button onclick="toggleAppFullscreen()" title="Toggle Fullscreen" style="background:transparent;border:none;color:var(--t2);cursor:pointer;padding:4px;display:flex;align-items:center;transition:color 0.2s;" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t2)'">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+        </button>
         <a href="https://docs.google.com/forms/d/e/1FAIpQLSc5AzzP2NccDkCbKAb5mVvefYFc5_X-EkJZx5RLWO7aqQ_8cw/viewform" target="_blank" id="btn-feedback-dash" title="Feedback / Contact" style="text-decoration:none;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:6px;background:var(--bg2);border:1px solid var(--b1);color:var(--t2);transition:all .2s ease;" onmouseover="this.style.borderColor='#7248b9';this.style.color='#7248b9';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--b1)';this.style.color='var(--t2)';this.style.transform='none'">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="17" y2="8"></line><line x1="12" y1="12" x2="17" y2="12"></line><line x1="12" y1="16" x2="17" y2="16"></line><line x1="8" y1="8" x2="8.01" y2="8"></line><line x1="8" y1="12" x2="8.01" y2="12"></line><line x1="8" y1="16" x2="8.01" y2="16"></line></svg>
         </a>
@@ -8517,7 +8528,7 @@ document.getElementById('cvwrap').addEventListener("touchmove", touchHandler, {p
 document.getElementById('cvwrap').addEventListener("touchend", touchHandler, {passive: false});
 
 // Mobile Fullscreen Toggle
-document.getElementById('mobile-fullscreen-btn').addEventListener('click', function() {
+function toggleAppFullscreen() {
   function lockLandscape() {
     if (screen.orientation && screen.orientation.lock) {
       screen.orientation.lock('landscape').catch(e => console.log('Orientation lock failed:', e));
@@ -8543,7 +8554,9 @@ document.getElementById('mobile-fullscreen-btn').addEventListener('click', funct
       screen.orientation.unlock();
     }
   }
-});
+}
+
+document.getElementById('mobile-fullscreen-btn').addEventListener('click', toggleAppFullscreen);
 window.forceLandscapeFullscreen = function() {
   function lockLandscape() {
     if (screen.orientation && screen.orientation.lock) {
