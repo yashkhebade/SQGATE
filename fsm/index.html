@@ -75,12 +75,12 @@ function captureTelemetry() {
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
     :root {
-      /* SQGATE Deep Space Blue Palette (Liquid Glass) */
-      --bg0: #060813;
-      --bg1: rgba(12, 15, 28, 0.65);
-      --bg2: rgba(18, 22, 38, 0.65);
-      --bg3: rgba(26, 32, 53, 0.65);
-      --b1: rgba(255, 255, 255, 0.08);
+      /* SQGATE Soft Dark Palette (Light Dark) */
+      --bg0: #1a1b26;
+      --bg1: rgba(36, 40, 59, 0.65);
+      --bg2: rgba(65, 72, 104, 0.65);
+      --bg3: rgba(86, 95, 137, 0.65);
+      --b1: rgba(255, 255, 255, 0.1);
       --b2: rgba(255, 255, 255, 0.12);
       --t1: #ffffff;
       --t2: #94a3b8;
@@ -809,7 +809,7 @@ function captureTelemetry() {
 .fsm-panel, .sqgate-em-box { box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); }
 
 /* BACKGROUND ORBS */
-.bg-orbs { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; background: #060813; }
+.bg-orbs { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; background: var(--bg0); }
 .orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5; animation: float 20s infinite ease-in-out alternate; }
 .orb-1 { width: 400px; height: 400px; background: #8b5cf6; top: -100px; left: -100px; }
 .orb-2 { width: 500px; height: 500px; background: #10b981; bottom: -150px; right: -100px; animation-delay: -5s; }
@@ -1111,6 +1111,15 @@ function captureTelemetry() {
            data-ad-slot="9876543210"
            data-ad-format="horizontal"></ins>
       <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </div>
+
+    <!-- SEO TOOL DESCRIPTIONS FOR ADSENSE CRAWLER -->
+    <div style="margin-top: 24px; padding: 16px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; font-family: var(--fmain); line-height: 1.5; color: var(--text-muted); font-size: 11px;">
+      <h3 style="color: var(--text-primary); margin-top: 0; font-size: 13px; margin-bottom: 8px;">About SQGATE</h3>
+      <p style="margin-bottom: 8px;"><strong>1. Visual Circuit Simulator:</strong> Interactively build and simulate complex digital logic circuits using a drag-and-drop interface.</p>
+      <p style="margin-bottom: 8px;"><strong>2. FSM Designer:</strong> Graphically draw state diagrams and automatically generate synthesizable Verilog HDL code.</p>
+      <p style="margin-bottom: 8px;"><strong>3. Logic Quest Game:</strong> Master Boolean concepts by building specific truth tables using a restricted inventory of logic gates.</p>
+      <p style="margin-bottom: 0;"><strong>4. K-Map Solver:</strong> Simplify Boolean algebra visually with support for up to 6 variable Karnaugh maps.</p>
     </div>
 
   </div>
