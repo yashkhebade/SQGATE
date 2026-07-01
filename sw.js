@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sqgate-cache-v14';
+const CACHE_NAME = 'sqgate-cache-v15';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -16,7 +16,7 @@ const ASSETS_TO_CACHE = [
   '/truth-table-generator.html',
   '/verilog-simulator.html',
   '/icon.webp',
-  '/login_bg.webp',
+  '/login_bg_v2.png',
   '/simulator_preview.webp',
   '/manifest.json'
 ];
