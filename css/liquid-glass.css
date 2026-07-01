@@ -2,7 +2,7 @@
 
 /* Base style for elements that previously had liquid glass */
 .liquid-panel, .login-card, .proj-card, .new-card, .mbox, .wl-box, .share-box, .prop-panel, .sqgate-em-box, 
-#sidebar, #right-panel, .tt-gen-wrap, .blog-card {
+.tt-gen-wrap, .blog-card {
   background: #111424; /* Solid, sleek dark navy/black background */
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.05); /* Subtle thin border */
@@ -50,11 +50,7 @@
   box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
 }
 
-/* Toolbar button styling (Hover effect ONLY, do not touch base background) */
-.tb-btn:hover, .tb-btn-text:hover {
-  background: rgba(255, 255, 255, 0.05); /* Slight highlight */
-  border-radius: 8px;
-}
+/* Toolbar button styling removed to allow index.html native glassmorphic pill buttons */
 
 /* Typography refinements */
 h1, h2, h3, h4, h5, h6 {

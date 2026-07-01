@@ -264,13 +264,14 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg0);font-fami
 /* ══ EDITOR ══════════════════════════════════════════════════════ */
 #pg-editor{
   position:fixed;inset:0;display:none;
-  flex-direction:column;z-index:800;background:var(--bg0);
+  flex-direction:column;z-index:800;
+  background: radial-gradient(circle at 50% 50%, #0c1222 0%, #05070e 100%);
 }
 #ed-topbar{
   position:relative;
-  height:46px; background:rgba(18, 18, 23, 0.65); border-bottom:1px solid var(--b1);
-  display:flex; align-items:center; padding:0 8px; gap:4px; flex-shrink:0; z-index:200;
-  overflow:hidden; backdrop-filter:blur(16px); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); border-bottom: 1px solid rgba(255,255,255,0.08);  box-shadow:0 1px 0 rgba(255,255,255,.03);
+  height:54px; background:rgba(6, 8, 15, 0.65); border-bottom:1px solid rgba(255,255,255,0.06);
+  display:flex; align-items:center; padding:0 16px; gap:10px; flex-shrink:0; z-index:200;
+  overflow:hidden; backdrop-filter:blur(24px); box-shadow:0 4px 30px rgba(0,0,0,0.6);
 }
 .ed-logo{
   font-weight:800;font-size:13px;letter-spacing:2px;color:var(--acc);
@@ -293,27 +294,29 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg0);font-fami
 .tb-btn {
   background:transparent;border:1px solid transparent;color:var(--t2);
   display:flex;align-items:center;justify-content:center;
-  width:32px;height:32px;border-radius:var(--radius);cursor:pointer;
-  transition:all var(--ts) var(--ease);
+  width:36px;height:36px;border-radius:50%;cursor:pointer;
+  transition:all 0.2s cubic-bezier(0.2,0.8,0.2,1);
   flex-shrink:0;
 }
-.tb-btn:hover,.tb-btn:focus-visible { background:var(--bg3); color:var(--t1); border-color:var(--b1); outline:none; }
-.tb-btn.act { background:var(--acc-glow); color:var(--acc); border-color:var(--acc); }
+.tb-btn:hover,.tb-btn:focus-visible { background:rgba(255,255,255,0.08); color:var(--t1); border-color:rgba(255,255,255,0.15); box-shadow:0 0 12px rgba(255,255,255,0.05); outline:none; transform:translateY(-1px); }
+.tb-btn.act { background:var(--acc-glow); color:var(--acc); border-color:var(--acc); box-shadow:0 0 15px var(--acc-glow); }
 .tb-btn:disabled { opacity:0.3; cursor:not-allowed; }
-.tb-btn svg { width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.tb-btn svg { width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; transition:all 0.2s; }
+.tb-btn:hover svg { transform:scale(1.1); }
 
 /* Text+Icon button */
 .tb-btn-text {
-  background:transparent;border:1px solid transparent;color:var(--t2);
-  display:flex;align-items:center;gap:4px;
-  padding:0 8px;height:32px;border-radius:var(--radius);cursor:pointer;
-  font-family:var(--fsans);font-size:12px;font-weight:500;
-  transition:all var(--ts) var(--ease);
+  background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);color:var(--t2);
+  display:flex;align-items:center;gap:8px;
+  padding:0 16px;height:36px;border-radius:18px;cursor:pointer;
+  font-family:var(--fsans);font-size:13px;font-weight:600; letter-spacing:0.3px;
+  transition:all 0.2s cubic-bezier(0.2,0.8,0.2,1);
   white-space:nowrap; flex-shrink:0;
 }
-.tb-btn-text:hover,.tb-btn-text:focus-visible { background:var(--bg3); color:var(--t1); border-color:var(--b1); outline:none; }
-.tb-btn-text.act { background:var(--acc-glow); color:var(--acc); border-color:var(--acc); }
-.tb-btn-text svg { width:15px; height:15px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.tb-btn-text:hover,.tb-btn-text:focus-visible { background:rgba(255,255,255,0.1); color:var(--t1); border-color:rgba(255,255,255,0.2); box-shadow:0 4px 12px rgba(0,0,0,0.2); outline:none; transform:translateY(-2px); }
+.tb-btn-text.act { background:var(--acc-glow); color:var(--acc); border-color:var(--acc); box-shadow:0 4px 15px var(--acc-glow); }
+.tb-btn-text svg { width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; transition:all 0.2s; }
+.tb-btn-text:hover svg { transform:scale(1.1) rotate(-2deg); }
 
 /* Primary button */
 .tb-btn-primary {
@@ -1211,33 +1214,34 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 
 /* ── Sidebar ── */
 #sidebar{
-  width:192px;background:var(--bg1);border-right:1px solid var(--b1);
+  width:210px;background:rgba(8, 10, 18, 0.5);backdrop-filter:blur(24px);border-right:1px solid rgba(255,255,255,0.06);
   display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;
-  transition:width .16s ease;
+  transition:width .16s ease;box-shadow: 4px 0 24px rgba(0,0,0,0.4);z-index:100;
 }
 #sidebar.off{width:0}
-#sb-srch{padding:7px 8px;border-bottom:1px solid var(--b1);flex-shrink:0}
+#sb-srch{padding:12px;border-bottom:1px solid rgba(255,255,255,0.06);flex-shrink:0;background:rgba(0,0,0,0.2)}
 #sb-srch input{
-  width:100%;background:var(--bg0);border:1px solid var(--b1);border-radius:3px;
-  color:var(--t1);font-size:11.5px;padding:5px 8px;outline:none;font-family:var(--fsans);
+  width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:6px;
+  color:var(--t1);font-size:13px;padding:8px 12px;outline:none;font-family:var(--fsans);transition:all 0.2s;
 }
 #sb-srch input::placeholder{color:var(--t3)}
-#sb-srch input:focus{border-color:var(--b2)}
-#sb-list{flex:1;overflow-y:auto;overflow-x:hidden}
-#sb-list::-webkit-scrollbar{width:4px}
-#sb-list::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px}
+#sb-srch input:focus{border-color:var(--acc);box-shadow:0 0 0 3px var(--acc-glow);background:rgba(255,255,255,0.06)}
+#sb-list{flex:1;overflow-y:auto;overflow-x:hidden;padding:8px 0;}
+#sb-list::-webkit-scrollbar{width:4px; opacity:0; transition:opacity 0.2s;}
+#sb-list:hover::-webkit-scrollbar{opacity:1;}
+#sb-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:2px}
 /* Sidebar premium styles handled by primary block above */
-.sbi-ic{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-right:8px;box-shadow:0 0 6px currentColor;}
-.sbi-pins{font-family:var(--fmono);font-size:10px;color:var(--t3);margin-left:auto;background:rgba(255,255,255,0.05);padding:2px 4px;border-radius:4px;}
+.sbi-ic{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-right:10px;box-shadow:0 0 8px currentColor;}
+.sbi-pins{font-family:var(--fmono);font-size:10px;color:var(--t3);margin-left:auto;background:rgba(255,255,255,0.08);padding:3px 6px;border-radius:12px;}
 .cust-add{
-  display:flex;align-items:center;justify-content:center;gap:5px;
-  margin:5px 8px;padding:6px;border:1px dashed var(--b2);border-radius:3px;
-  cursor:pointer;font-size:11.5px;color:var(--t3);transition:all .12s;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  margin:10px 12px;padding:10px;border:1px dashed rgba(255,255,255,0.2);border-radius:8px;
+  cursor:pointer;font-size:12.5px;color:var(--t2);transition:all .2s;
 }
-.cust-add:hover{border-color:var(--acc);color:var(--acc);background:#18281e}
+.cust-add:hover{border-color:var(--acc);color:var(--t1);background:rgba(139,92,246,0.1);transform:translateY(-1px);}
 
 /* ── Canvas ── */
-#cvwrap{flex:1;position:relative;overflow:hidden;background:var(--bg2);min-width:0}
+#cvwrap{flex:1;position:relative;overflow:hidden;background:transparent;min-width:0}
 #cvwrap.pc{cursor:crosshair}
 #cvwrap.pan{cursor:grab}
 #cvwrap.pan.dragging{cursor:grabbing}
@@ -1888,7 +1892,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;700&display=swap">
   <link rel="stylesheet" href="/css/liquid-glass.css">
 </head>
 <body>
