@@ -1,183 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>How to Solve Karnaugh Maps (K-Maps) Step-by-Step | SQGATE</title>
-  <meta name="description" content="A highly technical, comprehensive guide on solving Karnaugh Maps (K-Maps) for Boolean logic simplification. Learn rules, grouping, and advanced variables.">
-  <meta name="keywords" content="Karnaugh Map, K-Map, Boolean Algebra, Logic Design, Prime Implicants, Digital Electronics, SQGATE, 4-variable K-Map, Don't Care Conditions">
-  <link rel="canonical" href="https://sqgate.online/blog/posts/how-to-solve-karnaugh-maps.html">
-  <meta name="robots" content="index, follow, max-image-preview:large">
-  <link rel="icon" href="/icon.ico">
-  
-  <!-- OG Tags -->
-  <meta property="og:title" content="How to Solve Karnaugh Maps (K-Maps) Step-by-Step | SQGATE">
-  <meta property="og:description" content="A highly technical, comprehensive guide on solving Karnaugh Maps (K-Maps) for Boolean logic simplification. Learn rules, grouping, and advanced variables.">
-  <meta property="og:type" content="article">
-  <meta property="og:url" content="https://sqgate.online/blog/posts/how-to-solve-karnaugh-maps.html">
-  <meta property="og:image" content="https://sqgate.online/blog/posts/images/karnaugh_map_1782910176565.png">
-  
-  <meta name="twitter:card" content="summary_large_image">
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
-  
-  <link rel="stylesheet" href="/css/liquid-glass.css">
-  
-  <style>
-    body {
-      background-color: #060813;
-      color: #cbd5e1;
-      font-family: 'Inter', sans-serif;
-      margin: 0;
-      padding: 0;
-      line-height: 1.7;
-    }
-    .nav {
-      padding: 20px 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: rgba(12, 15, 28, 0.8);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    .logo {
-      font-family: 'Outfit', sans-serif;
-      font-weight: 800;
-      font-size: 24px;
-      color: #fff;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .article-header {
-      max-width: 800px;
-      margin: 60px auto 40px;
-      padding: 0 20px;
-      text-align: center;
-    }
-    .article-header h1 {
-      font-family: 'Outfit', sans-serif;
-      font-size: 42px;
-      color: #fff;
-      margin-bottom: 20px;
-      line-height: 1.2;
-    }
-    .article-meta {
-      color: #64748b;
-      font-size: 14px;
-    }
-    .article-content {
-      max-width: 800px;
-      margin: 0 auto 80px;
-      padding: 40px;
-    }
-    .article-content h2, .article-content h3, .article-content h4 {
-      font-family: 'Outfit', sans-serif;
-      color: #fff;
-      margin-top: 40px;
-      margin-bottom: 16px;
-    }
-    .article-content a {
-      color: #3b82f6;
-      text-decoration: none;
-    }
-    .article-content a:hover {
-      text-decoration: underline;
-    }
-    .article-content pre {
-      background: rgba(0, 0, 0, 0.5);
-      padding: 16px;
-      border-radius: 8px;
-      overflow-x: auto;
-      font-family: 'Fira Code', monospace;
-      font-size: 14px;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-    .article-content code {
-      font-family: 'Fira Code', monospace;
-      background: rgba(255, 255, 255, 0.1);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 0.9em;
-    }
-    .article-content pre code {
-      background: none;
-      padding: 0;
-    }
-    .article-content img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 12px;
-      margin: 24px 0;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-    .cta-banner {
-      margin-top: 60px;
-      padding: 40px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-    }
-    .cta-banner h3 {
-      margin: 0;
-      font-family: 'Outfit', sans-serif;
-      font-size: 28px;
-    }
-    .blog-layout {
-      display: grid;
-      grid-template-columns: 250px 1fr 250px;
-      gap: 20px;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .main-column {
-      min-width: 0;
-    }
-    .ad-sidebar {
-      position: sticky;
-      top: 100px;
-      height: calc(100vh - 120px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background: rgba(20, 25, 45, 0.4);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 12px;
-      padding: 15px;
-      overflow: hidden;
-    }
-    .ad-label {
-      font-size: 10px;
-      color: #64748b;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 10px;
-    }
-    @media (max-width: 1100px) {
-      .blog-layout {
-        grid-template-columns: 1fr;
-      }
-      .ad-sidebar {
-        position: static;
-        height: auto;
-        min-height: 250px;
-        margin-bottom: 20px;
-      }
-    }
-  </style>
-  
-  <script type="application/ld+json">
-    {
+import re
+import datetime
+import os
+
+template_path = r'C:\Users\Admin\.gemini\antigravity\worktrees\resilient-hertz\apply-code-changes\blog\template.html'
+output_path = r'C:\Users\Admin\.gemini\antigravity\worktrees\resilient-hertz\apply-code-changes\blog\posts\how-to-solve-karnaugh-maps.html'
+
+with open(template_path, 'r', encoding='utf-8') as f:
+    template = f.read()
+
+META_TITLE = 'How to Solve Karnaugh Maps (K-Maps) Step-by-Step | SQGATE'
+META_DESCRIPTION = 'A highly technical, comprehensive guide on solving Karnaugh Maps (K-Maps) for Boolean logic simplification. Learn rules, grouping, and advanced variables.'
+META_KEYWORDS = 'Karnaugh Map, K-Map, Boolean Algebra, Logic Design, Prime Implicants, Digital Electronics, SQGATE, 4-variable K-Map, Don\'t Care Conditions'
+CANONICAL_URL = 'https://sqgate.online/blog/posts/how-to-solve-karnaugh-maps.html'
+TITLE = 'How to Solve Karnaugh Maps (K-Maps) Step-by-Step: The Ultimate Engineering Guide'
+AUTHOR = 'Hardware Engineering Team'
+DATE = 'July 2, 2026'
+READ_TIME = '15 min read'
+
+SCHEMA_JSON = '''{
   "@context": "https://schema.org",
   "@type": "TechArticle",
   "headline": "How to Solve Karnaugh Maps (K-Maps) Step-by-Step: The Ultimate Engineering Guide",
@@ -189,57 +29,9 @@
   "image": [
     "https://sqgate.online/blog/posts/images/karnaugh_map_1782910176565.png"
   ]
-}
-  </script>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7398330076279399" crossorigin="anonymous"></script>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+}'''
 
-  gtag('config', 'G-XXXXXXXXXX');
-</script>
-</head>
-<body>
-  <svg class="liquid-glass-svg-filter" style="position: absolute; width: 0; height: 0; pointer-events: none;">
-    <defs>
-      <filter id="liquid-glass-filter" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
-        <feTurbulence type="fractalNoise" baseFrequency="0.05 0.05" numOctaves="3" result="noise" />
-        <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.15 0" in="noise" result="coloredNoise" />
-        <feBlend in="SourceGraphic" in2="coloredNoise" mode="screen" />
-      </filter>
-    </defs>
-  </svg>
-
-  <nav class="nav">
-    <a href="/home/" class="logo">
-      <img src="/icon.webp" width="32" height="32" alt="SQGATE Logo">
-      SQGATE
-    </a>
-    <a href="/blog/" style="color: #94a3b8; text-decoration: none; font-weight: 500; margin-left: 20px;">← Back to Blog</a>
-    <div style="flex-grow: 1;"></div>
-    <a href="/home/" class="liquid-btn">Launch Simulator</a>
-  </nav>
-
-  <div class="blog-layout">
-    <aside class="ad-sidebar">
-      <div class="ad-label">Advertisement</div>
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7398330076279399" data-ad-slot="1111111111" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-    </aside>
-
-    <div class="main-column">
-      <header class="article-header">
-        <h1>How to Solve Karnaugh Maps (K-Maps) Step-by-Step: The Ultimate Engineering Guide</h1>
-        <div class="article-meta">
-          By Hardware Engineering Team | Published on July 2, 2026 | 15 min read
-        </div>
-      </header>
-
-      <main class="article-content liquid-panel">
-        
+CONTENT = '''
 <p>In digital logic design, the simplification of Boolean algebraic expressions is a foundational task. While Boolean algebra provides analytical rules for minimizing logic circuits, Karnaugh Maps (K-Maps) offer a more intuitive, visual method for finding the minimal sum-of-products (SOP) or product-of-sums (POS) expressions. Developed by Maurice Karnaugh in 1953, the K-Map translates truth tables into a two-dimensional grid where adjacent cells represent minterms that differ by exactly one Boolean variable. This property, rooted in Gray code ordering, guarantees that visually adjacent cells can be logically simplified.</p>
 
 <img src="images/karnaugh_map_1782910176565.png" alt="Karnaugh Map Visualization" />
@@ -334,21 +126,36 @@
 <h2>12. Conclusion</h2>
 <p>The Karnaugh Map remains an indispensable technique in the hardware engineer's toolkit. It bridges the gap between abstract Boolean algebra and tangible circuit synthesis, providing a visually intuitive method for achieving optimal logic minimization. While algorithmic minimization software has taken over for massively complex, high-variable designs, the fundamental understanding of logic adjacency, prime implicants, and boolean simplification imparted by mastering K-Maps is irreplaceable. By internalizing these graphical rules, engineers can instinctively optimize smaller control circuits, debug state machines, and preemptively resolve hardware glitches with unparalleled efficiency.</p>
 <p>We encourage you to practice these concepts using our interactive tools. The transition from theoretical simplification to functional simulation is the cornerstone of robust digital design.</p>
+'''
 
-        
-        <div class="cta-banner">
-          <h3>Ready to test this out?</h3>
-          <p>Simulate logic gates, export Verilog, and solve Karnaugh maps instantly in your browser.</p>
-          <a href="/home/" class="liquid-btn" style="font-size: 16px; padding: 12px 24px;">Open SQGATE Simulator (Free)</a>
-        </div>
-      </main>
-    </div>
+final_html = template.replace('{{META_TITLE}}', META_TITLE)
+final_html = final_html.replace('{{META_DESCRIPTION}}', META_DESCRIPTION)
+final_html = final_html.replace('{{META_KEYWORDS}}', META_KEYWORDS)
+final_html = final_html.replace('{{CANONICAL_URL}}', CANONICAL_URL)
+final_html = final_html.replace('{{TITLE}}', TITLE)
+final_html = final_html.replace('{{AUTHOR}}', AUTHOR)
+final_html = final_html.replace('{{DATE}}', DATE)
+final_html = final_html.replace('{{READ_TIME}}', READ_TIME)
+final_html = final_html.replace('{{SCHEMA_JSON}}', SCHEMA_JSON)
+final_html = final_html.replace('{{CONTENT}}', CONTENT)
+final_html = final_html.replace('https://sqgate.online/og-image.png', 'https://sqgate.online/blog/posts/images/karnaugh_map_1782910176565.png')
 
-    <aside class="ad-sidebar">
-      <div class="ad-label">Advertisement</div>
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7398330076279399" data-ad-slot="2222222222" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-    </aside>
-  </div>
-</body>
-</html>
+GA_SCRIPT = '''<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-XXXXXXXXXX');
+</script>
+'''
+
+if GA_SCRIPT not in final_html:
+    final_html = final_html.replace('</head>', GA_SCRIPT + '</head>')
+
+os.makedirs(os.path.dirname(output_path), exist_ok=True)
+with open(output_path, 'w', encoding='utf-8') as f:
+    f.write(final_html)
+
+print('Successfully generated HTML.')

@@ -1125,6 +1125,44 @@ function checkTourAction(actionName) {
 </script>
 
 <script src="/cookie-consent.js"></script>
+<!-- MOBILE PORTRAIT OVERLAY -->
+<style>
+#mobile-portrait-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--bg0, #0f111a);
+  z-index: 100000;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 24px;
+}
+@media (orientation: portrait) {
+  #mobile-portrait-overlay { display: flex !important; animation: fadeInOverlay 0.4s ease-out forwards; }
+}
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes rotatePhone {
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(-90deg); }
+  100% { transform: rotate(-90deg); }
+}
+</style>
+<div id="mobile-portrait-overlay">
+  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--acb, #3dba6e)" stroke-width="2" style="margin-bottom: 20px; animation: rotatePhone 2s infinite ease-in-out;">
+    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+    <line x1="12" y1="18" x2="12.01" y2="18"/>
+  </svg>
+  <h2 style="color:#fff; margin-bottom: 12px; font-family:monospace;">Please Rotate Device</h2>
+  <p style="color:#aaa; font-size:14px; max-width:300px; margin-bottom: 24px;">Logic Quest is optimized for landscape viewing. Please rotate your phone.</p>
+  <button onclick="document.documentElement.requestFullscreen().then(() => screen.orientation.lock('landscape')).catch(e=>console.log(e)); document.getElementById('mobile-portrait-overlay').setAttribute('style', 'display: none !important;');" style="cursor: pointer; margin-top: 32px; background: #3dba6e; color: #fff; padding: 12px 24px; border: none; font-weight: bold; border-radius: 8px; width: 100%; max-width: 250px;">Force Landscape</button>
+  <button onclick="document.getElementById('mobile-portrait-overlay').setAttribute('style', 'display: none !important;');" style="cursor: pointer; margin-top: 12px; background: transparent; color: #888; padding: 8px 16px; border: none;">Dismiss</button>
+</div>
+<script src="/cookie-consent.js"></script>
 </body>
 
 </html>
