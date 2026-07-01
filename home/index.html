@@ -428,7 +428,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg0);font-fami
   width:100%;height:100%;border-radius:var(--radius);
   display:flex;align-items:center;justify-content:center;flex-direction:column;
   position:relative;overflow:visible;
-  background:rgba(20, 20, 26, 0.85);border:1px solid var(--b2);color:var(--t1);
+  background:rgba(30, 41, 59, 0.85);border:1px solid #475569;color:var(--t1);
   backdrop-filter:blur(8px);transition:all var(--ts) var(--ease);
 }
 .gate:hover .gbody{filter:brightness(1.12)}
@@ -491,7 +491,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg0);font-fami
 /* Pins — refined */
 .pin{
   position:absolute;width:10px;height:10px;border-radius:50%;
-  background:rgba(11,13,18,.9);border:1.5px solid var(--b2);
+  background:rgba(30,41,59,.9);border:1.5px solid #64748b;
   cursor:crosshair;pointer-events:all;
   transition:transform .1s var(--ease),border-color .1s,background .1s,box-shadow .1s;
 }
@@ -6258,8 +6258,8 @@ function attachICShape(gate, el) {
   var rect = document.createElementNS(svgNS, 'path');
   var bgPath = "M 6 0 L 55 0 A 15 15 0 0 1 85 0 L 134 0 Q 140 0 140 6 L 140 174 Q 140 180 134 180 L 6 180 Q 0 180 0 174 L 0 6 Q 0 0 6 0 Z";
   rect.setAttribute('d', bgPath);
-  rect.setAttribute('fill', '#11151c');
-  rect.setAttribute('stroke', '#4a5568');
+  rect.setAttribute('fill', '#1e293b');
+  rect.setAttribute('stroke', '#64748b');
   rect.setAttribute('stroke-width', '2');
   svg.appendChild(rect);
   
@@ -6304,7 +6304,7 @@ function attachICShape(gate, el) {
     var box = document.createElementNS(svgNS, 'rect');
     box.setAttribute('x', cx - boxW/2); box.setAttribute('y', cy - boxH/2);
     box.setAttribute('width', boxW); box.setAttribute('height', boxH);
-    box.setAttribute('fill', '#11151c'); box.setAttribute('stroke', '#64748b');
+    box.setAttribute('fill', '#1e293b'); box.setAttribute('stroke', '#94a3b8');
     box.setAttribute('stroke-width', '1.5');
     svg.appendChild(box);
     
@@ -6312,14 +6312,14 @@ function attachICShape(gate, el) {
       var inv = document.createElementNS(svgNS, 'circle');
       inv.setAttribute('cx', cx + boxW/2 + 1.5); inv.setAttribute('cy', cy);
       inv.setAttribute('r', 1.5);
-      inv.setAttribute('fill', '#11151c'); inv.setAttribute('stroke', '#64748b');
+      inv.setAttribute('fill', '#1e293b'); inv.setAttribute('stroke', '#94a3b8');
       inv.setAttribute('stroke-width', '1.5');
       svg.appendChild(inv);
     }
     
     var text = document.createElementNS(svgNS, 'text');
     text.setAttribute('x', cx); text.setAttribute('y', cy + 1);
-    text.setAttribute('fill', '#94a3b8');
+    text.setAttribute('fill', '#cbd5e1');
     text.setAttribute('font-size', '9');
     text.setAttribute('font-family', 'monospace');
     text.setAttribute('text-anchor', 'middle');
