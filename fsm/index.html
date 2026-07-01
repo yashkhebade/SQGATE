@@ -1533,7 +1533,10 @@ window.addEventListener('keydown', e => {
   if (k === 'v') setTool('select');
   if (k === 's') setTool('state');
   if (k === 't') setTool('transition');
-  if (k === 'delete' || k === 'backspace') deleteSelected();
+  if (k === 'delete' || k === 'backspace') {
+    e.preventDefault();
+    deleteSelected();
+  }
   if (k === 'f') fitView();
   if (k === 'z' && e.ctrlKey) { e.preventDefault(); undo(); }
 });
@@ -1633,14 +1636,14 @@ function selectEl(type, id) {
 }
 
 function deleteSelected() {
-  if (!selectedId) return;
+  if (selectedId == null) return;
   pushHistory();
   if (selectedType === 'state') {
-    states = states.filter(s => s.id !== selectedId);
-    transitions = transitions.filter(t => t.from !== selectedId && t.to !== selectedId);
+    states = states.filter(s => s.id != selectedId);
+    transitions = transitions.filter(t => t.from != selectedId && t.to != selectedId);
     if (states.length > 0 && !states.some(s => s.isInitial)) states[0].isInitial = true;
   } else if (selectedType === 'transition') {
-    transitions = transitions.filter(t => t.id !== selectedId);
+    transitions = transitions.filter(t => t.id != selectedId);
   }
   selectedType = null;
   selectedId = null;
@@ -1739,6 +1742,12 @@ function generateAndShow() {
 }
 
 // ─── VERILOG GENERATOR ───────────────────────────────────────────────────────
+function safeVName(name) {
+  let clean = name.trim().replace(/[^a-zA-Z0-9_]/g, '_');
+  if (/^[0-9]/.test(clean)) clean = 'S_' + clean;
+  return clean.toUpperCase() || 'S_UNNAMED';
+}
+
 function generateVerilog() {
   const modName = document.getElementById('mod-name').value || 'fsm';
   const clkName = document.getElementById('clk-name').value || 'clk';
@@ -1769,7 +1778,7 @@ function generateVerilog() {
   v += `  // State encoding (${encType})\n`;
   v += `  localparam STATE_W = ${paramWidth};\n`;
   states.forEach((s, i) => {
-    v += `  localparam ${s.name.toUpperCase()} = ${paramWidth}'b${getEncoding(i)};\n`;
+    v += `  localparam ${safeVName(s.name)} = ${paramWidth}'b${getEncoding(i)};\n`;
   });
   v += `\n  reg [STATE_W-1:0] state, next_state;\n\n`;
 
@@ -1787,19 +1796,19 @@ function generateVerilog() {
   v += `    case (state)\n`;
   states.forEach(s => {
     const outs = transitions.filter(t => t.from === s.id);
-    v += `      ${s.name.toUpperCase()}: begin\n`;
+    v += `      ${safeVName(s.name)}: begin\n`;
     if (outs.length > 0) {
       outs.forEach((t, idx) => {
         const toState = states.find(st => st.id === t.to);
         if (!toState) return;
         const kw = idx === 0 ? 'if' : 'else if';
         const cond = t.condition || "1'b1";
-        v += `        ${kw} (${cond}) next_state = ${toState.name.toUpperCase()};\n`;
+        v += `        ${kw} (${cond}) next_state = ${safeVName(toState.name)};\n`;
       });
     }
     v += `      end\n`;
   });
-  v += `      default: next_state = ${initState.name.toUpperCase()};\n`;
+  v += `      default: next_state = ${safeVName(initState.name)};\n`;
   v += `    endcase\n`;
   v += `  end\n\n`;
 
@@ -1808,7 +1817,7 @@ function generateVerilog() {
     v += `  always @(*) begin\n`;
     v += `    case (state)\n`;
     states.forEach(s => {
-      v += `      ${s.name.toUpperCase()}: ${outputs.split('[')[0].trim()} = ${s.output || "'b0"};\n`;
+      v += `      ${safeVName(s.name)}: ${outputs.split('[')[0].trim()} = ${s.output || "'b0"};\n`;
     });
     v += `      default: ${outputs.split('[')[0].trim()} = 'b0;\n`;
     v += `    endcase\n`;
@@ -1821,9 +1830,10 @@ function generateVerilog() {
     states.forEach(s => {
       const outs = transitions.filter(t => t.from === s.id && t.output);
       if (outs.length) {
-        v += `      ${s.name.toUpperCase()}: begin\n`;
+        v += `      ${safeVName(s.name)}: begin\n`;
         outs.forEach(t => {
-          v += `        if (${t.condition}) ${outputs.split('[')[0].trim()} = ${t.output};\n`;
+          const cond = t.condition || "1'b1";
+          v += `        if (${cond}) ${outputs.split('[')[0].trim()} = ${t.output};\n`;
         });
         v += `      end\n`;
       }
@@ -1943,13 +1953,10 @@ function clockTick() {
   const outs = transitions.filter(t => t.from === simState);
   
   // Simple evaluation simulation for UI demonstration
-  for (let t of outs) {
-    if (t.condition && t.condition !== '1' && t.condition !== "1'b1") {
-       // Just pick first transition if condition not easily eval-able in browser
-       next = states.find(st => st.id === t.to) || current;
-       break;
-    }
-    next = states.find(st => st.id === t.to) || current;
+  if (outs.length > 0) {
+    // Randomly pick a valid transition so the simulation explores all paths visually
+    const randIdx = Math.floor(Math.random() * outs.length);
+    next = states.find(st => st.id === outs[randIdx].to) || current;
   }
   
   simLog.push({
