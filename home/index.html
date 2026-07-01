@@ -6116,6 +6116,8 @@ mkGateEl = function(gate) {
   var el = _origMkGateEl(gate);
   if (IEEE_TYPES.includes(gate.type)) {
     attachIEEEShape(gate, el);
+  } else if (gate.type.startsWith('ic74')) {
+    attachICShape(gate, el);
   }
   return el;
 };
@@ -6218,6 +6220,118 @@ function attachIEEEShape(gate, el) {
 
   svg.appendChild(g);
   body.appendChild(svg);
+}
+
+function attachICShape(gate, el) {
+  var body = el.querySelector('.gbody');
+  if (!body) return;
+  
+  // Keep the label, but move it to the top
+  var cnt = body.querySelector('div[style*="text-align:center"]');
+  if (cnt) {
+    cnt.style.position = 'absolute';
+    cnt.style.top = '10%';
+    cnt.style.width = '100%';
+    cnt.style.transform = 'translateY(-50%)';
+    cnt.style.fontSize = '0.9em';
+    cnt.style.color = '#cbd5e1';
+  }
+  
+  // Make body transparent
+  body.style.background = 'transparent';
+  body.style.border = 'none';
+  body.style.boxShadow = 'none';
+  
+  var svgNS = 'http://www.w3.org/2000/svg';
+  var svg = document.createElementNS(svgNS, 'svg');
+  svg.setAttribute('class', 'ic-svg-body');
+  svg.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:0;';
+  
+  // Use absolute pixel dimensions for exact drawing
+  svg.setAttribute('viewBox', '0 0 140 180');
+  
+  // 1. Draw the IC body
+  var rect = document.createElementNS(svgNS, 'path');
+  var bgPath = "M 6 0 L 55 0 A 15 15 0 0 1 85 0 L 134 0 Q 140 0 140 6 L 140 174 Q 140 180 134 180 L 6 180 Q 0 180 0 174 L 0 6 Q 0 0 6 0 Z";
+  rect.setAttribute('d', bgPath);
+  rect.setAttribute('fill', '#11151c');
+  rect.setAttribute('stroke', '#4a5568');
+  rect.setAttribute('stroke-width', '2');
+  svg.appendChild(rect);
+  
+  // 2. Draw internal wiring
+  var isHex = (gate.type === 'ic7404');
+  var numGates = isHex ? 6 : 4;
+  var logicSym = '';
+  if(gate.type==='ic7400') logicSym='&';
+  if(gate.type==='ic7408') logicSym='&';
+  if(gate.type==='ic7432') logicSym='≥1';
+  if(gate.type==='ic7402') logicSym='≥1';
+  if(gate.type==='ic7486') logicSym='=1';
+  if(gate.type==='ic7404') logicSym='1';
+  var isInv = ['ic7400','ic7402','ic7404'].includes(gate.type);
+  
+  var w = 140, h = 180;
+  
+  var wires = document.createElementNS(svgNS, 'path');
+  var wd = '';
+  
+  for (var gi=0; gi<numGates; gi++) {
+    var outPy = h*(gi+1)/(numGates+1);
+    var cx = w * 0.55;
+    var cy = outPy;
+    var boxW = 18, boxH = 18;
+    
+    // Output wire
+    wd += ' M ' + (cx + boxW/2 + (isInv?3:0)) + ' ' + cy + ' L ' + w + ' ' + cy;
+    
+    // Input wires
+    if (isHex) {
+      var inPy = h*(gi+1)/(numGates+1);
+      wd += ' M 0 ' + inPy + ' L ' + (cx - boxW/2) + ' ' + cy;
+    } else {
+      var inPy1 = h*(gi*2+1)/(8+1);
+      var inPy2 = h*(gi*2+2)/(8+1);
+      wd += ' M 0 ' + inPy1 + ' L ' + (cx - boxW/2 - 5) + ' ' + inPy1 + ' L ' + (cx - boxW/2 - 5) + ' ' + (cy - 4) + ' L ' + (cx - boxW/2) + ' ' + (cy - 4);
+      wd += ' M 0 ' + inPy2 + ' L ' + (cx - boxW/2 - 5) + ' ' + inPy2 + ' L ' + (cx - boxW/2 - 5) + ' ' + (cy + 4) + ' L ' + (cx - boxW/2) + ' ' + (cy + 4);
+    }
+    
+    // Logic box
+    var box = document.createElementNS(svgNS, 'rect');
+    box.setAttribute('x', cx - boxW/2); box.setAttribute('y', cy - boxH/2);
+    box.setAttribute('width', boxW); box.setAttribute('height', boxH);
+    box.setAttribute('fill', '#11151c'); box.setAttribute('stroke', '#64748b');
+    box.setAttribute('stroke-width', '1.5');
+    svg.appendChild(box);
+    
+    if (isInv) {
+      var inv = document.createElementNS(svgNS, 'circle');
+      inv.setAttribute('cx', cx + boxW/2 + 1.5); inv.setAttribute('cy', cy);
+      inv.setAttribute('r', 1.5);
+      inv.setAttribute('fill', '#11151c'); inv.setAttribute('stroke', '#64748b');
+      inv.setAttribute('stroke-width', '1.5');
+      svg.appendChild(inv);
+    }
+    
+    var text = document.createElementNS(svgNS, 'text');
+    text.setAttribute('x', cx); text.setAttribute('y', cy + 1);
+    text.setAttribute('fill', '#94a3b8');
+    text.setAttribute('font-size', '9');
+    text.setAttribute('font-family', 'monospace');
+    text.setAttribute('text-anchor', 'middle');
+    text.setAttribute('dominant-baseline', 'middle');
+    text.textContent = logicSym;
+    svg.appendChild(text);
+  }
+  
+  wires.setAttribute('d', wd);
+  wires.setAttribute('fill', 'none');
+  wires.setAttribute('stroke', '#64748b');
+  wires.setAttribute('stroke-width', '1.5');
+  
+  svg.insertBefore(wires, svg.children[1]); // Insert after the body rect
+  
+  body.insertBefore(svg, body.firstChild);
 }
 
 // ═══════════════════════════════════════════════════════
@@ -6327,7 +6441,66 @@ function exportPNG() {
     var label = d.lbl;
     if (gate.type==='input') label = gate.value ? '1' : '0';
     else if (['sr','dlatch','dff','jkff','tff'].includes(gate.type)) label = d.lbl+'\nQ='+(gate.q?1:0);
-    ctx.fillText(label, gx+gw/2, gy+gh/2);
+    
+    if (gate.type.startsWith('ic74')) {
+      // Draw label at the top instead of center
+      ctx.fillText(label, gx+gw/2, gy+gh*0.1);
+      ctx.font = '500 '+Math.round(8*scale/2)+'px monospace';
+      ctx.fillText(d.sub||'', gx+gw/2, gy+gh*0.18);
+      
+      // Draw internal wiring
+      ctx.strokeStyle = c.border;
+      ctx.lineWidth = 1 * scale/2;
+      var isHex = (gate.type === 'ic7404');
+      var numGates = isHex ? 6 : 4;
+      var logicSym = '';
+      if(gate.type==='ic7400') logicSym='&';
+      if(gate.type==='ic7408') logicSym='&';
+      if(gate.type==='ic7432') logicSym='≥1';
+      if(gate.type==='ic7402') logicSym='≥1';
+      if(gate.type==='ic7486') logicSym='=1';
+      if(gate.type==='ic7404') logicSym='1';
+      var isInv = ['ic7400','ic7402','ic7404'].includes(gate.type);
+      
+      for(var gi=0; gi<numGates; gi++) {
+        var outPy = gy+gh*(gi+1)/(numGates+1);
+        var cx = gx + gw*0.6;
+        var cy = outPy;
+        var boxW = 18*scale/2;
+        var boxH = 18*scale/2;
+        
+        // Output wire
+        ctx.beginPath(); ctx.moveTo(cx+boxW/2 + (isInv?3*scale/2:0), cy); ctx.lineTo(gx+gw, cy); ctx.stroke();
+        
+        // Input wires
+        if (isHex) {
+          var inPy = gy+gh*(gi+1)/(numGates+1);
+          ctx.beginPath(); ctx.moveTo(gx, inPy); ctx.lineTo(cx-boxW/2, cy); ctx.stroke();
+        } else {
+          var inPy1 = gy+gh*(gi*2+1)/(8+1);
+          var inPy2 = gy+gh*(gi*2+2)/(8+1);
+          ctx.beginPath();
+          ctx.moveTo(gx, inPy1); ctx.lineTo(cx-boxW/2-4*scale, inPy1); ctx.lineTo(cx-boxW/2-4*scale, cy-3*scale); ctx.lineTo(cx-boxW/2, cy-3*scale);
+          ctx.moveTo(gx, inPy2); ctx.lineTo(cx-boxW/2-4*scale, inPy2); ctx.lineTo(cx-boxW/2-4*scale, cy+3*scale); ctx.lineTo(cx-boxW/2, cy+3*scale);
+          ctx.stroke();
+        }
+        
+        // Draw miniature logic box (IEEE rectangular style)
+        ctx.fillStyle = c.bg;
+        ctx.fillRect(cx-boxW/2, cy-boxH/2, boxW, boxH);
+        ctx.strokeRect(cx-boxW/2, cy-boxH/2, boxW, boxH);
+        
+        if (isInv) {
+          ctx.beginPath(); ctx.arc(cx+boxW/2+1.5*scale/2, cy, 1.5*scale/2, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+        }
+        
+        ctx.fillStyle = c.txt;
+        ctx.font = Math.round(9*scale/2)+'px monospace';
+        ctx.fillText(logicSym, cx, cy);
+      }
+    } else {
+      ctx.fillText(label, gx+gw/2, gy+gh/2);
+    }
 
     // Pins
     var inC=d.nc, outC=d.np, pinR=4*scale/2;
