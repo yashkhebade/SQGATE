@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sqgate-cache-v26';
+const CACHE_NAME = 'sqgate-cache-v27';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',

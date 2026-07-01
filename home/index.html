@@ -271,8 +271,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg0);font-fami
   position:relative;
   height:50px; background:rgba(6, 8, 15, 0.65); border-bottom:1px solid rgba(255,255,255,0.06);
   display:flex; align-items:center; padding:0 10px; gap:6px; flex-shrink:0; z-index:200;
-  overflow:hidden; backdrop-filter:blur(24px); box-shadow:0 4px 30px rgba(0,0,0,0.6);
+  overflow-x:auto; overflow-y:hidden; backdrop-filter:blur(24px); box-shadow:0 4px 30px rgba(0,0,0,0.6);
 }
+#ed-topbar::-webkit-scrollbar { display:none; }
 .ed-logo{
   font-weight:800;font-size:13px;letter-spacing:2px;color:var(--acc);
   text-transform:uppercase;margin-right:4px;cursor:pointer;
@@ -5001,12 +5002,12 @@ document.getElementById('btn-clr').addEventListener('click',function(){
     btn.innerHTML='<svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Sure?';
     clearArmTimer=setTimeout(function(){
       clearArmed=false;btn.classList.remove('confirm-btn');
-      btn.innerHTML='<svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg> Clear Circuit';
+      btn.innerHTML='<svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg> Clear';
     },2500);
     msg('Click Clear again to confirm','wa');return;
   }
   clearArmed=false;clearTimeout(clearArmTimer);btn.classList.remove('confirm-btn');
-  btn.innerHTML='<svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg> Clear Circuit';
+  btn.innerHTML='<svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg> Clear';
   clearCanvas();
 });
 
