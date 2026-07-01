@@ -40,3 +40,12 @@
 - Do NOT use generic or repeated placeholder images (like the default green circuit) when creating or updating blog posts.
 - Every time you create a new blog post, you MUST use the `generate_image` tool to create a visually stunning, highly relevant, and unique image specific to that post's topic (e.g., a state machine diagram for FSM posts, or a dynamic CMOS visualization for logic gates).
 - Ensure the generated image is properly saved and referenced in both the blog index page and the post's `<meta property="og:image">` tags.
+
+# SQGATE Architectural Constraints & UI Modification Policy
+- **Meticulous HTML Structure**: The core application (`home/index.html`) is a massive monolithic file without a build step or linter. When modifying modals, toolbars, or UI overlays, you MUST meticulously verify that all `<div>` tags are perfectly closed. A single unclosed tag will cause cascading DOM failures, swallowing the rest of the application into hidden containers.
+- **Event Binding Preference**: When adding new buttons or UI interactions, ALWAYS prefer direct inline event handlers (e.g., `<button onclick="startTour()">`) rather than deferred Javascript event listeners attached via `DOMContentLoaded`. This ensures rock-solid execution in the monolithic script environment and plays nicely with the aggressive Service Worker cache.
+- **Service Worker Cache Busting**: Whenever you make structural HTML changes or add inline Javascript to a core file, manually bump the `CACHE_NAME` version string in `sw.js` to force clients to bypass their aggressive local cache.
+
+# Verilog/VHDL Code Generation Rules
+- **Multi-bit Bus Widths**: When updating the `genVerilog()` or `genVHDL()` exporters, never default all internal nets to 1-bit wires. You must analyze the source gate type to declare the correct bit width (e.g., `wire [7:0]` or `STD_LOGIC_VECTOR(7 downto 0)`) for components that output buses, such as `count8`, `shift8`, `alu8`, `rom8`, `ram8`, and bus splitters.
+- **Endianness & Array Mapping**: Ensure that splitters (`split8`, `split4`) and mergers (`merge8`, `merge4`) map their outputs array-index for array-index to match the MSB-first evaluation logic of the Javascript simulation engine.
