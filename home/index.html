@@ -2320,7 +2320,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       <button class="tb-btn" id="btn-tmpl" title="Circuit Templates" aria-label="Templates">
         <svg viewBox="0 0 24 24"><path d="M2 12a10 10 0 1 0 20 0 10 10 0 1 0-20 0"/></svg>
       </button>
-      <button class="tb-btn" id="btn-theme" title="Toggle Theme" aria-label="Theme" style="display:none;">
+      <button class="tb-btn" id="btn-theme" title="Toggle Theme" aria-label="Theme">
         <svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
       </button>
 
@@ -3115,7 +3115,7 @@ function drawGrid(){
   const step=20*S.zoom;
   const ox=((S.panX%step)+step)%step;
   const oy=((S.panY%step)+step)%step;
-  c.fillStyle = document.body.classList.contains('theme-light') ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.06)';
+  c.fillStyle = document.getElementById('pg-editor').classList.contains('theme-light') ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.06)';
   for(let x=ox;x<W;x+=step){
     for(let y=oy;y<H;y+=step){
       c.fillRect(x-1,y-1,2,2);
@@ -7297,7 +7297,7 @@ function runDRC(gates, wires, customLib, opts = {}) {
     },
   };
 }
-\nfunction renderDRC(errors, warnings) {
+function renderDRC(errors, warnings) {
   var body = document.getElementById('drc-body');
   var all = errors.concat(warnings);
   if (!all.length) {
@@ -8213,30 +8213,33 @@ loadProjData = function(data){
 // ═══════════════════════════════════════════════════════
 // FEATURE C: LIGHT / DARK THEME TOGGLE
 // ═══════════════════════════════════════════════════════
-var isLightTheme = false;
+var isLightTheme = true; // Default simulation to light theme
 
 document.getElementById('btn-theme').addEventListener('click', function() {
   isLightTheme = !isLightTheme;
-  document.body.classList.toggle('theme-light', isLightTheme);
+  document.getElementById('pg-editor').classList.toggle('theme-light', isLightTheme);
   this.textContent = isLightTheme ? '◑ Dark' : '◑ Light';
-  // Persist preference
   try { localStorage.setItem('lgf_theme', isLightTheme?'light':'dark'); } catch(e){}
-  // Redraw everything dependent on CSS vars
   drawGrid(); drawWires(); drawMinimap();
   msg('Theme: '+(isLightTheme?'Light':'Dark'), 'ok');
 });
 
-// Load saved theme preference
 (function(){
   try {
     var saved = localStorage.getItem('lgf_theme');
-    if (saved==='light') {
-      isLightTheme=true;
-      document.body.classList.add('theme-light');
-      var tb=document.getElementById('btn-theme');
-      if(tb) tb.textContent='◑ Dark';
+    if (saved==='dark') {
+      isLightTheme=false;
     }
   } catch(e){}
+  
+  if(isLightTheme) {
+    document.getElementById('pg-editor').classList.add('theme-light');
+    var tb=document.getElementById('btn-theme');
+    if(tb) tb.textContent='◑ Dark';
+  } else {
+    var tb=document.getElementById('btn-theme');
+    if(tb) tb.textContent='◑ Light';
+  }
 })();
 
 // ═══════════════════════════════════════════════════════
