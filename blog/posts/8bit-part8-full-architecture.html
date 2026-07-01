@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complete 8-Bit Computer Architecture | Series Finale</title>
+  <meta name="description" content="Tying together the ALU, RAM, PC, and FSM to simulate a complete Turing-complete 8-bit computer in your browser.">
+  <meta name="keywords" content="8-bit architecture, computer architecture, full CPU simulation, turing complete, datapath">
+  <link rel="canonical" href="https://sqgate.online/blog/posts/8bit-part8-full-architecture.html">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="icon" href="/icon.ico">
+  
+  <!-- OG Tags -->
+  <meta property="og:title" content="Complete 8-Bit Computer Architecture | Series Finale">
+  <meta property="og:description" content="Tying together the ALU, RAM, PC, and FSM to simulate a complete Turing-complete 8-bit computer in your browser.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sqgate.online/blog/posts/8bit-part8-full-architecture.html">
+  <meta property="og:image" content="https://sqgate.online/blog/posts/images/blog_8bit_part8_1782933787478.png">
+  
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/liquid-glass.css">
+  
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-1234567890"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-1234567890');
+  </script>
+  
+  <style>
+    body {
+      background-color: #060813;
+      color: #cbd5e1;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.7;
+    }
+    .nav {
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(12, 15, 28, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 24px;
+      color: #fff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .article-header {
+      max-width: 800px;
+      margin: 60px auto 40px;
+      padding: 0 20px;
+      text-align: center;
+    }
+    .article-header h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 42px;
+      color: #fff;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+    .article-meta {
+      color: #64748b;
+      font-size: 14px;
+    }
+    .article-content {
+      max-width: 800px;
+      margin: 0 auto 80px;
+      padding: 40px;
+    }
+    .article-content h2, .article-content h3, .article-content h4 {
+      font-family: 'Outfit', sans-serif;
+      color: #fff;
+      margin-top: 40px;
+      margin-bottom: 16px;
+    }
+    .article-content a {
+      color: #3b82f6;
+      text-decoration: none;
+    }
+    .article-content a:hover {
+      text-decoration: underline;
+    }
+    .article-content pre {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: 'Fira Code', monospace;
+      font-size: 14px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .article-content code {
+      font-family: 'Fira Code', monospace;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    .article-content pre code {
+      background: none;
+      padding: 0;
+    }
+    .article-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      margin: 24px 0;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .cta-banner {
+      margin-top: 60px;
+      padding: 40px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .cta-banner h3 {
+      margin: 0;
+      font-family: 'Outfit', sans-serif;
+      font-size: 28px;
+    }
+    .blog-layout {
+      display: grid;
+      grid-template-columns: 250px 1fr 250px;
+      gap: 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .main-column {
+      min-width: 0;
+    }
+    .ad-sidebar {
+      position: sticky;
+      top: 100px;
+      height: calc(100vh - 120px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: rgba(20, 25, 45, 0.4);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 15px;
+      overflow: hidden;
+    }
+    .ad-label {
+      font-size: 10px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+    @media (max-width: 1100px) {
+      .blog-layout {
+        grid-template-columns: 1fr;
+      }
+      .ad-sidebar {
+        position: static;
+        height: auto;
+        min-height: 250px;
+        margin-bottom: 20px;
+      }
+    }
+  </style>
+  
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "Part 8: Assembling the Full 8-Bit Architecture",
+      "image": [
+        "https://sqgate.online/blog/posts/images/blog_8bit_part8_1782933787478.png"
+      ],
+      "datePublished": "2026-07-02T00:00:00+00:00",
+      "author": [{
+          "@type": "Organization",
+          "name": "SQGATE Engineering"
+      }]
+    }
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7398330076279399" crossorigin="anonymous"></script>
+</head>
+<body>
+  <svg class="liquid-glass-svg-filter" style="position: absolute; width: 0; height: 0; pointer-events: none;">
+    <defs>
+      <filter id="liquid-glass-filter" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.05 0.05" numOctaves="3" result="noise" />
+        <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.15 0" in="noise" result="coloredNoise" />
+        <feBlend in="SourceGraphic" in2="coloredNoise" mode="screen" />
+      </filter>
+    </defs>
+  </svg>
+
+  <nav class="nav">
+    <a href="/home/" class="logo">
+      <img src="/icon.webp" width="32" height="32" alt="SQGATE Logo">
+      SQGATE
+    </a>
+    <a href="/blog/" style="color: #94a3b8; text-decoration: none; font-weight: 500; margin-left: 20px;">← Back to Blog</a>
+    <div style="flex-grow: 1;"></div>
+    <a href="/home/" class="liquid-btn">Launch Simulator</a>
+  </nav>
+
+  <div class="blog-layout">
+    <aside class="ad-sidebar">
+      <div class="ad-label">Advertisement</div>
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7398330076279399" data-ad-slot="1111111111" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </aside>
+
+    <div class="main-column">
+      <header class="article-header">
+        <h1>Part 8: Assembling the Full 8-Bit Architecture</h1>
+        <div class="article-meta">
+          By SQGATE Engineering | Published on July 2, 2026 | 15 min read
+        </div>
+      </header>
+
+      <main class="article-content liquid-panel">
+        <div><a href="8bit-part7-io-hex-display.html">⬅ Previous: Part 7</a> | <a href="/blog/">Back to Blog Home ➔</a></div>
+        
+        <p>Welcome to the grand finale of our <em>Building an 8-bit Computer from Scratch</em> series! Over the past seven parts, we have designed the individual building blocks of our CPU: the ALU, the registers, the Program Counter (PC), RAM, and the Finite State Machine (FSM) control logic. Today, we pull it all together into a unified, Turing-complete architecture. We'll explore datapath routing, bus contention, and finally, present a complete JSON blueprint you can load directly into SQGATE.</p>
+
+        <img src="images/blog_8bit_part8_1782933787478.png" alt="Complete 8-Bit Architecture">
+
+        <h2>The Master Datapath</h2>
+        <p>The datapath is the central nervous system of any CPU. It's the network of buses and wires that shuttles data between the ALU, registers, and memory. In our 8-bit architecture, we employ a <strong>shared 8-bit data bus</strong>. This design choice mimics classic microprocessors like the 6502 or Z80, minimizing the sheer number of physical wires (or simulation nets) required, at the cost of requiring careful control over who gets to "talk" on the bus at any given moment.</p>
+
+        <h3>Bus Contention and Tri-State Buffers</h3>
+        <p>A shared bus introduces a critical problem: <em>bus contention</em>. If the A Register and the RAM both try to output data to the bus simultaneously, their signals will clash. In a physical circuit, this can cause a short circuit and let out the "magic smoke." In SQGATE, it results in undefined logic states (often represented as 'X').</p>
+        <p>To prevent this, every component connected to the shared data bus must output through a <strong>tri-state buffer</strong>. A tri-state buffer has three states: HIGH (1), LOW (0), and High-Impedance (Z). When the buffer's enable pin is low, its output is in the High-Z state, effectively disconnecting it from the bus. The Control Unit (our FSM) is responsible for ensuring that exactly <em>one</em> tri-state buffer is enabled at any given clock cycle.</p>
+
+        <h2>Control Word and the Finite State Machine</h2>
+        <p>Our CPU executes instructions by stepping through a sequence of micro-operations. These steps are orchestrated by the FSM, which outputs a <strong>Control Word</strong>. The Control Word is a wide bit-vector (in our case, 16 bits) where each bit directly drives a specific control signal in the datapath, such as:</p>
+        <ul>
+            <li><code>HLT</code>: Halt the clock</li>
+            <li><code>MI</code>: Memory Address Register In</li>
+            <li><code>RI</code>: RAM In (Write Enable)</li>
+            <li><code>RO</code>: RAM Out (Enable RAM tri-state buffer)</li>
+            <li><code>IO</code>: Instruction Register Out</li>
+            <li><code>II</code>: Instruction Register In</li>
+            <li><code>AI</code>: A Register In</li>
+            <li><code>AO</code>: A Register Out</li>
+            <li><code>EO</code>: ALU Out (Enable ALU tri-state buffer)</li>
+            <li><code>SU</code>: ALU Subtract Mode</li>
+            <li><code>BI</code>: B Register In</li>
+            <li><code>OI</code>: Output Register In</li>
+            <li><code>CE</code>: Counter Enable (PC Increment)</li>
+            <li><code>CO</code>: PC Out</li>
+            <li><code>J</code>: Jump (PC In)</li>
+        </ul>
+
+        <h3>The Fetch-Decode-Execute Cycle</h3>
+        <p>Every instruction follows the fundamental Fetch-Decode-Execute cycle. Let's trace the micro-operations for a simple <code>ADD</code> instruction:</p>
+        
+        <h4>T0: Fetch Address</h4>
+        <p>The cycle begins by fetching the instruction from memory. The FSM asserts <code>CO</code> (PC Out) and <code>MI</code> (Memory Address Register In). The PC places its current value (the address of the next instruction) onto the bus, and the Memory Address Register (MAR) latches it.</p>
+        
+        <h4>T1: Fetch Instruction & Increment PC</h4>
+        <p>Next, the FSM asserts <code>RO</code> (RAM Out), <code>II</code> (Instruction Register In), and <code>CE</code> (Counter Enable). The RAM places the instruction byte onto the bus (addressed by the MAR), the Instruction Register latches it, and the PC increments to point to the next byte.</p>
+
+        <h4>T2: Decode</h4>
+        <p>The top 4 bits of the Instruction Register represent the opcode. These bits are fed directly into the FSM. The FSM decodes the opcode (e.g., <code>0001</code> for <code>ADD</code>) and determines the sequence of execute steps.</p>
+
+        <h4>T3-T5: Execute (ADD)</h4>
+        <p>For an <code>ADD</code> instruction (which adds a value from RAM to the A Register), the execute steps might look like this:</p>
+        <ol>
+            <li><strong>T3:</strong> The FSM asserts <code>IO</code> (Instruction Register Out, placing the operand's memory address on the lower 4 bits of the bus) and <code>MI</code> (MAR In).</li>
+            <li><strong>T4:</strong> The FSM asserts <code>RO</code> (RAM Out) and <code>BI</code> (B Register In). The value from memory is fetched into the B Register. (The A register already holds the first operand).</li>
+            <li><strong>T5:</strong> The ALU constantly computes A + B. The FSM asserts <code>EO</code> (ALU Out) and <code>AI</code> (A Register In). The sum is placed on the bus and latched back into the A Register.</li>
+        </ol>
+        <p>After T5, the sequence counter resets, and the CPU begins fetching the next instruction at T0.</p>
+
+        <h2>Turing Completeness</h2>
+        <p>What makes this architecture Turing-complete? The defining characteristic is the ability to perform conditional branching. In our CPU, this is handled by the <code>JC</code> (Jump if Carry) and <code>JZ</code> (Jump if Zero) instructions.</p>
+        <p>The ALU outputs two flag bits: Carry Out (C) and Zero (Z). These flags are latched into a Flags Register on every ALU operation. The FSM monitors these flags. When it encounters a <code>JC</code> instruction during decode, it checks the C flag. If C is 1, the FSM proceeds with the jump micro-operations (asserting <code>IO</code> and <code>J</code> to load a new address into the PC). If C is 0, the FSM skips the jump steps and immediately resets the sequence counter.</p>
+        <p>This conditional execution, combined with memory read/write and basic arithmetic, provides the computational foundation to simulate any Turing machine (given sufficient time and memory).</p>
+
+        <h2>The Final SQGATE Schematic</h2>
+        <p>Putting it all together in the SQGATE simulator requires careful wiring. The beauty of SQGATE's component-based system is that we can encapsulate complex sub-circuits (like the ALU or an 8-bit Register) into custom chips, keeping the top-level schematic clean.</p>
+        
+        <p>Below is a snippet of the JSON representation for the top-level 8-bit architecture in SQGATE. This JSON defines the placement of the major components and the critical bus connections.</p>
+        
+        <pre><code class="language-json">{
+  "name": "8-Bit_Computer_Top_Level",
+  "components": [
+    { "type": "Clock", "id": "clk1", "x": -400, "y": 300 },
+    { "type": "ROM", "id": "rom_microcode", "x": -200, "y": 100, "data": "hex_microcode_here" },
+    { "type": "Custom", "name": "8Bit_ALU", "id": "alu1", "x": 100, "y": -100 },
+    { "type": "Custom", "name": "8Bit_Register", "id": "regA", "x": 100, "y": -200 },
+    { "type": "Custom", "name": "8Bit_Register", "id": "regB", "x": 100, "y": 0 },
+    { "type": "RAM8", "id": "main_ram", "x": -100, "y": 300 },
+    { "type": "Custom", "name": "Program_Counter", "id": "pc1", "x": -100, "y": 450 },
+    { "type": "TriStateBuffer8", "id": "buf_alu", "x": 250, "y": -100 },
+    { "type": "TriStateBuffer8", "id": "buf_ram", "x": 50, "y": 300 },
+    { "type": "TriStateBuffer8", "id": "buf_pc", "x": 50, "y": 450 }
+  ],
+  "wires": [
+    { "from": "clk1.out", "to": "pc1.clk" },
+    { "from": "clk1.out", "to": "regA.clk" },
+    { "from": "clk1.out", "to": "regB.clk" },
+    { "from": "regA.out", "to": "alu1.a" },
+    { "from": "regB.out", "to": "alu1.b" },
+    { "from": "alu1.out", "to": "buf_alu.in" },
+    { "from": "buf_alu.out", "to": "bus.main" },
+    { "from": "rom_microcode.out_EO", "to": "buf_alu.en" },
+    { "from": "bus.main", "to": "regA.in" },
+    { "from": "rom_microcode.out_AI", "to": "regA.load" }
+  ]
+}</code></pre>
+
+        <p>This JSON snippet highlights the core philosophy of our design: a central bus (<code>bus.main</code>) heavily managed by tri-state buffers (<code>buf_alu</code>, <code>buf_ram</code>) which are strictly controlled by the FSM's microcode ROM (<code>rom_microcode</code>).</p>
+
+        <h2>Conclusion</h2>
+        <p>Building an 8-bit computer from fundamental logic gates is an immense undertaking, but breaking it down into modular components—ALU, Registers, RAM, and FSM—makes it entirely achievable. By understanding datapath routing and bus contention, you gain a deep appreciation for the intricate dance of electrons occurring billions of times a second inside modern processors.</p>
+        <p>You can load the full, simulated 8-bit computer into SQGATE right now. Try writing a simple assembly program, convert it to machine code, load it into the RAM component, and watch your CPU execute it step-by-step!</p>
+        <p>Thank you for following along with this series. Happy building!</p>
+        
+        <div><a href="8bit-part7-io-hex-display.html">⬅ Previous: Part 7</a> | <a href="/blog/">Back to Blog Home ➔</a></div>
+        
+        <div class="cta-banner">
+          <h3>Ready to test this out?</h3>
+          <p>Simulate logic gates, export Verilog, and solve Karnaugh maps instantly in your browser.</p>
+          <a href="/home/" class="liquid-btn" style="font-size: 16px; padding: 12px 24px;">Open SQGATE Simulator (Free)</a>
+        </div>
+      </main>
+    </div>
+
+    <aside class="ad-sidebar">
+      <div class="ad-label">Advertisement</div>
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7398330076279399" data-ad-slot="2222222222" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </aside>
+  </div>
+</body>
+</html>

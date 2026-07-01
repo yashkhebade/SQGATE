@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registers and RAM Design | 8-Bit Computer</title>
+  <meta name="description" content="How to build 8-bit CPU registers from D-Flip-Flops and integrate random access memory (RAM) modules into a custom datapath.">
+  <meta name="keywords" content="cpu registers, RAM, memory architecture, d-flip-flop, 8-bit computer">
+  <link rel="canonical" href="https://sqgate.online/blog/posts/8bit-part3-registers-ram.html">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="icon" href="/icon.ico">
+  
+  <!-- OG Tags -->
+  <meta property="og:title" content="Registers and RAM Design | 8-Bit Computer">
+  <meta property="og:description" content="How to build 8-bit CPU registers from D-Flip-Flops and integrate random access memory (RAM) modules into a custom datapath.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sqgate.online/blog/posts/8bit-part3-registers-ram.html">
+  <meta property="og:image" content="https://sqgate.online/blog/posts/images/blog_8bit_part3_1782933736008.png">
+  
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/liquid-glass.css">
+  
+  <style>
+    body {
+      background-color: #060813;
+      color: #cbd5e1;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.7;
+    }
+    .nav {
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(12, 15, 28, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 24px;
+      color: #fff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .article-header {
+      max-width: 800px;
+      margin: 60px auto 40px;
+      padding: 0 20px;
+      text-align: center;
+    }
+    .article-header h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 42px;
+      color: #fff;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+    .article-meta {
+      color: #64748b;
+      font-size: 14px;
+    }
+    .article-content {
+      max-width: 800px;
+      margin: 0 auto 80px;
+      padding: 40px;
+    }
+    .article-content h2, .article-content h3, .article-content h4 {
+      font-family: 'Outfit', sans-serif;
+      color: #fff;
+      margin-top: 40px;
+      margin-bottom: 16px;
+    }
+    .article-content a {
+      color: #3b82f6;
+      text-decoration: none;
+    }
+    .article-content a:hover {
+      text-decoration: underline;
+    }
+    .article-content pre {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: 'Fira Code', monospace;
+      font-size: 14px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .article-content code {
+      font-family: 'Fira Code', monospace;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    .article-content pre code {
+      background: none;
+      padding: 0;
+    }
+    .article-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      margin: 24px 0;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .cta-banner {
+      margin-top: 60px;
+      padding: 40px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .cta-banner h3 {
+      margin: 0;
+      font-family: 'Outfit', sans-serif;
+      font-size: 28px;
+    }
+    .blog-layout {
+      display: grid;
+      grid-template-columns: 250px 1fr 250px;
+      gap: 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .main-column {
+      min-width: 0;
+    }
+    .ad-sidebar {
+      position: sticky;
+      top: 100px;
+      height: calc(100vh - 120px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: rgba(20, 25, 45, 0.4);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 15px;
+      overflow: hidden;
+    }
+    .ad-label {
+      font-size: 10px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+    @media (max-width: 1100px) {
+      .blog-layout {
+        grid-template-columns: 1fr;
+      }
+      .ad-sidebar {
+        position: static;
+        height: auto;
+        min-height: 250px;
+        margin-bottom: 20px;
+      }
+    }
+  </style>
+  
+  <script type="application/ld+json">
+    {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Part 3: Registers and RAM Architecture",
+  "author": {
+    "@type": "Organization",
+    "name": "SQGATE Engineering"
+  },
+  "datePublished": "2026-07-02",
+  "image": "https://sqgate.online/blog/posts/images/blog_8bit_part3_1782933736008.png"
+}
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7398330076279399" crossorigin="anonymous"></script>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SQGATE1234"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-SQGATE1234');
+</script>
+</head>
+
+<body>
+  <svg class="liquid-glass-svg-filter" style="position: absolute; width: 0; height: 0; pointer-events: none;">
+    <defs>
+      <filter id="liquid-glass-filter" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.05 0.05" numOctaves="3" result="noise" />
+        <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.15 0" in="noise" result="coloredNoise" />
+        <feBlend in="SourceGraphic" in2="coloredNoise" mode="screen" />
+      </filter>
+    </defs>
+  </svg>
+
+  <nav class="nav">
+    <a href="/home/" class="logo">
+      <img src="/icon.webp" width="32" height="32" alt="SQGATE Logo">
+      SQGATE
+    </a>
+    <a href="/blog/" style="color: #94a3b8; text-decoration: none; font-weight: 500; margin-left: 20px;">← Back to Blog</a>
+    <div style="flex-grow: 1;"></div>
+    <a href="/home/" class="liquid-btn">Launch Simulator</a>
+  </nav>
+
+  <div class="blog-layout">
+    <aside class="ad-sidebar">
+      <div class="ad-label">Advertisement</div>
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7398330076279399" data-ad-slot="1111111111" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </aside>
+
+    <div class="main-column">
+      <header class="article-header">
+        <h1>Part 3: Registers and RAM Architecture</h1>
+        <div class="article-meta">
+          By SQGATE Engineering | Published on July 2, 2026 | 12 min read
+        </div>
+      </header>
+
+      <main class="article-content liquid-panel">
+        
+<h2>Introduction to State in Digital Logic</h2>
+<p>When designing an 8-bit computer from scratch, combinational logic alone is insufficient. Combinational logic gates, such as AND, OR, and XOR, output values based strictly on their current inputs. However, to perform meaningful computation, a central processing unit (CPU) must possess the ability to remember previous states. This is where sequential logic and memory architectures come into play. In this third installment of our series on building an 8-bit computer, we will delve deeply into the architecture of CPU registers and Random Access Memory (RAM).</p>
+<p>Memory inside a processor bridges the gap between static program instructions and dynamic execution. Every variable, every intermediary calculation, and every memory address pointer requires a physical mechanism for state retention. We begin at the lowest possible level: the cross-coupled gate, which forms the foundational building block for all static memory structures.</p>
+
+<div style="text-align: center; margin: 40px 0;">
+  <img src="images/blog_8bit_part3_1782933736008.png" alt="RAM and Registers">
+  <p style="font-size: 12px; color: #64748b; margin-top: 8px;">A conceptual visualization of our 8-bit CPU register and RAM architecture.</p>
+</div>
+
+<h2>The SR Latch: Cross-Coupling Gates for Memory</h2>
+<p>At the heart of state retention is the Set-Reset (SR) Latch. By taking two NOR gates (or NAND gates) and feeding the output of one into the input of the other, we create a bistable circuit. This circuit has two stable states, traditionally defined as Q and Q-bar (the inverse of Q). The inputs are called Set (S) and Reset (R). When S is pulsed high, the latch enters the set state (Q=1). When R is pulsed high, it enters the reset state (Q=0). Crucially, when both S and R are low, the cross-coupled nature of the gates allows the circuit to perpetually hold its current state. It is, in essence, a 1-bit memory cell.</p>
+<p>However, the SR Latch has a significant flaw: if both Set and Reset are asserted simultaneously, the latch enters an invalid state, leading to unpredictable behavior when the inputs are removed. Furthermore, an asynchronous latch responds immediately to its inputs, which makes synchronizing billions of operations per second across a CPU datapath virtually impossible. We need a way to control exactly <em>when</em> the state can change.</p>
+
+<h2>The D-Latch and Clocking</h2>
+<p>To resolve the invalid state issue and introduce synchronization, we evolve the SR latch into the Data (D) Latch. The D-Latch simplifies the inputs into a single Data (D) line and an Enable (E) or Clock (CLK) line. The circuitry internally ensures that Set and Reset can never be asserted simultaneously by using an inverter on the D input. When the clock is high, the Q output transparently follows the D input. When the clock goes low, the D-latch "locks" its current state, ignoring any further changes on the D line.</p>
+<p>While the D-Latch is a massive improvement, it is level-sensitive. This means that as long as the clock is high, any glitch or noise on the Data line will immediately propagate through to the output. In a complex CPU architecture where signals take varying amounts of time to propagate through ALUs and buses, level-sensitivity introduces dangerous race conditions. If a register feeds an ALU, and the ALU feeds back into the same register, a transparent latch would allow the signal to loop uncontrollably during a single clock cycle.</p>
+
+<h2>The D-Flip-Flop: Edge-Triggered Precision</h2>
+<p>The definitive solution for CPU registers is the edge-triggered D-Flip-Flop. Unlike a latch, which is level-sensitive, a flip-flop only samples the input data at the precise moment the clock signal transitions (typically on the rising edge, from low to high). To achieve this, engineers traditionally combine two D-Latches in a Master-Slave configuration. The clock signal to the Slave latch is inverted.</p>
+<p>During the low phase of the clock, the Master latch transparently accepts the D input, but the Slave latch is locked, keeping the final output stable. When the clock transitions to high, the Master latch instantly locks, trapping the value present at that exact moment. Simultaneously, the Slave latch opens, allowing the trapped value to propagate to the Q output. This edge-triggering ensures that the state changes exactly once per clock cycle, completely eliminating race conditions in the datapath. Below is a raw SQGATE JSON circuit representation of a D-Flip-Flop register logic:</p>
+
+<pre><code>{
+  "project": "D Flip-Flop Register Node",
+  "version": "1.0",
+  "gates": [
+    {"id": "d_ff1", "type": "d_flip_flop", "x": 300, "y": 200, "label": "Bit 0"},
+    {"id": "and1", "type": "and", "x": 150, "y": 180, "label": "Enable Gate"}
+  ],
+  "wires": [
+    {"source": "and1.out", "target": "d_ff1.d"}
+  ]
+}
+</code></pre>
+
+<h2>Scaling Up: The 8-Bit Register</h2>
+<p>With a robust 1-bit memory cell established, creating an 8-bit register is conceptually straightforward. We array eight D-Flip-Flops in parallel. All eight flip-flops share the same clock signal and the same Enable (Load) logic. When the CPU instruction decoder asserts the Load signal for this specific register, the current 8-bit value present on the data bus is latched into all eight flip-flops on the next rising clock edge.</p>
+<p>In our 8-bit computer architecture, we implement several distinct registers: the A Register (Accumulator) for primary arithmetic, the B Register as a secondary operand buffer, and the Instruction Register (IR) to hold the current machine code instruction. Each of these registers is fundamentally identical at the hardware level; their specific purpose is dictated purely by how they are wired into the system bus.</p>
+
+<h2>Data Buses and Tri-State Buffers</h2>
+<p>A crucial concept in CPU design is the system bus. If every component in the CPU had direct wires to every other component, the routing complexity would be catastrophic. Instead, we utilize a shared 8-bit communication highway known as the Data Bus. However, a shared bus introduces a new electrical problem: if multiple registers try to output their values onto the bus simultaneously, it causes a short circuit and data corruption.</p>
+<p>The solution is the Tri-State Buffer. A standard logic gate outputs a rigid High (1) or Low (0). A tri-state buffer adds a third state: High Impedance (High-Z). When in High-Z, the buffer is effectively disconnected from the circuit, behaving as an open switch. By placing tri-state buffers at the output of every 8-bit register, the control logic ensures that only one register is allowed to "speak" onto the bus at any given time, while all others are in High-Z, quietly "listening."</p>
+
+<h2>Random Access Memory (RAM) Architecture</h2>
+<p>While registers provide ultra-fast, tightly integrated storage for immediate calculations, their physical footprint is immense. A single D-Flip-Flop can require up to 6 logic gates (dozens of transistors). Storing kilobytes of data this way is unfeasible. For bulk storage, we turn to Random Access Memory (RAM). Unlike register files, RAM utilizes a grid matrix approach to drastically reduce the transistor count per bit.</p>
+<p>In our 8-bit machine, we will implement a 256-byte RAM module. This requires an 8-bit address bus (2^8 = 256 locations). The core of the RAM architecture is the Address Decoder. When an 8-bit address (e.g., `01001101`) is placed on the address bus, the decoder translates this binary number into a single active line out of 256 possibilities. This single line activates a specific row (or wordline) in the memory matrix.</p>
+
+<h3>The Memory Matrix and Read/Write Cycles</h3>
+<p>Static RAM (SRAM), which we model in this project, still relies on cross-coupled inverters (similar to latches) for each bit cell, requiring about 6 transistors per cell (6T SRAM). When a wordline is activated by the decoder, the 8 bit-cells in that row connect their internal states to 8 vertical bitlines. During a Read cycle, sense amplifiers detect the faint voltage differences on these bitlines and output them as a solid 8-bit value onto the data bus via tri-state buffers.</p>
+<p>During a Write cycle, the CPU places data on the bus, and strong write drivers force the bitlines to the corresponding voltage levels, overpowering the delicate cross-coupled inverters inside the active row and forcing them to flip to the new state. This delicate dance of reading and writing must be perfectly synchronized with the CPU's main clock to avoid latching unstable data.</p>
+
+<h2>Integration into the Datapath</h2>
+<p>To integrate the RAM into our datapath, we must introduce a Memory Address Register (MAR). The MAR is a dedicated 8-bit register whose sole job is to hold the address being supplied to the RAM. Because the RAM requires a stable address throughout the entirety of its relatively slow read/write cycle, the CPU cannot leave the address on the main bus, as it needs the bus to transfer the actual data.</p>
+<p>By moving the address into the MAR, the main data bus is freed up. On the next clock cycle, the RAM can output the requested data onto the bus, where it can be consumed by the Instruction Register or the Accumulator. Alternatively, the CPU can place data onto the bus and pulse the RAM's Write Enable line, committing the byte to memory.</p>
+
+<h2>Memory-Mapped I/O</h2>
+<p>In our architecture, we employ a paradigm known as Memory-Mapped Input/Output (MMIO). Rather than utilizing specialized I/O instructions (like `IN` or `OUT` seen in some architectures like x86), we connect peripheral devices directly to the system bus and assign them specific addresses. For example, if we wire an LED matrix to address `11111111` (0xFF), writing a byte to this memory location does not go to the RAM matrix. Instead, the address decoder routes the write pulse directly to the LED controller's register.</p>
+<p>This creates a wonderfully unified programming model. To the CPU, communicating with a display, a keyboard, or a storage drive uses the exact same `LOAD` and `STORE` machine instructions as reading and writing ordinary variables in RAM. This elegant simplicity is a hallmark of clean computer architecture design.</p>
+
+<h2>Summary</h2>
+<p>Building the memory architecture of an 8-bit computer reveals the profound ingenuity of digital abstraction. We started with chaotic, cross-coupled logic gates and tamed them with clocks and edge-triggering to create reliable D-Flip-Flops. We scaled these into 8-bit registers and orchestrated their communication using tri-state buffers on a shared system bus. Finally, we expanded our storage capabilities infinitely using the matrix addressing of RAM.</p>
+<p>In the next part of this series, we will take these static memory components and inject mathematical life into them by designing the Arithmetic Logic Unit (ALU). We will explore how binary adders, logic operators, and condition flags allow our CPU to actually perform computations on the data we can now reliably store.</p>
+
+<div style="margin-top: 50px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; font-weight: 600;">
+  <a href="8bit-part2-program-counter.html" class="liquid-btn" style="background: rgba(255,255,255,0.05); border: none; padding: 10px 20px;">⬅ Previous: Part 2</a>
+  <a href="8bit-part4-alu-design.html" class="liquid-btn" style="padding: 10px 20px;">Next: Part 4 ➔</a>
+</div>
+
+        
+        <div class="cta-banner">
+          <h3>Ready to test this out?</h3>
+          <p>Simulate logic gates, export Verilog, and solve Karnaugh maps instantly in your browser.</p>
+          <a href="/home/" class="liquid-btn" style="font-size: 16px; padding: 12px 24px;">Open SQGATE Simulator (Free)</a>
+        </div>
+      </main>
+    </div>
+
+    <aside class="ad-sidebar">
+      <div class="ad-label">Advertisement</div>
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7398330076279399" data-ad-slot="2222222222" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </aside>
+  </div>
+</body>
+</html>

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instruction Decoding | 8-Bit Computer</title>
+  <meta name="description" content="Learn how to build an instruction decoder using splitters, AND gates, and routing logic to parse 8-bit opcodes.">
+  <meta name="keywords" content="instruction decoder, control logic, opcodes, splitters, 8-bit bus">
+  <link rel="canonical" href="https://sqgate.online/blog/posts/8bit-part5-instruction-decoding.html">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="icon" href="/icon.ico">
+  
+  <!-- OG Tags -->
+  <meta property="og:title" content="Instruction Decoding | 8-Bit Computer">
+  <meta property="og:description" content="Learn how to build an instruction decoder using splitters, AND gates, and routing logic to parse 8-bit opcodes.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sqgate.online/blog/posts/8bit-part5-instruction-decoding.html">
+  <meta property="og:image" content="https://sqgate.online/blog/posts/images/blog_8bit_part5_1782933756968.png">
+  
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/liquid-glass.css">
+  
+  <style>
+    body {
+      background-color: #060813;
+      color: #cbd5e1;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.7;
+    }
+    .nav {
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(12, 15, 28, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 24px;
+      color: #fff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .article-header {
+      max-width: 800px;
+      margin: 60px auto 40px;
+      padding: 0 20px;
+      text-align: center;
+    }
+    .article-header h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 42px;
+      color: #fff;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+    .article-meta {
+      color: #64748b;
+      font-size: 14px;
+    }
+    .article-content {
+      max-width: 800px;
+      margin: 0 auto 80px;
+      padding: 40px;
+    }
+    .article-content h2, .article-content h3, .article-content h4 {
+      font-family: 'Outfit', sans-serif;
+      color: #fff;
+      margin-top: 40px;
+      margin-bottom: 16px;
+    }
+    .article-content a {
+      color: #3b82f6;
+      text-decoration: none;
+    }
+    .article-content a:hover {
+      text-decoration: underline;
+    }
+    .article-content pre {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: 'Fira Code', monospace;
+      font-size: 14px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .article-content code {
+      font-family: 'Fira Code', monospace;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    .article-content pre code {
+      background: none;
+      padding: 0;
+    }
+    .article-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      margin: 24px 0;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .cta-banner {
+      margin-top: 60px;
+      padding: 40px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .cta-banner h3 {
+      margin: 0;
+      font-family: 'Outfit', sans-serif;
+      font-size: 28px;
+    }
+    .blog-layout {
+      display: grid;
+      grid-template-columns: 250px 1fr 250px;
+      gap: 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .main-column {
+      min-width: 0;
+    }
+    .ad-sidebar {
+      position: sticky;
+      top: 100px;
+      height: calc(100vh - 120px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: rgba(20, 25, 45, 0.4);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 15px;
+      overflow: hidden;
+    }
+    .ad-label {
+      font-size: 10px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+    @media (max-width: 1100px) {
+      .blog-layout {
+        grid-template-columns: 1fr;
+      }
+      .ad-sidebar {
+        position: static;
+        height: auto;
+        min-height: 250px;
+        margin-bottom: 20px;
+      }
+    }
+  </style>
+  
+  <script type="application/ld+json">
+    {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Part 5: Instruction Decoding and Control Logic",
+  "image": "https://sqgate.online/blog/posts/images/blog_8bit_part5_1782933756968.png",
+  "author": {
+    "@type": "Organization",
+    "name": "SQGATE Engineering"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "SQGATE",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://sqgate.online/icon.webp"
+    }
+  },
+  "datePublished": "2026-07-02"
+}
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7398330076279399" crossorigin="anonymous"></script>
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SQGATE123"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-SQGATE123');
+  </script>
+</head>
+
+<body>
+  <svg class="liquid-glass-svg-filter" style="position: absolute; width: 0; height: 0; pointer-events: none;">
+    <defs>
+      <filter id="liquid-glass-filter" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.05 0.05" numOctaves="3" result="noise" />
+        <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.15 0" in="noise" result="coloredNoise" />
+        <feBlend in="SourceGraphic" in2="coloredNoise" mode="screen" />
+      </filter>
+    </defs>
+  </svg>
+
+  <nav class="nav">
+    <a href="/home/" class="logo">
+      <img src="/icon.webp" width="32" height="32" alt="SQGATE Logo">
+      SQGATE
+    </a>
+    <a href="/blog/" style="color: #94a3b8; text-decoration: none; font-weight: 500; margin-left: 20px;">← Back to Blog</a>
+    <div style="flex-grow: 1;"></div>
+    <a href="/home/" class="liquid-btn">Launch Simulator</a>
+  </nav>
+
+  <div class="blog-layout">
+    <aside class="ad-sidebar">
+      <div class="ad-label">Advertisement</div>
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7398330076279399" data-ad-slot="1111111111" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </aside>
+
+    <div class="main-column">
+      <header class="article-header">
+        <h1>Part 5: Instruction Decoding and Control Logic</h1>
+        <div class="article-meta">
+          By SQGATE Engineering | Published on July 2, 2026 | 10 min read
+        </div>
+      </header>
+
+      <main class="article-content liquid-panel">
+        
+<h2>Introduction to Instruction Decoding</h2>
+<p>Welcome to Part 5 of our series on <em>Building an 8-bit Computer from Scratch</em>. In previous chapters, we constructed the Arithmetic Logic Unit (ALU), built robust memory architectures, and established a functioning clock module. Now, we arrive at the heart of our computer's "brain": the <strong>Instruction Decoder and Control Logic</strong>. Without this critical component, our CPU is just a collection of disconnected modules. The instruction decoder is responsible for interpreting the numeric opcodes stored in memory and orchestrating the exact sequence of control signals required to execute them.</p>
+
+<img src="images/blog_8bit_part5_1782933756968.png" alt="Instruction Decoding" style="width:100%; border-radius: 12px; margin: 20px 0;">
+
+<p>Every program you write, whether in assembly or a high-level language, eventually boils down to machine code—a sequence of binary numbers. When the CPU fetches an instruction from memory, it receives an opcode (operation code). For an 8-bit computer, this opcode typically occupies 4 to 8 bits. Our architecture uses a 4-bit opcode, allowing for up to 16 distinct instructions (such as NOP, LDA, ADD, SUB, STA, LDI, JMP, etc.), while the remaining 4 bits represent the operand or memory address.</p>
+
+<p>The control logic takes this opcode and translates it into a symphony of electrical signals. These signals enable buffers, trigger register loads, select ALU operations, and manage memory read/write cycles. In this article, we'll dive deep into the combinatorial logic required to build a robust instruction decoder, explore how splitters isolate the opcode bits, and demonstrate how to route these bits through AND gates to assert specific control lines.</p>
+
+<h2>The Anatomy of an Opcode</h2>
+<p>In our architecture, an instruction is 8 bits wide (1 byte). The upper 4 bits (bits 4-7) contain the opcode, while the lower 4 bits (bits 0-3) contain the operand. Let's look at the instruction format:</p>
+
+<pre><code>Bit 7  Bit 6  Bit 5  Bit 4 | Bit 3  Bit 2  Bit 1  Bit 0
+[      OPCODE (4-bit)    ] | [    OPERAND (4-bit)     ]
+</code></pre>
+
+<p>To decode this instruction, the first step is to isolate the upper 4 bits. In digital logic, we achieve this using a bus splitter. A bus splitter takes an 8-bit wide input bus and breaks it down into individual wires (or narrower buses). Once we have the 4-bit opcode separated from the operand, we can feed it into a decoder circuit.</p>
+
+<h3>Decoding Logic: The 4-to-16 Decoder</h3>
+<p>A decoder is a combinatorial logic circuit that converts binary information from N input lines to a maximum of 2^N unique output lines. For our 4-bit opcode, we need a 4-to-16 decoder. If the opcode is <code>0000</code> (NOP), the decoder asserts output line 0. If the opcode is <code>0001</code> (LDA), it asserts output line 1, and so forth.</p>
+
+<p>How does a decoder work at the gate level? It relies heavily on AND gates and NOT gates (inverters). To assert a specific output line, the decoder uses an AND gate connected to a specific combination of the true and inverted input signals. For example, to decode the binary value <code>1010</code> (which is decimal 10), the AND gate would require inputs from the non-inverted Bit 3, inverted Bit 2, non-inverted Bit 1, and inverted Bit 0. When this exact pattern is present, and only when it is present, the AND gate outputs a high signal (1).</p>
+
+<h2>Building a 3-to-8 Decoder in SQGATE</h2>
+<p>To illustrate this concept without getting overwhelmed by the 16 outputs of a 4-bit decoder, let's look at a simpler 3-to-8 decoder. A 3-to-8 decoder takes a 3-bit input (which can represent values from 0 to 7) and asserts one of 8 output lines. This is a fundamental building block that you can easily expand into a 4-to-16 decoder.</p>
+
+<p>Below is the SQGATE JSON circuit representing a 3-to-8 decoder. It uses a 3-bit input pin, a bus splitter to separate the bits, a bank of NOT gates to provide inverted signals, and an array of 3-input AND gates for the decoding logic.</p>
+
+<pre><code>{
+  "version": 1,
+  "components": [
+    { "type": "in", "id": "opcode_in", "x": 100, "y": 300, "bits": 3, "label": "Opcode (3-bit)" },
+    { "type": "split", "id": "splitter", "x": 200, "y": 300, "bits": 3 },
+    
+    { "type": "not", "id": "inv0", "x": 300, "y": 200, "bits": 1 },
+    { "type": "not", "id": "inv1", "x": 300, "y": 300, "bits": 1 },
+    { "type": "not", "id": "inv2", "x": 300, "y": 400, "bits": 1 },
+    
+    { "type": "and", "id": "and0", "x": 500, "y": 100, "bits": 1, "inputs": 3 },
+    { "type": "and", "id": "and1", "x": 500, "y": 180, "bits": 1, "inputs": 3 },
+    { "type": "and", "id": "and2", "x": 500, "y": 260, "bits": 1, "inputs": 3 },
+    { "type": "and", "id": "and3", "x": 500, "y": 340, "bits": 1, "inputs": 3 },
+    { "type": "and", "id": "and4", "x": 500, "y": 420, "bits": 1, "inputs": 3 },
+    { "type": "and", "id": "and5", "x": 500, "y": 500, "bits": 1, "inputs": 3 },
+    { "type": "and", "id": "and6", "x": 500, "y": 580, "bits": 1, "inputs": 3 },
+    { "type": "and", "id": "and7", "x": 500, "y": 660, "bits": 1, "inputs": 3 },
+    
+    { "type": "out", "id": "out0", "x": 650, "y": 100, "bits": 1, "label": "000" },
+    { "type": "out", "id": "out1", "x": 650, "y": 180, "bits": 1, "label": "001" },
+    { "type": "out", "id": "out2", "x": 650, "y": 260, "bits": 1, "label": "010" },
+    { "type": "out", "id": "out3", "x": 650, "y": 340, "bits": 1, "label": "011" },
+    { "type": "out", "id": "out4", "x": 650, "y": 420, "bits": 1, "label": "100" },
+    { "type": "out", "id": "out5", "x": 650, "y": 500, "bits": 1, "label": "101" },
+    { "type": "out", "id": "out6", "x": 650, "y": 580, "bits": 1, "label": "110" },
+    { "type": "out", "id": "out7", "x": 650, "y": 660, "bits": 1, "label": "111" }
+  ],
+  "wires": [
+    { "from": "opcode_in.out", "to": "splitter.in" },
+    
+    { "from": "splitter.out[0]", "to": "inv0.in" },
+    { "from": "splitter.out[1]", "to": "inv1.in" },
+    { "from": "splitter.out[2]", "to": "inv2.in" },
+    
+    { "from": "inv0.out", "to": "and0.in[0]" },
+    { "from": "inv1.out", "to": "and0.in[1]" },
+    { "from": "inv2.out", "to": "and0.in[2]" },
+    { "from": "and0.out", "to": "out0.in" },
+    
+    { "from": "splitter.out[0]", "to": "and1.in[0]" },
+    { "from": "inv1.out", "to": "and1.in[1]" },
+    { "from": "inv2.out", "to": "and1.in[2]" },
+    { "from": "and1.out", "to": "out1.in" },
+    
+    { "from": "inv0.out", "to": "and2.in[0]" },
+    { "from": "splitter.out[1]", "to": "and2.in[1]" },
+    { "from": "inv2.out", "to": "and2.in[2]" },
+    { "from": "and2.out", "to": "out2.in" },
+    
+    { "from": "splitter.out[0]", "to": "and3.in[0]" },
+    { "from": "splitter.out[1]", "to": "and3.in[1]" },
+    { "from": "inv2.out", "to": "and3.in[2]" },
+    { "from": "and3.out", "to": "out3.in" },
+    
+    { "from": "inv0.out", "to": "and4.in[0]" },
+    { "from": "inv1.out", "to": "and4.in[1]" },
+    { "from": "splitter.out[2]", "to": "and4.in[2]" },
+    { "from": "and4.out", "to": "out4.in" },
+    
+    { "from": "splitter.out[0]", "to": "and5.in[0]" },
+    { "from": "inv1.out", "to": "and5.in[1]" },
+    { "from": "splitter.out[2]", "to": "and5.in[2]" },
+    { "from": "and5.out", "to": "out5.in" },
+    
+    { "from": "inv0.out", "to": "and6.in[0]" },
+    { "from": "splitter.out[1]", "to": "and6.in[1]" },
+    { "from": "splitter.out[2]", "to": "and6.in[2]" },
+    { "from": "and6.out", "to": "out6.in" },
+    
+    { "from": "splitter.out[0]", "to": "and7.in[0]" },
+    { "from": "splitter.out[1]", "to": "and7.in[1]" },
+    { "from": "splitter.out[2]", "to": "and7.in[2]" },
+    { "from": "and7.out", "to": "out7.in" }
+  ]
+}
+</code></pre>
+
+<p>You can copy this JSON object and paste it directly into the SQGATE simulator to see the 3-to-8 decoder in action. Toggle the 3-bit input block, and you'll observe how exactly one output line is asserted for each unique binary combination. This visual confirmation is crucial when building complex control units.</p>
+
+<h2>From Instruction to Control Word</h2>
+<p>While isolating the instruction is the first step, our CPU needs more than just a single asserted line; it requires a coordinated set of control signals across multiple clock cycles. This is where the concept of a <strong>Control Word</strong> comes into play.</p>
+
+<p>A Control Word is a multi-bit binary value where each bit is hardwired to a specific control point in the CPU. For example, in a 16-bit control word, Bit 0 might enable the A Register to write to the bus (AO - A Out), Bit 1 might command the A Register to read from the bus (AI - A In), Bit 2 might command the Memory Address Register to load (MI), and so on. </p>
+
+<h3>Combining Decoder Output with Timing Steps</h3>
+<p>Instructions in an 8-bit computer rarely execute in a single clock cycle. They typically require multiple steps (or states). For instance, fetching an instruction from memory usually takes two or three clock cycles (often called T-states). First, the program counter (PC) outputs its value to the memory address register (MAR). Next, the RAM outputs the data at that address to the instruction register (IR). Finally, the PC increments.</p>
+
+<p>Because an instruction unfolds over time, the control logic must consider two inputs: the decoded instruction line AND the current step (T-state) from a ring counter or finite state machine (FSM). Therefore, a control signal like "Enable RAM Output" (RO) might be asserted during T-state 1 of the Fetch cycle for <em>every</em> instruction, but it might also be asserted during T-state 3 of the LDA (Load A) instruction.</p>
+
+<p>To implement this, we use <strong>OR gates</strong>. We can feed the RO control line with an OR gate whose inputs are the various conditions under which RO should be active. For instance:</p>
+
+<pre><code>RO = (T1) OR (LDA_Decoder_Line AND T3) OR (ADD_Decoder_Line AND T3) ...</code></pre>
+
+<p>This equation dictates that RAM Output is enabled during T1 of any instruction cycle, or during T3 if the instruction happens to be LDA or ADD. By systematically mapping out these boolean equations for every control signal, you create the combinational logic network that breathes life into the silicon.</p>
+
+<h2>Minimizing Control Logic</h2>
+<p>As you map out the boolean equations for your CPU, you'll notice that the combinatorial logic can become incredibly complex and unwieldy. Designing an array of discrete AND and OR gates to handle every control signal across multiple T-states and instructions requires an immense amount of wiring and silicon real estate.</p>
+
+<p>Historically, computer architects have used various techniques to minimize this logic. One common approach is using ROM (Read-Only Memory) or EEPROM to replace the combinatorial gates entirely. By feeding the opcode and the current T-state into the address lines of a ROM chip, the ROM can simply output the pre-programmed 16-bit or 32-bit Control Word corresponding to that exact state. This technique is often referred to as <strong>Microcode</strong>, and it drastically simplifies hardware design at the cost of execution speed and memory usage.</p>
+
+<p>Another approach is using Programmable Logic Arrays (PLAs), which provide a structured array of AND and OR gates that can be configured to implement sum-of-products boolean functions efficiently. We will explore these advanced techniques, specifically microcode state machines, in the next installment of this series.</p>
+
+<h2>Conclusion</h2>
+<p>The Instruction Decoder and Control Logic unit is the undeniable brain of the CPU. It translates abstract software opcodes into concrete hardware action, pulsing control lines with precise timing to move data, perform arithmetic, and manipulate memory. Building this logic from discrete logic gates using splitters, inverters, and AND/OR networks is a phenomenal way to understand the physical realities of computation.</p>
+
+<p>By studying the 3-to-8 decoder circuit provided above, you've taken the first step toward building a full instruction sequencer. As you scale this up to a 4-to-16 decoder and combine it with a ring counter, your CPU will gain the ability to autonomously fetch, decode, and execute complex programs.</p>
+
+<div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); font-weight: 600; display: flex; justify-content: space-between;">
+  <a href="8bit-part4-alu-design.html" style="color: #3b82f6; text-decoration: none;">⬅ Previous: Part 4</a>
+  <a href="8bit-part6-fsm-microcode.html" style="color: #3b82f6; text-decoration: none;">Next: Part 6 ➔</a>
+</div>
+
+        
+        <div class="cta-banner">
+          <h3>Ready to test this out?</h3>
+          <p>Simulate logic gates, export Verilog, and solve Karnaugh maps instantly in your browser.</p>
+          <a href="/home/" class="liquid-btn" style="font-size: 16px; padding: 12px 24px;">Open SQGATE Simulator (Free)</a>
+        </div>
+      </main>
+    </div>
+
+    <aside class="ad-sidebar">
+      <div class="ad-label">Advertisement</div>
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7398330076279399" data-ad-slot="2222222222" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </aside>
+  </div>
+</body>
+</html>

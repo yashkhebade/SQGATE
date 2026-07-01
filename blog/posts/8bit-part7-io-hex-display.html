@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>I/O Ports & HEX Displays | 8-Bit Computer</title>
+  <meta name="description" content="Interfacing an 8-bit CPU with external I/O, outputting data to 7-segment hex displays.">
+  <meta name="keywords" content="I/O ports, 7-segment display, hex display, memory mapped IO, computer architecture">
+  <link rel="canonical" href="https://sqgate.online/blog/posts/8bit-part7-io-hex-display.html">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="icon" href="/icon.ico">
+  
+  <!-- OG Tags -->
+  <meta property="og:title" content="I/O Ports & HEX Displays | 8-Bit Computer">
+  <meta property="og:description" content="Interfacing an 8-bit CPU with external I/O, outputting data to 7-segment hex displays.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sqgate.online/blog/posts/8bit-part7-io-hex-display.html">
+  <meta property="og:image" content="https://sqgate.online/blog/posts/images/blog_8bit_part7_1782933776527.png">
+  
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/liquid-glass.css">
+  
+  <style>
+    body {
+      background-color: #060813;
+      color: #cbd5e1;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.7;
+    }
+    .nav {
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(12, 15, 28, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 24px;
+      color: #fff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .article-header {
+      max-width: 800px;
+      margin: 60px auto 40px;
+      padding: 0 20px;
+      text-align: center;
+    }
+    .article-header h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 42px;
+      color: #fff;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+    .article-meta {
+      color: #64748b;
+      font-size: 14px;
+    }
+    .article-content {
+      max-width: 800px;
+      margin: 0 auto 80px;
+      padding: 40px;
+    }
+    .article-content h2, .article-content h3, .article-content h4 {
+      font-family: 'Outfit', sans-serif;
+      color: #fff;
+      margin-top: 40px;
+      margin-bottom: 16px;
+    }
+    .article-content a {
+      color: #3b82f6;
+      text-decoration: none;
+    }
+    .article-content a:hover {
+      text-decoration: underline;
+    }
+    .article-content pre {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: 'Fira Code', monospace;
+      font-size: 14px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .article-content code {
+      font-family: 'Fira Code', monospace;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    .article-content pre code {
+      background: none;
+      padding: 0;
+    }
+    .article-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      margin: 24px 0;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .cta-banner {
+      margin-top: 60px;
+      padding: 40px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .cta-banner h3 {
+      margin: 0;
+      font-family: 'Outfit', sans-serif;
+      font-size: 28px;
+    }
+    .blog-layout {
+      display: grid;
+      grid-template-columns: 250px 1fr 250px;
+      gap: 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .main-column {
+      min-width: 0;
+    }
+    .ad-sidebar {
+      position: sticky;
+      top: 100px;
+      height: calc(100vh - 120px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: rgba(20, 25, 45, 0.4);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 15px;
+      overflow: hidden;
+    }
+    .ad-label {
+      font-size: 10px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+    .nav-links {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-weight: 500;
+    }
+    @media (max-width: 1100px) {
+      .blog-layout {
+        grid-template-columns: 1fr;
+      }
+      .ad-sidebar {
+        position: static;
+        height: auto;
+        min-height: 250px;
+        margin-bottom: 20px;
+      }
+    }
+  </style>
+  
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "headline": "Part 7: I/O Ports and 7-Segment Displays",
+      "author": {
+        "@type": "Organization",
+        "name": "SQGATE Engineering"
+      },
+      "datePublished": "2026-07-02"
+    }
+  </script>
+  <!-- Google Analytics Tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SQGATETRACK"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-SQGATETRACK');
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7398330076279399" crossorigin="anonymous"></script>
+</head>
+<body>
+  <svg class="liquid-glass-svg-filter" style="position: absolute; width: 0; height: 0; pointer-events: none;">
+    <defs>
+      <filter id="liquid-glass-filter" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.05 0.05" numOctaves="3" result="noise" />
+        <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.15 0" in="noise" result="coloredNoise" />
+        <feBlend in="SourceGraphic" in2="coloredNoise" mode="screen" />
+      </filter>
+    </defs>
+  </svg>
+
+  <nav class="nav">
+    <a href="/home/" class="logo">
+      <img src="/icon.webp" width="32" height="32" alt="SQGATE Logo">
+      SQGATE
+    </a>
+    <a href="/blog/" style="color: #94a3b8; text-decoration: none; font-weight: 500; margin-left: 20px;">← Back to Blog</a>
+    <div style="flex-grow: 1;"></div>
+    <a href="/home/" class="liquid-btn">Launch Simulator</a>
+  </nav>
+
+  <div class="blog-layout">
+    <aside class="ad-sidebar">
+      <div class="ad-label">Advertisement</div>
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7398330076279399" data-ad-slot="1111111111" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </aside>
+
+    <div class="main-column">
+      <header class="article-header">
+        <h1>Part 7: I/O Ports and 7-Segment Displays</h1>
+        <div class="article-meta">
+          By SQGATE Engineering | Published on July 2, 2026 | 11 min read
+        </div>
+      </header>
+
+      <main class="article-content liquid-panel">
+        
+        <img src="images/blog_8bit_part7_1782933776527.png" alt="HEX Display IO">
+
+        <h2>Introduction to the Outside World</h2>
+        <p>Over the last six parts of our journey, we have systematically assembled the critical internal organs of our 8-bit computer from scratch. We started with logic gates, built an Arithmetic Logic Unit (ALU), constructed registers, interfaced with Random Access Memory (RAM), and most recently designed the Finite State Machine (FSM) that orchestrates microcode. Right now, our CPU is theoretically functional, capable of executing complex instruction sets entirely inside its closed environment.</p>
+        
+        <p>However, a computer that cannot interact with its environment is nothing more than an elaborate space heater. It can calculate the Fibonacci sequence up to infinity, but if it cannot show you the result, it has no utility. In this seventh installment, we are finally breaking the fourth wall. We are going to explore how to interface our 8-bit CPU with external Input/Output (I/O) ports, specifically focusing on outputting data to physical 7-segment hex displays so we can visualize our computations.</p>
+
+        <h2>Memory-Mapped I/O (MMIO) vs Port-Mapped I/O</h2>
+        <p>Before wiring anything up, we must make a vital architectural decision: How will the CPU communicate with external devices? In computer architecture, there are two dominant paradigms for I/O interfacing:</p>
+        
+        <ol>
+            <li><strong>Port-Mapped I/O (Isolated I/O):</strong> Used heavily in architectures like x86, this method utilizes a separate address space exclusively for I/O devices. The CPU has special instructions (like <code>IN</code> and <code>OUT</code>) that trigger a unique hardware pin (e.g., <code>IO/M#</code>) to tell the bus whether it is talking to RAM or an I/O device. While this keeps the memory address space unfragmented, it necessitates additional complex instructions and microcode logic.</li>
+            <li><strong>Memory-Mapped I/O (MMIO):</strong> Adopted by architectures such as ARM and RISC-V, this method simply reserves a portion of the standard RAM address space for I/O devices. The CPU doesn't know the difference between RAM and a 7-segment display. If we assign address <code>0xFF</code> (255 in decimal) to our display register, writing to <code>0xFF</code> using a standard <code>STORE</code> instruction will output the data.</li>
+        </ol>
+
+        <p>Given the constraints of our minimalist 8-bit FSM, Memory-Mapped I/O is vastly superior. It eliminates the need for specialized <code>OUT</code> instructions, saving precious microcode ROM space. We will use a standard <code>STA</code> (Store Accumulator) instruction to write our data, but we will selectively wire the physical address bus so that specific addresses bypass RAM and latch into our display registers.</p>
+
+        <h3>Address Decoding Logic</h3>
+        <p>To implement Memory-Mapped I/O, we must build an <strong>Address Decoder</strong>. Let's designate the very top address of our memory space, <code>0xFF</code> (Binary: <code>11111111</code>), as our Output Register. When the CPU attempts to write to memory, it asserts the <code>WRITE_ENABLE</code> signal and places the target address on the Address Bus.</p>
+        
+        <p>To capture this, we will use an 8-input AND gate connected to all 8 lines of the address bus. The output of this AND gate will only be <code>HIGH</code> when the address is exactly <code>11111111</code>. We then take this signal and pass it through another AND gate along with the CPU's global <code>WRITE_ENABLE</code> line. The result is a highly specific <code>IO_WRITE_ENABLE</code> signal that only pulses when the CPU deliberately writes to address 255. We tie this signal directly to the clock/latch pin of our 8-bit D-Flip-Flop Output Register.</p>
+
+        <h2>Data Representation: Binary, Hex, and BCD</h2>
+        <p>With our CPU successfully pushing an 8-bit value (ranging from 0 to 255) into our output register, the next challenge is visualizing it. Standard 7-segment displays take a 4-bit input and illuminate the corresponding segments to show a number. Since our output is 8-bit, we can easily split it into two 4-bit "nibbles," feeding each into its own Hexadecimal display. This will allow us to visualize numbers from <code>00</code> to <code>FF</code>.</p>
+        
+        <p>But what if we want to display standard decimal numbers (0-255) instead of Hexadecimal? This is where things get computationally expensive. We cannot simply split an 8-bit binary number down the middle and get decimal digits. Binary <code>11111111</code> is 255 in decimal. It requires three 7-segment displays (Hundreds, Tens, and Ones), meaning we need three 4-bit values.</p>
+
+        <h3>The Double Dabble Algorithm (BCD Conversion)</h3>
+        <p>To achieve this, we must perform Binary-to-BCD (Binary-Coded Decimal) conversion. The most famous hardware implementation for this is the <strong>Double Dabble algorithm</strong> (also known as Shift-and-Add-3). The algorithm systematically shifts the binary number left into the BCD columns (Units, Tens, Hundreds). Before each shift, if any BCD column is greater than or equal to 5, we add 3 to it. This mathematical trick cleanly separates out base-10 digits into pure 4-bit chunks without using costly division operations.</p>
+        
+        <p>In our architecture, we could implement a sequential BCD converter module right before the display, but for the sake of speed and minimal gate count in our current build, we will stick to native Hexadecimal 7-segment displays. This keeps our hardware minimal and aligns perfectly with how modern low-level systems (like BIOS debug cards) output POST codes.</p>
+
+        <h2>Interfacing the Displays in SQGATE</h2>
+        <p>Let's map out exactly how this hardware looks. Our output register holds the 8-bit value. To feed it into two Hexadecimal displays, we use an 8-bit bus splitter (<code>split8</code>) to decompose the 8-bit bus into individual wires, and then group them appropriately.</p>
+        
+        <p>In the SQGATE simulation engine, <code>split8</code> maps outputs array-index for array-index to match MSB-first logic. We take the high nibble (bits 7 through 4) and map them to the first HEX display, and the low nibble (bits 3 through 0) to the second.</p>
+        
+        <p>Here is the exact SQGATE JSON snippet that demonstrates this mapping architecture. You can paste this into the SQGATE editor to instantly simulate the output stage:</p>
+
+        <pre><code>{
+  "version": "1.0",
+  "components": [
+    { "type": "input8", "id": "bus_in", "x": 100, "y": 200, "label": "8-bit Output Reg" },
+    { "type": "split8", "id": "splitter", "x": 300, "y": 200 },
+    { "type": "hex_display", "id": "hex_hi", "x": 500, "y": 120, "label": "High Nibble" },
+    { "type": "hex_display", "id": "hex_lo", "x": 500, "y": 280, "label": "Low Nibble" }
+  ],
+  "wires": [
+    { "from": "bus_in.out", "to": "splitter.in" },
+    { "from": "splitter.out[7]", "to": "hex_hi.in[3]" },
+    { "from": "splitter.out[6]", "to": "hex_hi.in[2]" },
+    { "from": "splitter.out[5]", "to": "hex_hi.in[1]" },
+    { "from": "splitter.out[4]", "to": "hex_hi.in[0]" },
+    { "from": "splitter.out[3]", "to": "hex_lo.in[3]" },
+    { "from": "splitter.out[2]", "to": "hex_lo.in[2]" },
+    { "from": "splitter.out[1]", "to": "hex_lo.in[1]" },
+    { "from": "splitter.out[0]", "to": "hex_lo.in[0]" }
+  ]
+}</code></pre>
+
+        <p><em>Note: In SQGATE, array mapping is explicitly defined for components that don't natively support slice syntax on the bus layer. Notice how bits 7 to 4 from the 8-bit input accurately route to the 4-bit input array <code>[3]</code> to <code>[0]</code> of the High Nibble display.</em></p>
+
+        <h2>Conclusion</h2>
+        <p>We've now successfully given our computer a voice. By employing Memory-Mapped I/O and carefully constructed Address Decoding logic, our CPU can communicate the results of its hard computational work to human-readable Hexadecimal displays, all without altering the core instruction set. In the upcoming eighth and final part of this series, we will put every single subsystem together, load a comprehensive Fibonacci program into ROM, and watch our fully assembled 8-bit architecture spring to life.</p>
+        
+        <div class="nav-links">
+          <a href="8bit-part6-fsm-microcode.html">⬅ Previous: Part 6</a> 
+          <a href="8bit-part8-full-architecture.html">Next: Part 8 ➔</a>
+        </div>
+        
+      </main>
+    </div>
+
+    <aside class="ad-sidebar">
+      <div class="ad-label">Advertisement</div>
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7398330076279399" data-ad-slot="2222222222" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </aside>
+  </div>
+</body>
+</html>

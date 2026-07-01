@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Program Counter & Fetch Logic | 8-Bit Computer</title>
+  <meta name="description" content="Deep dive into designing a Program Counter (PC) and instruction fetch logic using flip-flops and adders for a custom 8-bit CPU.">
+  <meta name="keywords" content="program counter, fetch logic, instruction fetch, 8-bit CPU, digital design">
+  <link rel="canonical" href="https://sqgate.online/blog/posts/8bit-part2-program-counter.html">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="icon" href="/icon.ico">
+  
+  <!-- OG Tags -->
+  <meta property="og:title" content="Program Counter & Fetch Logic | 8-Bit Computer">
+  <meta property="og:description" content="Deep dive into designing a Program Counter (PC) and instruction fetch logic using flip-flops and adders for a custom 8-bit CPU.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sqgate.online/blog/posts/8bit-part2-program-counter.html">
+  <meta property="og:image" content="https://sqgate.online/blog/posts/images/blog_8bit_part2_1782933726245.png">
+  
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/liquid-glass.css">
+  
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SQGATE123"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-SQGATE123');
+  </script>
+
+  <style>
+    body {
+      background-color: #060813;
+      color: #cbd5e1;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.7;
+    }
+    .nav {
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(12, 15, 28, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 24px;
+      color: #fff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .article-header {
+      max-width: 800px;
+      margin: 60px auto 40px;
+      padding: 0 20px;
+      text-align: center;
+    }
+    .article-header h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 42px;
+      color: #fff;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+    .article-meta {
+      color: #64748b;
+      font-size: 14px;
+    }
+    .article-content {
+      max-width: 800px;
+      margin: 0 auto 80px;
+      padding: 40px;
+    }
+    .article-content h2, .article-content h3, .article-content h4 {
+      font-family: 'Outfit', sans-serif;
+      color: #fff;
+      margin-top: 40px;
+      margin-bottom: 16px;
+    }
+    .article-content a {
+      color: #3b82f6;
+      text-decoration: none;
+    }
+    .article-content a:hover {
+      text-decoration: underline;
+    }
+    .article-content pre {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: 'Fira Code', monospace;
+      font-size: 14px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .article-content code {
+      font-family: 'Fira Code', monospace;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    .article-content pre code {
+      background: none;
+      padding: 0;
+    }
+    .article-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      margin: 24px 0;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .cta-banner {
+      margin-top: 60px;
+      padding: 40px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .cta-banner h3 {
+      margin: 0;
+      font-family: 'Outfit', sans-serif;
+      font-size: 28px;
+    }
+    .blog-layout {
+      display: grid;
+      grid-template-columns: 250px 1fr 250px;
+      gap: 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .main-column {
+      min-width: 0;
+    }
+    .ad-sidebar {
+      position: sticky;
+      top: 100px;
+      height: calc(100vh - 120px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: rgba(20, 25, 45, 0.4);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 15px;
+      overflow: hidden;
+    }
+    .ad-label {
+      font-size: 10px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+    .nav-links {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    @media (max-width: 1100px) {
+      .blog-layout {
+        grid-template-columns: 1fr;
+      }
+      .ad-sidebar {
+        position: static;
+        height: auto;
+        min-height: 250px;
+        margin-bottom: 20px;
+      }
+    }
+  </style>
+  
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://sqgate.online/blog/posts/8bit-part2-program-counter.html"
+      },
+      "headline": "Part 2: Designing the Program Counter",
+      "description": "Deep dive into designing a Program Counter (PC) and instruction fetch logic using flip-flops and adders for a custom 8-bit CPU.",
+      "image": "https://sqgate.online/blog/posts/images/blog_8bit_part2_1782933726245.png",  
+      "author": {
+        "@type": "Organization",
+        "name": "SQGATE Engineering"
+      },  
+      "publisher": {
+        "@type": "Organization",
+        "name": "SQGATE",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://sqgate.online/icon.png"
+        }
+      },
+      "datePublished": "2026-07-02"
+    }
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7398330076279399" crossorigin="anonymous"></script>
+</head>
+<body>
+  <svg class="liquid-glass-svg-filter" style="position: absolute; width: 0; height: 0; pointer-events: none;">
+    <defs>
+      <filter id="liquid-glass-filter" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.05 0.05" numOctaves="3" result="noise" />
+        <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.15 0" in="noise" result="coloredNoise" />
+        <feBlend in="SourceGraphic" in2="coloredNoise" mode="screen" />
+      </filter>
+    </defs>
+  </svg>
+
+  <nav class="nav">
+    <a href="/home/" class="logo">
+      <img src="/icon.webp" width="32" height="32" alt="SQGATE Logo">
+      SQGATE
+    </a>
+    <a href="/blog/" style="color: #94a3b8; text-decoration: none; font-weight: 500; margin-left: 20px;">← Back to Blog</a>
+    <div style="flex-grow: 1;"></div>
+    <a href="/home/" class="liquid-btn">Launch Simulator</a>
+  </nav>
+
+  <div class="blog-layout">
+    <aside class="ad-sidebar">
+      <div class="ad-label">Advertisement</div>
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7398330076279399" data-ad-slot="1111111111" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </aside>
+
+    <div class="main-column">
+      <header class="article-header">
+        <h1>Part 2: Designing the Program Counter</h1>
+        <div class="article-meta">
+          By SQGATE Engineering | Published on July 2, 2026 | 11 min read
+        </div>
+      </header>
+
+      <main class="article-content liquid-panel">
+        <h2>Introduction</h2>
+        <p>In the <a href="8bit-part1-clock.html">first part of our series</a>, we established the heartbeat of our 8-bit computer by designing an adjustable, stable 555-timer based clock circuit capable of generating the precision timing pulses needed to synchronize every operation within our custom CPU architecture. But a heartbeat without a brain is meaningless. The clock simply provides the rhythm; the computer needs a way to know <em>where</em> it is in its execution path and <em>what</em> to do next. This is where the <strong>Program Counter (PC)</strong> comes into the picture.</p>
+        <p>If you think of a computer's memory as a massive library of books (instructions and data), the Program Counter is the diligent librarian with a notebook, constantly keeping track of exactly which book on which shelf needs to be read next. It is, unequivocally, one of the most critical components of any von Neumann or Harvard architecture machine.</p>
+        <p>In this second installment, we will embark on a highly technical deep dive into designing a custom Program Counter from scratch. We will explore the nuances of sequential addressing, the complexities introduced by branching and jumps, and finally, we will dive into the overarching instruction fetch logic that orchestrates the flow of data from memory into the CPU's execution units. We will be using raw flip-flops, logic gates, and adders to build this counter, and we will simulate the design natively using the SQGATE framework.</p>
+
+        <h2>The Anatomy of a Program Counter</h2>
+        <p>At its core, a Program Counter is a specialized digital register capable of incrementing its stored value by one (or a specific word length offset) on command. In our 8-bit architecture, the Program Counter must hold an 8-bit memory address, which allows it to address up to 256 individual bytes of memory (2<sup>8</sup> = 256). While 256 bytes might seem extraordinarily small by modern standards—where gigabytes and terabytes are the norm—it is the perfect size for an educational 8-bit breadboard or simulated computer, keeping the wiring and logic manageable while still being Turing complete.</p>
+        <p>Our PC needs to perform three fundamental operations:</p>
+        <ol>
+            <li><strong>Increment (Count Up):</strong> During normal sequential execution, the PC must advance to the next instruction address after the current instruction has been fetched. This requires an incrementer circuit or a cascading flip-flop arrangement.</li>
+            <li><strong>Parallel Load (Branching):</strong> When the CPU encounters a jump (<code>JMP</code>), call (<code>CALL</code>), or conditional branch instruction (e.g., <code>JZ</code> - Jump if Zero), normal sequential execution is interrupted. The PC must be able to load a completely new 8-bit address directly from the internal data bus, overwriting its current value.</li>
+            <li><strong>Reset:</strong> When the computer is powered on or a reset button is pressed, the PC must clear its contents to <code>00000000</code> so that execution begins at the first memory address (the reset vector).</li>
+        </ol>
+
+        <img src="images/blog_8bit_part2_1782933726245.png" alt="Program Counter">
+
+        <h2>Mastering Sequential Addressing</h2>
+        <p>Sequential addressing is the default behavior of any CPU. Instructions are placed in memory in consecutive addresses, and the CPU reads and executes them one by one. To achieve this, the Program Counter acts as a synchronous binary counter.</p>
+        <p>Building an 8-bit synchronous counter from scratch involves utilizing D-type or JK-type flip-flops. Let's analyze the design using D flip-flops. An 8-bit counter requires eight D flip-flops. To make it count synchronously (meaning all bits update simultaneously on the rising edge of the clock, avoiding the ripple effect and propagation delays inherent in asynchronous ripple counters), we use combination logic to determine the next state of each flip-flop.</p>
+        <p>The logic equation for the next state of a particular bit Q<sub>n</sub> in a synchronous counter is simply the XOR of its current state and the logical AND of all previous bits. Mathematically, for an increment-enabled counter:</p>
+        <ul>
+            <li>D<sub>0</sub> = Q<sub>0</sub> ⊕ Enable</li>
+            <li>D<sub>1</sub> = Q<sub>1</sub> ⊕ (Q<sub>0</sub> ⋅ Enable)</li>
+            <li>D<sub>2</sub> = Q<sub>2</sub> ⊕ (Q<sub>1</sub> ⋅ Q<sub>0</sub> ⋅ Enable)</li>
+            <li>D<sub>n</sub> = Q<sub>n</sub> ⊕ (Q<sub>n-1</sub> ⋅ Q<sub>n-2</sub> ... Q<sub>0</sub> ⋅ Enable)</li>
+        </ul>
+        <p>This means that a bit will toggle its state only if all the bits representing lower significance are currently at logic <code>HIGH</code> (1) and the counter is enabled. While this logic is mathematically elegant, implementing wide AND gates (like a 7-input AND gate for the MSB) can introduce propagation delays and fan-in issues in physical hardware. In practice, this is often mitigated using carry look-ahead logic or by cascading smaller 4-bit synchronous counters like the ubiquitous 74LS161 or 74LS163 ICs.</p>
+        <p>For our design, we will employ an architecture that closely mirrors how modern Arithmetic Logic Units (ALUs) operate: a standard 8-bit register paired with a dedicated 8-bit incrementer (a simplified adder where one operand is hardwired to 1). The output of the register feeds into the incrementer, and the incrementer's output loops back into the register's input. A multiplexer dictates whether the register loads the incremented value or a new value from the data bus.</p>
+
+        <h2>Implementing Branching and Jump Logic</h2>
+        <p>If our computer could only execute sequentially, it would be no better than a glorified mechanical music box. The true power of computing lies in conditional execution—the ability to make decisions and alter the control flow based on data. This is achieved through Branching.</p>
+        <p>When a Jump instruction is decoded by the Control Unit, the sequential counting must stop. Instead, a new target address is placed onto the main CPU bus. The Control Unit asserts the <code>Load Enable (LE)</code> control signal on the Program Counter. On the next clock edge, instead of latching the incremented value, the PC's internal register latches the 8 bits present on the bus.</p>
+        <p>Let's consider a practical example. Suppose the PC is currently at address <code>0x05</code>, and the instruction at <code>0x05</code> is <code>JMP 0x2A</code>. </p>
+        <ol>
+            <li><strong>Fetch:</strong> The CPU fetches the opcode for <code>JMP</code> from address <code>0x05</code>. The PC increments to <code>0x06</code>.</li>
+            <li><strong>Decode:</strong> The Control Unit realizes this is a multi-byte instruction and that it needs an address.</li>
+            <li><strong>Operand Fetch:</strong> The CPU fetches the operand <code>0x2A</code> from address <code>0x06</code> and places it on the bus.</li>
+            <li><strong>Execute (Branch):</strong> The Control Unit asserts the PC's <code>Load</code> pin. On the clock pulse, <code>0x2A</code> is loaded into the PC.</li>
+            <li><strong>Next Cycle:</strong> The next fetch cycle will correctly pull the instruction from address <code>0x2A</code>.</li>
+        </ol>
+        <p>Conditional jumps (like <code>Jump if Carry</code> or <code>Jump if Zero</code>) add one more layer of gating. The <code>Load</code> signal is ANDed with the corresponding status flag from the ALU. If the flag is set, the load occurs. If not, the PC simply increments normally, ignoring the jump address.</p>
+
+        <h2>SQGATE Circuit Implementation</h2>
+        <p>To visualize this, let's look at how we define this Program Counter within the SQGATE simulation framework. The following JSON snippet defines a robust 8-bit Program Counter module. Notice how we use a register, an adder for incrementing, and a multiplexer (implied by the control logic) to select between the incremented value and the bus input.</p>
+
+<pre><code class="language-json">{
+  "id": "program_counter_8bit",
+  "type": "module",
+  "name": "8-Bit Program Counter",
+  "inputs": [
+    {"name": "CLK", "type": "bit"},
+    {"name": "RST", "type": "bit"},
+    {"name": "COUNT_EN", "type": "bit"},
+    {"name": "LOAD_EN", "type": "bit"},
+    {"name": "BUS_IN", "type": "bus", "width": 8}
+  ],
+  "outputs": [
+    {"name": "PC_OUT", "type": "bus", "width": 8}
+  ],
+  "components": [
+    {
+      "id": "pc_reg",
+      "type": "register8",
+      "clock": "CLK",
+      "reset": "RST",
+      "load": "REG_LOAD_SIGNAL",
+      "data_in": "MUX_OUT"
+    },
+    {
+      "id": "incrementer",
+      "type": "adder8",
+      "a": "pc_reg.q",
+      "b": "0x01",
+      "carry_in": "0"
+    },
+    {
+      "id": "input_mux",
+      "type": "mux2_8bit",
+      "sel": "LOAD_EN",
+      "in0": "incrementer.sum",
+      "in1": "BUS_IN"
+    },
+    {
+      "id": "load_logic",
+      "type": "or_gate",
+      "in1": "COUNT_EN",
+      "in2": "LOAD_EN"
+    }
+  ],
+  "connections": [
+    {"from": "input_mux.out", "to": "MUX_OUT"},
+    {"from": "load_logic.out", "to": "REG_LOAD_SIGNAL"},
+    {"from": "pc_reg.q", "to": "PC_OUT"}
+  ]
+}</code></pre>
+
+        <p>In this SQGATE schema, the <code>input_mux</code> decides the next state. If <code>LOAD_EN</code> is high, it routes the <code>BUS_IN</code> to the register. Otherwise, it routes the output of the <code>incrementer</code>. The <code>load_logic</code> OR gate ensures that the register actually updates on the clock edge whether it's counting or loading.</p>
+
+        <h2>The Fetch Logic Cycle</h2>
+        <p>The Program Counter doesn't operate in a vacuum. It is intimately tied to the Instruction Fetch cycle. In an 8-bit microarchitecture, an instruction cycle is typically divided into several T-states (timing states). The first few T-states are universally dedicated to fetching the instruction.</p>
+        <p>Let's map out a typical Fetch Cycle (often denoted as T0, T1, T2):</p>
+        <ul>
+            <li><strong>T0 - Address Setup:</strong> The content of the Program Counter must be moved to the Memory Address Register (MAR). The Control Unit asserts <code>PC_OUT</code> (enable PC to bus) and <code>MAR_IN</code> (latch bus to MAR). The PC's value now stabilizes on the memory's address lines.</li>
+            <li><strong>T1 - Memory Read & PC Increment:</strong> The memory is instructed to read (<code>RAM_OUT</code>). The data byte at the addressed location is placed on the bus. Simultaneously, the Instruction Register is told to latch this byte (<code>IR_IN</code>). Critically, during this same clock cycle, the PC is incremented (<code>PC_CE</code> - Count Enable) so it points to the next byte for future operations.</li>
+            <li><strong>T2 - Decode:</strong> The fetch is complete. The Instruction Register now holds the opcode. The instruction decoder takes over to determine which microinstructions must be executed in subsequent T-states (T3, T4, etc.) to actually perform the operation.</li>
+        </ul>
+        <p>This overlapping of operations—incrementing the PC in the same cycle the memory is being read—is a rudimentary form of pipelining and significantly speeds up execution, preventing the CPU from wasting a dedicated clock cycle just to increment the counter.</p>
+        
+        <h2>Challenges in High-Speed Fetching</h2>
+        <p>While our 8-bit breadboard CPU might run at a leisurely 1 kHz to a few MHz, modern processors operating in the gigahertz range face immense challenges with the Program Counter and Fetch Logic. As clock speeds increase, the propagation delay through the incrementer (ripple carry delays) becomes a severe bottleneck. Furthermore, memory latency means that fetching an instruction takes far longer than a single CPU clock cycle.</p>
+        <p>This has led to the development of sophisticated techniques like Branch Prediction, Instruction Prefetch Buffers, and intricate cache hierarchies (L1i, L2 caches). A modern PC is often predicting where it needs to jump long before the actual condition is evaluated, keeping the pipeline fed with instructions to avoid costly stalls.</p>
+
+        <h2>Conclusion</h2>
+        <p>The Program Counter is the steadfast navigator of the CPU. By meticulously designing its increment logic, load capabilities for branching, and seamlessly integrating it into the fetch cycle, we establish the foundational control flow of our 8-bit computer. We have transitioned from the static generation of clock pulses to dynamic, sequential traversal of memory space.</p>
+        <p>In the next part of this series, we will attach memory to this addressing scheme, exploring the design of the Memory Address Register (MAR), Random Access Memory (RAM), and general-purpose registers that will hold our operational data.</p>
+        
+        <div class="nav-links">
+            <a href="8bit-part1-clock.html" class="liquid-btn" style="padding: 10px 20px;">⬅ Previous: Part 1</a>
+            <a href="8bit-part3-registers-ram.html" class="liquid-btn" style="padding: 10px 20px;">Next: Part 3 ➔</a>
+        </div>
+        
+        <div class="cta-banner">
+          <h3>Ready to test this out?</h3>
+          <p>Simulate logic gates, export Verilog, and solve Karnaugh maps instantly in your browser.</p>
+          <a href="/home/" class="liquid-btn" style="font-size: 16px; padding: 12px 24px;">Open SQGATE Simulator (Free)</a>
+        </div>
+      </main>
+    </div>
+
+    <aside class="ad-sidebar">
+      <div class="ad-label">Advertisement</div>
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7398330076279399" data-ad-slot="2222222222" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </aside>
+  </div>
+</body>
+</html>
