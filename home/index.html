@@ -2216,9 +2216,10 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
     </div>
 
     <!-- AD BANNER DASHBOARD -->
-    <div style="margin: 0; padding: 24px 0;">
-      <div id="ad-dashboard" class="ad-banner" style="margin:0 auto; display:flex; align-items:center; justify-content:center; max-width:728px; min-height:90px; pointer-events:all;">
-        <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px" data-ad-client="ca-pub-7398330076279399" data-ad-slot="1234567890"></ins>
+    <div style="margin: 0; padding: 24px 0; position: relative;">
+      <div style="position: absolute; inset: 0; top: 24px; bottom: 24px; display: flex; align-items: center; justify-content: center; font-size: 11px; letter-spacing: 2px; color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.02); z-index: 0; max-width: 728px; margin: 0 auto; border-radius: 8px;">ADVERTISEMENT SPACE</div>
+      <div id="ad-dashboard" class="ad-banner" style="margin:0 auto; display:flex; align-items:center; justify-content:center; max-width:728px; min-height:90px; pointer-events:all; z-index: 1;">
+        <ins class="adsbygoogle" style="display:inline-block;width:728px;min-height:90px" data-ad-client="ca-pub-7398330076279399" data-ad-slot="1234567890"></ins>
         <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
       </div>
     </div>
@@ -2375,8 +2376,9 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
     <!-- CANVAS WRAPPER -->
     <div id="cvwrap">
       <!-- AD BANNER EDITOR -->
-      <div id="ad-editor" class="ad-banner" style="position:absolute;top:0;left:0;right:0;height:50px;display:flex;align-items:center;justify-content:center;z-index:9;pointer-events:all;">
-        <ins class="adsbygoogle" style="display:inline-block;width:468px;height:60px" data-ad-client="ca-pub-7398330076279399" data-ad-slot="0987654321"></ins>
+      <div id="ad-editor" class="ad-banner" style="position:absolute;top:0;left:0;right:0;height:50px;display:flex;align-items:center;justify-content:center;z-index:9;pointer-events:all;background:rgba(255,255,255,0.02);border-bottom:1px solid rgba(255,255,255,0.05);">
+        <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:11px; letter-spacing:2px; color:rgba(255,255,255,0.2); z-index:0;">ADVERTISEMENT SPACE</div>
+        <ins class="adsbygoogle" style="display:inline-block;width:468px;height:50px;z-index:1;" data-ad-client="ca-pub-7398330076279399" data-ad-slot="0987654321"></ins>
         <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
       </div>
       <div id="zoom-pill" onmousedown="event.stopPropagation()" onwheel="event.stopPropagation()" ondblclick="event.stopPropagation()">
