@@ -2320,7 +2320,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       <button class="tb-btn" id="btn-tmpl" title="Circuit Templates" aria-label="Templates">
         <svg viewBox="0 0 24 24"><path d="M2 12a10 10 0 1 0 20 0 10 10 0 1 0-20 0"/></svg>
       </button>
-      <button class="tb-btn" id="btn-theme" title="Toggle Theme" aria-label="Theme">
+      <button class="tb-btn" id="btn-theme" title="Toggle Theme" aria-label="Theme" style="display:none;">
         <svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
       </button>
 
@@ -8213,7 +8213,7 @@ loadProjData = function(data){
 // ═══════════════════════════════════════════════════════
 // FEATURE C: LIGHT / DARK THEME TOGGLE
 // ═══════════════════════════════════════════════════════
-var isLightTheme = true; // Default simulation to light theme
+var isLightTheme = false; // Default simulation to dark theme
 
 document.getElementById('btn-theme').addEventListener('click', function() {
   isLightTheme = !isLightTheme;
@@ -8227,8 +8227,8 @@ document.getElementById('btn-theme').addEventListener('click', function() {
 (function(){
   try {
     var saved = localStorage.getItem('lgf_theme');
-    if (saved==='dark') {
-      isLightTheme=false;
+    if (saved==='light') {
+      isLightTheme=true;
     }
   } catch(e){}
   
