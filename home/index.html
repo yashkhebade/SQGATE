@@ -994,85 +994,112 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 /* ══ LOGIN PAGE ══════════════════════════════════════════════════ */
 #pg-login{
   position:fixed;inset:0;
-  display:none;align-items:center;justify-content:center;z-index:1000;
-  background:rgba(0,0,0,0.5);
+  display:none; /* Flex handled by JS inline style or we can just use flex here and let JS toggle display */
+  z-index:1000;
+  background: #0f172a;
   overflow:hidden;
+  font-family: var(--fsans);
 }
-#pg-login::before{
-  content:'';position:absolute;inset:-40px;
-  background: url('/login_bg_v2.png') center/cover no-repeat;
-  filter:blur(8px) brightness(0.6);
-  z-index:-1;
+.login-split {
+  display: flex;
+  width: 100%;
+  height: 100%;
 }
-.login-card{
-  background:rgba(15, 20, 30, 0.65);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  padding: 48px 44px;
-  width: 420px;
-  text-align: center;
-  box-shadow: 0 32px 100px rgba(0,0,0, 0.8), inset 0 1px 1px rgba(255,255,255,0.1);
-  animation: floatCard 4s ease-in-out infinite;
+.login-left {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px;
+  background: url('/login_bg_v3.png') center/cover no-repeat;
 }
-@keyframes floatCard {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+.login-left::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(15,23,42,0.8) 0%, rgba(15,23,42,0.2) 50%, rgba(15,23,42,0.9) 100%);
+}
+.login-left-content {
+  position: relative;
+  z-index: 1;
+  max-width: 500px;
+  text-align: left;
+}
+.login-hero-title {
+  font-size: 48px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 16px;
+  line-height: 1.1;
+  text-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+.login-hero-subtitle {
+  font-size: 16px;
+  color: rgba(255,255,255,0.8);
+  line-height: 1.5;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+.login-right {
+  width: 480px;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 60px;
+  box-shadow: -20px 0 50px rgba(0,0,0,0.5);
 }
 .login-header {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 8px;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 32px;
 }
 .login-header-img {
-  width: 80px;
-  height: 80px;
+  width: 64px;
+  height: 64px;
   object-fit: contain;
-  border-radius: 22px;
-  box-shadow: 0 12px 32px rgba(99, 102, 241, 0.4), 0 0 40px rgba(99, 102, 241, 0.2);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
   transition: transform 0.3s ease;
 }
 .login-header-img:hover {
   transform: scale(1.05) rotate(2deg);
 }
 .login-logo{
-  font-weight: 900;
-  font-size: 28px;
-  letter-spacing: 4px;
-  background: linear-gradient(135deg, #a78bfa, #6366f1, #06b6d4);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-transform: uppercase;
-  margin-bottom: 2px;
+  font-weight: 800;
+  font-size: 32px;
+  letter-spacing: 2px;
+  color: #fff;
+  margin-bottom: 4px;
 }
 .login-tagline{
-  font-size: 13px;
-  color: rgba(255,255,255,0.7);
-  margin-bottom: 36px;
-  letter-spacing: 0.5px;
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 24px;
   font-weight: 500;
 }
 .login-input{
   width: 100%;
   padding: 14px 16px;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
+  border-radius: 10px;
   color: #fff;
   font-size: 14px;
   font-family: var(--fsans);
   outline: none;
   transition: all 0.3s ease;
-  margin-bottom: 14px;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+  margin-bottom: 16px;
 }
 .login-input:focus{
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.1);
   border-color: #6366f1;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), 0 0 0 3px rgba(99, 102, 241, 0.2);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
 }
 .login-input::placeholder{
   color: rgba(255,255,255,0.4);
@@ -1080,37 +1107,37 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 .login-sub-btn{
   width: 100%;
   padding: 14px;
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
-  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  background: #4f46e5;
   border: none;
   color: #fff;
   font-size: 14px;
   font-weight: 700;
   font-family: var(--fsans);
-  transition: all 0.3s ease;
-  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3), inset 0 1px 1px rgba(255,255,255,0.2);
+  transition: all 0.2s ease;
   margin-bottom: 12px;
 }
 .login-sub-btn:hover{
-  transform: translateY(-2px);
-  box-shadow: 0 12px 32px rgba(99, 102, 241, 0.5), inset 0 1px 1px rgba(255,255,255,0.2);
-  background: linear-gradient(135deg, #818cf8, #6366f1);
+  background: #6366f1;
+  transform: translateY(-1px);
 }
 #guest-btn {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: none;
   color: rgba(255,255,255,0.8);
-  margin-top: 4px;
 }
 #guest-btn:hover {
   background: rgba(255, 255, 255, 0.1);
   color: #fff;
-  transform: translateY(-2px);
 }
 .login-err{color:var(--acr);font-size:12px;font-weight:600;margin-top:6px;min-height:16px;}
-.login-footer{margin-top:28px;font-size:11px;color:rgba(255,255,255,0.5);line-height:1.6;}
+.login-footer{margin-top:32px;font-size:11px;color:rgba(255,255,255,0.4);line-height:1.6;border-top: 1px solid rgba(255,255,255,0.1);padding-top:20px;}
+
+@media (max-width: 900px) {
+  .login-left { display: none; }
+  .login-right { width: 100%; padding: 0 40px; background: url('/login_bg_v3.png') center/cover no-repeat; }
+}
 
 /* ══ PROJECTS PAGE ═══════════════════════════════════════════════ */
 #pg-projects{position:fixed;inset:0;background:var(--bg0);display:flex;flex-direction:column;z-index:900}
@@ -1876,38 +1903,45 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 
 <!-- ═══════════ LOGIN PAGE ═══════════ -->
 <div id="pg-login">
-  <div class="login-card">
-    <div class="login-header">
-      <img class="login-header-img" src="/icon.webp" alt="SQGATE Logo" style="cursor:pointer;" onclick="showProjects()">
-      <div class="login-logo" style="cursor:pointer;" onclick="showProjects()">SQGATE</div>
-    </div>
-    <div class="login-tagline">Professional Digital Circuit Simulator</div>
-
-    <input class="login-input" id="login-email" type="email"
-      placeholder="Email address (e.g. your@gmail.com)" autocomplete="email">
-    <input class="login-input" id="login-name" type="text"
-      placeholder="Display name (e.g. Rahul)" autocomplete="name">
-    <input class="login-input" id="login-password" type="password"
-      placeholder="Password" autocomplete="current-password">
-    
-    <label style="display:flex; align-items:center; gap:8px; justify-content:flex-start; margin-bottom:20px; font-size:13px; color:var(--t2); cursor:pointer; user-select:none;">
-      <input type="checkbox" id="login-remember" checked style="accent-color:var(--acc); width:16px; height:16px; cursor:pointer;">
-      Always remember me
-    </label>
-    <button class="login-sub-btn" id="login-btn">Sign In / Create Account</button>
-    <button class="login-sub-btn" id="guest-btn" style="background:var(--b2);margin-top:10px;">Continue as Guest</button>
-    <div class="login-err" id="login-err"></div>
-
-    <div class="login-footer">
-      This creates a <strong>local offline workspace</strong> in your browser.<br>
-      Your circuits and data are entirely private and never sent to any server.<br><br>
-      <div style="display:inline-block; padding:4px 10px; background:var(--bg2); border:1px solid var(--b2); border-radius:12px; font-size:11px; color:var(--t2); box-shadow:0 2px 6px rgba(0,0,0,0.3);">
-        <strong>SQGATE Simulator</strong>
+  <div class="login-split">
+    <div class="login-left">
+      <div class="login-left-content">
+        <h1 class="login-hero-title">Welcome Back</h1>
+        <p class="login-hero-subtitle">Sign in to your offline workspace to continue building professional digital circuits.</p>
       </div>
-      <div style="margin-top: 15px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-        <a href="/terms.html" style="color:var(--t3);text-decoration:none;">Terms</a> &bull; 
-        <a href="/privacy.html" style="color:var(--t3);text-decoration:none;">Privacy</a> &bull; 
-        <a href="/contact.html" style="color:var(--t3);text-decoration:none;">Contact</a>
+    </div>
+    <div class="login-right">
+      <div class="login-header">
+        <img class="login-header-img" src="/icon.webp" alt="SQGATE Logo" style="cursor:pointer;" onclick="showProjects()">
+        <div class="login-logo" style="cursor:pointer;" onclick="showProjects()">Sign in</div>
+        <div class="login-tagline">Professional Digital Circuit Simulator</div>
+      </div>
+
+      <input class="login-input" id="login-email" type="email"
+        placeholder="Email address (e.g. your@gmail.com)" autocomplete="email">
+      <input class="login-input" id="login-name" type="text"
+        placeholder="Display name (e.g. Rahul)" autocomplete="name">
+      <input class="login-input" id="login-password" type="password"
+        placeholder="Password" autocomplete="current-password">
+      
+      <label style="display:flex; align-items:center; gap:8px; justify-content:flex-start; margin-bottom:24px; font-size:13px; color:rgba(255,255,255,0.7); cursor:pointer; user-select:none;">
+        <input type="checkbox" id="login-remember" checked style="accent-color:#6366f1; width:16px; height:16px; cursor:pointer;">
+        Remember Me
+      </label>
+      <button class="login-sub-btn" id="login-btn">Sign In Now</button>
+      <button class="login-sub-btn" id="guest-btn">Continue as Guest</button>
+      <div class="login-err" id="login-err"></div>
+
+      <div class="login-footer">
+        This creates a <strong>local offline workspace</strong> in your browser.<br>
+        Your circuits and data are entirely private and never sent to any server.<br><br>
+        <div style="display:inline-block; padding:4px 10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:12px; font-size:11px; color:rgba(255,255,255,0.6); box-shadow:0 2px 6px rgba(0,0,0,0.3);">
+          <strong>SQGATE Simulator</strong>
+        </div>
+        <div style="margin-top: 15px; display: flex; gap: 12px; justify-content: flex-start; flex-wrap: wrap;">
+          <a href="/terms.html" style="color:rgba(255,255,255,0.6);text-decoration:none;">Terms of Service</a> &bull; 
+          <a href="/privacy.html" style="color:rgba(255,255,255,0.6);text-decoration:none;">Privacy Policy</a>
+        </div>
       </div>
     </div>
   </div>
