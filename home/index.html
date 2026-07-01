@@ -2311,7 +2311,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       <a href="/pricing.html" class="tb-btn-text" id="btn-pro-nav" style="border: 1px solid var(--acc); color: var(--acc); text-decoration: none; padding: 4px 10px; border-radius: 6px;">
         Upgrade to Pro
       </a>
-      <button class="tb-btn" id="btn-drc" title="Design Rule Check" aria-label="DRC" style="display:none;">
+      <button class="tb-btn" id="btn-drc" title="Design Rule Check" aria-label="DRC">
         <svg viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg>
       </button>
       <button class="tb-btn" id="btn-stats" title="Simulation Statistics" aria-label="Stats">
@@ -6898,109 +6898,406 @@ function updateStepInfo() {
 // ═══════════════════════════════════════════════════════
 // DRC — DESIGN RULE CHECK
 // ═══════════════════════════════════════════════════════
+
 document.getElementById('btn-drc').addEventListener('click', function(){
   document.getElementById('ov-drc').classList.add('open');
-  runDRC();
+  const result = runDRC(S.gates, S.wires, S.custom);
+  
+  const mappedErrors = result.errors.map(function(v) {
+    return {
+      type: 'error', icon: '🔴',
+      title: v.rule,
+      desc: v.message + (v.netId ? ' [Net: ' + v.netId + ']' : ''),
+      gid: (v.gates && v.gates[0] && typeof v.gates[0] === 'number') ? v.gates[0] : (v.icInstance || null)
+    };
+  });
+  
+  const mappedWarnings = [].concat(result.warnings, result.info).map(function(v) {
+    return {
+      type: v.severity === 'info' ? 'info' : 'warn',
+      icon: v.severity === 'info' ? 'ℹ️' : '⚠',
+      title: v.rule,
+      desc: v.message + (v.netId ? ' [Net: ' + v.netId + ']' : ''),
+      gid: (v.gates && v.gates[0] && typeof v.gates[0] === 'number') ? v.gates[0] : (v.icInstance || null)
+    };
+  });
+  
+  renderDRC(mappedErrors, mappedWarnings);
+  if (typeof simulate === 'function') simulate();
+  if (typeof stUpd === 'function') stUpd();
+  S.dirty = true;
 });
 document.getElementById('drc-close').addEventListener('click', function(){ document.getElementById('ov-drc').classList.remove('open'); });
-document.getElementById('drc-run').addEventListener('click', runDRC);
+document.getElementById('drc-run').addEventListener('click', function(){ document.getElementById('btn-drc').click(); });
 
-function runDRC() {
-  var errors = [];
-  var warnings = [];
 
-  // 1. Floating inputs (gate input pins with no wire connected)
-  S.gates.forEach(function(g) {
-    if (['input','clock','const0','const1'].includes(g.type)) return;
-    var d = gdef(g);
-    for (var pi = 0; pi < d.nc; pi++) {
-      var w = S.wires.find(function(w){ return w.tg===g.id&&w.tp===pi; });
-      if (!w) {
-        warnings.push({
-          type: 'warn', icon: '⚠',
-          title: 'Floating input on ' + d.lbl + ' #' + g.id,
-          desc: 'Input pin ' + pi + ' has no connection — treated as LOW (0)',
-          gid: g.id,
+// -----------------------------------------------------------------------
+// CONFIG — verify these against your real DEF object before trusting R9
+// -----------------------------------------------------------------------
+const DRC_SEQUENTIAL_TYPES = new Set(["sr", "dlatch", "dff", "jkff", "tff"]);
+const DRC_SOURCE_TYPES = new Set(["input", "clock"]);
+const DRC_SINK_TYPES = new Set(["output"]);
+
+// ASSUMPTION (please verify against your real DEF pin ordering):
+const DRC_CLOCK_PIN_INDEX = {
+  dff: 1,
+  jkff: 2,
+  tff: 1,
+};
+
+const DRC_DEFAULT_FANOUT_LIMIT = 8;
+
+function drcGateDef(gate, customLib) {
+  if (gate.type === "custom") {
+    const pkg = customLib ? customLib[gate.cn] : null;
+    if (!pkg || !pkg._def) return { nc: 0, np: 0 };
+    return pkg._def;
+  }
+  const d = DEF[gate.type];
+  return d || { nc: 0, np: 0 };
+}
+
+function pinKey(gateId, dir, idx) {
+  return `${gateId}:${dir}:${idx}`;
+}
+
+class DrcUnionFind {
+  constructor() {
+    this.parent = new Map();
+    this.rank = new Map();
+  }
+  find(x) {
+    if (!this.parent.has(x)) {
+      this.parent.set(x, x);
+      this.rank.set(x, 0);
+    }
+    if (this.parent.get(x) !== x) {
+      this.parent.set(x, this.find(this.parent.get(x)));
+    }
+    return this.parent.get(x);
+  }
+  union(a, b) {
+    const ra = this.find(a);
+    const rb = this.find(b);
+    if (ra === rb) return;
+    const rankA = this.rank.get(ra);
+    const rankB = this.rank.get(rb);
+    if (rankA < rankB) this.parent.set(ra, rb);
+    else if (rankA > rankB) this.parent.set(rb, ra);
+    else {
+      this.parent.set(rb, ra);
+      this.rank.set(ra, rankA + 1);
+    }
+  }
+}
+
+function drcExtractNets(gates, wires, customLib) {
+  const uf = new DrcUnionFind();
+  const inputPins = new Map();
+  const outputPins = new Map();
+
+  for (const g of gates) {
+    const d = drcGateDef(g, customLib);
+    for (let i = 0; i < (d.nc || 0); i++) {
+      inputPins.set(pinKey(g.id, "in", i), { gateId: g.id, idx: i, type: g.type });
+    }
+    for (let i = 0; i < (d.np || 0); i++) {
+      outputPins.set(pinKey(g.id, "out", i), { gateId: g.id, idx: i, type: g.type });
+    }
+  }
+
+  for (const w of wires) {
+    const fromKey = pinKey(w.fg, "out", w.fp);
+    const toKey = pinKey(w.tg, "in", w.tp);
+    uf.find(fromKey);
+    uf.find(toKey);
+    uf.union(fromKey, toKey);
+  }
+
+  const allKeys = new Set([...inputPins.keys(), ...outputPins.keys()]);
+  const groups = new Map();
+
+  for (const key of allKeys) {
+    const root = uf.find(key);
+    if (!groups.has(root)) groups.set(root, { drivers: [], loads: [] });
+    if (outputPins.has(key)) groups.get(root).drivers.push(outputPins.get(key));
+    if (inputPins.has(key)) groups.get(root).loads.push(inputPins.get(key));
+  }
+
+  return [...groups.values()].map((g, i) => ({ id: `net_${i}`, ...g }));
+}
+
+function drcCheckNets(nets, opts, pathPrefix) {
+  const violations = [];
+  const fanoutLimit = opts.fanoutLimit ?? DRC_DEFAULT_FANOUT_LIMIT;
+
+  for (const net of nets) {
+    if (net.drivers.length === 0 && net.loads.length > 0) {
+      violations.push({
+        rule: "R1_FLOATING_INPUT",
+        severity: "error",
+        message: "Input pin(s) not driven by any output.",
+        netId: pathPrefix + net.id,
+        gates: net.loads.map((p) => p.gateId),
+        pins: net.loads.map((p) => ({ gateId: p.gateId, idx: p.idx })),
+      });
+    }
+
+    if (net.drivers.length > 1) {
+      violations.push({
+        rule: "R2_DRIVER_CONFLICT",
+        severity: "error",
+        message: `${net.drivers.length} outputs are wired onto the same net (electrical conflict).`,
+        netId: pathPrefix + net.id,
+        gates: net.drivers.map((p) => p.gateId),
+      });
+    }
+
+    if (net.drivers.length === 1 && net.loads.length === 0) {
+      violations.push({
+        rule: "R3_DANGLING_OUTPUT",
+        severity: "warning",
+        message: "Output is not connected to anything.",
+        netId: pathPrefix + net.id,
+        gates: net.drivers.map((p) => p.gateId),
+      });
+    }
+
+    if (net.loads.length > fanoutLimit) {
+      violations.push({
+        rule: "R7_FANOUT_OVERLOAD",
+        severity: "warning",
+        message: `Net drives ${net.loads.length} inputs, exceeding recommended fanout of ${fanoutLimit}.`,
+        netId: pathPrefix + net.id,
+      });
+    }
+
+    const isClockDriven = net.drivers.some((d) => d.type === "clock");
+    if (isClockDriven) {
+      const nonClockLoads = net.loads.filter((l) => {
+        const clkIdx = DRC_CLOCK_PIN_INDEX[l.type];
+        return clkIdx === undefined || clkIdx !== l.idx;
+      });
+      if (nonClockLoads.length > 0) {
+        violations.push({
+          rule: "R9_CLOCK_AS_DATA",
+          severity: "warning",
+          message: "Clock signal feeds a non-clock (data) input — check intent.",
+          netId: pathPrefix + net.id,
+          gates: nonClockLoads.map((p) => p.gateId),
         });
       }
     }
-  });
+  }
 
-  // 2. Floating outputs (gate output pins with no wire going out)
-  S.gates.forEach(function(g) {
-    if (['output'].includes(g.type)) return;
-    var d = gdef(g);
-    for (var po = 0; po < d.np; po++) {
-      var w = S.wires.find(function(w){ return w.fg===g.id&&w.fp===po; });
-      if (!w) {
-        warnings.push({
-          type: 'warn', icon: '⚠',
-          title: 'Unconnected output on ' + d.lbl + ' #' + g.id,
-          desc: 'Output pin ' + po + ' drives nothing',
-          gid: g.id,
-        });
+  return violations;
+}
+
+function drcCheckDuplicateWires(wires, pathPrefix) {
+  const seen = new Map();
+  const violations = [];
+  for (const w of wires) {
+    const key = `${w.fg}.${w.fp}->${w.tg}.${w.tp}`;
+    if (seen.has(key)) {
+      violations.push({
+        rule: "R5_DUPLICATE_WIRE",
+        severity: "warning",
+        message: "Duplicate wire between the same two pins.",
+        wires: [seen.get(key), pathPrefix + w.id],
+      });
+    } else {
+      seen.set(key, pathPrefix + w.id);
+    }
+  }
+  return violations;
+}
+
+function drcCheckIsolatedComponents(gates, wires, customLib, pathPrefix) {
+  const touched = new Set();
+  for (const w of wires) {
+    touched.add(w.fg);
+    touched.add(w.tg);
+  }
+  const violations = [];
+  for (const g of gates) {
+    const d = drcGateDef(g, customLib);
+    const totalPins = (d.nc || 0) + (d.np || 0);
+    if (totalPins > 0 && !touched.has(g.id)) {
+      violations.push({
+        rule: "R4_ISOLATED_COMPONENT",
+        severity: "info",
+        message: "Component has no connections.",
+        gates: [pathPrefix + g.id],
+      });
+    }
+  }
+  return violations;
+}
+
+function drcBuildGateGraph(gates, nets) {
+  const adj = new Map();
+  for (const g of gates) adj.set(g.id, new Set());
+
+  for (const net of nets) {
+    const combDrivers = net.drivers.filter((d) => !DRC_SEQUENTIAL_TYPES.has(d.type));
+    const combLoads = net.loads.filter((l) => !DRC_SEQUENTIAL_TYPES.has(l.type));
+    for (const d of combDrivers) {
+      for (const l of combLoads) {
+        if (adj.has(d.gateId)) adj.get(d.gateId).add(l.gateId);
       }
     }
-  });
+  }
+  return adj;
+}
 
-  // 3. Combinational loop detection (DFS)
-  var loopGates = detectCombLoop();
-  if (loopGates.length) {
-    errors.push({
-      type: 'error', icon: '🔴',
-      title: 'Combinational loop detected',
-      desc: 'Gates involved: ' + loopGates.map(function(id){ var g=S.gates.find(function(g){return g.id===id;}); return g?gdef(g).lbl+'#'+id:id; }).join(', '),
-      gids: loopGates,
+function drcTarjanSCC(adj) {
+  let index = 0;
+  const indices = new Map();
+  const lowlink = new Map();
+  const onStack = new Map();
+  const stack = [];
+  const sccs = [];
+
+  for (const start of adj.keys()) {
+    if (indices.has(start)) continue;
+    const workStack = [{ node: start, it: adj.get(start).values() }];
+    indices.set(start, index);
+    lowlink.set(start, index);
+    index++;
+    stack.push(start);
+    onStack.set(start, true);
+
+    while (workStack.length > 0) {
+      const frame = workStack[workStack.length - 1];
+      const next = frame.it.next();
+
+      if (!next.done) {
+        const child = next.value;
+        if (!indices.has(child)) {
+          indices.set(child, index);
+          lowlink.set(child, index);
+          index++;
+          stack.push(child);
+          onStack.set(child, true);
+          workStack.push({ node: child, it: adj.get(child).values() });
+        } else if (onStack.get(child)) {
+          lowlink.set(frame.node, Math.min(lowlink.get(frame.node), indices.get(child)));
+        }
+      } else {
+        workStack.pop();
+        if (workStack.length > 0) {
+          const parent = workStack[workStack.length - 1].node;
+          lowlink.set(parent, Math.min(lowlink.get(parent), lowlink.get(frame.node)));
+        }
+        if (lowlink.get(frame.node) === indices.get(frame.node)) {
+          const comp = [];
+          let w;
+          do {
+            w = stack.pop();
+            onStack.set(w, false);
+            comp.push(w);
+          } while (w !== frame.node);
+          sccs.push(comp);
+        }
+      }
+    }
+  }
+  return sccs;
+}
+
+function drcCheckCombinationalLoops(gates, nets, pathPrefix) {
+  const adj = drcBuildGateGraph(gates, nets);
+  const sccs = drcTarjanSCC(adj);
+  const violations = [];
+  for (const comp of sccs) {
+    const selfLoop = comp.length === 1 && adj.get(comp[0]).has(comp[0]);
+    if (comp.length > 1 || selfLoop) {
+      violations.push({
+        rule: "R8_COMBINATIONAL_LOOP",
+        severity: "error",
+        message: "Combinational feedback loop — no clocked element breaks the cycle.",
+        gates: comp.map((id) => pathPrefix + id),
+      });
+    }
+  }
+  return violations;
+}
+
+function drcRunInternal(gates, wires, customLib, opts, pathPrefix) {
+  const nets = drcExtractNets(gates, wires, customLib);
+
+  let violations = [
+    ...drcCheckNets(nets, opts, pathPrefix),
+    ...drcCheckDuplicateWires(wires, pathPrefix),
+    ...drcCheckIsolatedComponents(gates, wires, customLib, pathPrefix),
+    ...drcCheckCombinationalLoops(gates, nets, pathPrefix),
+  ];
+
+  const icGates = gates.filter((g) => g.type === "custom" && g.cn);
+  for (const icGate of icGates) {
+    const pkg = customLib ? customLib[icGate.cn] : null;
+    if (!pkg || !pkg.circuit) {
+      violations.push({
+        rule: "R10_MISSING_IC_DEFINITION",
+        severity: "error",
+        message: `Custom IC "${icGate.cn}" is referenced but has no internal definition.`,
+        gates: [pathPrefix + icGate.id],
+      });
+      continue;
+    }
+    const nestedPrefix = `${pathPrefix}${icGate.id}(${icGate.cn})::`;
+    const nested = drcRunInternal(
+      pkg.circuit.gates,
+      pkg.circuit.wires,
+      customLib,
+      opts,
+      nestedPrefix
+    );
+    violations.push(
+      ...nested.map((v) => ({
+        ...v,
+        rule: v.rule.startsWith("R10_") ? v.rule : `${v.rule}_IN_IC`,
+        icInstance: icGate.id,
+        icDefinition: icGate.cn,
+      }))
+    );
+  }
+
+  return violations;
+}
+
+function runDRC(gates, wires, customLib, opts = {}) {
+  const all = drcRunInternal(gates, wires, customLib, opts, "");
+  const errors = all.filter((v) => v.severity === "error");
+  const warnings = all.filter((v) => v.severity === "warning");
+  const info = all.filter((v) => v.severity === "info");
+
+  const faultedGateIds = new Set();
+  for (const v of errors) {
+    if (v.icInstance) faultedGateIds.add(v.icInstance);
+    (v.gates || []).forEach((gid) => {
+      if (typeof gid === "number" || (typeof gid === "string" && !gid.includes("::"))) {
+        faultedGateIds.add(gid);
+      }
     });
   }
-
-  // 4. No inputs at all
-  if (!S.gates.some(function(g){ return g.type==='input'||g.type==='clock'||g.type==='const0'||g.type==='const1'; })) {
-    warnings.push({ type:'warn', icon:'⚠', title:'No input sources', desc:'Place at least one INPUT, CLOCK or CONST gate', gid:null });
+  for (const g of gates) {
+    g.fault = faultedGateIds.has(g.id);
   }
 
-  // 5. No outputs at all
-  if (!S.gates.some(function(g){ return g.type==='output'; })) {
-    warnings.push({ type:'warn', icon:'⚠', title:'No output probes', desc:'Place at least one OUTPUT gate to observe results', gid:null });
-  }
-
-  // 6. Output probe with no input wire
-  S.gates.filter(function(g){ return g.type==='output'; }).forEach(function(g){
-    var w = S.wires.find(function(w){ return w.tg===g.id; });
-    if (!w) errors.push({ type:'error', icon:'🔴', title:'Output probe #'+g.id+' is disconnected', desc:'OUTPUT gate has no incoming wire — will always show ?', gid:g.id });
-  });
-
-  // 7. SR latch S=R=1 warning
-  S.gates.filter(function(g){ return g.type==='sr'; }).forEach(function(g){
-    if (g.fault) errors.push({ type:'error', icon:'🔴', title:'SR Latch #'+g.id+' in INVALID state', desc:'S=R=1 is not allowed — output is indeterminate', gid:g.id });
-  });
-
-  renderDRC(errors, warnings);
+  return {
+    errors,
+    warnings,
+    info,
+    summary: {
+      errorCount: errors.length,
+      warningCount: warnings.length,
+      infoCount: info.length,
+      clean: errors.length === 0,
+    },
+  };
 }
-
-function detectCombLoop() {
-  var visited = new Set(), stack = new Set();
-  var loopGates = [];
-  function dfs(gid) {
-    if (stack.has(gid)) { loopGates.push(gid); return true; }
-    if (visited.has(gid)) return false;
-    visited.add(gid); stack.add(gid);
-    var outWires = S.wires.filter(function(w){ return w.fg===gid; });
-    for (var i=0; i<outWires.length; i++) {
-      var target = outWires[i].tg;
-      var tgate = S.gates.find(function(g){ return g.id===target; });
-      if (tgate && !['input','clock','const0','const1'].includes(tgate.type)) {
-        if (dfs(target)) { loopGates.push(gid); }
-      }
-    }
-    stack.delete(gid);
-    return false;
-  }
-  S.gates.forEach(function(g){ if(!visited.has(g.id)) dfs(g.id); });
-  return [...new Set(loopGates)];
-}
-
-function renderDRC(errors, warnings) {
+\nfunction renderDRC(errors, warnings) {
   var body = document.getElementById('drc-body');
   var all = errors.concat(warnings);
   if (!all.length) {
