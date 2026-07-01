@@ -49,3 +49,6 @@
 # Verilog/VHDL Code Generation Rules
 - **Multi-bit Bus Widths**: When updating the `genVerilog()` or `genVHDL()` exporters, never default all internal nets to 1-bit wires. You must analyze the source gate type to declare the correct bit width (e.g., `wire [7:0]` or `STD_LOGIC_VECTOR(7 downto 0)`) for components that output buses, such as `count8`, `shift8`, `alu8`, `rom8`, `ram8`, and bus splitters.
 - **Endianness & Array Mapping**: Ensure that splitters (`split8`, `split4`) and mergers (`merge8`, `merge4`) map their outputs array-index for array-index to match the MSB-first evaluation logic of the Javascript simulation engine.
+
+# Automatic Git Push Policy
+- Whenever you make a code change and run a `git commit`, you MUST automatically run `git push` in the same step or immediately after. Do not wait for the user to explicitly tell you to push.
