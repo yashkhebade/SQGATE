@@ -2202,12 +2202,38 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
     <div class="proj-grid" id="proj-grid"></div>
 
     <!-- SEO TOOL DESCRIPTIONS FOR ADSENSE CRAWLER (BOTTOM) -->
-    <div style="max-width: 1200px; margin: 48px auto 64px auto; padding: 24px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; font-family: var(--fmain); line-height: 1.6; color: var(--t2);">
-      <h3 style="color: var(--t1); margin-top: 0; font-size: 18px; margin-bottom: 16px;">About SQGATE</h3>
-      <p style="margin-bottom: 16px;"><strong>1. Visual Circuit Simulator:</strong> This tool allows users to interactively build and simulate complex digital logic circuits using a drag-and-drop interface. It supports a wide array of logic gates, flip-flops, multiplexers, and ALU components. It helps students understand real-time signal propagation, combinational logic, and sequential logic without requiring expensive hardware setups.</p>
-      <p style="margin-bottom: 16px;"><strong>2. FSM Designer & Generator:</strong> The Finite State Machine designer provides a graphical environment to draw state diagrams (Moore and Mealy machines). It helps users transition from conceptual state diagrams to physical digital hardware by automatically generating synthesizable Verilog HDL code, making it an invaluable tool for VLSI and FPGA design courses.</p>
-      <p style="margin-bottom: 16px;"><strong>3. Logic Quest Puzzle Game:</strong> Designed to reinforce theoretical Boolean concepts, this interactive puzzle game challenges users to build specific truth tables using a restricted inventory of logic gates. It acts as an engaging educational gamification tool, helping beginners master universal gates (like NAND and NOR) and logic minimization techniques.</p>
-      <p style="margin-bottom: 0;"><strong>4. Interactive K-Map Solver:</strong> Our Karnaugh Map tool simplifies complex Boolean algebra expressions visually. It supports up to 6 variables, automatically finding the prime implicants and the simplified Sum of Products (SOP) expression. This saves engineering students hours of manual computation and helps them intuitively grasp digital circuit minimization.</p>
+    <div style="max-width: 1200px; margin: 48px auto 64px auto; padding: 0 24px;">
+      <div style="text-align: center; margin-bottom: 32px;">
+        <h2 style="font-family: var(--fmono); font-size: 20px; font-weight: 700; color: var(--t1); letter-spacing: 1px; text-shadow: 0 0 16px var(--acc-glow);">About SQGATE Digital Electronics Toolkit</h2>
+        <div style="width: 60px; height: 2px; background: var(--acc); margin: 12px auto; box-shadow: 0 0 10px var(--acc-glow);"></div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px;">
+        
+        <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); backdrop-filter: blur(12px); transition: transform 0.2s;">
+          <div style="color: var(--acc); margin-bottom: 16px;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg></div>
+          <h3 style="font-size: 15px; font-weight: 600; color: var(--t1); margin-bottom: 12px; font-family: var(--fsans);">Visual Circuit Simulator</h3>
+          <p style="font-size: 13px; color: var(--t2); line-height: 1.6; margin: 0;">Interactively build and simulate complex digital logic circuits using a drag-and-drop interface. Master combinational and sequential logic with real-time signal propagation.</p>
+        </div>
+        
+        <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); backdrop-filter: blur(12px); transition: transform 0.2s;">
+          <div style="color: var(--acb); margin-bottom: 16px;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg></div>
+          <h3 style="font-size: 15px; font-weight: 600; color: var(--t1); margin-bottom: 12px; font-family: var(--fsans);">FSM Designer</h3>
+          <p style="font-size: 13px; color: var(--t2); line-height: 1.6; margin: 0;">Graphically draw Finite State Machine diagrams (Moore and Mealy) and automatically generate synthesizable Verilog HDL code for FPGA and VLSI design courses.</p>
+        </div>
+        
+        <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); backdrop-filter: blur(12px); transition: transform 0.2s;">
+          <div style="color: var(--aca); margin-bottom: 16px;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.439 7.85c-.049.322-.059.648-.029.975.112 1.234 1.218 2.128 2.459 2.002.327-.033.65-.119.957-.253L21 16l-4.5 4.5-5.4-5.4"></path><path d="M8 8.5L3.5 13l4.5 4.5"></path><path d="M8 8.5l4-4 4.5 4.5"></path></svg></div>
+          <h3 style="font-size: 15px; font-weight: 600; color: var(--t1); margin-bottom: 12px; font-family: var(--fsans);">Logic Quest Puzzle</h3>
+          <p style="font-size: 13px; color: var(--t2); line-height: 1.6; margin: 0;">An engaging educational gamification tool. Reinforce Boolean concepts by building specific truth tables using a restricted inventory of universal logic gates.</p>
+        </div>
+        
+        <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); backdrop-filter: blur(12px); transition: transform 0.2s;">
+          <div style="color: var(--hi); margin-bottom: 16px;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg></div>
+          <h3 style="font-size: 15px; font-weight: 600; color: var(--t1); margin-bottom: 12px; font-family: var(--fsans);">Interactive K-Map Solver</h3>
+          <p style="font-size: 13px; color: var(--t2); line-height: 1.6; margin: 0;">Visually simplify complex Boolean algebra expressions. Supports up to 6 variables, finding prime implicants and the simplified Sum of Products (SOP).</p>
+        </div>
+        
+      </div>
     </div>
     
     <!-- DASHBOARD FOOTER -->
