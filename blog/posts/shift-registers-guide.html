@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CMOS Logic Gates Explained: NMOS and PMOS | SQGATE</title>
-  <meta name="description" content="Understand the physical reality of digital logic. Learn how NMOS and PMOS transistors are arranged in a CMOS configuration to build NAND and NOR gates.">
-  <meta name="keywords" content="CMOS, NMOS, PMOS, transistor, logic gate, semiconductor, VLSI">
-  <link rel="canonical" href="https://sqgate.online/blog/posts/cmos-logic-gates.html">
+  <title>Shift Registers: SISO, SIPO, PISO, PIPO | Digital Logic</title>
+  <meta name="description" content="A comprehensive guide to Shift Registers. Learn how SISO, SIPO, PISO, and PIPO configurations work for data serialization and storage.">
+  <meta name="keywords" content="shift register, SISO, SIPO, PISO, PIPO, data serialization, flip-flops">
+  <link rel="canonical" href="https://sqgate.online/blog/posts/shift-registers-guide.html">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <link rel="icon" href="/icon.ico">
   
   <!-- OG Tags -->
-  <meta property="og:title" content="CMOS Logic Gates Explained: NMOS and PMOS | SQGATE">
-  <meta property="og:description" content="Understand the physical reality of digital logic. Learn how NMOS and PMOS transistors are arranged in a CMOS configuration to build NAND and NOR gates.">
+  <meta property="og:title" content="Shift Registers: SISO, SIPO, PISO, PIPO | Digital Logic">
+  <meta property="og:description" content="A comprehensive guide to Shift Registers. Learn how SISO, SIPO, PISO, and PIPO configurations work for data serialization and storage.">
   <meta property="og:type" content="article">
-  <meta property="og:url" content="https://sqgate.online/blog/posts/cmos-logic-gates.html">
-  <meta property="og:image" content="https://sqgate.online/blog/posts/images/blog_cmos_gates_1783064300887.png">
+  <meta property="og:url" content="https://sqgate.online/blog/posts/shift-registers-guide.html">
+  <meta property="og:image" content="https://sqgate.online/blog/posts/images/blog_shift_registers_1783064289632.png">
   
   <meta name="twitter:card" content="summary_large_image">
   
@@ -181,8 +181,8 @@
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "CMOS Logic Gates: How Transistors Build Logic",
-  "description": "Understand the physical reality of digital logic. Learn how NMOS and PMOS transistors are arranged in a CMOS configuration to build NAND and NOR gates.",
+  "headline": "Understanding Shift Registers and Data Serialization",
+  "description": "A comprehensive guide to Shift Registers. Learn how SISO, SIPO, PISO, and PIPO configurations work for data serialization and storage.",
   "author": {
     "@type": "Organization",
     "name": "SQGATE Engineering"
@@ -232,29 +232,28 @@
 
     <div class="main-column">
       <header class="article-header">
-        <h1>CMOS Logic Gates: How Transistors Build Logic</h1>
+        <h1>Understanding Shift Registers and Data Serialization</h1>
         <div class="article-meta">
-          By SQGATE Engineering | Published on July 03, 2026 | 9 min read
+          By SQGATE Engineering | Published on July 03, 2026 | 8 min read
         </div>
       </header>
 
       <main class="article-content liquid-panel">
-        <img src="images/blog_cmos_gates_1783064300887.png" alt="CMOS Logic Gates: How Transistors Build Logic">
-<h2>The Illusion of 1s and 0s</h2>
-<p>In digital design, we abstract away the physical reality by talking about 1s and 0s. But beneath the mathematical abstraction of Boolean algebra lies the physical reality of semiconductors, specifically MOSFETs (Metal-Oxide-Semiconductor Field-Effect Transistors).</p>
+        <img src="images/blog_shift_registers_1783064289632.png" alt="Understanding Shift Registers and Data Serialization">
+<h2>What is a Shift Register?</h2>
+<p>A shift register is a type of sequential logic circuit composed of a chain of flip-flops connected in cascade. With every clock pulse, data is shifted from one flip-flop to the next. They are primarily used for temporary data storage and for converting data between serial and parallel formats.</p>
 
-<h2>NMOS and PMOS Transistors</h2>
-<p>A MOSFET acts as an electrically controlled switch. There are two primary types used in digital logic:</p>
-<ul>
-    <li><strong>NMOS:</strong> Turns ON (conducts current) when a high voltage (Logic 1) is applied to its gate. It is excellent at pulling outputs down to Ground (Logic 0).</li>
-    <li><strong>PMOS:</strong> Turns ON when a low voltage (Logic 0) is applied to its gate. It is excellent at pulling outputs up to VDD (Logic 1).</li>
-</ul>
+<h2>SISO: Serial-In, Serial-Out</h2>
+<p>In a SISO shift register, data is fed in one bit at a time (serially), and read out one bit at a time from the last flip-flop. It acts as a digital delay line. If you have an 8-bit SISO register, it takes 8 clock cycles for a bit to travel from the input to the output.</p>
 
-<h2>The CMOS Architecture</h2>
-<p>Complementary MOS (CMOS) is the dominant technology for modern integrated circuits. It pairs a "pull-up" network of PMOS transistors with a "pull-down" network of NMOS transistors. The beauty of CMOS is that in any stable logic state, only one network is active. This means there is no direct path from VDD to Ground, resulting in near-zero static power consumption.</p>
+<h2>SIPO: Serial-In, Parallel-Out</h2>
+<p>A SIPO register is used to convert a serial data stream into a parallel data word. Data is shifted in serially, but all flip-flop outputs are accessible simultaneously. This is incredibly useful in communication protocols like SPI or UART, where data is transmitted over a single wire but needs to be processed as whole bytes by a microcontroller.</p>
 
-<h2>Building a NAND Gate</h2>
-<p>A CMOS NAND gate is built using two PMOS transistors in parallel (connected to VDD) and two NMOS transistors in series (connected to Ground). If both inputs are High, both NMOS transistors turn on, pulling the output Low (0). If either input is Low, the series NMOS path is broken, and at least one parallel PMOS transistor turns on, pulling the output High (1).</p>
+<h2>PISO: Parallel-In, Serial-Out</h2>
+<p>The inverse of SIPO, a PISO register takes a parallel data word and shifts it out one bit at a time on a single wire. It requires a load control signal to asynchronously latch the parallel data into the flip-flops before shifting begins. This is used in transmitters to serialize data before sending it over a cable.</p>
+
+<h2>PIPO: Parallel-In, Parallel-Out</h2>
+<p>A PIPO register loads all bits simultaneously and can be read simultaneously. It does not actually shift data. It simply acts as a standard data register or buffer for temporary storage.</p>
 
         
         <div class="cta-banner">

@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CMOS Logic Gates Explained: NMOS and PMOS | SQGATE</title>
-  <meta name="description" content="Understand the physical reality of digital logic. Learn how NMOS and PMOS transistors are arranged in a CMOS configuration to build NAND and NOR gates.">
-  <meta name="keywords" content="CMOS, NMOS, PMOS, transistor, logic gate, semiconductor, VLSI">
-  <link rel="canonical" href="https://sqgate.online/blog/posts/cmos-logic-gates.html">
+  <title>Finite State Machines: Moore vs Mealy FSM | SQGATE</title>
+  <meta name="description" content="A deep dive into Finite State Machines (FSM). Learn the theoretical and practical differences between Moore and Mealy state machine architectures.">
+  <meta name="keywords" content="FSM, finite state machine, moore machine, mealy machine, state diagram, digital logic">
+  <link rel="canonical" href="https://sqgate.online/blog/posts/fsm-moore-mealy.html">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <link rel="icon" href="/icon.ico">
   
   <!-- OG Tags -->
-  <meta property="og:title" content="CMOS Logic Gates Explained: NMOS and PMOS | SQGATE">
-  <meta property="og:description" content="Understand the physical reality of digital logic. Learn how NMOS and PMOS transistors are arranged in a CMOS configuration to build NAND and NOR gates.">
+  <meta property="og:title" content="Finite State Machines: Moore vs Mealy FSM | SQGATE">
+  <meta property="og:description" content="A deep dive into Finite State Machines (FSM). Learn the theoretical and practical differences between Moore and Mealy state machine architectures.">
   <meta property="og:type" content="article">
-  <meta property="og:url" content="https://sqgate.online/blog/posts/cmos-logic-gates.html">
-  <meta property="og:image" content="https://sqgate.online/blog/posts/images/blog_cmos_gates_1783064300887.png">
+  <meta property="og:url" content="https://sqgate.online/blog/posts/fsm-moore-mealy.html">
+  <meta property="og:image" content="https://sqgate.online/blog/posts/images/blog_fsm_machines_1783064238505.png">
   
   <meta name="twitter:card" content="summary_large_image">
   
@@ -181,8 +181,8 @@
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "CMOS Logic Gates: How Transistors Build Logic",
-  "description": "Understand the physical reality of digital logic. Learn how NMOS and PMOS transistors are arranged in a CMOS configuration to build NAND and NOR gates.",
+  "headline": "Understanding Finite State Machines (Moore vs. Mealy)",
+  "description": "A deep dive into Finite State Machines (FSM). Learn the theoretical and practical differences between Moore and Mealy state machine architectures.",
   "author": {
     "@type": "Organization",
     "name": "SQGATE Engineering"
@@ -232,29 +232,24 @@
 
     <div class="main-column">
       <header class="article-header">
-        <h1>CMOS Logic Gates: How Transistors Build Logic</h1>
+        <h1>Understanding Finite State Machines (Moore vs. Mealy)</h1>
         <div class="article-meta">
-          By SQGATE Engineering | Published on July 03, 2026 | 9 min read
+          By SQGATE Engineering | Published on July 03, 2026 | 8 min read
         </div>
       </header>
 
       <main class="article-content liquid-panel">
-        <img src="images/blog_cmos_gates_1783064300887.png" alt="CMOS Logic Gates: How Transistors Build Logic">
-<h2>The Illusion of 1s and 0s</h2>
-<p>In digital design, we abstract away the physical reality by talking about 1s and 0s. But beneath the mathematical abstraction of Boolean algebra lies the physical reality of semiconductors, specifically MOSFETs (Metal-Oxide-Semiconductor Field-Effect Transistors).</p>
+        <img src="images/blog_fsm_machines_1783064238505.png" alt="Understanding Finite State Machines (Moore vs. Mealy)">
+<h2>What is an FSM?</h2>
+<p>A Finite State Machine (FSM) is a mathematical model of computation used to design both computer programs and sequential logic circuits. An FSM consists of a finite number of states, transitions between those states, and actions. At any given moment, the machine can only be in one state.</p>
 
-<h2>NMOS and PMOS Transistors</h2>
-<p>A MOSFET acts as an electrically controlled switch. There are two primary types used in digital logic:</p>
-<ul>
-    <li><strong>NMOS:</strong> Turns ON (conducts current) when a high voltage (Logic 1) is applied to its gate. It is excellent at pulling outputs down to Ground (Logic 0).</li>
-    <li><strong>PMOS:</strong> Turns ON when a low voltage (Logic 0) is applied to its gate. It is excellent at pulling outputs up to VDD (Logic 1).</li>
-</ul>
+<h2>The Moore Machine</h2>
+<p>In a Moore machine, the outputs depend <strong>ONLY on the current state</strong>. The outputs are associated directly with the state nodes in a state diagram. Because outputs change only when the state changes (which happens on a clock edge), Moore machines are inherently synchronous and their outputs are stable and isolated from immediate input fluctuations.</p>
+<p>However, Moore machines often require more states to model a system than a Mealy machine, because output variations must be encoded as entirely new states.</p>
 
-<h2>The CMOS Architecture</h2>
-<p>Complementary MOS (CMOS) is the dominant technology for modern integrated circuits. It pairs a "pull-up" network of PMOS transistors with a "pull-down" network of NMOS transistors. The beauty of CMOS is that in any stable logic state, only one network is active. This means there is no direct path from VDD to Ground, resulting in near-zero static power consumption.</p>
-
-<h2>Building a NAND Gate</h2>
-<p>A CMOS NAND gate is built using two PMOS transistors in parallel (connected to VDD) and two NMOS transistors in series (connected to Ground). If both inputs are High, both NMOS transistors turn on, pulling the output Low (0). If either input is Low, the series NMOS path is broken, and at least one parallel PMOS transistor turns on, pulling the output High (1).</p>
+<h2>The Mealy Machine</h2>
+<p>In a Mealy machine, the outputs depend on <strong>both the current state AND the current inputs</strong>. The outputs are associated with the transitions (arrows) between states. Because inputs can change asynchronously, the outputs of a Mealy machine can change asynchronously during a clock cycle.</p>
+<p>Mealy machines typically require fewer states than Moore machines to model the same logic, making them more hardware-efficient. However, because their outputs can glitch if the inputs are noisy, they require careful timing analysis and often need output registers to synchronize the final signals.</p>
 
         
         <div class="cta-banner">

@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CMOS Logic Gates Explained: NMOS and PMOS | SQGATE</title>
-  <meta name="description" content="Understand the physical reality of digital logic. Learn how NMOS and PMOS transistors are arranged in a CMOS configuration to build NAND and NOR gates.">
-  <meta name="keywords" content="CMOS, NMOS, PMOS, transistor, logic gate, semiconductor, VLSI">
-  <link rel="canonical" href="https://sqgate.online/blog/posts/cmos-logic-gates.html">
+  <title>Flip-Flops Explained: SR, D, JK & T Types | SQGATE</title>
+  <meta name="description" content="A complete guide to digital flip-flops. Learn the differences between SR, D, JK, and T flip-flops and how they store data in memory circuits.">
+  <meta name="keywords" content="flip-flop, digital logic, sr flip flop, d flip flop, jk flip flop, t flip flop, memory">
+  <link rel="canonical" href="https://sqgate.online/blog/posts/flip-flops-explained.html">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <link rel="icon" href="/icon.ico">
   
   <!-- OG Tags -->
-  <meta property="og:title" content="CMOS Logic Gates Explained: NMOS and PMOS | SQGATE">
-  <meta property="og:description" content="Understand the physical reality of digital logic. Learn how NMOS and PMOS transistors are arranged in a CMOS configuration to build NAND and NOR gates.">
+  <meta property="og:title" content="Flip-Flops Explained: SR, D, JK & T Types | SQGATE">
+  <meta property="og:description" content="A complete guide to digital flip-flops. Learn the differences between SR, D, JK, and T flip-flops and how they store data in memory circuits.">
   <meta property="og:type" content="article">
-  <meta property="og:url" content="https://sqgate.online/blog/posts/cmos-logic-gates.html">
-  <meta property="og:image" content="https://sqgate.online/blog/posts/images/blog_cmos_gates_1783064300887.png">
+  <meta property="og:url" content="https://sqgate.online/blog/posts/flip-flops-explained.html">
+  <meta property="og:image" content="https://sqgate.online/blog/posts/images/blog_flip_flops_1783064185971.png">
   
   <meta name="twitter:card" content="summary_large_image">
   
@@ -181,8 +181,8 @@
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "CMOS Logic Gates: How Transistors Build Logic",
-  "description": "Understand the physical reality of digital logic. Learn how NMOS and PMOS transistors are arranged in a CMOS configuration to build NAND and NOR gates.",
+  "headline": "Demystifying Flip-Flops: SR, D, JK, and T",
+  "description": "A complete guide to digital flip-flops. Learn the differences between SR, D, JK, and T flip-flops and how they store data in memory circuits.",
   "author": {
     "@type": "Organization",
     "name": "SQGATE Engineering"
@@ -232,29 +232,28 @@
 
     <div class="main-column">
       <header class="article-header">
-        <h1>CMOS Logic Gates: How Transistors Build Logic</h1>
+        <h1>Demystifying Flip-Flops: SR, D, JK, and T</h1>
         <div class="article-meta">
-          By SQGATE Engineering | Published on July 03, 2026 | 9 min read
+          By SQGATE Engineering | Published on July 03, 2026 | 7 min read
         </div>
       </header>
 
       <main class="article-content liquid-panel">
-        <img src="images/blog_cmos_gates_1783064300887.png" alt="CMOS Logic Gates: How Transistors Build Logic">
-<h2>The Illusion of 1s and 0s</h2>
-<p>In digital design, we abstract away the physical reality by talking about 1s and 0s. But beneath the mathematical abstraction of Boolean algebra lies the physical reality of semiconductors, specifically MOSFETs (Metal-Oxide-Semiconductor Field-Effect Transistors).</p>
+        <img src="images/blog_flip_flops_1783064185971.png" alt="Demystifying Flip-Flops: SR, D, JK, and T">
+<h2>Introduction to Sequential Logic</h2>
+<p>Unlike combinational logic (where the output depends solely on current inputs), sequential logic circuits possess memory. Their output depends on both current inputs and the previous state. The fundamental building block of this memory is the flip-flop.</p>
 
-<h2>NMOS and PMOS Transistors</h2>
-<p>A MOSFET acts as an electrically controlled switch. There are two primary types used in digital logic:</p>
-<ul>
-    <li><strong>NMOS:</strong> Turns ON (conducts current) when a high voltage (Logic 1) is applied to its gate. It is excellent at pulling outputs down to Ground (Logic 0).</li>
-    <li><strong>PMOS:</strong> Turns ON when a low voltage (Logic 0) is applied to its gate. It is excellent at pulling outputs up to VDD (Logic 1).</li>
-</ul>
+<h2>The SR Flip-Flop (Set-Reset)</h2>
+<p>The simplest flip-flop is the SR (Set-Reset) latch, typically built using cross-coupled NOR or NAND gates. When the Set (S) input is high, the output Q becomes 1. When Reset (R) is high, Q becomes 0. A major limitation is the invalid state when both S and R are high simultaneously.</p>
 
-<h2>The CMOS Architecture</h2>
-<p>Complementary MOS (CMOS) is the dominant technology for modern integrated circuits. It pairs a "pull-up" network of PMOS transistors with a "pull-down" network of NMOS transistors. The beauty of CMOS is that in any stable logic state, only one network is active. This means there is no direct path from VDD to Ground, resulting in near-zero static power consumption.</p>
+<h2>The D Flip-Flop (Data or Delay)</h2>
+<p>To solve the SR flip-flop's invalid state issue, the D flip-flop introduces a single Data (D) input. The D input is fed directly to the S input, and an inverted copy is fed to the R input. This ensures S and R are never both high. On a clock edge, the D flip-flop simply captures the value of D and holds it until the next clock pulse. This makes it perfect for registers and memory storage.</p>
 
-<h2>Building a NAND Gate</h2>
-<p>A CMOS NAND gate is built using two PMOS transistors in parallel (connected to VDD) and two NMOS transistors in series (connected to Ground). If both inputs are High, both NMOS transistors turn on, pulling the output Low (0). If either input is Low, the series NMOS path is broken, and at least one parallel PMOS transistor turns on, pulling the output High (1).</p>
+<h2>The JK Flip-Flop</h2>
+<p>The JK flip-flop is the most versatile. It acts like an SR flip-flop (J=Set, K=Reset), but solves the invalid state condition. When both J and K are high, instead of becoming invalid, the JK flip-flop "toggles" its output, changing from 1 to 0 or 0 to 1 on every clock edge.</p>
+
+<h2>The T Flip-Flop (Toggle)</h2>
+<p>The T flip-flop is a single-input version of the JK flip-flop where J and K are tied together. If T is high, the output toggles on every clock edge. If T is low, the output retains its state. This makes it incredibly useful for building digital counters and frequency dividers.</p>
 
         
         <div class="cta-banner">

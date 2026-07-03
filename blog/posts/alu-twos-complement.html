@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CMOS Logic Gates Explained: NMOS and PMOS | SQGATE</title>
-  <meta name="description" content="Understand the physical reality of digital logic. Learn how NMOS and PMOS transistors are arranged in a CMOS configuration to build NAND and NOR gates.">
-  <meta name="keywords" content="CMOS, NMOS, PMOS, transistor, logic gate, semiconductor, VLSI">
-  <link rel="canonical" href="https://sqgate.online/blog/posts/cmos-logic-gates.html">
+  <title>Two's Complement & Signed Binary Arithmetic | SQGATE</title>
+  <meta name="description" content="Discover how computers handle negative numbers using Two's Complement representation, and how an ALU performs subtraction using only addition.">
+  <meta name="keywords" content="twos complement, two's complement, signed binary, ALU subtraction, digital arithmetic">
+  <link rel="canonical" href="https://sqgate.online/blog/posts/alu-twos-complement.html">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <link rel="icon" href="/icon.ico">
   
   <!-- OG Tags -->
-  <meta property="og:title" content="CMOS Logic Gates Explained: NMOS and PMOS | SQGATE">
-  <meta property="og:description" content="Understand the physical reality of digital logic. Learn how NMOS and PMOS transistors are arranged in a CMOS configuration to build NAND and NOR gates.">
+  <meta property="og:title" content="Two's Complement & Signed Binary Arithmetic | SQGATE">
+  <meta property="og:description" content="Discover how computers handle negative numbers using Two's Complement representation, and how an ALU performs subtraction using only addition.">
   <meta property="og:type" content="article">
-  <meta property="og:url" content="https://sqgate.online/blog/posts/cmos-logic-gates.html">
-  <meta property="og:image" content="https://sqgate.online/blog/posts/images/blog_cmos_gates_1783064300887.png">
+  <meta property="og:url" content="https://sqgate.online/blog/posts/alu-twos-complement.html">
+  <meta property="og:image" content="https://sqgate.online/blog/posts/images/blog_alu_twos_complement_1783064261528.png">
   
   <meta name="twitter:card" content="summary_large_image">
   
@@ -181,8 +181,8 @@
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "CMOS Logic Gates: How Transistors Build Logic",
-  "description": "Understand the physical reality of digital logic. Learn how NMOS and PMOS transistors are arranged in a CMOS configuration to build NAND and NOR gates.",
+  "headline": "Arithmetic Logic Unit: Signed Numbers & Two's Complement",
+  "description": "Discover how computers handle negative numbers using Two's Complement representation, and how an ALU performs subtraction using only addition.",
   "author": {
     "@type": "Organization",
     "name": "SQGATE Engineering"
@@ -232,29 +232,23 @@
 
     <div class="main-column">
       <header class="article-header">
-        <h1>CMOS Logic Gates: How Transistors Build Logic</h1>
+        <h1>Arithmetic Logic Unit: Signed Numbers & Two's Complement</h1>
         <div class="article-meta">
           By SQGATE Engineering | Published on July 03, 2026 | 9 min read
         </div>
       </header>
 
       <main class="article-content liquid-panel">
-        <img src="images/blog_cmos_gates_1783064300887.png" alt="CMOS Logic Gates: How Transistors Build Logic">
-<h2>The Illusion of 1s and 0s</h2>
-<p>In digital design, we abstract away the physical reality by talking about 1s and 0s. But beneath the mathematical abstraction of Boolean algebra lies the physical reality of semiconductors, specifically MOSFETs (Metal-Oxide-Semiconductor Field-Effect Transistors).</p>
+        <img src="images/blog_alu_twos_complement_1783064261528.png" alt="Arithmetic Logic Unit: Signed Numbers & Two's Complement">
+<h2>The Problem of Negative Numbers</h2>
+<p>A standard 8-bit binary register can hold values from 00000000 (0) to 11111111 (255). But how do we represent negative numbers? If we dedicate the most significant bit (MSB) as a sign bit (0 for positive, 1 for negative), we run into a major issue: arithmetic doesn't work naturally. Adding $+2 (00000010)$ and $-2 (10000010)$ using a standard adder circuit yields $10000100 (-4)$, not zero.</p>
 
-<h2>NMOS and PMOS Transistors</h2>
-<p>A MOSFET acts as an electrically controlled switch. There are two primary types used in digital logic:</p>
-<ul>
-    <li><strong>NMOS:</strong> Turns ON (conducts current) when a high voltage (Logic 1) is applied to its gate. It is excellent at pulling outputs down to Ground (Logic 0).</li>
-    <li><strong>PMOS:</strong> Turns ON when a low voltage (Logic 0) is applied to its gate. It is excellent at pulling outputs up to VDD (Logic 1).</li>
-</ul>
+<h2>The Genius of Two's Complement</h2>
+<p>Two's complement is a mathematical encoding that solves this problem elegantly. To find the two's complement of a binary number, you invert all the bits (one's complement) and then add 1.</p>
+<p>In an 8-bit two's complement system, values range from -128 to +127. The MSB still indicates the sign, but the beauty is that <strong>addition works perfectly without modifying the hardware adder</strong>. If you add $+2 (00000010)$ and $-2 (11111110)$ in two's complement, the result is $00000000$, with a carry out that is simply discarded.</p>
 
-<h2>The CMOS Architecture</h2>
-<p>Complementary MOS (CMOS) is the dominant technology for modern integrated circuits. It pairs a "pull-up" network of PMOS transistors with a "pull-down" network of NMOS transistors. The beauty of CMOS is that in any stable logic state, only one network is active. This means there is no direct path from VDD to Ground, resulting in near-zero static power consumption.</p>
-
-<h2>Building a NAND Gate</h2>
-<p>A CMOS NAND gate is built using two PMOS transistors in parallel (connected to VDD) and two NMOS transistors in series (connected to Ground). If both inputs are High, both NMOS transistors turn on, pulling the output Low (0). If either input is Low, the series NMOS path is broken, and at least one parallel PMOS transistor turns on, pulling the output High (1).</p>
+<h2>Subtraction via Addition</h2>
+<p>Because of Two's Complement, an Arithmetic Logic Unit (ALU) does not need a separate subtractor circuit. To perform A - B, the ALU simply calculates A + (Two's Complement of B). To implement this in hardware, the ALU passes the B input through XOR gates (which invert B if the subtraction control line is high) and feeds the subtraction control line directly into the Carry-In of the adder to add the required +1.</p>
 
         
         <div class="cta-banner">
