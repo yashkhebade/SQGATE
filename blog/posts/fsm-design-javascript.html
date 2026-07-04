@@ -6,7 +6,7 @@
   <title>Simulating Finite State Machines (FSM) in JavaScript | SQGATE Blog</title>
   <meta name="description" content="A comprehensive, highly technical 2000-word guide on simulating Moore and Mealy Finite State Machines (FSM) in JavaScript for hardware engineers.">
   <meta name="keywords" content="finite state machine, FSM, moore machine, mealy machine, digital logic, state diagram, JavaScript, simulation, SQGATE, hardware engineering, javascript fsm, sequential logic, VHDL, Verilog">
-  <link rel="canonical" href="https://sqgate.online/blog/posts/fsm-design-javascript.html">
+  <link rel="canonical" href="https://sqgate.online/blog/posts/fsm-design-javascript">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <link rel="icon" href="/icon.ico">
   
@@ -393,7 +393,8 @@ computeNextState() {
         <h2>State Encoding: One-Hot, Binary, Gray</h2>
         <p>While the JavaScript object uses string labels (<code>"S0"</code>, <code>"S1"</code>) for states, a hardware engineer cares about how these states are encoded into physical flip-flops. When exporting the FSM to Verilog or VHDL, we need to map these strings to bit vectors.</p>
         <ul>
-          <li><strong>Binary Encoding:</strong> Minimizes the number of flip-flops. $N$ states require $\lceil \log_2(N) ceil$ bits. It is the most common default but can lead to significant combinational logic depth in the next-state decoder.</li>
+          <li><strong>Binary Encoding:</strong> Minimizes the number of flip-flops. $N$ states require $\lceil \log_2(N) 
+ceil$ bits. It is the most common default but can lead to significant combinational logic depth in the next-state decoder.</li>
           <li><strong>One-Hot Encoding:</strong> Uses one flip-flop per state. $N$ states require $N$ bits. It drastically simplifies next-state logic, often resulting in faster circuits at the cost of more register area. It is highly preferred in FPGA designs where registers are abundant.</li>
           <li><strong>Gray Encoding:</strong> Ensures only one bit changes between adjacent states, reducing glitches in output decoding. Useful for state machines that naturally cycle through sequences.</li>
         </ul>
