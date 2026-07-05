@@ -15,8 +15,7 @@
   <meta name="description" content="SQGate is a free browser-based digital electronics toolkit for engineering students and hobbyists. Simulate logic circuits, design FSMs with Verilog export, solve Karnaugh maps up to 6 variables, and master logic gates through interactive puzzles — no install required." />
   <meta name="keywords" content="logic gate simulator online, FSM designer, finite state machine Verilog export, Karnaugh map solver, Boolean algebra simplification, digital electronics tools, online circuit simulator, logic puzzle game, digital logic design, EDA tools online, truth table generator, combinational circuit simulator, sequential circuit design, GATE exam preparation tools, engineering student tools, K-map solver 6 variable, logic circuit visualization, flip flop simulator, state machine diagram, Verilog code generator, digital electronics for ECE, BTech digital electronics, online digital logic simulator, free EDA software, gate level simulation, Boolean expression minimizer, logic gate puzzle, HDL learning tool, digital circuit design online, clocked circuit simulator, synchronous circuit design, asynchronous FSM, NAND NOR gate simulator, multiplexer simulator, decoder encoder circuit, half adder full adder, binary logic simulator" />
   <link rel="canonical" href="https://sqgate.online/">
-  <link rel="alternate" hreflang="en" href="https://sqgate.online/home" />
-  <link rel="alternate" hreflang="x-default" href="https://sqgate.online/home" />
+
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="SQGate" />
   <meta property="og:url" content="https://sqgate.online/home" />
@@ -1951,8 +1950,8 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
   <div class="login-split">
     <div class="login-left">
       <div class="login-left-content">
-        <h1 class="login-hero-title">Welcome Back</h1>
-        <p class="login-hero-subtitle">Sign in to your offline workspace to continue building professional digital circuits.</p>
+        <h2 class="login-hero-title">Welcome Back</h2>
+        <p class="login-hero-subtitle"><strong>SQGATE is a professional digital electronics simulator and logic design toolkit.</strong> Sign in to your offline workspace to continue building professional digital circuits.</p>
       </div>
     </div>
     <div class="login-right">
@@ -2420,7 +2419,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
         <button class="tb-btn" id="btn-zi" title="Zoom In" aria-label="Zoom In"><svg viewBox="0 0 24 24"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg></button>
         <button class="tb-btn" id="btn-fit" title="Fit to Screen" aria-label="Fit"><svg viewBox="0 0 24 24"><path d="M3 3h6v2H5v4H3V3m18 0h-6v2h4v4h2V3m0 18h-6v-2h4v-4h2v6M3 21h6v-2H5v-4H3v6"/></svg></button>
       </div>
-      <canvas id="grid-cv"></canvas>
+      <canvas id="grid-cv" aria-label="Circuit Workspace Grid"></canvas>
       <svg id="wire-svg" xmlns="http://www.w3.org/2000/svg"></svg>
       <div id="sel-box"></div>
       <div id="gate-lyr"></div>
@@ -2435,7 +2434,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       </div>
       <!-- MINIMAP (inside canvas, bottom-right) -->
       <div id="minimap">
-        <canvas id="minimap-cv"></canvas>
+        <canvas id="minimap-cv" aria-label="Circuit Minimap"></canvas>
         <div id="minimap-viewport"></div>
       </div>
       <div id="minimap-toggle" title="Toggle minimap">⊙</div>
@@ -2468,8 +2467,8 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       <span class="wh-arrow">▲</span>
     </div>
     <div id="wave-body">
-      <div id="wave-labels-col"><canvas id="wave-labels-cv"></canvas></div>
-      <div id="wave-canvas-wrap"><canvas id="wave-cv"></canvas></div>
+      <div id="wave-labels-col"><canvas id="wave-labels-cv" aria-label="Waveform Labels"></canvas></div>
+      <div id="wave-canvas-wrap"><canvas id="wave-cv" aria-label="Waveform Display"></canvas></div>
     </div>
   </div>
   <div id="stbar">
@@ -3212,9 +3211,9 @@ function mkGateEl(gate){
   }else if(gate.type==='led'){
     cnt.innerHTML=`<div class="led-circle" id="led${gate.id}">OFF</div>`;
   }else if(gate.type==='seg7' || gate.type==='hexdisp'){
-    cnt.innerHTML=`<canvas id="seg${gate.id}" width="52" height="76" style="display:block;margin:0 auto"></canvas>`;
+    cnt.innerHTML=`<canvas id="seg${gate.id}" width="52" height="76" style="display:block;margin:0 auto" aria-label="7-Segment Display"></canvas>`;
   }else if(gate.type==='matrix'){
-    cnt.innerHTML=`<canvas id="mtx${gate.id}" width="104" height="104" style="display:block;margin:0 auto;background:#080808;border-radius:4px;box-shadow:inset 0 0 4px #000"></canvas>`;
+    cnt.innerHTML=`<canvas id="mtx${gate.id}" width="104" height="104" style="display:block;margin:0 auto;background:#080808;border-radius:4px;box-shadow:inset 0 0 4px #000" aria-label="LED Matrix Display"></canvas>`;
   }else if(gate.type==='keypad'){
     var html = '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-top:6px;width:76px;margin-left:auto;margin-right:auto">';
     ['1','2','3','C','4','5','6','D','7','8','9','E','A','0','B','F'].forEach(function(k){
@@ -9257,6 +9256,17 @@ function copyShareUrl() {
   
   <button onclick="window.forceLandscapeFullscreen(); document.getElementById('mobile-portrait-overlay').setAttribute('style', 'display: none !important;');" style="cursor: pointer; margin-top: 32px; background: var(--acb, #3dba6e); color: #fff; padding: 12px 24px; border: none; font-weight: bold; border-radius: 8px; font-family: inherit; width: 100%; max-width: 250px;">Force Landscape (Auto-Rotate)</button>
   <button onclick="document.getElementById('mobile-portrait-overlay').setAttribute('style', 'display: none !important;');" style="cursor: pointer; margin-top: 12px; background: transparent; color: var(--t3, #888); padding: 8px 16px; border: none; font-family: inherit;">Dismiss</button>
+</div>
+
+
+<div class="related-tools-section" style="max-width: 800px; margin: 40px auto; padding: 24px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; font-family: var(--font-sans, sans-serif);">
+  <h3 style="color: #fff; margin-top: 0; margin-bottom: 16px; font-size: 18px;">Related Engineering Tools</h3>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;">
+    <a href="/circuit-simulator/" style="color: #4ade80; text-decoration: none; padding: 12px; background: rgba(74,222,128,0.1); border-radius: 8px; text-align: center; font-weight: bold; transition: background 0.2s;">Circuit Simulator</a>
+    <a href="/k-map/" style="color: #60a5fa; text-decoration: none; padding: 12px; background: rgba(96,165,250,0.1); border-radius: 8px; text-align: center; font-weight: bold; transition: background 0.2s;">Karnaugh Map Solver</a>
+    <a href="/fsm/" style="color: #f472b6; text-decoration: none; padding: 12px; background: rgba(244,114,182,0.1); border-radius: 8px; text-align: center; font-weight: bold; transition: background 0.2s;">FSM Designer</a>
+    <a href="/truth-table-generator/" style="color: #fbbf24; text-decoration: none; padding: 12px; background: rgba(251,191,36,0.1); border-radius: 8px; text-align: center; font-weight: bold; transition: background 0.2s;">Truth Table Generator</a>
+  </div>
 </div>
 
 <script src="/cookie-consent.js"></script>

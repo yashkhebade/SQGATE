@@ -7,14 +7,16 @@
     "start": "electron .",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
-    "build:cf": "mkdir -p dist_cf && tar --exclude=node_modules --exclude=.git --exclude=dist_cf -cf - . | tar -xf - -C dist_cf"
+    "build:cf": "mkdir -p dist_cf && tar --exclude=node_modules --exclude=.git --exclude=dist_cf -cf - . | tar -xf - -C dist_cf && node scripts/minify_dist.js"
   },
   "author": "Antigravity & User",
   "license": "MIT",
   "devDependencies": {
+    "clean-css": "^5.3.3",
     "electron": "^28.0.0",
     "electron-builder": "^24.9.1",
-    "electron-packager": "^17.1.2"
+    "electron-packager": "^17.1.2",
+    "terser": "^5.31.0"
   },
   "build": {
     "appId": "com.SQGATE.app",

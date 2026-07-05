@@ -95,6 +95,52 @@
   }
 </script>
 
+
+<section class="seo-content" style="max-width: 800px; margin: 40px auto; padding: 20px; color: var(--text-secondary); line-height: 1.6; font-family: var(--font-sans); font-size: 14px;">
+  <h2 style="color: var(--text-primary); font-size: 18px; margin-bottom: 12px;">Boolean Expression Truth Table Generator</h2>
+  <p style="margin-bottom: 16px;">A truth table is a mathematical table used in logic to compute the functional values of logical expressions based on all possible combinations of their logical variables. Our free online Truth Table Generator instantly evaluates complex Boolean algebra equations and generates a perfectly formatted, easy-to-read truth table. This tool is indispensable for discrete mathematics students, digital electronics engineers, and computer science fundamentals.</p>
+  
+  <h2 style="color: var(--text-primary); font-size: 18px; margin-bottom: 12px;">How to format your Boolean Expressions</h2>
+  <p style="margin-bottom: 16px;">The expression parser is highly flexible, supporting standard engineering notation, programming syntax, and mathematical symbols. For the logical AND operation, you can use '*', '&', or 'AND'. For the logical OR operation, use '+', '|', or 'OR'. For the XOR (exclusive OR) operation, use '^' or 'XOR'. For the logical NOT (negation), you can use a prime (A'), a tilde (~A), or an exclamation mark (!A). The parser respects standard operator precedence (NOT > AND > XOR > OR) and correctly handles deeply nested parentheses.</p>
+
+  <h2 style="color: var(--text-primary); font-size: 18px; margin-bottom: 12px;">Advanced Features and Output</h2>
+  <p style="margin-bottom: 16px;">Once you input your expression, the generator calculates the output for every binary permutation (e.g., 8 rows for 3 variables, 16 rows for 4 variables). Beyond just displaying the final result, the tool allows you to break down the intermediate steps of the equation, making it an excellent educational aid for verifying manual homework assignments.</p>
+
+  <h2 style="color: var(--text-primary); font-size: 18px; margin-bottom: 12px;">Deriving Canonical Forms</h2>
+  <p>Alongside the truth table, the generator automatically derives the canonical Sum of Products (SOP) and Product of Sums (POS) expressions. This immediate conversion helps bridge the gap between abstract Boolean logic and physical circuit implementation, as SOP forms directly translate to AND-OR gate networks. Use this generator alongside our Karnaugh Map solver for end-to-end logic minimization.</p>
+</section>
+
+<style>
+.related-tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+.related-tool-card { display: block; padding: 16px; background: var(--surface-2, #1a1a1a); border: 1px solid var(--border-subtle, #333); border-radius: 8px; text-decoration: none; color: var(--text-secondary, #aaa); transition: all 0.2s; }
+.related-tool-card:hover { border-color: var(--text-primary, #fff); transform: translateY(-2px); }
+.related-tool-card h3 { font-size: 16px; margin: 0 0 8px 0; color: var(--text-primary, #fff); }
+.related-tool-card p { font-size: 13px; margin: 0; color: var(--text-tertiary, #888); }
+</style>
+<section class="related-tools" style="max-width: 800px; margin: 40px auto; padding: 20px; font-family: var(--font-sans, sans-serif);">
+  <h2 style="color: var(--text-primary, #fff); font-size: 20px; margin-bottom: 16px;">Related Tools</h2>
+  <div class="related-tools-grid">
+    <a href="/circuit-simulator/" class="related-tool-card">
+      <h3>Circuit Simulator</h3>
+      <p>Build and simulate digital logic circuits instantly.</p>
+    </a>
+    <a href="/k-map/" class="related-tool-card">
+      <h3>Karnaugh Map Solver</h3>
+      <p>Interactive solver for 2 to 6 variable K-Maps.</p>
+    </a>
+    <a href="/fsm/" class="related-tool-card">
+      <h3>FSM Designer</h3>
+      <p>Design and simulate Finite State Machines (Moore & Mealy).</p>
+    </a>
+    <a href="/truth-table-generator/" class="related-tool-card">
+      <h3>Truth Table Generator</h3>
+      <p>Generate truth tables from Boolean algebra expressions.</p>
+    </a>
+  </div>
+</section>
+
+
+
 </body>
 
 </html>

@@ -13,7 +13,25 @@ EXCLUDES = [
     "node_modules",
     "components",
     ".git",
-    "scripts"
+    "scripts",
+    "dist_cf",
+    "academo",
+    "cedar-ls",
+    "circuitverse",
+    "falstad",
+    "fsm-designer.html",
+    "karnaugh-map-solver.html",
+    "logic-gate-online",
+    "logic-quest.html",
+    "logicly",
+    "logigator",
+    "logisim",
+    "simulator-io",
+    "tinkercad",
+    "truth-table-generator.html",
+    "truth-table-tools",
+    "verilog-simulator.html",
+    "google1e701d9c9d06ac46.html"
 ]
 
 def generate_sitemap():
@@ -35,12 +53,20 @@ def generate_sitemap():
                 rel_path = os.path.relpath(filepath, ROOT_DIR)
                 rel_path = rel_path.replace("\\", "/") # Normalize for URL
                 
+                # Strip index.html or .html to match canonical URLs
+                if rel_path == "index.html" or rel_path == "home/index.html":
+                    rel_path = ""
+                elif rel_path.endswith("/index.html"):
+                    rel_path = rel_path[:-10]  # keep the trailing slash
+                elif rel_path.endswith(".html"):
+                    rel_path = rel_path[:-5]
+                
                 # Default changefreq and priority
                 changefreq = "monthly"
                 priority = "0.6"
                 
                 # Adjust for important pages
-                if rel_path == "index.html" or rel_path == "home/index.html":
+                if rel_path == "":
                     priority = "1.0"
                     changefreq = "weekly"
                 elif "blog/posts" in rel_path:

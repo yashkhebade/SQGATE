@@ -1,0 +1,29 @@
+# SQGATE
+
+> SQGATE is a professional digital electronics simulator, logic design toolkit, and educational platform that runs entirely in the browser.
+
+## About
+SQGATE offers a suite of web-based Electronic Design Automation (EDA) tools for students, hobbyists, and professional digital engineers. All tools execute entirely client-side using vanilla JavaScript, meaning no installation is required, zero latency is experienced, and all data remains private.
+
+## Tools Available
+- **Visual Circuit Simulator**: A drag-and-drop logic gate simulator with real-time signal propagation. Build complex circuits using fundamental gates, sequential components (flip-flops, registers), combinational blocks (ALUs, multiplexers), and I/O devices.
+- **Interactive Karnaugh Map Solver**: A visual K-Map solver supporting 2 to 6 variables. It automatically groups prime implicants and essential prime implicants, outputting minimized Sum of Products (SOP) and Product of Sums (POS) Boolean expressions.
+- **Finite State Machine (FSM) Designer**: A node-based state diagram editor supporting both Moore and Mealy machines. Includes real-time state traversal simulation and automated Verilog HDL code generation.
+- **Truth Table Generator**: Evaluates complex Boolean algebra equations and generates formatted truth tables with intermediate computational steps.
+
+## Educational Content
+SQGATE hosts a comprehensive blog (`/blog/`) featuring tutorials on foundational computer architecture, from basic CMOS logic gates to 8-bit CPU design and advanced topics like pipelining and caching.
+
+## Technical Architecture
+- **Environment**: Client-side web application.
+- **Core Technology**: HTML5 Canvas, Vanilla JavaScript, CSS3.
+- **Offline Support**: Includes a Service Worker for full offline capabilities.
+- **Export Formats**: Verilog HDL, high-resolution PNG images, truth table CSVs.
+
+## Links
+- Home: https://sqgate.online
+- Circuit Simulator: https://sqgate.online/circuit-simulator/
+- Karnaugh Map Solver: https://sqgate.online/k-map/
+- FSM Designer: https://sqgate.online/fsm/
+- Truth Table Generator: https://sqgate.online/truth-table-generator/
+- Blog: https://sqgate.online/blog/
