@@ -50,12 +50,78 @@
 </svg>
 
 
-<header>
-  <h1>Free Online Truth Table Generator</h1>
-  <p style="color: #64748b; margin: 10px 0 0 0;">Solve Boolean Algebra and Logic Circuits Instantly</p>
+<header style="display:flex; justify-content:space-between; align-items:center; padding: 16px 24px; border-bottom: 1px solid var(--b2, #333);">
+  <a href="/home" style="display:flex; align-items:center; gap:12px; color:#fff; text-decoration:none; font-weight:700; font-size:18px; font-family:'Outfit',sans-serif;">
+    <img src="/icon.webp" alt="Logo" style="width:32px; height:32px; border-radius:8px;">
+    SQGATE
+  </a>
+  <h1 style="font-size:18px; margin:0; color:var(--t2, #cbd5e1); font-weight:500;">Truth Table Generator</h1>
 </header>
 
-<div class="container liquid-panel">
+<style>
+  :root {
+    --bg0: #060813;
+    --bg1: rgba(30, 41, 59, 0.5);
+    --bg2: #1e293b;
+    --b1: rgba(255, 255, 255, 0.1);
+    --b2: rgba(255, 255, 255, 0.05);
+    --t1: #fff;
+    --t2: #cbd5e1;
+    --t3: #94a3b8;
+    --acb: #3b82f6;
+    --fmono: 'Courier New', Courier, monospace;
+  }
+  .kmap-root { display: flex; flex-direction: column; padding: 24px; gap: 24px; max-width: 1200px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+  .controls { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; background: var(--bg1); padding: 16px 24px; border-radius: 12px; border: 1px solid var(--b1); }
+  .ctrl-label { font-size: 14px; color: var(--t1); font-weight: 600; margin-right: 8px; }
+  .expr-input { flex: 1; min-width: 250px; background: var(--bg0); border: 1px solid var(--b1); color: var(--t1); border-radius: 8px; padding: 12px 16px; font-size: 16px; font-family: var(--fmono); outline: none; transition: border-color 0.2s; }
+  .expr-input:focus { border-color: var(--acb); }
+  .var-btn { background: var(--acb); border: none; color: #fff; border-radius: 8px; padding: 12px 24px; font-size: 14px; cursor: pointer; font-weight: 600; transition: all 0.2s; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
+  .var-btn:hover { background: #2563eb; transform: translateY(-1px); }
+  .main-grid { display: grid; grid-template-columns: 1fr 380px; gap: 24px; align-items: start; }
+  @media(max-width: 900px) { .main-grid { grid-template-columns: 1fr; } }
+  .kmap-card { background: var(--bg1); border: 1px solid var(--b2); border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+  .kmap-section-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--t3); margin-bottom: 20px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .kmap-wrapper { overflow-x: auto; max-width: 100%; }
+  .kmap-table { border-collapse: collapse; width: 100%; min-width: 300px; text-align: center; font-family: var(--fmono); }
+  .kmap-table th { background: var(--bg2); color: var(--t2); padding: 12px 16px; border: 1px solid var(--b1); font-weight: 600; }
+  .kmap-table td { padding: 10px 16px; border: 1px solid var(--b1); color: var(--t1); font-size: 15px; }
+  .kmap-table td.output-cell { font-weight: bold; color: #10b981; background: rgba(16, 185, 129, 0.05); }
+  .kmap-table td.output-cell.out-zero { color: #ef4444; background: rgba(239, 68, 68, 0.05); }
+  .kmap-table tr:hover td { background-color: rgba(255,255,255,0.02); }
+  .eq-block { background: var(--bg0); border: 1px solid var(--b2); padding: 16px; border-radius: 8px; margin-bottom: 16px; word-break: break-all; }
+  .eq-title { font-size: 11px; color: var(--t3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .eq-content { color: var(--t1); font-size: 14px; }
+</style>
+
+<div class="kmap-root">
+  <div class="controls">
+    <div class="ctrl-label">Boolean Expression:</div>
+    <input type="text" id="expr-input" class="expr-input" placeholder="e.g. (A & B) | (~C ^ D)" autocomplete="off" spellcheck="false" />
+    <button id="generate-btn" class="var-btn">Generate Table</button>
+  </div>
+  <div id="error-msg" style="color: #ef4444; display: none; margin-bottom: 16px; padding: 12px 24px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239,68,68,0.3); border-radius: 8px;"></div>
+
+  <div class="main-grid" id="results-grid" style="display: none;">
+    <div class="kmap-card">
+      <div class="kmap-section-label">Truth Table</div>
+      <div class="kmap-wrapper">
+        <table class="kmap-table" id="tt-table">
+          <!-- Generated via JS -->
+        </table>
+      </div>
+    </div>
+    
+    <div class="kmap-card">
+      <div class="kmap-section-label">Canonical Forms</div>
+      <div id="sop-pos-container">
+        <!-- Generated via JS -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container liquid-panel" style="margin-top: 40px;">
   <h2>Instantly Generate Truth Tables for Digital Logic</h2>
   <p>Are you struggling to manually calculate truth tables for complex Boolean algebra homework? The <strong>SQGATE Truth Table Generator</strong> is the ultimate free online tool built for computer science and electrical engineering students. Instead of spending hours crunching 0s and 1s by hand, you can automatically generate comprehensive truth tables directly in your web browser.</p>
 
@@ -81,9 +147,188 @@
     </div>
   </div>
 
-
-
 <script>
+document.addEventListener('DOMContentLoaded', () => {
+  const inputEl = document.getElementById('expr-input');
+  const generateBtn = document.getElementById('generate-btn');
+  const errorMsg = document.getElementById('error-msg');
+  const resultsGrid = document.getElementById('results-grid');
+  const ttTable = document.getElementById('tt-table');
+  const sopPosContainer = document.getElementById('sop-pos-container');
+
+  function showError(msg) {
+    errorMsg.textContent = msg;
+    errorMsg.style.display = 'block';
+    resultsGrid.style.display = 'none';
+  }
+
+  function hideError() {
+    errorMsg.style.display = 'none';
+  }
+
+  // Parse expression into safe JS logic
+  function parseExpression(expr) {
+    let s = expr;
+    // Replace prime notation A' with !A
+    // Since regex lookbehind isn't always perfect, we do a loop replacing \w+' with !\w+
+    let changed;
+    do {
+      changed = false;
+      s = s.replace(/([a-zA-Z_][a-zA-Z0-9_]*)\s*'/g, (match, p1) => {
+        changed = true;
+        return `!${p1}`;
+      });
+      // also handle grouped primes like (A+B)'
+      s = s.replace(/\)\s*'/g, (match) => {
+        changed = true;
+        return `) === false`; // logical equivalent to !(...)
+      });
+    } while (changed);
+
+    // Replace text operators
+    s = s.replace(/\bAND\b/ig, '&&');
+    s = s.replace(/\bOR\b/ig, '||');
+    s = s.replace(/\bXOR\b/ig, '!==');
+    s = s.replace(/\bNOT\b/ig, '!');
+
+    // Replace symbol operators
+    s = s.replace(/\*/g, '&&');
+    s = s.replace(/\&/g, '&&');
+    // careful, & is sometimes && already if typed
+    s = s.replace(/&&&&/g, '&&'); 
+    s = s.replace(/\+/g, '||');
+    s = s.replace(/\|/g, '||');
+    s = s.replace(/\|\|\|\|/g, '||');
+    s = s.replace(/\^/g, '!==');
+    s = s.replace(/~/g, '!');
+
+    return s;
+  }
+
+  function extractVariables(expr) {
+    // extract anything that looks like a variable name, excluding standard JS keywords
+    const matches = expr.match(/[a-zA-Z_][a-zA-Z0-9_]*/g) || [];
+    const keywords = ['AND','OR','XOR','NOT','true','false'];
+    const vars = new Set();
+    matches.forEach(m => {
+      if (!keywords.includes(m.toUpperCase())) {
+        vars.add(m);
+      }
+    });
+    const sorted = Array.from(vars).sort();
+    return sorted;
+  }
+
+  generateBtn.addEventListener('click', () => {
+    hideError();
+    const rawExpr = inputEl.value.trim();
+    if (!rawExpr) return showError("Please enter a Boolean expression.");
+
+    const variables = extractVariables(rawExpr);
+    if (variables.length === 0) return showError("No valid variables found in expression.");
+    if (variables.length > 8) return showError("Maximum of 8 variables supported (to prevent browser freezing).");
+
+    const parsedExpr = parseExpression(rawExpr);
+    
+    // Create evaluator
+    let evaluator;
+    try {
+      evaluator = new Function(...variables, `return !!(${parsedExpr});`);
+    } catch (err) {
+      return showError("Syntax Error: Invalid Boolean expression.");
+    }
+
+    // Verify evaluator works with dummy data
+    try {
+      const dummyArgs = variables.map(() => false);
+      evaluator(...dummyArgs);
+    } catch (err) {
+      return showError("Evaluation Error: Ensure your expression is well-formed.");
+    }
+
+    // Generate Truth Table Data
+    const numRows = Math.pow(2, variables.length);
+    const rows = [];
+    const minterms = [];
+    const maxterms = [];
+
+    for (let i = 0; i < numRows; i++) {
+      const args = [];
+      const rowBits = [];
+      for (let v = 0; v < variables.length; v++) {
+        // extract bit (MSB is variables[0])
+        const bit = (i >> (variables.length - 1 - v)) & 1;
+        args.push(bit === 1);
+        rowBits.push(bit);
+      }
+      
+      const out = evaluator(...args) ? 1 : 0;
+      rows.push({ bits: rowBits, out });
+
+      if (out === 1) minterms.push(i);
+      else maxterms.push(i);
+    }
+
+    // Render Table
+    let tableHtml = `<thead><tr>`;
+    variables.forEach(v => tableHtml += `<th>${v}</th>`);
+    tableHtml += `<th>Output (Y)</th></tr></thead><tbody>`;
+
+    rows.forEach(r => {
+      tableHtml += `<tr>`;
+      r.bits.forEach(b => tableHtml += `<td>${b}</td>`);
+      const outCls = r.out === 1 ? 'output-cell' : 'output-cell out-zero';
+      tableHtml += `<td class="${outCls}">${r.out}</td></tr>`;
+    });
+    tableHtml += `</tbody>`;
+    ttTable.innerHTML = tableHtml;
+
+    // Render SOP / POS
+    const sopM = minterms.length > 0 ? `Σm(${minterms.join(', ')})` : '0';
+    const posM = maxterms.length > 0 ? `ΠM(${maxterms.join(', ')})` : '1';
+
+    // SOP algebraic
+    const sopAlg = minterms.map(m => {
+      let term = '';
+      for (let v = 0; v < variables.length; v++) {
+        const bit = (m >> (variables.length - 1 - v)) & 1;
+        term += bit === 1 ? variables[v] : variables[v] + "'";
+      }
+      return term;
+    }).join(' + ') || '0';
+
+    // POS algebraic
+    const posAlg = maxterms.map(m => {
+      let term = [];
+      for (let v = 0; v < variables.length; v++) {
+        const bit = (m >> (variables.length - 1 - v)) & 1;
+        term.push(bit === 0 ? variables[v] : variables[v] + "'");
+      }
+      return '(' + term.join(' + ') + ')';
+    }).join(' * ') || '1';
+
+    let formsHtml = `
+      <div class="eq-block">
+        <div class="eq-title">Sum of Products (Minterms)</div>
+        <div class="eq-content" style="font-weight:bold; margin-bottom:8px;">Y = ${sopM}</div>
+        <div class="eq-content">Y = ${sopAlg}</div>
+      </div>
+      <div class="eq-block">
+        <div class="eq-title">Product of Sums (Maxterms)</div>
+        <div class="eq-content" style="font-weight:bold; margin-bottom:8px;">Y = ${posM}</div>
+        <div class="eq-content">Y = ${posAlg}</div>
+      </div>
+    `;
+    sopPosContainer.innerHTML = formsHtml;
+
+    resultsGrid.style.display = 'grid';
+  });
+
+  inputEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') generateBtn.click();
+  });
+});
+</script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/sw.js').then((registration) => {
