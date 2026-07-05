@@ -1,32 +1,15 @@
 const fs = require('fs');
-const jsdom = require('jsdom');
-const { JSDOM } = jsdom;
-
-const html = fs.readFileSync('index.html', 'utf8');
-
-const dom = new JSDOM('<script>class ResizeObserver { observe() {} unobserve() {} disconnect() {} }; window.HTMLCanvasElement.prototype.getContext = function () { return { fillRect: function() {}, clearRect: function(){}, getImageData: function(x, y, w, h) { return { data: new Array(w*h*4) }; }, putImageData: function() {}, createImageData: function(){ return []}, setTransform: function(){}, drawImage: function(){}, save: function(){}, fillText: function(){}, restore: function(){}, beginPath: function(){}, moveTo: function(){}, lineTo: function(){}, closePath: function(){}, stroke: function(){}, translate: function(){}, scale: function(){}, rotate: function(){}, arc: function(){}, fill: function(){}, measureText: function(){ return { width: 0 }; }, transform: function(){}, rect: function(){}, clip: function(){}, }; };</script>' + html, { runScripts: "dangerously", resources: "usable" });
-
-const window = dom.window;
-
-let store = {};
-window.localStorage = {
-  getItem: (key) => store[key] || null,
-  setItem: (key, val) => store[key] = val,
-  removeItem: (key) => delete store[key],
-  clear: () => store = {}
-};
-
-window.localStorage.setItem('lgf_session', JSON.stringify({email:'khebadeyash1234@gmail.com', name:'K'}));
-window.localStorage.setItem('lgf_user_khebadeyash1234@gmail.com', JSON.stringify({projects:{}}));
-
-setTimeout(() => {
-  try {
-    window.authLoad();
-    const grid = window.document.getElementById('proj-grid');
-    console.log("proj-grid content length:", grid.innerHTML.length);
-    console.log("Is '+New Project' inside grid?:", grid.innerHTML.includes('New Project'));
-  } catch(e) {
-    console.error("Error:", e);
-  }
-  process.exit(0);
-}, 1000);
+const html = fs.readFileSync('puzzle/index.html', 'utf-8');
+const { JSDOM } = require('jsdom');
+const dom = new JSDOM(html);
+const lqMain = dom.window.document.querySelector('.lq-main');
+if (lqMain) {
+  console.log("lq-main parent:", lqMain.parentElement.className);
+} else {
+  console.log("lq-main not found!");
+}
+const lqRoot = dom.window.document.querySelector('.lq-root');
+if (lqRoot) {
+  console.log("lq-root parent:", lqRoot.parentElement.tagName);
+  console.log("lq-root children:", Array.from(lqRoot.children).map(c => c.className || c.tagName).join(', '));
+}
