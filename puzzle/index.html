@@ -58,17 +58,16 @@
   }
 
   body {
-    background: var(--bg0);
-    color: var(--t1);
-    font-family: var(--fmain);
     margin: 0;
     padding: 0;
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg0);
+    color: var(--t1);
     display: flex;
     flex-direction: column;
-    height: 100vh;
-  }
-
-  ::-webkit-scrollbar { width: 8px; height: 8px; }
+    min-height: 100vh;
+    overflow-x: hidden;
+  }::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.2); border-radius: 4px; }
   ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.4); }
@@ -113,8 +112,7 @@
 
   /* App Container */
   .lq-root {
-    flex: 1;
-    overflow-y: auto;
+    flex: 1 0 auto;
     padding: 24px;
     display: flex;
     flex-direction: column;
@@ -1126,7 +1124,7 @@ function checkTourAction(actionName) {
     background: rgba(255,255,255,0.06);
   }
 </style>
-<body>
+
 
 <!-- LIQUID GLASS SVGS -->
 <svg class="liquid-glass-svg-filter" style="position: absolute; width: 0; height: 0; pointer-events: none;">
