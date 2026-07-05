@@ -5523,10 +5523,7 @@ document.getElementById('btn-logout').addEventListener('click', function(){
   showProjects();
 });
 
-// Import .v from projects page
-document.getElementById('pa-import-v').addEventListener('click', function(){
-  document.getElementById('import-v-file').click();
-});
+// Import .v from projects page (handled by ac-imp-v action card)
 document.getElementById('import-v-file').addEventListener('change', function(){
   var file = this.files[0]; if(!file) return;
   createNewProject();
@@ -5534,10 +5531,7 @@ document.getElementById('import-v-file').addEventListener('change', function(){
   readVFile(file);
 });
 
-// Import project JSON from projects page
-document.getElementById('pa-import-proj').addEventListener('click', function(){
-  document.getElementById('import-proj-file').click();
-});
+// Import project JSON from projects page (handled by ac-imp-proj action card)
 document.getElementById('import-proj-file').addEventListener('change', function(){
   var file = this.files[0]; if(!file) return;
   var reader = new FileReader();
