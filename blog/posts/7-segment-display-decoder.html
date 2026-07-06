@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Designing a BCD to 7-Segment Display Decoder | SQGATE</title>
+  <meta name="description" content="Learn how to design a BCD to 7-Segment Display Decoder from scratch using Truth Tables, Karnaugh Maps, and Logic Gates in this comprehensive tutorial.">
+  <meta name="keywords" content="7-segment display decoder, BCD to 7-segment, digital logic design, truth table, karnaugh map, logic gates">
+  <link rel="canonical" href="https://sqgate.online/blog/posts/7-segment-display-decoder">
+  <link rel="icon" href="/icon.webp">
+  
+  <meta property="og:title" content="Designing a BCD to 7-Segment Display Decoder | SQGATE">
+  <meta property="og:description" content="Learn how to design a BCD to 7-Segment Display Decoder from scratch.">
+  <meta property="og:image" content="https://sqgate.online/blog/posts/images/blog_7segment_decoder.png">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sqgate.online/blog/posts/7-segment-display-decoder">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/liquid-glass.css">
+  <style>
+    :root{
+      --bg0:#060813;--bg1:rgba(12, 15, 28, 0.65);
+      --b1:rgba(255,255,255,0.08);--b2:rgba(255,255,255,0.12);
+      --t1:#ffffff;--t2:#94a3b8;--t3:#64748b;
+      --acc:#8b5cf6;--hi:#22d3ee;
+      --fsans:'Inter', -apple-system, sans-serif;
+      --fmono:'Fira Code', monospace;
+    }
+    body { background: var(--bg0); color: var(--t2); font-family: var(--fsans); margin: 0; padding: 0; line-height: 1.7; overflow-x: hidden; }
+    .nav { padding: 16px 40px; display: flex; justify-content: space-between; align-items: center; background: rgba(12, 15, 28, 0.65); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--b1); position: sticky; top: 0; z-index: 100; }
+    .logo { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 22px; color: var(--t1); text-decoration: none; display: flex; align-items: center; gap: 12px; }
+    .nav-links a { color: var(--t2); text-decoration: none; font-weight: 500; font-size: 14px; transition: color 0.2s; margin-left: 24px; }
+    .nav-links a:hover { color: var(--t1); }
+    .article-header { max-width: 800px; margin: 80px auto 40px; padding: 0 20px; text-align: center; position: relative; }
+    .article-header::before { content: ''; position: absolute; top: -50%; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%); pointer-events: none; z-index: -1; }
+    .article-tag { display: inline-block; background: rgba(139, 92, 246, 0.15); color: var(--acc); border: 1px solid rgba(139, 92, 246, 0.3); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 4px 10px; border-radius: 20px; margin-bottom: 16px; }
+    .article-header h1 { font-family: 'Outfit', sans-serif; font-size: 42px; font-weight: 800; color: var(--t1); margin: 0 0 20px 0; line-height: 1.2; }
+    .article-meta { color: var(--t3); font-size: 14px; font-family: 'Fira Code', monospace; }
+    .article-content { max-width: 760px; margin: 0 auto 100px; padding: 40px; background: rgba(255,255,255,0.01); border: 1px solid var(--b1); border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+    .article-content p { margin-bottom: 24px; font-size: 17px; color: #cbd5e1; }
+    .article-content h2 { font-family: 'Outfit', sans-serif; font-size: 28px; color: var(--t1); margin: 48px 0 20px; border-bottom: 1px solid var(--b1); padding-bottom: 10px; }
+    .article-content h3 { font-family: 'Outfit', sans-serif; font-size: 22px; color: var(--t1); margin: 32px 0 16px; }
+    .article-image { width: 100%; border-radius: 12px; margin: 32px 0; border: 1px solid var(--b2); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .highlight-box { background: rgba(34, 211, 238, 0.05); border-left: 4px solid var(--hi); padding: 20px; margin: 30px 0; border-radius: 0 8px 8px 0; }
+    .cta-btn { display: inline-block; background: var(--acc); color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-top: 10px; transition: background 0.2s; }
+    .cta-btn:hover { background: #7c3aed; }
+  </style>
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-72EG9VJELZ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-72EG9VJELZ');</script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7398330076279399" crossorigin="anonymous"></script>
+</head>
+<body>
+  
+  <svg class="liquid-glass-svg-filter" style="position: absolute; width: 0; height: 0; pointer-events: none;">
+    <defs>
+      <filter id="liquid-glass-filter" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.05 0.05" numOctaves="3" result="noise" />
+        <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.15 0" in="noise" result="coloredNoise" />
+        <feBlend in="SourceGraphic" in2="coloredNoise" mode="screen" />
+      </filter>
+    </defs>
+  </svg>
+
+  <nav class="nav">
+    <a href="/" class="logo">
+      <img src="/icon.webp" alt="SQGATE Logo" width="28" height="28" style="border-radius: 6px;">
+      SQGATE
+    </a>
+    <div class="nav-links" style="display: flex; align-items: center;">
+      <a href="/">Simulator</a>
+      <a href="/templates/">Templates</a>
+      <a href="/blog/">Blog</a>
+    </div>
+  </nav>
+
+  <header class="article-header">
+    <span class="article-tag">Digital Logic Design</span>
+    <h1>Designing a BCD to 7-Segment Display Decoder</h1>
+    <div class="article-meta">Published: July 6, 2026 &nbsp;&bull;&nbsp; 8 min read</div>
+  </header>
+
+  <main class="article-content">
+    <img src="/blog/posts/images/blog_7segment_decoder.png" alt="Glowing neon digital 7-segment display wired to logic gates" class="article-image">
+
+    <p>If you've ever looked at a digital clock, a calculator, or a retro electronic scoreboard, you've seen a <strong>7-segment display</strong>. These iconic components use seven individual LED segments (labeled <em>a</em> through <em>g</em>) to form the numbers 0 through 9.</p>
+
+    <p>But how does a computer actually tell the display which segments to light up? The secret lies in a combinational logic circuit known as a <strong>BCD (Binary-Coded Decimal) to 7-Segment Decoder</strong>.</p>
+
+    <div class="highlight-box">
+      <strong>Core Concept:</strong> A decoder takes a 4-bit binary input (representing numbers 0-9) and outputs 7 unique signals to turn the appropriate segments ON or OFF.
+    </div>
+
+    <h2>Step 1: Understanding the BCD Input</h2>
+    <p>Our circuit will take four input variables: <strong>A, B, C, and D</strong>. Since 4 bits can represent 16 unique values (0000 to 1111), but we only care about the decimal digits 0 through 9 (0000 to 1001), the remaining six combinations (1010 to 1111) are considered "Don't Cares."</p>
+
+    <h2>Step 2: Defining the Truth Table</h2>
+    <p>To design our logic gates, we first need to map out exactly what each of the seven outputs (a, b, c, d, e, f, g) should be doing for every input combination.</p>
+
+    <p>For example, to display the number "0" (Input: 0000), we need segments <strong>a, b, c, d, e,</strong> and <strong>f</strong> to be ON (1), and segment <strong>g</strong> (the middle bar) to be OFF (0).</p>
+
+    <p>Manually drawing out a 16-row truth table with 7 output columns can be tedious and prone to errors. This is the perfect time to leverage an automated tool.</p>
+    
+    <a href="/truth-table-generator/" class="cta-btn" target="_blank">Use our Online Truth Table Generator &rarr;</a>
+
+    <h2>Step 3: Minimizing Logic with Karnaugh Maps</h2>
+    <p>Once we have the Truth Table, we can extract the Boolean expressions for each segment. However, the raw Sum-of-Products (SOP) expression will be massive and require too many gates to build efficiently.</p>
+
+    <p>To reduce the number of logic gates, we use <strong>Karnaugh Maps (K-Maps)</strong>. By grouping the 1s (and strategically grouping our "Don't Cares"), we can drastically simplify the Boolean algebra.</p>
+    
+    <p>For instance, the simplified expression for segment <strong>a</strong> becomes:<br>
+    <code style="background:var(--bg2); padding: 4px 8px; border-radius: 4px; font-family:var(--fmono); color:var(--hi);">a = A + C + (B &amp; D) + (~B &amp; ~D)</code></p>
+
+    <p>If you want to verify your K-Map groupings instantly, check out our dedicated Karnaugh Map solver.</p>
+
+    <a href="/k-map/" class="cta-btn" style="background:#0ea5e9;" target="_blank">Try our K-Map Solver &rarr;</a>
+
+    <h2>Step 4: Building the Circuit in SQGATE</h2>
+    <p>With the minimized Boolean equations in hand, it is simply a matter of wiring up the logic gates! You will need a mix of AND, OR, and NOT gates.</p>
+    
+    <p>Modern decoders, like the classic 74LS47 integrated circuit, often have active-low outputs, meaning you actually send a '0' to light up a segment. However, when building this in the SQGATE Simulator, you can use active-high logic and connect your outputs directly to the 7-segment display component provided in the output tools menu.</p>
+
+    <p>Ready to build your own decoder from scratch?</p>
+    
+    <a href="/home/" class="cta-btn" style="background:#10b981;">Open the Logic Circuit Simulator</a>
+
+  </main>
+
+  <footer style="text-align: center; padding: 40px; border-top: 1px solid var(--b2); color: var(--t3); font-size: 14px;">
+    &copy; 2026 SQGATE. All rights reserved.
+  </footer>
+</body>
+</html>
