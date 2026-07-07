@@ -821,7 +821,21 @@ function renderMaps(){
       tbody.appendChild(tr);
     }
     tbl.appendChild(tbody);
-    wrap.appendChild(tbl); div.appendChild(wrap);
+    const tblWrap = document.createElement('div');
+    tblWrap.style.position = 'relative';
+    tblWrap.style.display = 'inline-block';
+    tblWrap.appendChild(tbl);
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.id = `kmap-svg-p${p}`;
+    svg.style.position = 'absolute';
+    svg.style.top = '0';
+    svg.style.left = '0';
+    svg.style.width = '100%';
+    svg.style.height = '100%';
+    svg.style.pointerEvents = 'none';
+    svg.style.zIndex = '3';
+    tblWrap.appendChild(svg);
+    wrap.appendChild(tblWrap); div.appendChild(wrap);
     if(p===0){
       div.insertAdjacentHTML('beforeend', `<div class="km-legend">
         <div class="leg-item"><div class="leg-dot" style="background:var(--surface-0);border:1px solid var(--border)"></div><span>0 — false</span></div>
@@ -953,12 +967,92 @@ function termToVerilog(t){
   return t.parts.map(p=>p.comp?`~${p.v}`:p.v).join(' & ');
 }
 
+function drawGroups(terms) {
+  const P = CONFIGS[V].planes;
+  for (let p=0; p<P; p++) {
+    const svg = document.getElementById(`kmap-svg-p${p}`);
+    if (svg) svg.innerHTML = '';
+  }
+  if (!terms) return;
+  
+  terms.forEach((t, i) => {
+    const col = COLORS[i % COLORS.length];
+    for (let p=0; p<P; p++) {
+      const svg = document.getElementById(`kmap-svg-p${p}`);
+      if (!svg) continue;
+      
+      const rowSet = new Set();
+      const colSet = new Set();
+      const R = CONFIGS[V].rowG.length;
+      const C = CONFIGS[V].colG.length;
+      for (let r=0; r<R; r++) {
+        for (let c=0; c<C; c++) {
+          if (t.minterms.has(cellMinterm(p, r, c))) {
+            rowSet.add(r);
+            colSet.add(c);
+          }
+        }
+      }
+      
+      if (rowSet.size === 0) continue;
+      
+      const getSegments = (set) => {
+        const arr = Array.from(set).sort((a,b)=>a-b);
+        if(arr.length===0) return [];
+        const segs = [];
+        let cur = [arr[0]];
+        for (let j=1; j<arr.length; j++) {
+          if (arr[j] === arr[j-1]+1) cur.push(arr[j]);
+          else { segs.push(cur); cur = [arr[j]]; }
+        }
+        segs.push(cur);
+        return segs;
+      };
+      
+      const rSegs = getSegments(rowSet);
+      const cSegs = getSegments(colSet);
+      
+      const tblWrapRect = svg.getBoundingClientRect();
+      if (tblWrapRect.width === 0) return;
+      
+      rSegs.forEach(rSeg => {
+        cSegs.forEach(cSeg => {
+          const tdTL = document.querySelector(`[data-p="${p}"][data-r="${rSeg[0]}"][data-c="${cSeg[0]}"]`);
+          const tdBR = document.querySelector(`[data-p="${p}"][data-r="${rSeg[rSeg.length-1]}"][data-c="${cSeg[cSeg.length-1]}"]`);
+          if (!tdTL || !tdBR) return;
+          
+          const tlRect = tdTL.getBoundingClientRect();
+          const brRect = tdBR.getBoundingClientRect();
+          
+          const x = tlRect.left - tblWrapRect.left;
+          const y = tlRect.top - tblWrapRect.top;
+          const w = brRect.right - tlRect.left;
+          const h = brRect.bottom - tlRect.top;
+          
+          const inset = 4;
+          const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+          rect.setAttribute('x', x + inset);
+          rect.setAttribute('y', y + inset);
+          rect.setAttribute('width', Math.max(0, w - inset*2));
+          rect.setAttribute('height', Math.max(0, h - inset*2));
+          rect.setAttribute('rx', 8);
+          rect.setAttribute('fill', col + '33');
+          rect.setAttribute('stroke', col);
+          rect.setAttribute('stroke-width', 2);
+          svg.appendChild(rect);
+        });
+      });
+    }
+  });
+}
+
 function solve(){
   const res=solveKMap();
   window._lastRes=res;
   if(res && res.terms && res.terms.length > 0) {
-    captureTelemetry(V, res.ones ? res.ones.size : 0, res.dcs ? res.dcs.size : 0);
+    if (typeof captureTelemetry === 'function') captureTelemetry(V, res.ones ? res.ones.size : 0, res.dcs ? res.dcs.size : 0);
   }
+  requestAnimationFrame(() => drawGroups(res.terms));
   const sopEl=document.getElementById('sopBox');
   const implEl=document.getElementById('implList');
   const mtEl=document.getElementById('mtBox');
@@ -1029,6 +1123,12 @@ function showToast(msg){
   t.textContent=msg; t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),2000);
 }
+
+window.addEventListener('resize', () => {
+  if (window._lastRes && window._lastRes.terms) {
+    requestAnimationFrame(() => drawGroups(window._lastRes.terms));
+  }
+});
 
 initGrid(); renderMaps(); solve();
 </script>
