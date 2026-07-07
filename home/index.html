@@ -8987,7 +8987,11 @@ authLoad();
 
 
 
-showProjects();
+if (Object.keys(getProjects()).length === 0) {
+  createNewProject();
+} else {
+  showProjects();
+}
 // Touch to Mouse Event Translator for Mobile Support
 function touchHandler(event) {
     if (event.touches.length > 1) return; // Ignore multi-touch
