@@ -301,8 +301,13 @@
   <link rel="stylesheet" href="/css/liquid-glass.css">
 
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7398330076279399" crossorigin="anonymous"></script>
-  <!-- Google AdSense -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7398330076279399" crossorigin="anonymous"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YOUR_MEASUREMENT_ID"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-YOUR_MEASUREMENT_ID');
+  </script>
 </head>
 <body>
 
@@ -1133,6 +1138,45 @@ function checkTourAction(actionName) {
     </filter>
   </defs>
 </svg>
+<section class="seo-content" style="max-width: 800px; margin: 40px auto; padding: 20px; color: var(--text-secondary, #aaa); line-height: 1.6; font-family: 'Outfit', sans-serif; font-size: 14px;">
+  <h2 style="color: var(--text-primary, #fff); font-size: 18px; margin-bottom: 12px;">What is Logic Quest?</h2>
+  <p style="margin-bottom: 16px;">Logic Quest is an interactive educational puzzle game designed to help engineering students and hobbyists master the fundamentals of digital logic. Instead of passively reading about Boolean algebra, you are challenged to solve real-world logic problems using interactive schematic capture.</p>
+  
+  <h2 style="color: var(--text-primary, #fff); font-size: 18px; margin-bottom: 12px;">How the Puzzles Work</h2>
+  <p style="margin-bottom: 16px;">Each level presents you with a specific logic problem, such as designing a multiplexer, an XOR gate using only NAND gates, or a specific combinatorial state. You are provided with a limited sandbox of input pins, output pins, and logic gates. Your objective is to wire the components together so that the output truth table perfectly matches the target truth table for the level.</p>
+
+  <h2 style="color: var(--text-primary, #fff); font-size: 18px; margin-bottom: 12px;">Educational Value</h2>
+  <p>By solving these logic puzzles, you develop an intuitive understanding of gate propagation, truth table derivations, and logical equivalencies (such as De Morgan's laws). Logic Quest serves as an excellent companion to formal coursework in Computer Architecture, VLSI Design, and Embedded Systems, bridging the gap between theory and practical circuit layout.</p>
+</section>
+
+<style>
+.related-tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+.related-tool-card { display: block; padding: 16px; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; text-decoration: none; color: #94a3b8; transition: all 0.2s; }
+.related-tool-card:hover { border-color: #fff; transform: translateY(-2px); }
+.related-tool-card h3 { font-size: 16px; margin: 0 0 8px 0; color: #fff; }
+.related-tool-card p { font-size: 13px; margin: 0; color: #94a3b8; }
+</style>
+<section class="related-tools" style="max-width: 800px; margin: 40px auto; padding: 20px; font-family: 'Outfit', sans-serif;">
+  <h2 style="color: #fff; font-size: 20px; margin-bottom: 16px;">Related Tools</h2>
+  <div class="related-tools-grid">
+    <a href="/circuit-simulator/" class="related-tool-card">
+      <h3>Circuit Simulator</h3>
+      <p>Build and simulate digital logic circuits instantly.</p>
+    </a>
+    <a href="/k-map/" class="related-tool-card">
+      <h3>Karnaugh Map Solver</h3>
+      <p>Interactive solver for 2 to 6 variable K-Maps.</p>
+    </a>
+    <a href="/fsm/" class="related-tool-card">
+      <h3>FSM Designer</h3>
+      <p>Design and simulate Finite State Machines (Moore & Mealy).</p>
+    </a>
+    <a href="/truth-table-generator/" class="related-tool-card">
+      <h3>Truth Table Generator</h3>
+      <p>Generate truth tables from Boolean algebra expressions.</p>
+    </a>
+  </div>
+</section>
 
 <div id="sqgate-error-modal">
   <div class="sqgate-em-box">
@@ -1159,44 +1203,45 @@ function checkTourAction(actionName) {
 </script>
 
 <script src="/cookie-consent.js"></script>
-<!-- MOBILE PORTRAIT OVERLAY -->
+<section class="seo-content" style="max-width: 800px; margin: 40px auto; padding: 20px; color: var(--text-secondary, #aaa); line-height: 1.6; font-family: 'Outfit', sans-serif; font-size: 14px;">
+  <h2 style="color: var(--text-primary, #fff); font-size: 18px; margin-bottom: 12px;">What is Logic Quest?</h2>
+  <p style="margin-bottom: 16px;">Logic Quest is an interactive educational puzzle game designed to help engineering students and hobbyists master the fundamentals of digital logic. Instead of passively reading about Boolean algebra, you are challenged to solve real-world logic problems using interactive schematic capture.</p>
+  
+  <h2 style="color: var(--text-primary, #fff); font-size: 18px; margin-bottom: 12px;">How the Puzzles Work</h2>
+  <p style="margin-bottom: 16px;">Each level presents you with a specific logic problem, such as designing a multiplexer, an XOR gate using only NAND gates, or a specific combinatorial state. You are provided with a limited sandbox of input pins, output pins, and logic gates. Your objective is to wire the components together so that the output truth table perfectly matches the target truth table for the level.</p>
+
+  <h2 style="color: var(--text-primary, #fff); font-size: 18px; margin-bottom: 12px;">Educational Value</h2>
+  <p>By solving these logic puzzles, you develop an intuitive understanding of gate propagation, truth table derivations, and logical equivalencies (such as De Morgan's laws). Logic Quest serves as an excellent companion to formal coursework in Computer Architecture, VLSI Design, and Embedded Systems, bridging the gap between theory and practical circuit layout.</p>
+</section>
+
 <style>
-#mobile-portrait-overlay {
-  display: none;
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: var(--bg0, #0f111a);
-  z-index: 100000;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 24px;
-}
-@media (orientation: portrait) {
-  #mobile-portrait-overlay { display: flex !important; animation: fadeInOverlay 0.4s ease-out forwards; }
-}
-@keyframes fadeInOverlay {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-@keyframes rotatePhone {
-  0% { transform: rotate(0deg); }
-  50% { transform: rotate(-90deg); }
-  100% { transform: rotate(-90deg); }
-}
+.related-tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+.related-tool-card { display: block; padding: 16px; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; text-decoration: none; color: #94a3b8; transition: all 0.2s; }
+.related-tool-card:hover { border-color: #fff; transform: translateY(-2px); }
+.related-tool-card h3 { font-size: 16px; margin: 0 0 8px 0; color: #fff; }
+.related-tool-card p { font-size: 13px; margin: 0; color: #94a3b8; }
 </style>
-<div id="mobile-portrait-overlay">
-  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--acb, #3dba6e)" stroke-width="2" style="margin-bottom: 20px; animation: rotatePhone 2s infinite ease-in-out;">
-    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
-    <line x1="12" y1="18" x2="12.01" y2="18"/>
-  </svg>
-  <h2 style="color:#fff; margin-bottom: 12px; font-family:monospace;">Please Rotate Device</h2>
-  <p style="color:#aaa; font-size:14px; max-width:300px; margin-bottom: 24px;">Logic Quest is optimized for landscape viewing. Please rotate your phone.</p>
-  <button onclick="document.documentElement.requestFullscreen().then(() => screen.orientation.lock('landscape')).catch(e=>console.log(e)); document.getElementById('mobile-portrait-overlay').setAttribute('style', 'display: none !important;');" style="cursor: pointer; margin-top: 32px; background: #3dba6e; color: #fff; padding: 12px 24px; border: none; font-weight: bold; border-radius: 8px; width: 100%; max-width: 250px;">Force Landscape</button>
-  <button onclick="document.getElementById('mobile-portrait-overlay').setAttribute('style', 'display: none !important;');" style="cursor: pointer; margin-top: 12px; background: transparent; color: #888; padding: 8px 16px; border: none;">Dismiss</button>
-</div>
-<script src="/cookie-consent.js"></script>
+<section class="related-tools" style="max-width: 800px; margin: 40px auto; padding: 20px; font-family: 'Outfit', sans-serif;">
+  <h2 style="color: #fff; font-size: 20px; margin-bottom: 16px;">Related Tools</h2>
+  <div class="related-tools-grid">
+    <a href="/circuit-simulator/" class="related-tool-card">
+      <h3>Circuit Simulator</h3>
+      <p>Build and simulate digital logic circuits instantly.</p>
+    </a>
+    <a href="/k-map/" class="related-tool-card">
+      <h3>Karnaugh Map Solver</h3>
+      <p>Interactive solver for 2 to 6 variable K-Maps.</p>
+    </a>
+    <a href="/fsm/" class="related-tool-card">
+      <h3>FSM Designer</h3>
+      <p>Design and simulate Finite State Machines (Moore & Mealy).</p>
+    </a>
+    <a href="/truth-table-generator/" class="related-tool-card">
+      <h3>Truth Table Generator</h3>
+      <p>Generate truth tables from Boolean algebra expressions.</p>
+    </a>
+  </div>
+</section>
 </body>
 
 </html>

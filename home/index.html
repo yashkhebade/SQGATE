@@ -97,7 +97,7 @@
 #pg-editor:not(.theme-light) {
   --bg0:#0F172A;--bg1:rgba(30, 41, 59, 0.65);--bg2:rgba(30, 41, 59, 0.85);--bg3:rgba(51, 65, 85, 0.65);--bg4:rgba(71, 85, 105, 0.7);--bgh:rgba(71, 85, 105, 0.8);
 }
-html,body{width:100%;height:100%;overflow:hidden;background:var(--bg0);font-family:var(--fsans);color:var(--t1);font-size:14px;user-select:none;-webkit-font-smoothing:antialiased}
+html,body{width:100%;height:100%;overflow-x:hidden;overflow-y:auto;background:var(--bg0);font-family:var(--fsans);color:var(--t1);font-size:14px;user-select:none;-webkit-font-smoothing:antialiased}
 
 /* ══ LOGIN PAGE ══════════════════════════════════════════════════ */
 /* PRO BUTTON UPGRADE */
@@ -264,7 +264,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg0);font-fami
 
 /* ══ EDITOR ══════════════════════════════════════════════════════ */
 #pg-editor{
-  position:fixed;inset:0;display:none;
+  position:relative;height:100vh;width:100vw;display:none;
   flex-direction:column;z-index:800;
   background: radial-gradient(circle at 50% 50%, #232e42 0%, #131826 100%);
 }
@@ -1906,6 +1906,13 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
   <link rel="stylesheet" href="/css/liquid-glass.css">
   <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7398330076279399" crossorigin="anonymous"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YOUR_MEASUREMENT_ID"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-YOUR_MEASUREMENT_ID');
+  </script>
 </head>
 <body>
 
@@ -2516,6 +2523,24 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
     <span class="sk">XY</span><span class="sv" id="st-c">—</span>
     <span id="stmsg" class="s-ok">Ready — select a component from the library and click canvas to place</span>
   </div>
+  
+  <article class="publisher-content" style="padding: 60px 5%; max-width: 900px; margin: 40px auto; color: var(--t2); font-family: var(--fsans); line-height: 1.6;">
+    <h2 style="color: #fff; font-size: 28px; margin-bottom: 24px;">Digital Logic Simulator Guide</h2>
+    <p style="margin-bottom: 16px;">Welcome to the SQGate digital logic simulator. This comprehensive educational tool allows you to design, build, and test complex digital circuits directly in your web browser without any installation required.</p>
+    <p style="margin-bottom: 16px;">Whether you are an engineering student learning the fundamentals of Boolean algebra, or a hobbyist prototyping a complex CPU architecture, our intuitive drag-and-drop interface provides a seamless workflow. Start by selecting basic logic gates (AND, OR, NOT, XOR, NAND, NOR) from the <strong>Library panel</strong> on the left, and drag them onto the infinite grid canvas.</p>
+    <p style="margin-bottom: 16px;">Connect the terminals using the intuitive wiring system. Simply click on an output pin and drag to an input pin. SQGate automatically routes the wires, but you can add waypoints by clicking on the canvas during routing to keep your schematics organized. To test your logic, use the <strong>Toggle Switches</strong> and <strong>Push Buttons</strong> to inject high (1) or low (0) signals into your circuit, and monitor the outputs using <strong>LEDs</strong> or the <strong>Seven-Segment Display</strong>.</p>
+    <h3 style="color: #fff; font-size: 22px; margin-top: 32px; margin-bottom: 16px;">Advanced Features: Sequential Logic and Waveforms</h3>
+    <p style="margin-bottom: 16px;">Unlike simple combinational logic simulators, SQGate fully supports sequential logic elements. You can incorporate D Flip-Flops, T Flip-Flops, JK Flip-Flops, SR Latches, and specialized memory modules (RAM/ROM) into your designs. Use the <strong>Clock</strong> component to drive synchronous circuits like counters and shift registers.</p>
+    <p style="margin-bottom: 16px;">For rigorous timing analysis, open the <strong>Waveform Viewer</strong> from the top navigation bar. By clicking 'Record', the simulator captures the exact timing diagrams of every named node in your circuit. This is invaluable for debugging race conditions, setup/hold time violations, and analyzing propagation delays across complex data paths.</p>
+    <h3 style="color: #fff; font-size: 22px; margin-top: 32px; margin-bottom: 16px;">Exporting to Hardware Description Languages (HDL)</h3>
+    <p style="margin-bottom: 16px;">SQGate bridges the gap between graphical schematic capture and actual hardware synthesis. Once your design is verified, you can instantly export it to industry-standard <strong>Verilog</strong> or <strong>VHDL</strong> code using the 'Code' button. This generated HDL can then be synthesized using tools like Vivado or Quartus and deployed directly onto an FPGA.</p>
+    <p style="margin-bottom: 16px;">If you want to create your own custom components, simply select a cluster of gates and click <strong>Create IC</strong>. This packages your logic into a single reusable integrated circuit module that you can drop into any future project. All projects are saved locally in your browser, or can be downloaded as a `.sqg` file to share with classmates or colleagues.</p>
+    <div style="margin-top: 40px; padding: 20px; background: rgba(139, 92, 246, 0.1); border-radius: 8px; border: 1px solid rgba(139, 92, 246, 0.2);">
+      <h4 style="color: #fff; margin-bottom: 12px;">Need more help?</h4>
+      <p style="margin-bottom: 0;">Check out our <a href="/blog/" style="color: #a78bfa; text-decoration: underline;">Educational Blog</a> for detailed tutorials on state machine synthesis, Karnaugh Map simplification, and CPU architecture design.</p>
+    </div>
+  </article>
+
 </div>
 
 <!-- CONTEXT MENU -->
@@ -8280,6 +8305,7 @@ function addAnnotation(wx, wy, text) {
 
   var body = document.createElement('div');
   body.className = 'annot-body';
+  ann.text = (ann.text||'Note').replace(/\\n/g, '\n').replace(/\/n/g, '\n');
   body.textContent = ann.text;
   el.appendChild(body);
   annotLayer.appendChild(el);
@@ -8338,7 +8364,9 @@ function bindAnnot(ann) {
     el.appendChild(ta);
     ta.focus(); ta.select();
     function finish() {
-      ann.text = ta.value.trim() || '…';
+      let val = ta.value.trim() || '…';
+      val = val.replace(/\\n/g, '\n').replace(/\/n/g, '\n');
+      ann.text = val;
       body.textContent = ann.text;
       ta.remove(); S.dirty = true;
     }
@@ -9360,48 +9388,6 @@ function copyShareUrl() {
     });
   }
 </script>
-<!-- MOBILE PORTRAIT OVERLAY -->
-<style>
-#mobile-portrait-overlay {
-  display: none;
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: var(--bg0, #0f111a);
-  z-index: 100000;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 24px;
-}
-@media (orientation: portrait) {
-  #mobile-portrait-overlay { display: flex !important; animation: fadeInOverlay 0.4s ease-out forwards; }
-}
-@keyframes fadeInOverlay {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-@keyframes rotatePhone {
-  0% { transform: rotate(0deg); }
-  50% { transform: rotate(-90deg); }
-  100% { transform: rotate(-90deg); }
-}
-</style>
-<div id="mobile-portrait-overlay">
-  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--acb, #3dba6e)" stroke-width="2" style="margin-bottom: 20px; animation: rotatePhone 2s infinite ease-in-out;">
-    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
-    <line x1="12" y1="18" x2="12.01" y2="18"/>
-  </svg>
-  <h2 style="color:var(--t1, #fff); margin-bottom: 12px; font-family:var(--fmono, monospace);">Please Rotate Device</h2>
-  <p style="color:var(--t2, #aaa); font-size:14px; max-width:300px; margin-bottom: 24px;">SQGATE is heavily optimized for landscape viewing. Please rotate your phone.</p>
-  
-  <div style="padding:16px; background:rgba(239, 68, 68, 0.1); border:1px solid rgba(239, 68, 68, 0.3); border-radius:8px; color:var(--t1, #fff); font-size:13px; max-width:300px;">
-    <strong style="color:#ef4444;">Note:</strong> This application is meant for desktop only. Touch screens may experience limited functionality.
-  </div>
-  
-  <button onclick="window.forceLandscapeFullscreen(); document.getElementById('mobile-portrait-overlay').setAttribute('style', 'display: none !important;');" style="cursor: pointer; margin-top: 32px; background: var(--acb, #3dba6e); color: #fff; padding: 12px 24px; border: none; font-weight: bold; border-radius: 8px; font-family: inherit; width: 100%; max-width: 250px;">Force Landscape (Auto-Rotate)</button>
-  <button onclick="document.getElementById('mobile-portrait-overlay').setAttribute('style', 'display: none !important;');" style="cursor: pointer; margin-top: 12px; background: transparent; color: var(--t3, #888); padding: 8px 16px; border: none; font-family: inherit;">Dismiss</button>
-</div>
 
 
 <div class="related-tools-section" style="max-width: 800px; margin: 40px auto; padding: 24px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; font-family: var(--font-sans, sans-serif);">
