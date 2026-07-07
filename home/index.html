@@ -272,7 +272,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg0);font-fami
   position:relative;
   height:48px; background:rgba(6, 8, 15, 0.65); border-bottom:1px solid rgba(255,255,255,0.06);
   display:flex; align-items:center; padding:0 8px; gap:4px; flex-shrink:0; z-index:200;
-  overflow-x:auto; overflow-y:hidden; backdrop-filter:blur(24px); box-shadow:0 4px 30px rgba(0,0,0,0.6);
+  flex-wrap:nowrap; overflow-x:auto; overflow-y:hidden; backdrop-filter:blur(24px); box-shadow:0 4px 30px rgba(0,0,0,0.6);
 }
 #ed-topbar::-webkit-scrollbar { display:none; }
 .ed-logo{
@@ -2180,6 +2180,39 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       <p style="margin-bottom: 0;"><strong>4. Interactive K-Map Solver:</strong> Our Karnaugh Map tool simplifies complex Boolean algebra expressions visually. It supports up to 6 variables, automatically finding the prime implicants and the simplified Sum of Products (SOP) expression. This saves engineering students hours of manual computation and helps them intuitively grasp digital circuit minimization.</p>
     </div>
 
+    <!-- LATEST BLOG GUIDES FOR ADSENSE -->
+    <div class="proj-section-title">LATEST DIGITAL LOGIC GUIDES</div>
+    <div class="proj-grid" style="margin-bottom: 48px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+      <a href="/blog/posts/1-logic-gates.html" class="proj-card tc-emerald" style="display:flex; flex-direction:column; justify-content:space-between; min-height:120px; text-decoration:none; padding:16px;">
+        <div style="flex:1">
+          <div class="proj-card-name">Introduction to Logic Gates</div>
+          <div class="proj-card-meta" style="margin-top:4px; font-size:12px; line-height:1.4;">Learn the fundamentals of AND, OR, and NOT gates in digital electronics.</div>
+        </div>
+        <div class="tc-cta" style="margin-top:12px; font-size:11px;">Read Guide <i class="ti ti-arrow-right"></i></div>
+      </a>
+      <a href="/blog/posts/understanding-nand-gate-universal.html" class="proj-card tc-cyan" style="display:flex; flex-direction:column; justify-content:space-between; min-height:120px; text-decoration:none; padding:16px;">
+        <div style="flex:1">
+          <div class="proj-card-name">NAND: The Universal Gate</div>
+          <div class="proj-card-meta" style="margin-top:4px; font-size:12px; line-height:1.4;">Why NAND gates are the building blocks of modern computer architecture.</div>
+        </div>
+        <div class="tc-cta" style="margin-top:12px; font-size:11px;">Read Guide <i class="ti ti-arrow-right"></i></div>
+      </a>
+      <a href="/blog/posts/3-karnaugh-maps.html" class="proj-card tc-amber" style="display:flex; flex-direction:column; justify-content:space-between; min-height:120px; text-decoration:none; padding:16px;">
+        <div style="flex:1">
+          <div class="proj-card-name">Mastering Karnaugh Maps</div>
+          <div class="proj-card-meta" style="margin-top:4px; font-size:12px; line-height:1.4;">A complete guide to K-Map simplification and finding prime implicants.</div>
+        </div>
+        <div class="tc-cta" style="margin-top:12px; font-size:11px;">Read Guide <i class="ti ti-arrow-right"></i></div>
+      </a>
+      <a href="/blog/posts/fsm-design-verilog-guide.html" class="proj-card tc-coral" style="display:flex; flex-direction:column; justify-content:space-between; min-height:120px; text-decoration:none; padding:16px;">
+        <div style="flex:1">
+          <div class="proj-card-name">FSM Design to Verilog</div>
+          <div class="proj-card-meta" style="margin-top:4px; font-size:12px; line-height:1.4;">How to convert a visual state diagram into synthesizable Verilog code.</div>
+        </div>
+        <div class="tc-cta" style="margin-top:12px; font-size:11px;">Read Guide <i class="ti ti-arrow-right"></i></div>
+      </a>
+    </div>
+
     <!-- MY WORKSPACE -->
     <div class="proj-section-title">MY WORKSPACE</div>
     <div id="workspace-subtitle" style="font-size:12px;color:var(--t3);margin-bottom:16px;padding:0 2px;">Your projects are saved locally in this browser. <a href="#" onclick="showPage('pg-login')" style="color:#6366f1;text-decoration:none;">Sign in</a> to personalize your offline workspace.</div>
@@ -2315,7 +2348,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
         <svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
         Clear
       </button>
-      <button class="tb-btn-text" id="btn-pkg" title="Package selected logic into a Custom IC" aria-label="Create IC">
+      <button class="tb-btn-text" id="btn-pkg" onclick="pkgSel()" title="Package selected logic into a Custom IC" aria-label="Create IC">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
         Create IC
       </button>
@@ -2372,9 +2405,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       <button class="tb-btn" id="btn-tmpl" title="Circuit Templates" aria-label="Templates">
         <svg viewBox="0 0 24 24"><path d="M2 12a10 10 0 1 0 20 0 10 10 0 1 0-20 0"/></svg>
       </button>
-      <button class="tb-btn" id="btn-theme" title="Toggle Theme" aria-label="Theme" style="display:none;">
-        <svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
-      </button>
+
 
       <button class="tb-btn" id="btn-hlp" title="Help" aria-label="Help">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
@@ -5111,7 +5142,7 @@ function clearCanvas(){
   S.gates=[];S.wires=[];deselAll();simulate();stUpd();S.dirty=true;msg('Canvas cleared','');
 }
 
-document.getElementById('btn-pkg').addEventListener('click',pkgSel);
+// btn-pkg now uses inline onclick="pkgSel()" for reliable binding
 document.getElementById('btn-verilog').addEventListener('click', function() {
   openVerilogModal();
 });
