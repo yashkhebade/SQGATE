@@ -2321,13 +2321,13 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       <!-- LIQUID RADIO COMPONENT -->
       <div class="lr-container" style="margin-left:2px;">
         <div class="lr-group">
-          <input type="radio" id="lr-test" name="env-toggle" value="test" checked onchange="msg('Environment switched to: TEST', 'ok')">
-          <input type="radio" id="lr-prod" name="env-toggle" value="prod" onchange="msg('Environment switched to: PROD', 'wa')">
+          <input type="radio" id="lr-test" name="env-toggle" value="test" checked onchange="msg('Mode switched to: BUILD', 'ok')">
+          <input type="radio" id="lr-prod" name="env-toggle" value="prod" onchange="msg('Mode switched to: RUN', 'ok')">
           
           <div class="lr-glass-filter"></div>
           
-          <label for="lr-test" class="lr-label lr-label-test">Test</label>
-          <label for="lr-prod" class="lr-label lr-label-prod">Prod</label>
+          <label for="lr-test" class="lr-label lr-label-test">BUILD</label>
+          <label for="lr-prod" class="lr-label lr-label-prod">RUN</label>
           
           <div class="lr-slider"></div>
         </div>
