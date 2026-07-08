@@ -2865,6 +2865,32 @@ START:
   </div>
 </div>
 
+<!-- MODAL: DRC -->
+<div class="ov" id="ov-drc">
+  <div class="mbox wide" style="max-width:560px">
+    <div class="mh">Design Rule Check (DRC)</div>
+    <div class="msc" style="max-height:480px">
+      <div id="drc-results" style="font-family:var(--fmono);font-size:13px;line-height:1.8;color:var(--t2);">
+        Scanning circuit...
+      </div>
+    </div>
+    <div class="mft"><button class="mbtn pr" id="drc-cl">Close</button></div>
+  </div>
+</div>
+
+<!-- MODAL: Statistics -->
+<div class="ov" id="ov-stats">
+  <div class="mbox wide" style="max-width:400px">
+    <div class="mh">Circuit Statistics</div>
+    <div class="msc" style="max-height:480px">
+      <div id="stats-results" style="font-family:var(--fmono);font-size:14px;line-height:1.8;color:var(--t2);">
+        Calculating...
+      </div>
+    </div>
+    <div class="mft"><button class="mbtn pr" id="stats-cl">Close</button></div>
+  </div>
+</div>
+
 <!-- MODAL: About SQGATE (SEO Optimized) -->
 <div class="ov" id="ov-about">
   <div class="mbox wide" style="max-width:600px">
@@ -2968,6 +2994,7 @@ const DEF = {
   clock: {lbl:'CLK',  w:64, h:54,  nc:0,np:1,cls:'tck', tip:'Clock oscillator\nDouble-click → set freq in Props'},
   const0:{lbl:'0',    w:40, h:34,  nc:0,np:1,cls:'tc0', tip:'Constant LOW (0)'},
   const1:{lbl:'1',    w:40, h:34,  nc:0,np:1,cls:'tc1', tip:'Constant HIGH (1)'},
+  text:  {lbl:'TXT',  w:120, h:40, nc:0,np:0,cls:'ttx', tip:'Text Note\nDouble click to edit'},
   led:   {lbl:'LED',  w:52, h:52,  nc:1,np:0,cls:'tled',tip:'LED — lights up when input is HIGH'},
   seg7:  {lbl:'SEG7', w:80, h:110, nc:7,np:0,cls:'tseg',tip:'7-Segment Display\nInputs: a,b,c,d,e,f,g\nShows hex digit 0–F'},
   matrix:{lbl:'8x8',  w:120, h:130, nc:16,np:0,cls:'tmtx',tip:'8x8 LED Matrix\nR0-R7, C0-C7\nLights up when R=1, C=1'},
@@ -5158,7 +5185,81 @@ document.getElementById('btn-verilog').addEventListener('click', function() {
 });
 document.getElementById('btn-hlp').addEventListener('click',function(){document.getElementById('ov-hlp').classList.add('open');});
 document.getElementById('hlp-cl').addEventListener('click',function(){document.getElementById('ov-hlp').classList.remove('open');});
+
+document.getElementById('btn-autolayout').addEventListener('click', function() {
+  saveUndoState();
+  const step = 20 * S.zoom;
+  S.gates.forEach(g => {
+    g.x = Math.round(g.x / step) * step;
+    g.y = Math.round(g.y / step) * step;
+  });
+  reposAll();
+  drawGrid();
+  msg('Snapped all components to grid', 'sc');
+});
+
+document.getElementById('btn-annot').addEventListener('click', function() {
+  let gid = 'g'+Date.now();
+  S.gates.push({ id: gid, type: 'text', x: S.panX * -1 + 100, y: S.panY * -1 + 100, txt: 'Text Note' });
+  saveUndoState();
+  reposAll();
+  msg('Added text annotation', 'sc');
+});
+
+document.getElementById('btn-stats').addEventListener('click', function() {
+  let stats = '<table style="width:100%; border-collapse:collapse;">';
+  stats += '<tr style="border-bottom:1px solid var(--b2);"><td style="padding:4px 0;">Total Components</td><td style="text-align:right;">' + S.gates.length + '</td></tr>';
+  stats += '<tr style="border-bottom:1px solid var(--b2);"><td style="padding:4px 0;">Total Wires</td><td style="text-align:right;">' + S.wires.length + '</td></tr>';
+  let types = {};
+  S.gates.forEach(g => types[g.type] = (types[g.type]||0)+1);
+  for(let t in types) {
+    stats += '<tr><td style="padding:4px 0; color:var(--t3);">' + (DEF[t]?DEF[t].lbl:t) + '</td><td style="text-align:right; color:var(--t3);">' + types[t] + '</td></tr>';
+  }
+  stats += '</table>';
+  document.getElementById('stats-results').innerHTML = stats;
+  document.getElementById('ov-stats').classList.add('open');
+});
+document.getElementById('stats-cl').addEventListener('click', function(){document.getElementById('ov-stats').classList.remove('open');});
+
+document.getElementById('btn-drc').addEventListener('click', function() {
+  let errs = [];
+  let warns = [];
+  
+  // Find multi-driven inputs
+  let inputCount = {};
+  S.wires.forEach(w => {
+    let key = w.to + '-' + w.tip;
+    inputCount[key] = (inputCount[key]||0)+1;
+    if(inputCount[key] > 1) errs.push('Short circuit detected on ' + (DEF[S.gates.find(g=>g.id===w.to)?.type]?.lbl||w.to) + ' input pin ' + w.tip);
+  });
+  
+  // Find floating inputs
+  S.gates.forEach(g => {
+    let d = gdef(g);
+    if(d && d.nc > 0) {
+      for(let i=0; i<d.nc; i++) {
+        let hasWire = S.wires.some(w => w.to === g.id && w.tip === i);
+        if(!hasWire) warns.push('Floating input pin ' + i + ' on ' + d.lbl + ' gate');
+      }
+    }
+  });
+
+  let html = '';
+  if(errs.length===0 && warns.length===0) {
+    html = '<div style="color:var(--acc); font-size:16px; margin-bottom:12px;">✅ 0 Errors, 0 Warnings</div>No design rules violated!';
+  } else {
+    html = '<div style="margin-bottom:12px;">Found <span style="color:#ef4444;">' + errs.length + ' Errors</span> and <span style="color:#eab308;">' + warns.length + ' Warnings</span>.</div>';
+    errs.forEach(e => html += '<div style="color:#ef4444; margin-bottom:4px;">❌ ' + e + '</div>');
+    warns.forEach(w => html += '<div style="color:#eab308; margin-bottom:4px;">⚠️ ' + w + '</div>');
+  }
+  document.getElementById('drc-results').innerHTML = html;
+  document.getElementById('ov-drc').classList.add('open');
+});
+document.getElementById('drc-cl').addEventListener('click', function(){document.getElementById('ov-drc').classList.remove('open');});
+
 document.getElementById('ov-hlp').addEventListener('click',function(e){if(e.target===e.currentTarget)e.currentTarget.classList.remove('open');});
+document.getElementById('ov-drc').addEventListener('click',function(e){if(e.target===e.currentTarget)e.currentTarget.classList.remove('open');});
+document.getElementById('ov-stats').addEventListener('click',function(e){if(e.target===e.currentTarget)e.currentTarget.classList.remove('open');});
 
 // Zoom buttons
 function doZoom(f){
