@@ -2365,6 +2365,12 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       <button class="tb-btn" id="btn-annot" title="Add Note" aria-label="Add Note">
         <svg viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
       </button>
+      <button class="tb-btn" id="btn-grid-tg" title="Toggle Grid" aria-label="Grid">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
+      </button>
+      <button class="tb-btn" id="btn-lbl-tg" title="Toggle Labels" aria-label="Labels">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
+      </button>
     </div>
     
     <div class="tsep"></div>
@@ -2392,14 +2398,41 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
         Examples
       </button>
       
-      <button class="tb-btn-text" id="btn-export" title="Save Project / Export Image" aria-label="Export">
-        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-        Save
+      <button class="tb-btn-text" id="btn-find" title="Find Component" aria-label="Find">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Find
       </button>
+      <button class="tb-btn-text" id="btn-speed" title="Simulation Speed" aria-label="Speed">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Speed: 1x
+      </button>
+      <button class="tb-btn-text" id="btn-bom" title="Bill of Materials" aria-label="BOM">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        BOM
+      </button>
+      <button class="tb-btn-text" id="btn-png" title="Export as Image" aria-label="Export PNG">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        PNG
+      </button>
+      <button class="tb-btn-text" id="btn-dl-json" title="Backup Project JSON" aria-label="Backup">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Backup
+      </button>
+      <button class="tb-btn-text" id="btn-ul-json" title="Restore Project JSON" aria-label="Restore" onclick="document.getElementById('json-upload').click()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Restore
+      </button>
+      <input type="file" id="json-upload" style="display:none" accept=".json">
     </div>
 
     <!-- Right Side Tools -->
     <div class="tb-group-right">
+      <button class="tb-btn" id="btn-theme" title="Toggle Dark/Light Mode" aria-label="Theme">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="19.78" x2="19.78" y2="21.2"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="4.22" x2="19.78" y2="5.64"/></svg>
+      </button>
+      <button class="tb-btn" id="btn-fs" title="Toggle Fullscreen" aria-label="Fullscreen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+      </button>
       <a href="/pricing.html" class="tb-btn-text" id="btn-pro-nav" style="border: 1px solid var(--acc); color: var(--acc); text-decoration: none; padding: 4px 10px; border-radius: 6px;">
         Upgrade to Pro
       </a>
@@ -2878,6 +2911,34 @@ START:
   </div>
 </div>
 
+<!-- MODAL: BOM -->
+<div class="ov" id="ov-bom">
+  <div class="mbox wide" style="max-width:560px">
+    <div class="mh">Bill of Materials (BOM)</div>
+    <div class="msc" style="max-height:480px">
+      <div id="bom-results" style="font-family:var(--fmono);font-size:14px;line-height:1.8;color:var(--t2);">
+        Generating BOM...
+      </div>
+    </div>
+    <div class="mft"><button class="mbtn pr" id="bom-cl">Close</button></div>
+  </div>
+</div>
+
+<!-- MODAL: Find Component -->
+<div class="ov" id="ov-find">
+  <div class="mbox wide" style="max-width:400px">
+    <div class="mh">Find Component</div>
+    <div class="msc" style="max-height:480px">
+      <input type="text" id="find-in" placeholder="Enter Gate ID (e.g., g1234)" style="width:100%;background:var(--bg0);border:1px solid var(--b2);padding:10px;color:var(--t1);border-radius:6px;font-family:var(--fmono);">
+      <div id="find-err" style="color:#ef4444;margin-top:8px;font-size:12px;display:none;">Component not found</div>
+    </div>
+    <div class="mft">
+      <button class="mbtn" id="find-cl">Cancel</button>
+      <button class="mbtn pr" id="find-go">Find & Center</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL: Statistics -->
 <div class="ov" id="ov-stats">
   <div class="mbox wide" style="max-width:400px">
@@ -3137,6 +3198,8 @@ function registerUser(email, name) {
 // ═══════════════════════════════════════════════════════
 let PROJ = null; // { id, name, data:{gates,wires,custom} }
 let ASSIGNMENT_MODE = false;
+let GLOB_GRID_VISIBLE = true;
+let GLOB_LBL_VISIBLE = true;
 
 function getProjects() {
   if (!CU || !CU.email) return {};
@@ -3274,6 +3337,7 @@ function drawGrid(){
   wireSvg.setAttribute('width',W);wireSvg.setAttribute('height',H);
   const c=gridCv.getContext('2d');
   c.clearRect(0,0,W,H);
+  if(!window.GLOB_GRID_VISIBLE) return;
   const step=20*S.zoom;
   const ox=((S.panX%step)+step)%step;
   const oy=((S.panY%step)+step)%step;
@@ -5258,8 +5322,158 @@ document.getElementById('btn-drc').addEventListener('click', function() {
 document.getElementById('drc-cl').addEventListener('click', function(){document.getElementById('ov-drc').classList.remove('open');});
 
 document.getElementById('ov-hlp').addEventListener('click',function(e){if(e.target===e.currentTarget)e.currentTarget.classList.remove('open');});
+
+// Feature: Toggle Grid
+document.getElementById('btn-grid-tg').addEventListener('click', function() {
+  window.GLOB_GRID_VISIBLE = !window.GLOB_GRID_VISIBLE;
+  drawGrid();
+  msg(window.GLOB_GRID_VISIBLE ? 'Grid Enabled' : 'Grid Disabled', 'sc');
+});
+
+// Feature: Toggle Labels
+document.getElementById('btn-lbl-tg').addEventListener('click', function() {
+  window.GLOB_LBL_VISIBLE = !window.GLOB_LBL_VISIBLE;
+  document.querySelectorAll('.glbl').forEach(el => el.style.display = window.GLOB_LBL_VISIBLE ? 'block' : 'none');
+  msg(window.GLOB_LBL_VISIBLE ? 'Labels Enabled' : 'Labels Disabled', 'sc');
+});
+
+// Feature: Fullscreen
+document.getElementById('btn-fs').addEventListener('click', function() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(err => {
+      msg('Error attempting to enable fullscreen', 'er');
+    });
+  } else {
+    document.exitFullscreen();
+  }
+});
+
+// Feature: Theme Toggle
+document.getElementById('btn-theme').addEventListener('click', function() {
+  let isLight = document.body.classList.toggle('theme-light');
+  document.getElementById('pg-editor').classList.toggle('theme-light', isLight);
+  localStorage.setItem('sqgate-theme', isLight ? 'light' : 'dark');
+  msg(isLight ? 'Light Mode' : 'Dark Mode', 'sc');
+  drawGrid();
+});
+
+// Feature: Simulation Speed
+let simSpeedIndex = 0;
+const simSpeeds = [1, 2, 5, 10];
+document.getElementById('btn-speed').addEventListener('click', function() {
+  simSpeedIndex = (simSpeedIndex + 1) % simSpeeds.length;
+  let speed = simSpeeds[simSpeedIndex];
+  this.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg> Speed: ' + speed + 'x';
+  if(window.S) S.clockSpeedFactor = speed; // If we implement clock speed later
+  msg('Simulation Speed set to ' + speed + 'x', 'sc');
+});
+
+// Feature: Backup JSON
+document.getElementById('btn-dl-json').addEventListener('click', function() {
+  if (ASSIGNMENT_MODE) { msg("Cannot download JSON in Assignment Mode", "er"); return; }
+  let jsonStr = JSON.stringify(ud.projects[ud.curProj] || {});
+  let blob = new Blob([jsonStr], {type: "application/json"});
+  let url = URL.createObjectURL(blob);
+  let a = document.createElement('a');
+  a.href = url;
+  a.download = (ud.projects[ud.curProj]?.name || 'sqgate-project') + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  msg('Project Backed Up', 'sc');
+});
+
+// Feature: Restore JSON
+document.getElementById('json-upload').addEventListener('change', function(e) {
+  if (ASSIGNMENT_MODE) { msg("Cannot restore JSON in Assignment Mode", "er"); return; }
+  let file = e.target.files[0];
+  if (!file) return;
+  let reader = new FileReader();
+  reader.onload = function(evt) {
+    try {
+      let data = JSON.parse(evt.target.result);
+      if(!data.gates) throw new Error("Invalid format");
+      ud.projects[ud.curProj] = data;
+      saveUD();
+      loadProject(ud.curProj);
+      msg('Project Restored successfully', 'sc');
+    } catch(err) {
+      msg('Failed to parse JSON', 'er');
+    }
+  };
+  reader.readAsText(file);
+});
+
+// Feature: PNG Export (Screenshot)
+document.getElementById('btn-png').addEventListener('click', function() {
+  msg('Taking screenshot...', 'wa');
+  let cvs = document.getElementById('grid-cv');
+  if(!cvs) return;
+  let url = cvs.toDataURL("image/png");
+  let a = document.createElement('a');
+  a.href = url;
+  a.download = (ud.projects[ud.curProj]?.name || 'schematic') + '.png';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  msg('Screenshot saved!', 'sc');
+});
+
+// Feature: BOM Generator
+document.getElementById('btn-bom').addEventListener('click', function() {
+  let types = {};
+  S.gates.forEach(g => {
+    types[g.type] = (types[g.type]||0)+1;
+  });
+  let html = '<table style="width:100%; border-collapse:collapse; margin-top:10px;">';
+  html += '<tr style="border-bottom:2px solid var(--b2);"><th style="text-align:left;padding:8px 0;">Component ID</th><th style="text-align:left;">Description</th><th style="text-align:right;">Qty</th></tr>';
+  let keys = Object.keys(types).sort();
+  keys.forEach(k => {
+    let desc = DEF[k]?.tip?.split('\\n')[0] || DEF[k]?.lbl || k;
+    html += '<tr style="border-bottom:1px solid var(--b1);"><td style="padding:6px 0;font-weight:bold;">' + k.toUpperCase() + '</td><td>' + desc + '</td><td style="text-align:right;">' + types[k] + '</td></tr>';
+  });
+  html += '</table>';
+  if(keys.length === 0) html = 'Circuit is empty.';
+  
+  document.getElementById('bom-results').innerHTML = html;
+  document.getElementById('ov-bom').classList.add('open');
+});
+document.getElementById('bom-cl').addEventListener('click', function(){document.getElementById('ov-bom').classList.remove('open');});
+
+// Feature: Find Component
+document.getElementById('btn-find').addEventListener('click', function() {
+  document.getElementById('find-in').value = '';
+  document.getElementById('find-err').style.display = 'none';
+  document.getElementById('ov-find').classList.add('open');
+  setTimeout(()=>document.getElementById('find-in').focus(), 100);
+});
+document.getElementById('find-cl').addEventListener('click', function(){document.getElementById('ov-find').classList.remove('open');});
+document.getElementById('find-go').addEventListener('click', function() {
+  let id = document.getElementById('find-in').value.trim();
+  let g = S.gates.find(x => x.id === id);
+  if(g) {
+    document.getElementById('ov-find').classList.remove('open');
+    S.panX = -(g.x - document.getElementById('ed-wrap').clientWidth/2);
+    S.panY = -(g.y - document.getElementById('ed-wrap').clientHeight/2);
+    reposAll();
+    drawGrid();
+    msg('Found ' + id, 'sc');
+    let el = document.getElementById(id);
+    if(el) {
+      el.style.boxShadow = '0 0 20px 5px var(--acc)';
+      setTimeout(()=>el.style.boxShadow = '', 2000);
+    }
+  } else {
+    document.getElementById('find-err').style.display = 'block';
+  }
+});
+document.getElementById('find-in').addEventListener('keydown', function(e) {
+  if(e.key === 'Enter') document.getElementById('find-go').click();
+});
 document.getElementById('ov-drc').addEventListener('click',function(e){if(e.target===e.currentTarget)e.currentTarget.classList.remove('open');});
 document.getElementById('ov-stats').addEventListener('click',function(e){if(e.target===e.currentTarget)e.currentTarget.classList.remove('open');});
+document.getElementById('ov-bom').addEventListener('click',function(e){if(e.target===e.currentTarget)e.currentTarget.classList.remove('open');});
+document.getElementById('ov-find').addEventListener('click',function(e){if(e.target===e.currentTarget)e.currentTarget.classList.remove('open');});
 
 // Zoom buttons
 function doZoom(f){
