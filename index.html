@@ -1829,6 +1829,22 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
     min-height: 44px;
     min-width: 44px;
   }
+}
+
+@media screen and (orientation: portrait) and (max-width: 768px) {
+  body {
+    transform: rotate(-90deg);
+    transform-origin: left top;
+    width: 100vh;
+    height: 100vw;
+    overflow-x: hidden;
+    position: absolute;
+    top: 100%;
+    left: 0;
+  }
+}
+
+
   
   #ed-topbar {
     overflow-x: auto;
