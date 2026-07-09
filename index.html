@@ -2438,6 +2438,28 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         Find
       </button>
+
+      <div class="tsep" style="margin: 0 4px;"></div>
+
+      <button class="tb-btn-text" id="btn-synth" title="Auto-Synthesize Circuit" aria-label="Synthesize" onclick="document.getElementById('synth-modal').classList.add('show')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M7.5 4.21l4.5 2.6 4.5-2.6"/><path d="M7.5 19.79V14.6L3 12"/><path d="M21 12l-4.5 2.6v5.19"/><path d="M3.27 6.96L12 12.01l8.73-5.05"/><path d="M12 22.08V12"/></svg>
+        Synthesize
+      </button>
+
+      <button class="tb-btn-text" id="btn-kmap-nav" title="Karnaugh Map Solver" aria-label="K-Map" onclick="window.open('/k-map/index.html','_blank')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
+        K-Map
+      </button>
+
+      <button class="tb-btn-text" id="btn-fsm-nav" title="FSM Designer" aria-label="FSM" onclick="window.open('/fsm/index.html','_blank')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="19" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><path d="M10.5 10.5L7 7"/><path d="M13.5 13.5L17 17"/></svg>
+        FSM
+      </button>
+
+      <button class="tb-btn-text" id="btn-puzzle-nav" title="Logic Quest Puzzle" aria-label="Puzzle" onclick="window.open('/puzzle/index.html','_blank')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.439 7.85c-.049.322.059.648.289.878l1.568 1.568c.47.47.706 1.087.706 1.704s-.235 1.233-.706 1.704l-1.611 1.611a.98.98 0 0 0-.253.902l.331 2.158c.16 1.041-.35 2.1-1.282 2.646l-1.88.11c-.322.018-.616.19-.806.471l-1.183 1.758c-.569.845-1.579 1.233-2.585.992l-2.072-.494a.98.98 0 0 0-.915.163l-1.61 1.182c-.853.626-2.043.626-2.896 0l-1.61-1.182a.98.98 0 0 0-.915-.163l-2.072.494c-1.006.241-2.016-.147-2.585-.992l-1.183-1.758a.98.98 0 0 0-.806-.471l-1.88-.11c-.932-.546-1.442-1.605-1.282-2.646l.331-2.158a.98.98 0 0 0-.253-.902L.544 13.7c-.94-.94-.94-2.468 0-3.408l1.568-1.568c.23-.23.338-.556.289-.878L2.07 5.688C1.91 4.647 2.42 3.588 3.352 3.042l1.88-.11c.322-.018.616-.19.806-.471l1.183-1.758C7.79.162 8.8-.226 9.806.015l2.072.494a.98.98 0 0 0 .915-.163l1.61-1.182c.853-.626 2.043-.626 2.896 0l1.61 1.182c.28.206.634.265.915.163l2.072-.494c1.006-.241 2.016.147 2.585.992l1.183 1.758c.19.281.484.453.806.471l1.88.11c.932.546 1.442 1.605 1.282 2.646l-.331 2.158z"/><circle cx="12" cy="12" r="3"/></svg>
+        Quest
+      </button>
       <button class="tb-btn-text" id="btn-speed" title="Simulation Speed" aria-label="Speed">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
         Speed: 1x
@@ -9746,6 +9768,26 @@ if (window.innerWidth <= 768) {
   </div>
 </div>
 
+<style>
+#synth-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999999; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); font-family: 'Outfit', sans-serif; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+#synth-modal.show { opacity: 1; pointer-events: auto; }
+.synth-box { background: #1e293b; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 32px; max-width: 500px; width: 90%; box-shadow: 0 24px 64px rgba(0,0,0,0.6); text-align: center; color: #e2e8f0; transform: translateY(20px); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+#synth-modal.show .synth-box { transform: translateY(0); }
+.synth-input { width: 100%; padding: 12px; border-radius: 8px; background: #0f172a; border: 1px solid #334155; color: #fff; margin-bottom: 16px; font-family: monospace; font-size: 16px; box-sizing: border-box;}
+</style>
+<div id="synth-modal">
+  <div class="synth-box">
+    <div class="sqgate-em-icon" style="color:#a855f7; font-size:40px;">✨</div>
+    <div class="sqgate-em-title">Logic Auto-Synthesizer</div>
+    <div class="sqgate-em-msg">Enter a Boolean expression (e.g. A*B+C or (A AND B) OR C). We will automatically generate and route the gates!</div>
+    <input type="text" id="synth-expr-input" class="synth-input" aria-label="Boolean Expression" placeholder="A*B + C">
+    <div class="sqgate-em-actions">
+      <button class="sqgate-em-btn sqgate-em-btn-secondary" onclick="document.getElementById('synth-modal').classList.remove('show')">Cancel</button>
+      <button class="sqgate-em-btn sqgate-em-btn-primary" id="synth-build-btn" onclick="synthesizeCircuit()" style="background:#a855f7; border-color:#a855f7;">Generate</button>
+    </div>
+  </div>
+</div>
+
 <script>
 function shareCircuit() {
   console.log("shareCircuit button clicked!");
@@ -9785,6 +9827,121 @@ function copyShareUrl() {
       });
     }
   }
+}
+
+function synthesizeCircuit() {
+  const raw = document.getElementById('synth-expr-input').value.replace(/\s+/g,'').toUpperCase();
+  if(!raw) return;
+  document.getElementById('synth-modal').classList.remove('show');
+  
+  let str = raw.replace(/\*/g, '&').replace(/\+/g, '|').replace(/~/g, '!');
+  str = str.replace(/([A-Z\)'\]])([A-Z\(\[\!])/g, '$1&$2');
+  
+  let pos = 0;
+  function parseOr() {
+    let left = parseXor();
+    while(pos < str.length && str[pos] === '|') {
+      pos++; left = {type: 'or', left: left, right: parseXor()};
+    }
+    return left;
+  }
+  function parseXor() {
+    let left = parseAnd();
+    while(pos < str.length && (str[pos] === '^')) {
+      pos++; left = {type: 'xor', left: left, right: parseAnd()};
+    }
+    return left;
+  }
+  function parseAnd() {
+    let left = parseFactor();
+    while(pos < str.length && str[pos] === '&') {
+      pos++; left = {type: 'and', left: left, right: parseFactor()};
+    }
+    return left;
+  }
+  function parseFactor() {
+    if(pos >= str.length) throw new Error("Unexpected end");
+    let c = str[pos];
+    if(c === '!') { pos++; return {type: 'not', inner: parseFactor()}; }
+    if(c === '(' || c === '[') {
+      let endChar = c === '(' ? ')' : ']';
+      pos++; let inner = parseOr();
+      if(str[pos] === endChar) pos++;
+      if (pos < str.length && (str[pos] === "'" || str[pos] === "’")) { pos++; inner = {type: 'not', inner: inner}; }
+      return inner;
+    }
+    if(/[A-Z]/.test(c)) {
+      pos++; let node = {type: 'VAR', name: c};
+      if (pos < str.length && (str[pos] === "'" || str[pos] === "’")) { pos++; node = {type: 'not', inner: node}; }
+      return node;
+    }
+    throw new Error("Invalid char: " + c);
+  }
+  
+  let ast;
+  try { ast = parseOr(); } catch(e) { msg("Invalid Expression: " + e.message, "err"); return; }
+  
+  let startX = (-cam.x + 200) / cam.z;
+  let startY = (-cam.y + 200) / cam.z;
+  
+  let vars = {};
+  function getVars(n) {
+    if(n.type === 'VAR') vars[n.name] = true;
+    else if(n.inner) getVars(n.inner);
+    else if(n.left) { getVars(n.left); getVars(n.right); }
+  }
+  getVars(ast);
+  
+  let varNames = Object.keys(vars).sort();
+  let inputNodes = {};
+  
+  varNames.forEach((v, idx) => {
+    let node = { id: S.nid++, type: 'in', x: startX, y: startY + idx * 80, val: 0, label: v };
+    S.gates.push(node);
+    inputNodes[v] = node;
+  });
+  
+  let layerY = startY;
+  
+  function buildCircuit(node, depth) {
+    if(node.type === 'VAR') {
+      return { id: inputNodes[node.name].id, port: 0 };
+    }
+    if(node.type === 'not') {
+      let src = buildCircuit(node.inner, depth - 1);
+      let g = { id: S.nid++, type: 'not', x: startX + depth * 120, y: layerY };
+      layerY += 60; S.gates.push(g);
+      S.wires.push({id: S.nid++, fg: src.id, fp: src.port, tg: g.id, tp: 0, sig: 0});
+      return { id: g.id, port: 0 };
+    }
+    
+    let leftSrc = buildCircuit(node.left, depth - 1);
+    let rightSrc = buildCircuit(node.right, depth - 1);
+    
+    let g = { id: S.nid++, type: node.type, x: startX + depth * 120, y: layerY, numIn: 2 };
+    layerY += 80; S.gates.push(g);
+    
+    S.wires.push({id: S.nid++, fg: leftSrc.id, fp: leftSrc.port, tg: g.id, tp: 0, sig: 0});
+    S.wires.push({id: S.nid++, fg: rightSrc.id, fp: rightSrc.port, tg: g.id, tp: 1, sig: 0});
+    return { id: g.id, port: 0 };
+  }
+  
+  function getDepth(node) {
+    if(node.type === 'VAR') return 0;
+    if(node.inner) return 1 + getDepth(node.inner);
+    return 1 + Math.max(getDepth(node.left), getDepth(node.right));
+  }
+  
+  let totalDepth = getDepth(ast);
+  let finalSrc = buildCircuit(ast, totalDepth);
+  
+  let outNode = { id: S.nid++, type: 'out', x: startX + (totalDepth+1) * 120, y: layerY-80, label: 'Y' };
+  S.gates.push(outNode);
+  S.wires.push({id: S.nid++, fg: finalSrc.id, fp: finalSrc.port, tg: outNode.id, tp: 0, sig: 0});
+  
+  simulate(); stUpd();
+  if(typeof render === 'function') render();
+  msg("Circuit Synthesized successfully!", "ok");
 }
 
   // Guide and Share buttons use inline onclick handlers in the HTML
