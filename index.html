@@ -9321,9 +9321,20 @@ new ResizeObserver(function(){
 var TOUR_STEPS = [
   { sel: '#sidebar', title: 'Logic Gates Library', text: 'Drag and drop gates, inputs, and outputs onto the canvas. Scroll down to see advanced components like Flip-Flops and ALUs!' },
   { sel: '#cvwrap', title: 'The Canvas', text: 'This is your workspace. We pre-loaded a simple NAND gate circuit for you. Try clicking the green IN gates to toggle them between 0 and 1!' },
+  { sel: '.ed-sim-ctrl', title: 'Build vs Run Mode', text: 'Switch between BUILD mode (for wiring and editing) and RUN mode (for real-time simulation). Logic only evaluates while in RUN mode!' },
   { sel: '#btn-rp', title: 'Properties Panel', text: 'Select any component or wire on the canvas to view and edit its properties here (like naming an input, or changing bit-width).' },
-  { sel: '#btn-tt', title: 'Boolean & Karnaugh Maps', text: 'Instantly generate Truth Tables, Boolean algebra expressions, and Karnaugh Maps for your design!' },
+  { sel: '#btn-pkg', title: 'Create Custom IC', text: 'Select a group of logic gates and click this to package them into a single reusable Macro IC.' },
+  { sel: '#btn-autolayout', title: 'Auto-arrange Layout', text: 'Automatically cleans up and untangles messy wiring in your circuit.' },
+  { sel: '#btn-annot', title: 'Add Annotations', text: 'Place text notes anywhere on the canvas to document your design.' },
+  { sel: '#btn-grid-tg', title: 'Toggle Grid', text: 'Show or hide the canvas background grid dots.' },
+  { sel: '#btn-lbl-tg', title: 'Toggle Labels', text: 'Show or hide the pin/gate labels on the canvas to reduce clutter.' },
+  { sel: '#btn-fit', title: 'Zoom to Fit', text: 'Lost your circuit? Click here to instantly zoom and center the camera on your design.' },
+  { sel: '#btn-clock-tg', title: 'Global Clock', text: 'Toggle a continuous clock pulse that drives all clock inputs in your circuit.' },
+  { sel: '#btn-flip', title: 'Flip Selection', text: 'Horizontally mirror the selected components for cleaner wiring.' },
+  { sel: '#btn-lock', title: 'Lock Component', text: 'Lock selected gates in place so they cannot be accidentally moved or deleted.' },
+  { sel: '#btn-print', title: 'Print Schematic', text: 'Open a clean, printer-friendly view of your circuit schematic.' },
   { sel: '#btn-tb', title: 'Automated Testbenches', text: 'Write automated testbenches to verify your logic circuit\'s correctness.' },
+  { sel: '#btn-tt', title: 'Boolean & Karnaugh Maps', text: 'Instantly generate Truth Tables, Boolean algebra expressions, and Karnaugh Maps for your design!' },
   { sel: '#btn-wave', title: 'Waveform Viewer', text: 'Click this button to see your circuit\'s signals over time. We will open it for a quick peek right now!', action: function() {
       var wbtn = document.getElementById('btn-wave');
       var panel = document.getElementById('wave-panel');
@@ -9336,8 +9347,16 @@ var TOUR_STEPS = [
           }, 2500);
       }
   }},
-  { sel: '#btn-verilog', title: 'Verilog Export', text: 'Once your circuit is built, click here to export it into professional Verilog code!' },
-  { sel: '#btn-export', title: 'Export & Save', text: 'You can export your schematic as a high-res image (PNG/SVG) or save the raw project file.' }
+  { sel: '#btn-verilog', title: 'Verilog Export', text: 'Once your circuit is built, click here to export it into professional Verilog/VHDL code!' },
+  { sel: '#btn-examples', title: 'Examples Library', text: 'Load pre-built examples ranging from Half-Adders to full 8-bit CPUs.' },
+  { sel: '#btn-find', title: 'Find Component', text: 'Search and navigate to any specific gate, input, or label on a massive canvas.' },
+  { sel: '#btn-speed', title: 'Simulation Speed', text: 'Adjust the global simulation tick rate from 1Hz to max speed.' },
+  { sel: '#btn-bom', title: 'Bill of Materials', text: 'Generate a BOM report listing every single component used in your circuit.' },
+  { sel: '#btn-png', title: 'Export Image', text: 'You can export your schematic as a high-res image (PNG/SVG) for reports or documentation.' },
+  { sel: '#btn-dl-json', title: 'Backup & Restore', text: 'Save a backup of your project to your computer as a JSON file, and restore it later.' },
+  { sel: '#btn-theme', title: 'Theme Toggle', text: 'Switch between the dark mode (default) and the clean light mode.' },
+  { sel: '#btn-drc', title: 'Design Rule Check', text: 'Run DRC to automatically find short circuits, floating inputs, and other common errors.' },
+  { sel: '#btn-share', title: 'Share Circuit', text: 'Generate a unique URL to share your circuit design with anyone online!' }
 ];
 var tourIndex = -1;
 
