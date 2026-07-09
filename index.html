@@ -6948,7 +6948,7 @@ document.querySelectorAll('.ex-card').forEach(function(card) {
 // ═══════════════════════════════════════════════════════
 // UI: EXPORT MODAL
 // ═══════════════════════════════════════════════════════
-document.getElementById('btn-export').addEventListener('click', function() {
+document.getElementById('btn-export') && document.getElementById('btn-export').addEventListener('click', function() {
   document.getElementById('ov-export').classList.add('open');
 });
 document.getElementById('exp-close').addEventListener('click', function() {
