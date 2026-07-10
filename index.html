@@ -2033,6 +2033,68 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
         <button onclick="toggleAppFullscreen()" title="Toggle Fullscreen" style="background:transparent;border:none;color:var(--t2);cursor:pointer;padding:4px;display:flex;align-items:center;transition:color 0.2s;" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t2)'">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
         </button>
+        <button id="btn-find" title="Find Component" style="background:transparent;border:none;color:var(--t2);cursor:pointer;padding:4px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
+        <button id="btn-ic-mgr" title="Manage ICs" style="background:transparent;border:none;color:var(--t2);cursor:pointer;padding:4px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg></button>
+        <button id="btn-shortcuts" title="Shortcuts" style="background:transparent;border:none;color:var(--t2);cursor:pointer;padding:4px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></button>
+
+  <div class="ov" id="ov-find">
+    <div class="ov-inner" style="max-width:300px">
+      <div class="ov-h">
+        <h3>Find Component</h3>
+        <button class="mclose" id="find-cl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+      </div>
+      <div class="ov-body">
+        <p style="margin-bottom:10px;">Enter Component ID (e.g. g14):</p>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="find-in" style="flex:1;background:var(--bg0);color:var(--t1);border:1px solid var(--b2);border-radius:4px;padding:6px 10px;font-family:var(--fmono);" placeholder="g0">
+          <button class="tb-btn-text" id="find-go" style="background:var(--acc);color:#fff;">Find</button>
+        </div>
+        <p id="find-err" style="color:var(--er);margin-top:10px;display:none;font-size:13px;">Component not found!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- IC Manager Modal -->
+  <div class="ov" id="ov-ic-mgr">
+    <div class="ov-inner" style="max-width:500px">
+      <div class="ov-h">
+        <h3>Manage Custom ICs</h3>
+        <button class="mclose" id="ic-mgr-cl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+      </div>
+      <div class="ov-body">
+        <p>Your saved custom IC packages are listed here. You can delete them below.</p>
+        <div id="ic-mgr-list" style="margin-top:10px; max-height:400px; overflow-y:auto; border:1px solid var(--b2); border-radius:4px; padding:10px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shortcuts Modal -->
+  <div class="ov" id="ov-shortcuts">
+    <div class="ov-inner" style="max-width:500px">
+      <div class="ov-h">
+        <h3>Keyboard Shortcuts</h3>
+        <button class="mclose" id="shortcuts-cl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+      </div>
+      <div class="ov-body">
+        <table style="width:100%; border-collapse:collapse; margin-top:10px; text-align:left;">
+          <tr style="border-bottom:1px solid var(--b2);">
+            <th style="padding:8px 0;">Shortcut</th>
+            <th>Action</th>
+          </tr>
+          <tr><td style="padding:6px 0;"><code>Space</code></td><td>Play/Pause Simulation</td></tr>
+          <tr><td style="padding:6px 0;"><code>Del / Backspace</code></td><td>Delete Selected</td></tr>
+          <tr><td style="padding:6px 0;"><code>Ctrl + Z</code></td><td>Undo</td></tr>
+          <tr><td style="padding:6px 0;"><code>Ctrl + Y</code></td><td>Redo</td></tr>
+          <tr><td style="padding:6px 0;"><code>Ctrl + C</code></td><td>Copy Selected</td></tr>
+          <tr><td style="padding:6px 0;"><code>Ctrl + V</code></td><td>Paste</td></tr>
+          <tr><td style="padding:6px 0;"><code>Shift + Drag</code></td><td>Box Selection</td></tr>
+          <tr><td style="padding:6px 0;"><code>Right Click</code></td><td>Component Properties Menu</td></tr>
+          <tr><td style="padding:6px 0;"><code>Double Click</code></td><td>Add Wire Point</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
         <a href="https://docs.google.com/forms/d/e/1FAIpQLSc5AzzP2NccDkCbKAb5mVvefYFc5_X-EkJZx5RLWO7aqQ_8cw/viewform" target="_blank" id="btn-feedback-dash" title="Feedback / Contact" style="text-decoration:none;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:6px;background:var(--bg2);border:1px solid var(--b1);color:var(--t2);transition:all .2s ease;" onmouseover="this.style.borderColor='#7248b9';this.style.color='#7248b9';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--b1)';this.style.color='var(--t2)';this.style.transform='none'">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="17" y2="8"></line><line x1="12" y1="12" x2="17" y2="12"></line><line x1="12" y1="16" x2="17" y2="16"></line><line x1="8" y1="8" x2="8.01" y2="8"></line><line x1="8" y1="12" x2="8.01" y2="12"></line><line x1="8" y1="16" x2="8.01" y2="16"></line></svg>
         </a>
@@ -2444,6 +2506,21 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       <button class="tb-btn-text" id="btn-synth" title="Auto-Synthesize Circuit" aria-label="Synthesize" onclick="document.getElementById('synth-modal').classList.add('show')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M7.5 4.21l4.5 2.6 4.5-2.6"/><path d="M7.5 19.79V14.6L3 12"/><path d="M21 12l-4.5 2.6v5.19"/><path d="M3.27 6.96L12 12.01l8.73-5.05"/><path d="M12 22.08V12"/></svg>
         Synthesize
+      </button>
+
+      <button class="tb-btn-text" id="btn-rand" title="Randomize Inputs" aria-label="Randomize">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+        Randomize
+      </button>
+
+      <button class="tb-btn-text" id="btn-ic-mgr" title="Manage Custom ICs" aria-label="IC Manager">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        IC Manager
+      </button>
+
+      <button class="tb-btn-text" id="btn-shortcuts" title="Keyboard Shortcuts" aria-label="Shortcuts">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-9 10H8v-2h3v2zm0-3H8V9h3v2zm4 3h-3v-2h3v2zm0-3h-3V9h3v2z"/></svg>
+        Shortcuts
       </button>
 
       <button class="tb-btn-text" id="btn-kmap-nav" title="Karnaugh Map Solver" aria-label="K-Map" onclick="window.open('/k-map/index.html','_blank')">
@@ -9551,6 +9628,73 @@ window.forceLandscapeFullscreen = function() {
     }
   }
 };
+
+// Feature: Randomize Inputs
+document.getElementById('btn-rand').addEventListener('click', function() {
+  var count = 0;
+  S.gates.forEach(function(g) {
+    if(g.type === 'in' || g.type === 'sw') {
+      g.state = Math.random() > 0.5 ? 1 : 0;
+      count++;
+    }
+  });
+  if(count > 0) {
+    msg('Randomized ' + count + ' inputs.', 'sc');
+    drawGrid();
+  } else {
+    msg('No inputs to randomize.', 'wa');
+  }
+});
+
+// Feature: IC Manager
+document.getElementById('btn-ic-mgr').addEventListener('click', function() {
+  document.getElementById('ov-ic-mgr').classList.add('open');
+  renderICManager();
+});
+document.getElementById('ic-mgr-cl').addEventListener('click', function(){
+  document.getElementById('ov-ic-mgr').classList.remove('open');
+});
+document.getElementById('ov-ic-mgr').addEventListener('click', function(e){
+  if(e.target===e.currentTarget) e.currentTarget.classList.remove('open');
+});
+function renderICManager() {
+  var container = document.getElementById('ic-mgr-list');
+  var html = '';
+  var keys = Object.keys(S.custom || {});
+  if(keys.length === 0) {
+    container.innerHTML = '<div style="color:var(--t3);text-align:center;padding:20px;">No custom ICs created yet. Use the "Package" button to create one.</div>';
+    return;
+  }
+  keys.forEach(function(k) {
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px;border-bottom:1px solid var(--b1);">';
+    html += '<div><strong style="color:var(--aca)">' + k + '</strong> (' + S.custom[k].gates.length + ' gates)</div>';
+    html += '<button class="tb-btn-text" style="color:var(--er);border:1px solid var(--er);padding:4px 8px;" onclick="deleteCustomIC(&quot;' + k + '&quot;)">Delete</button>';
+    html += '</div>';
+  });
+  container.innerHTML = html;
+}
+window.deleteCustomIC = function(name) {
+  if(confirm("Are you sure you want to delete custom IC '" + name + "'? This will remove all instances of it from the current circuit!")) {
+    delete S.custom[name];
+    S.gates = S.gates.filter(function(g) { return g.type !== name; });
+    var sideEl = document.querySelector('#lib-cust [data-id="' + name + '"]');
+    if(sideEl) sideEl.remove();
+    renderICManager();
+    drawGrid();
+    msg('Deleted IC: ' + name, 'sc');
+  }
+};
+
+// Feature: Shortcuts
+document.getElementById('btn-shortcuts').addEventListener('click', function() {
+  document.getElementById('ov-shortcuts').classList.add('open');
+});
+document.getElementById('shortcuts-cl').addEventListener('click', function(){
+  document.getElementById('ov-shortcuts').classList.remove('open');
+});
+document.getElementById('ov-shortcuts').addEventListener('click', function(e){
+  if(e.target===e.currentTarget) e.currentTarget.classList.remove('open');
+});
 </script>
 <!-- TOUR OVERLAY -->
 <div id="tour-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999999;pointer-events:none;overflow:hidden;">
