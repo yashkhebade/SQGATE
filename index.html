@@ -5437,32 +5437,27 @@ document.getElementById('btn-speed').addEventListener('click', function() {
 
 // Feature: Backup JSON
 document.getElementById('btn-dl-json').addEventListener('click', function() {
-  if (ASSIGNMENT_MODE) { msg("Cannot download JSON in Assignment Mode", "er"); return; }
-  let jsonStr = JSON.stringify(ud.projects[ud.curProj] || {});
-  let blob = new Blob([jsonStr], {type: "application/json"});
-  let url = URL.createObjectURL(blob);
-  let a = document.createElement('a');
-  a.href = url;
-  a.download = (ud.projects[ud.curProj]?.name || 'sqgate-project') + '.json';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  if (typeof ASSIGNMENT_MODE !== 'undefined' && ASSIGNMENT_MODE) { msg("Cannot download JSON in Assignment Mode", "er"); return; }
+  var snap = projDataSnapshot();
+  var blob = new Blob([JSON.stringify({name: typeof PROJ !== 'undefined' && PROJ ? PROJ.name : 'circuit', data: snap}, null, 2)], {type: 'application/json'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a'); a.href = url; a.download = ((typeof PROJ !== 'undefined' && PROJ ? PROJ.name : 'circuit').replace(/\W/g, '_') || 'sqgate-project') + '.json'; a.click();
+  URL.revokeObjectURL(url);
   msg('Project Backed Up', 'sc');
 });
 
 // Feature: Restore JSON
 document.getElementById('json-upload').addEventListener('change', function(e) {
-  if (ASSIGNMENT_MODE) { msg("Cannot restore JSON in Assignment Mode", "er"); return; }
+  if (typeof ASSIGNMENT_MODE !== 'undefined' && ASSIGNMENT_MODE) { msg("Cannot restore JSON in Assignment Mode", "er"); return; }
   let file = e.target.files[0];
   if (!file) return;
   let reader = new FileReader();
   reader.onload = function(evt) {
     try {
-      let data = JSON.parse(evt.target.result);
+      let parsed = JSON.parse(evt.target.result);
+      let data = parsed.data || parsed;
       if(!data.gates) throw new Error("Invalid format");
-      ud.projects[ud.curProj] = data;
-      saveUD();
-      loadProject(ud.curProj);
+      loadProjData(data);
       msg('Project Restored successfully', 'sc');
     } catch(err) {
       msg('Failed to parse JSON', 'er');
@@ -5479,7 +5474,7 @@ document.getElementById('btn-png').addEventListener('click', function() {
   let url = cvs.toDataURL("image/png");
   let a = document.createElement('a');
   a.href = url;
-  a.download = (ud.projects[ud.curProj]?.name || 'schematic') + '.png';
+  a.download = ((typeof PROJ !== 'undefined' && PROJ ? PROJ.name : 'circuit').replace(/\W/g, '_') || 'schematic') + '.png';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
