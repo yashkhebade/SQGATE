@@ -956,6 +956,11 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 }
 .tb-btn svg, .tb-btn-text svg { stroke-width: 1.5px; }
 
+.tb-btn-text {
+  width: auto !important;
+  padding: 4px 10px !important;
+  min-width: unset !important;
+}
 /* Keep BUILD/RUN and Upgrade as pills */
 .btn-pro-premium {
   background: var(--bg2) !important;
@@ -1043,28 +1048,44 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 
 .theme-light #minimap { background: var(--bg-canvas); }
 .theme-light #sidebar, .theme-light #rp { background: var(--bg-panel) !important; border-color: var(--border-soft) !important; }
-/* ALL BUTTONS PILL REDESIGN */
-.theme-light .tb-btn, .theme-light .tb-btn-text, .theme-light .btn-pro-premium, .theme-light .step-btn, .theme-light .wh-btn, .theme-light .zoom-btn, .theme-light .pbtn {
+/* ELEGANT TOOLBAR BUTTONS (Light Theme) */
+.theme-light .tb-btn, .theme-light .tb-btn-text, .theme-light .step-btn, .theme-light .wh-btn, .theme-light .zoom-btn, .theme-light .pbtn {
+  background: transparent !important;
+  border: 1px solid transparent !important;
+  border-radius: 6px !important;
+  color: var(--text-primary) !important;
+  box-shadow: none !important;
+  width: 32px !important;
+  height: 32px !important;
+  flex: 0 1 auto !important;
+  min-width: 24px !important;
+}
+.theme-light .tb-btn-text {
+  width: auto !important;
+  padding: 4px 10px !important;
+  min-width: unset !important;
+}
+.theme-light .tb-btn:hover, .theme-light .tb-btn-text:hover, .theme-light .step-btn:hover, .theme-light .wh-btn:hover, .theme-light .zoom-btn:hover, .theme-light .pbtn:hover {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-bottom: 1px solid transparent !important;
+  transform: none !important;
+}
+.theme-light .tb-btn:active, .theme-light .tb-btn-text:active, .theme-light .step-btn:active, .theme-light .wh-btn:active, .theme-light .zoom-btn:active, .theme-light .pbtn:active {
+  transform: scale(0.95) !important;
+  background: rgba(0, 0, 0, 0.08) !important;
+}
+.theme-light .tb-btn.active, .theme-light .tb-btn-text.active {
+  background: rgba(239, 123, 51, 0.15) !important; /* soft orange */
+  border-bottom: 2px solid var(--accent-orange) !important;
+  border-color: transparent !important;
+}
+.theme-light .btn-pro-premium {
   background: var(--white) !important;
   border: 1px solid var(--border-strong) !important;
   border-bottom: 2px solid var(--accent-orange) !important;
   border-radius: 999px !important;
   color: var(--text-primary) !important;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
-}
-.theme-light .tb-btn:hover, .theme-light .tb-btn-text:hover, .theme-light .btn-pro-premium:hover, .theme-light .step-btn:hover, .theme-light .wh-btn:hover, .theme-light .zoom-btn:hover, .theme-light .pbtn:hover {
-  background: var(--bg-canvas) !important;
-  border-bottom: 2px solid var(--accent-orange-hover) !important;
-  transform: translateY(1px);
-}
-.theme-light .tb-btn:active, .theme-light .tb-btn-text:active, .theme-light .btn-pro-premium:active, .theme-light .step-btn:active, .theme-light .wh-btn:active, .theme-light .zoom-btn:active, .theme-light .pbtn:active {
-  transform: translateY(2px);
-  border-bottom-width: 1px !important;
-}
-.theme-light .tb-btn.active, .theme-light .tb-btn-text.active {
-  background: var(--bg-canvas) !important;
-  border-color: var(--accent-orange) !important;
-  border-bottom: 2px solid var(--accent-orange) !important;
 }
 .theme-light .btn-pro-premium::before { display: none; }
 .theme-light .theme-toggle-btn.is-light svg { fill: var(--accent-orange); color: var(--accent-orange); }
