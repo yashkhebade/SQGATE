@@ -928,17 +928,111 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 #wave-canvas-wrap{flex:1;overflow-x:auto;overflow-y:hidden;position:relative;min-width:0}
 #wave-cv{display:block}
 
-/* ── THEME LIGHT ── */
-.theme-light{
-  --bg0:#e9ecef;--bg1:#dee2e6;--bg2:#ced4da;--bg3:#adb5bd;--bg4:#6c757d;--bgh:#ced4da;
-  --b1:#ced4da;--b2:#adb5bd;--b3:#6c757d;
-  --t1:#212529;--t2:#495057;--t3:#6c757d;
-  --acc:#3b82f6;--acr:#ef4444;--aca:#f59e0b;--acb:#10b981;
-  --acc-glow:rgba(59,130,246,.15);--acb-glow:rgba(16,185,129,.15);
-  --hi:#dc2626;--lo:#9ca3af;
-  --hi-glow:rgba(220,38,38,.2);
+/* ── THEME LIGHT (Sandbar Unified) ── */
+.theme-light {
+  --bg-app: #FAF6EF;
+  --bg-canvas: #FDFBF7;
+  --bg-panel: #F4EDE1;
+  --bg-panel-hover: #EDE3D2;
+  --border-soft: #E6DAC5;
+  --border-strong: #D8C7A8;
+  --dot-grid: #E5D9C3;
+  --text-primary: #3A2E22;
+  --text-secondary: #8A7A63;
+  --text-disabled: #C7B99E;
+  --accent-orange: #EF7B33;
+  --accent-orange-hover: #E06B22;
+  --accent-orange-soft: #FCE7D3;
+  --accent-teal: #3FA9A0;
+  --signal-green: #5FA777;
+  --signal-red: #D9694F;
+  --white: #FFFFFF;
+  --shadow: 0 4px 12px rgba(58,46,34,0.08);
+  
+  --bg0: var(--bg-canvas);
+  --bg1: var(--bg-app);
+  --bg2: var(--bg-panel);
+  --bg3: var(--bg-panel-hover);
+  --b1: var(--border-soft);
+  --b2: var(--border-strong);
+  --b3: var(--border-strong);
+  --t1: var(--text-primary);
+  --t2: var(--text-secondary);
+  --t3: var(--text-secondary);
+  
+  --acc: var(--accent-orange);
+  --acr: var(--signal-red);
+  --aca: var(--accent-orange);
+  --acb: var(--signal-green);
+  --lo: var(--border-strong);
+  --hi: var(--signal-green);
 }
-.theme-light .livdot{background:var(--acb);box-shadow:0 0 6px var(--acb-glow)}
+
+.theme-light #minimap { background: var(--bg-canvas); }
+.theme-light .sidebar, .theme-light .prop-panel { background: var(--bg-panel); border-color: var(--border-soft); }
+.theme-light .tb-btn, .theme-light .tb-btn-text { color: var(--text-secondary); background: transparent; }
+.theme-light .tb-btn:hover, .theme-light .tb-btn-text:hover { background: var(--bg-panel-hover); }
+
+.theme-light .gate-svg-body path, .theme-light .gate-svg-body circle { fill-opacity: 0.15; }
+.theme-light .gate { box-shadow: 0 1px 4px rgba(0,0,0,0.05), 0 0 0 1px var(--border-strong); }
+.theme-light .gate-name-tag { background: var(--bg-app); border-color: var(--border-soft); color: var(--text-secondary); }
+.theme-light .wire-lbl { background: var(--bg-app); color: var(--text-primary); border-color: var(--border-soft); }
+
+.theme-light #cvwrap { background-image: radial-gradient(var(--dot-grid) 1.5px, transparent 1.5px); }
+
+/* --- COMPONENT OVERRIDES --- */
+/* Top App Bar & Toolbars */
+.theme-light .lr-group { background: var(--bg-panel); border: 1px solid var(--border-soft); padding: 2px; }
+.theme-light .lr-slider { background: var(--white); border: 1px solid var(--border-strong); border-bottom: 2px solid var(--accent-orange); box-shadow: var(--shadow); border-radius: 18px; }
+.theme-light .lr-label { color: var(--text-secondary); text-transform: uppercase; font-weight: 600; }
+.theme-light #lr-test:checked ~ .lr-label-test, .theme-light #lr-prod:checked ~ .lr-label-prod { color: var(--text-primary); }
+.theme-light .btn-pro-premium { background: var(--accent-orange); border-color: var(--accent-orange); color: var(--white); box-shadow: 0 4px 10px rgba(239, 123, 51, 0.3); }
+.theme-light .btn-pro-premium:hover { background: var(--accent-orange-hover); border-color: var(--accent-orange-hover); }
+.theme-light .btn-pro-premium::before { display: none; }
+.theme-light .theme-toggle-btn.is-light svg { fill: var(--accent-orange); color: var(--accent-orange); }
+.theme-light .tb-btn svg, .theme-light .tb-btn-text svg { stroke-width: 1.5px; }
+
+/* Left Sidebar & Panels */
+.theme-light .sidebar input[type="text"] { background: var(--white); border: 1px solid var(--border-soft); color: var(--text-primary); }
+.theme-light .sidebar input[type="text"]:focus { border-color: var(--accent-orange); box-shadow: none; outline: 2px solid var(--accent-orange); outline-offset: -1px; }
+.theme-light .sidebar input[type="text"]::placeholder { color: var(--text-secondary); }
+.theme-light .cat-head { color: var(--text-secondary); border-bottom: 1px solid var(--border-soft); letter-spacing: 0.5px; text-transform: uppercase; background: transparent; font-weight: 600; }
+.theme-light .lib-item { background: transparent; transition: background 0.2s; }
+.theme-light .lib-item:hover { background: var(--bg-panel-hover); }
+.theme-light .lib-item span { color: var(--text-primary); }
+.theme-light .livdot.din { background: var(--signal-green) !important; box-shadow: none !important; }
+.theme-light .livdot.dout { background: var(--signal-red) !important; box-shadow: none !important; }
+.theme-light .livdot.dclk { background: var(--accent-teal) !important; box-shadow: none !important; }
+.theme-light .livdot { box-shadow: none !important; background: var(--text-secondary); }
+.theme-light .pins-badge { background: var(--bg-panel-hover); color: var(--text-secondary); border: 1px solid var(--border-soft); }
+
+/* Right Properties Panel */
+.theme-light .prop-title { color: var(--text-secondary); letter-spacing: 0.5px; text-transform: uppercase; font-weight: 600; }
+.theme-light .prop-empty-text { color: var(--text-secondary); }
+.theme-light .prop-empty-icon svg { stroke: var(--border-strong); }
+.theme-light .prop-panel input, .theme-light .prop-panel select { background: var(--white); border: 1px solid var(--border-soft); color: var(--text-primary); }
+.theme-light .prop-panel input:focus, .theme-light .prop-panel select:focus { border-color: var(--accent-orange); outline: 2px solid var(--accent-orange); outline-offset: -1px; box-shadow: none; }
+.theme-light .prop-label { color: var(--text-secondary); }
+
+/* Zoom Pill & Status Bar & Help Bubble */
+.theme-light #zoom-pill { background: var(--white); border: 1px solid var(--border-soft); box-shadow: var(--shadow); }
+.theme-light #zoom-val { color: var(--text-primary); }
+.theme-light .zoom-btn { color: var(--text-secondary); }
+.theme-light .zoom-btn:hover { background: var(--bg-panel-hover); }
+.theme-light #status-bar { background: var(--bg-app); border-top: 1px solid var(--border-soft); color: var(--text-secondary); }
+.theme-light #status-bar span { color: var(--text-primary); font-weight: 600; }
+.theme-light #btn-help-fab { background: var(--white); border: 1px solid var(--border-soft); box-shadow: var(--shadow); color: var(--text-secondary); }
+.theme-light #btn-help-fab:hover { background: var(--accent-orange-soft); color: var(--accent-orange); }
+
+/* Wires */
+.theme-light .w-hi { stroke: var(--signal-green); filter: none; }
+.theme-light .w-lo { stroke: var(--border-strong); filter: none; }
+.theme-light .w-bus4, .theme-light .w-bus8 { stroke: var(--accent-orange); filter: none; }
+.theme-light .wvis.crit-wire { stroke: var(--accent-orange) !important; filter: none !important; }
+.theme-light .gate.sel .gbody, .theme-light .gate.sel .gate-svg-body { box-shadow: 0 0 0 2px var(--accent-orange), inset 0 0 0 100px var(--accent-orange-soft); outline: none; border-color: var(--accent-orange); background-color: var(--accent-orange-soft); }
+.theme-light .gate.sel .gate-svg-body path, .theme-light .gate.sel .gate-svg-body circle { fill: var(--accent-orange-soft); fill-opacity: 1; }
+
+/* --- END COMPONENT OVERRIDES --- */
 
 /* ── TEMPLATES ── */
 .tmpl-item{
@@ -1717,31 +1811,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
             filter:drop-shadow(0 0 4px rgba(224,160,48,.6))!important}
 .crit-gate{box-shadow:0 0 0 2px var(--aca),0 0 12px rgba(224,160,48,.4)!important}
 
-/* ── THEME TOGGLE (consolidated light theme polish) ── */
-.theme-light{
-  --bg0:#f7f6f2;--bg1:#fbfaf7;--bg2:#fbfaf7;--bg3:#dedbd3;--bg4:#c8c8c0;--bgh:#d8d8d0;
-  --b1:#e5e1d8;--b2:#d1d5db;--b3:#8b8a82;
-  --t1:#111827;--t2:#6b7280;--t3:#6b7280;
-  --acc:#0ea5a5;--acr:#ef4444;--aca:#f59e0b;--acb:#22c55e;
-  --acc-glow:rgba(14,165,165,.15);--acb-glow:rgba(34,197,94,.12);
-  --lo:#8b8a82;--hi:#22c55e;
-  --hi-glow:rgba(34,197,94,.25);
-}
-.theme-light .tb-btn, .theme-light .tb-btn-text { color: #374151; }
-.theme-light .tb-btn:hover, .theme-light .tb-btn-text:hover { color: #111827; background: #EEF0F3; }
-.theme-light .livdot{background:#22c55e;box-shadow:0 0 5px rgba(34,197,94,.5)}
-.theme-light .gate-svg-body path,.theme-light .gate-svg-body circle{fill-opacity:.25}
-.theme-light #minimap{background:rgba(251,250,247,.96)}
-.theme-light .gate{box-shadow:0 1px 4px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.06)}
-.theme-light .sbi-pins { background: #f0eee7; }
-.theme-light .tc0 { border: 1px solid #d1cdc0; background: #ffffff; }
-.theme-light .sbi[data-type="const0"] .sbi-ic { border: 1px solid #d1cdc0; background: #ffffff !important; }
-.theme-light .gate-name-tag{background:rgba(250,250,248,.95);border-color:rgba(217,119,6,.25);color:#92400e}
-.theme-light .wire-lbl{background:rgba(250,250,248,.95);color:#065f46;border-color:#059669}
-.theme-light .mbox{background:#fafaf8;border-color:#d0d0c8}
-.theme-light .sidebar{background:#f0f0ec;border-color:#d0d0c8}
-.theme-light .toolbar{background:#f0f0ec;border-color:#d0d0c8}
-.theme-light .prop-panel{background:#f0f0ec;border-color:#d0d0c8}
+/* Old theme-light overrides removed */
 
 /* ── AUTO-LAYOUT FLASH ── */
 @keyframes layout-flash{0%{opacity:.3}50%{opacity:1}100%{opacity:.3}}
@@ -3484,7 +3554,15 @@ function drawGrid(){
   const step=20*S.zoom;
   const ox=((S.panX%step)+step)%step;
   const oy=((S.panY%step)+step)%step;
-  c.fillStyle = document.getElementById('pg-editor').classList.contains('theme-light') ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.06)';
+  
+  const isLight = document.getElementById('pg-editor').classList.contains('theme-light');
+  if (isLight) {
+    cvwrap.style.backgroundSize = step + 'px ' + step + 'px';
+    cvwrap.style.backgroundPosition = ox + 'px ' + oy + 'px';
+    return; // Don't draw canvas dots, use high-perf CSS
+  }
+  
+  c.fillStyle = 'rgba(255,255,255,0.06)';
   for(let x=ox;x<W;x+=step){
     for(let y=oy;y<H;y+=step){
       c.fillRect(x-1,y-1,2,2);
