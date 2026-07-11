@@ -928,6 +928,61 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 #wave-canvas-wrap{flex:1;overflow-x:auto;overflow-y:hidden;position:relative;min-width:0}
 #wave-cv{display:block}
 
+/* ── GLOBAL PILL REDESIGN (Dark Base) ── */
+/* ALL BUTTONS */
+.tb-btn, .tb-btn-text, .btn-pro-premium, .step-btn, .wh-btn, .zoom-btn, .pbtn {
+  background: var(--bg2) !important;
+  border: 1px solid var(--b2) !important;
+  border-bottom: 2px solid var(--acc) !important;
+  border-radius: 999px !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+}
+.tb-btn:hover, .tb-btn-text:hover, .btn-pro-premium:hover, .step-btn:hover, .wh-btn:hover, .zoom-btn:hover, .pbtn:hover {
+  background: var(--bg3) !important;
+  border-bottom: 2px solid var(--hi) !important;
+  transform: translateY(1px);
+}
+.tb-btn:active, .tb-btn-text:active, .btn-pro-premium:active, .step-btn:active, .wh-btn:active, .zoom-btn:active, .pbtn:active {
+  transform: translateY(2px);
+  border-bottom-width: 1px !important;
+}
+.tb-btn.active, .tb-btn-text.active {
+  background: var(--bg3) !important;
+  border-color: var(--acc) !important;
+  border-bottom: 2px solid var(--acc) !important;
+}
+.btn-pro-premium::before { display: none; }
+.tb-btn svg, .tb-btn-text svg { stroke-width: 1.5px; }
+
+/* ALL GATES */
+.gate-svg-body { display: none !important; }
+.gate .gbody {
+  background: rgba(30, 41, 59, 0.95) !important;
+  border: 1px solid var(--b2) !important;
+  border-bottom: 3px solid var(--acc) !important;
+  border-radius: 999px !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+  backdrop-filter: none !important;
+}
+.gate.sel .gbody {
+  border-color: var(--aca) !important;
+  background: rgba(245, 158, 11, 0.15) !important;
+  box-shadow: 0 0 0 2px var(--aca) !important;
+}
+.gate .glbl {
+  display: block !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  color: var(--t1) !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+}
+.gate .gsub { display: none !important; }
+.gate-name-tag { display: none !important; }
+/* ── END GLOBAL PILL ── */
+
 /* ── THEME LIGHT (Sandbar Unified) ── */
 .theme-light {
   --bg-app: #FAF6EF;
@@ -1878,7 +1933,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 }
 
 /* Hide text labels for standard logic gates since they have SVG symbols */
-.tan .glbl, .tor .glbl, .tno .glbl, .tna .glbl, .tnr .glbl, .txo .glbl, .txn .glbl, .tbf .glbl { display: none !important; }
+/* Removed standard gate label hiding for pill redesign */
 /* login bg duplicate removed */
 
 /* Mobile Fullscreen & Toolbar tweaks */
