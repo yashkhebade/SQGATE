@@ -969,7 +969,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 }
 
 .theme-light #minimap { background: var(--bg-canvas); }
-.theme-light .sidebar, .theme-light .prop-panel { background: var(--bg-panel); border-color: var(--border-soft); }
+.theme-light #sidebar, .theme-light #rp { background: var(--bg-panel) !important; border-color: var(--border-soft) !important; }
 .theme-light .tb-btn, .theme-light .tb-btn-text { color: var(--text-secondary); background: transparent; }
 .theme-light .tb-btn:hover, .theme-light .tb-btn-text:hover { background: var(--bg-panel-hover); }
 
@@ -982,6 +982,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 
 /* --- COMPONENT OVERRIDES --- */
 /* Top App Bar & Toolbars */
+.theme-light #ed-topbar { background: var(--bg-app) !important; border-bottom: 1px solid var(--border-soft) !important; }
 .theme-light .lr-group { background: var(--bg-panel); border: 1px solid var(--border-soft); padding: 2px; }
 .theme-light .lr-slider { background: var(--white); border: 1px solid var(--border-strong); border-bottom: 2px solid var(--accent-orange); box-shadow: var(--shadow); border-radius: 18px; }
 .theme-light .lr-label { color: var(--text-secondary); text-transform: uppercase; font-weight: 600; }
@@ -993,9 +994,9 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 .theme-light .tb-btn svg, .theme-light .tb-btn-text svg { stroke-width: 1.5px; }
 
 /* Left Sidebar & Panels */
-.theme-light .sidebar input[type="text"] { background: var(--white); border: 1px solid var(--border-soft); color: var(--text-primary); }
-.theme-light .sidebar input[type="text"]:focus { border-color: var(--accent-orange); box-shadow: none; outline: 2px solid var(--accent-orange); outline-offset: -1px; }
-.theme-light .sidebar input[type="text"]::placeholder { color: var(--text-secondary); }
+.theme-light #sidebar input[type="text"] { background: var(--white); border: 1px solid var(--border-soft); color: var(--text-primary); }
+.theme-light #sidebar input[type="text"]:focus { border-color: var(--accent-orange); box-shadow: none; outline: 2px solid var(--accent-orange); outline-offset: -1px; }
+.theme-light #sidebar input[type="text"]::placeholder { color: var(--text-secondary); }
 .theme-light .cat-head { color: var(--text-secondary); border-bottom: 1px solid var(--border-soft); letter-spacing: 0.5px; text-transform: uppercase; background: transparent; font-weight: 600; }
 .theme-light .lib-item { background: transparent; transition: background 0.2s; }
 .theme-light .lib-item:hover { background: var(--bg-panel-hover); }
@@ -1007,11 +1008,11 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 .theme-light .pins-badge { background: var(--bg-panel-hover); color: var(--text-secondary); border: 1px solid var(--border-soft); }
 
 /* Right Properties Panel */
-.theme-light .prop-title { color: var(--text-secondary); letter-spacing: 0.5px; text-transform: uppercase; font-weight: 600; }
-.theme-light .prop-empty-text { color: var(--text-secondary); }
-.theme-light .prop-empty-icon svg { stroke: var(--border-strong); }
-.theme-light .prop-panel input, .theme-light .prop-panel select { background: var(--white); border: 1px solid var(--border-soft); color: var(--text-primary); }
-.theme-light .prop-panel input:focus, .theme-light .prop-panel select:focus { border-color: var(--accent-orange); outline: 2px solid var(--accent-orange); outline-offset: -1px; box-shadow: none; }
+.theme-light #rph { color: var(--text-secondary); letter-spacing: 0.5px; text-transform: uppercase; font-weight: 600; }
+.theme-light #rpb p { color: var(--text-secondary); }
+.theme-light #rpb svg { stroke: var(--border-strong); }
+.theme-light #rp input, .theme-light #rp select { background: var(--white); border: 1px solid var(--border-soft); color: var(--text-primary); }
+.theme-light #rp input:focus, .theme-light #rp select:focus { border-color: var(--accent-orange); outline: 2px solid var(--accent-orange); outline-offset: -1px; box-shadow: none; }
 .theme-light .prop-label { color: var(--text-secondary); }
 
 /* Zoom Pill & Status Bar & Help Bubble */
@@ -1019,8 +1020,8 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 .theme-light #zoom-val { color: var(--text-primary); }
 .theme-light .zoom-btn { color: var(--text-secondary); }
 .theme-light .zoom-btn:hover { background: var(--bg-panel-hover); }
-.theme-light #status-bar { background: var(--bg-app); border-top: 1px solid var(--border-soft); color: var(--text-secondary); }
-.theme-light #status-bar span { color: var(--text-primary); font-weight: 600; }
+.theme-light #stbar { background: var(--bg-app) !important; border-top: 1px solid var(--border-soft) !important; color: var(--text-secondary) !important; }
+.theme-light #stbar span { color: var(--text-primary); font-weight: 600; }
 .theme-light #btn-help-fab { background: var(--white); border: 1px solid var(--border-soft); box-shadow: var(--shadow); color: var(--text-secondary); }
 .theme-light #btn-help-fab:hover { background: var(--accent-orange-soft); color: var(--accent-orange); }
 
