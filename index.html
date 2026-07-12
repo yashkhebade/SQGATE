@@ -2241,68 +2241,6 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
         <button onclick="toggleAppFullscreen()" title="Toggle Fullscreen" style="background:transparent;border:none;color:var(--t2);cursor:pointer;padding:4px;display:flex;align-items:center;transition:color 0.2s;" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t2)'">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
         </button>
-        <button id="btn-find" title="Find Component" style="background:transparent;border:none;color:var(--t2);cursor:pointer;padding:4px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
-        <button id="btn-ic-mgr" title="Manage ICs" style="background:transparent;border:none;color:var(--t2);cursor:pointer;padding:4px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg></button>
-        <button id="btn-shortcuts" title="Shortcuts" style="background:transparent;border:none;color:var(--t2);cursor:pointer;padding:4px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></button>
-
-  <div class="ov" id="ov-find">
-    <div class="ov-inner" style="max-width:300px">
-      <div class="ov-h">
-        <h3>Find Component</h3>
-        <button class="mclose" id="find-cl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
-      </div>
-      <div class="ov-body">
-        <p style="margin-bottom:10px;">Enter Component ID (e.g. g14):</p>
-        <div style="display:flex;gap:8px;">
-          <input type="text" id="find-in" style="flex:1;background:var(--bg0);color:var(--t1);border:1px solid var(--b2);border-radius:4px;padding:6px 10px;font-family:var(--fmono);" placeholder="g0">
-          <button class="tb-btn-text" id="find-go" style="background:var(--acc);color:#fff;">Find</button>
-        </div>
-        <p id="find-err" style="color:var(--er);margin-top:10px;display:none;font-size:13px;">Component not found!</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- IC Manager Modal -->
-  <div class="ov" id="ov-ic-mgr">
-    <div class="ov-inner" style="max-width:500px">
-      <div class="ov-h">
-        <h3>Manage Custom ICs</h3>
-        <button class="mclose" id="ic-mgr-cl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
-      </div>
-      <div class="ov-body">
-        <p>Your saved custom IC packages are listed here. You can delete them below.</p>
-        <div id="ic-mgr-list" style="margin-top:10px; max-height:400px; overflow-y:auto; border:1px solid var(--b2); border-radius:4px; padding:10px;"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Shortcuts Modal -->
-  <div class="ov" id="ov-shortcuts">
-    <div class="ov-inner" style="max-width:500px">
-      <div class="ov-h">
-        <h3>Keyboard Shortcuts</h3>
-        <button class="mclose" id="shortcuts-cl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
-      </div>
-      <div class="ov-body">
-        <table style="width:100%; border-collapse:collapse; margin-top:10px; text-align:left;">
-          <tr style="border-bottom:1px solid var(--b2);">
-            <th style="padding:8px 0;">Shortcut</th>
-            <th>Action</th>
-          </tr>
-          <tr><td style="padding:6px 0;"><code>Space</code></td><td>Play/Pause Simulation</td></tr>
-          <tr><td style="padding:6px 0;"><code>Del / Backspace</code></td><td>Delete Selected</td></tr>
-          <tr><td style="padding:6px 0;"><code>Ctrl + Z</code></td><td>Undo</td></tr>
-          <tr><td style="padding:6px 0;"><code>Ctrl + Y</code></td><td>Redo</td></tr>
-          <tr><td style="padding:6px 0;"><code>Ctrl + C</code></td><td>Copy Selected</td></tr>
-          <tr><td style="padding:6px 0;"><code>Ctrl + V</code></td><td>Paste</td></tr>
-          <tr><td style="padding:6px 0;"><code>Shift + Drag</code></td><td>Box Selection</td></tr>
-          <tr><td style="padding:6px 0;"><code>Right Click</code></td><td>Component Properties Menu</td></tr>
-          <tr><td style="padding:6px 0;"><code>Double Click</code></td><td>Add Wire Point</td></tr>
-        </table>
-      </div>
-    </div>
-  </div>
-
         <a href="https://docs.google.com/forms/d/e/1FAIpQLSc5AzzP2NccDkCbKAb5mVvefYFc5_X-EkJZx5RLWO7aqQ_8cw/viewform" target="_blank" id="btn-feedback-dash" title="Feedback / Contact" style="text-decoration:none;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:6px;background:var(--bg2);border:1px solid var(--b1);color:var(--t2);transition:all .2s ease;" onmouseover="this.style.borderColor='#7248b9';this.style.color='#7248b9';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--b1)';this.style.color='var(--t2)';this.style.transform='none'">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="17" y2="8"></line><line x1="12" y1="12" x2="17" y2="12"></line><line x1="12" y1="16" x2="17" y2="16"></line><line x1="8" y1="8" x2="8.01" y2="8"></line><line x1="8" y1="12" x2="8.01" y2="12"></line><line x1="8" y1="16" x2="8.01" y2="16"></line></svg>
         </a>
