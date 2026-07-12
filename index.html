@@ -270,8 +270,8 @@ html,body{width:100%;height:100%;overflow-x:hidden;overflow-y:auto;background:va
 }
 #ed-topbar{
   position:relative;
-  min-height:36px; height:auto; background:rgba(6, 8, 15, 0.65); border-bottom:1px solid rgba(255,255,255,0.06);
-  display:flex; align-items:center; justify-content:flex-start; padding:4px 8px; gap:4px; flex-shrink:0; z-index:200;
+  min-height:48px; height:auto; background:rgba(6, 8, 15, 0.65); border-bottom:1px solid rgba(255,255,255,0.06);
+  display:flex; align-items:center; justify-content:flex-start; padding:4px 16px; gap:3px; flex-shrink:0; z-index:200;
   flex-wrap:wrap; overflow-x:hidden; overflow-y:hidden; backdrop-filter:blur(24px); box-shadow:0 4px 30px rgba(0,0,0,0.6);
 }
 #ed-topbar::-webkit-scrollbar { display:none; }
@@ -296,7 +296,7 @@ html,body{width:100%;height:100%;overflow-x:hidden;overflow-y:auto;background:va
 .tb-btn {
   background:transparent;border:1px solid transparent;color:var(--t2);
   display:flex;align-items:center;justify-content:center;
-  width:26px;height:26px;border-radius:4px;cursor:pointer;
+  width:32px;height:32px;border-radius:6px;cursor:pointer;
   transition:all 0.2s cubic-bezier(0.2,0.8,0.2,1);
   flex-shrink:0;
 }
@@ -310,22 +310,22 @@ html,body{width:100%;height:100%;overflow-x:hidden;overflow-y:auto;background:va
 .tb-btn-text {
   background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);color:var(--t2);
   display:flex;align-items:center;gap:5px;
-  padding:0 6px;height:26px;border-radius:4px;cursor:pointer;
-  font-family:var(--fsans);font-size:11px;font-weight:600; letter-spacing:0.3px;
+  padding:0 8px;height:32px;border-radius:6px;cursor:pointer;
+  font-family:var(--fsans);font-size:12.5px;font-weight:600; letter-spacing:0.3px;
   transition:all 0.2s cubic-bezier(0.2,0.8,0.2,1);
   white-space:nowrap; flex-shrink:0;
 }
 .tb-btn-text:hover,.tb-btn-text:focus-visible { background:rgba(255,255,255,0.1); color:var(--t1); border-color:rgba(255,255,255,0.2); box-shadow:0 4px 12px rgba(0,0,0,0.2); outline:none; transform:translateY(-2px); }
 .tb-btn-text.act { background:var(--acc-glow); color:var(--acc); border-color:var(--acc); box-shadow:0 4px 15px var(--acc-glow); }
-.tb-btn-text svg { width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; transition:all 0.2s; }
+.tb-btn-text svg { width:15px; height:15px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; transition:all 0.2s; }
 .tb-btn-text:hover svg { transform:scale(1.1) rotate(-2deg); }
 
 /* Primary button */
 .tb-btn-primary {
   background:var(--acc);color:#fff;border:none;
   display:flex;align-items:center;gap:6px;
-  padding:0 12px;height:26px;border-radius:4px;cursor:pointer;
-  font-family:var(--fsans);font-size:11px;font-weight:600;
+  padding:0 16px;height:32px;border-radius:var(--radius);cursor:pointer;
+  font-family:var(--fsans);font-size:12.5px;font-weight:600;
   transition:all var(--ts) var(--ease);box-shadow:0 2px 8px rgba(0,0,0,0.2);
 }
 .tb-btn-primary:hover,.tb-btn-primary:focus-visible { filter:brightness(1.15); box-shadow:0 4px 14px var(--acc-glow); outline:none; transform:translateY(-1px); }
@@ -929,58 +929,38 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 #wave-cv{display:block}
 
 /* ── GLOBAL PILL REDESIGN (Dark Base) ── */
-/* ELEGANT TOOLBAR BUTTONS */
-.tb-btn, .tb-btn-text, .step-btn, .wh-btn, .zoom-btn, .pbtn {
-  background: transparent !important;
-  border: 1px solid transparent !important;
-  border-radius: 6px !important;
-  box-shadow: none !important;
-  width: 32px !important;
-  height: 32px !important;
-  flex: 0 1 auto !important; /* allow shrink but don't stretch */
-  min-width: 24px !important;
-}
-.tb-btn:hover, .tb-btn-text:hover, .step-btn:hover, .wh-btn:hover, .zoom-btn:hover, .pbtn:hover {
-  background: rgba(255, 255, 255, 0.08) !important;
-  border-bottom: 1px solid transparent !important;
-  transform: none !important;
-}
-.tb-btn:active, .tb-btn-text:active, .step-btn:active, .wh-btn:active, .zoom-btn:active, .pbtn:active {
-  transform: scale(0.95) !important;
-  background: rgba(255, 255, 255, 0.12) !important;
-}
-.tb-btn.active, .tb-btn-text.active {
-  background: rgba(56, 189, 248, 0.15) !important;
-  border-bottom: 2px solid var(--acc) !important;
-  border-color: transparent !important;
-}
-.tb-btn svg, .tb-btn-text svg { stroke-width: 1.5px; }
-
-.tb-btn-text {
-  width: auto !important;
-  padding: 4px 10px !important;
-  min-width: unset !important;
-}
-/* Keep BUILD/RUN and Upgrade as pills */
-.btn-pro-premium {
+/* ALL BUTTONS */
+.tb-btn, .tb-btn-text, .btn-pro-premium, .step-btn, .wh-btn, .zoom-btn, .pbtn {
   background: var(--bg2) !important;
   border: 1px solid var(--b2) !important;
   border-bottom: 2px solid var(--acc) !important;
   border-radius: 999px !important;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
 }
+.tb-btn:hover, .tb-btn-text:hover, .btn-pro-premium:hover, .step-btn:hover, .wh-btn:hover, .zoom-btn:hover, .pbtn:hover {
+  background: var(--bg3) !important;
+  border-bottom: 2px solid var(--hi) !important;
+  transform: translateY(1px);
+}
+.tb-btn:active, .tb-btn-text:active, .btn-pro-premium:active, .step-btn:active, .wh-btn:active, .zoom-btn:active, .pbtn:active {
+  transform: translateY(2px);
+  border-bottom-width: 1px !important;
+}
+.tb-btn.active, .tb-btn-text.active {
+  background: var(--bg3) !important;
+  border-color: var(--acc) !important;
+  border-bottom: 2px solid var(--acc) !important;
+}
 .btn-pro-premium::before { display: none; }
+.tb-btn svg, .tb-btn-text svg { stroke-width: 1.5px; }
 
 /* ALL GATES */
 .gate-svg-body { display: none !important; }
-.gate {
-  container-type: inline-size;
-}
 .gate .gbody {
   background: rgba(30, 41, 59, 0.95) !important;
   border: 1px solid var(--b2) !important;
   border-bottom: 3px solid var(--acc) !important;
-  border-radius: var(--radius) !important;
+  border-radius: 999px !important;
   box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
   backdrop-filter: none !important;
 }
@@ -996,11 +976,8 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
   left: 50% !important;
   transform: translate(-50%, -50%) !important;
   color: var(--t1) !important;
-  font-size: 26cqw !important;
+  font-size: 13px !important;
   font-weight: 800 !important;
-}
-.ti .gbody, .to .gbody, .tck .gbody, .tan .gbody, .tor .gbody, .tno .gbody, .tna .gbody, .tnr .gbody, .txo .gbody, .txn .gbody, .tbf .gbody, .tc0 .gbody, .tc1 .gbody {
-  border-radius: 999px !important;
 }
 .gate .gsub { display: none !important; }
 .gate-name-tag { display: none !important; }
@@ -1048,44 +1025,28 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 
 .theme-light #minimap { background: var(--bg-canvas); }
 .theme-light #sidebar, .theme-light #rp { background: var(--bg-panel) !important; border-color: var(--border-soft) !important; }
-/* ELEGANT TOOLBAR BUTTONS (Light Theme) */
-.theme-light .tb-btn, .theme-light .tb-btn-text, .theme-light .step-btn, .theme-light .wh-btn, .theme-light .zoom-btn, .theme-light .pbtn {
-  background: transparent !important;
-  border: 1px solid transparent !important;
-  border-radius: 6px !important;
-  color: var(--text-primary) !important;
-  box-shadow: none !important;
-  width: 32px !important;
-  height: 32px !important;
-  flex: 0 1 auto !important;
-  min-width: 24px !important;
-}
-.theme-light .tb-btn-text {
-  width: auto !important;
-  padding: 4px 10px !important;
-  min-width: unset !important;
-}
-.theme-light .tb-btn:hover, .theme-light .tb-btn-text:hover, .theme-light .step-btn:hover, .theme-light .wh-btn:hover, .theme-light .zoom-btn:hover, .theme-light .pbtn:hover {
-  background: rgba(0, 0, 0, 0.05) !important;
-  border-bottom: 1px solid transparent !important;
-  transform: none !important;
-}
-.theme-light .tb-btn:active, .theme-light .tb-btn-text:active, .theme-light .step-btn:active, .theme-light .wh-btn:active, .theme-light .zoom-btn:active, .theme-light .pbtn:active {
-  transform: scale(0.95) !important;
-  background: rgba(0, 0, 0, 0.08) !important;
-}
-.theme-light .tb-btn.active, .theme-light .tb-btn-text.active {
-  background: rgba(239, 123, 51, 0.15) !important; /* soft orange */
-  border-bottom: 2px solid var(--accent-orange) !important;
-  border-color: transparent !important;
-}
-.theme-light .btn-pro-premium {
+/* ALL BUTTONS PILL REDESIGN */
+.theme-light .tb-btn, .theme-light .tb-btn-text, .theme-light .btn-pro-premium, .theme-light .step-btn, .theme-light .wh-btn, .theme-light .zoom-btn, .theme-light .pbtn {
   background: var(--white) !important;
   border: 1px solid var(--border-strong) !important;
   border-bottom: 2px solid var(--accent-orange) !important;
   border-radius: 999px !important;
   color: var(--text-primary) !important;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05) !important;
+}
+.theme-light .tb-btn:hover, .theme-light .tb-btn-text:hover, .theme-light .btn-pro-premium:hover, .theme-light .step-btn:hover, .theme-light .wh-btn:hover, .theme-light .zoom-btn:hover, .theme-light .pbtn:hover {
+  background: var(--bg-canvas) !important;
+  border-bottom: 2px solid var(--accent-orange-hover) !important;
+  transform: translateY(1px);
+}
+.theme-light .tb-btn:active, .theme-light .tb-btn-text:active, .theme-light .btn-pro-premium:active, .theme-light .step-btn:active, .theme-light .wh-btn:active, .theme-light .zoom-btn:active, .theme-light .pbtn:active {
+  transform: translateY(2px);
+  border-bottom-width: 1px !important;
+}
+.theme-light .tb-btn.active, .theme-light .tb-btn-text.active {
+  background: var(--bg-canvas) !important;
+  border-color: var(--accent-orange) !important;
+  border-bottom: 2px solid var(--accent-orange) !important;
 }
 .theme-light .btn-pro-premium::before { display: none; }
 .theme-light .theme-toggle-btn.is-light svg { fill: var(--accent-orange); color: var(--accent-orange); }
@@ -1097,7 +1058,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
   background: var(--white) !important;
   border: 1px solid var(--border-strong) !important;
   border-bottom: 3px solid var(--accent-orange) !important;
-  border-radius: var(--radius) !important;
+  border-radius: 999px !important;
   box-shadow: 0 4px 12px rgba(58, 46, 34, 0.08) !important;
   backdrop-filter: none !important;
 }
@@ -1113,7 +1074,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
   left: 50% !important;
   transform: translate(-50%, -50%) !important;
   color: var(--text-primary) !important;
-  font-size: 26cqw !important;
+  font-size: 13px !important;
   font-weight: 800 !important;
 }
 .theme-light .gate .gsub { display: none !important; }
@@ -1995,7 +1956,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 }
 @media screen and (max-width: 800px) {
   #mobile-fullscreen-btn { display: flex; }
-  #ed-topbar { flex-wrap: wrap; height: auto; min-height: 36px; overflow-x: hidden; padding-right: 20px; }
+  #ed-topbar { flex-wrap: wrap; height: auto; min-height: 48px; overflow-x: hidden; padding-right: 20px; }
   #ed-topbar::-webkit-scrollbar { display: none; }
 }
 
@@ -2127,115 +2088,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
   transform: skewX(-20deg);
   animation: guideShine 4s 3 linear;
 }
-
-#ed-topbar {
-  display: flex; flex-direction: column; width: 100%; flex-shrink: 0; z-index: 200;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
-}
-#ed-topbar-r1 {
-  display: flex; align-items: center; justify-content: space-between; height: 56px; padding: 0 16px;
-  background: var(--bg); border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-#ed-topbar-r2 {
-  display: flex; align-items: center; justify-content: flex-start; height: 48px; padding: 0 16px; gap: 16px;
-  background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.06); flex-wrap: wrap;
-}
-.r1-left, .r1-center, .r1-right { display: flex; align-items: center; gap: 12px; }
-.tb-zone { display: flex; align-items: center; gap: 8px; }
-.analyze-zone { background: rgba(255,255,255,0.04); border-radius: 6px; padding: 4px; }
-.tb-dropdown-menu.show { display: flex !important; }
-.tb-dropdown-menu .tb-btn { width: 100%; justify-content: flex-start; border-radius: 4px; padding: 6px 8px; height: auto; }
-.tb-dropdown-menu .tb-btn:hover { background: var(--bg3); }
-#btn-wire { cursor: not-allowed; opacity: 0.5; }
-
-/* Build/Run Hero override */
-#ed-topbar-r1 .lr-container { transform: scale(1.15); box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
-#ed-topbar-r1 .lr-btn.act { background: var(--acc); color: var(--bg); }
-
-/* Hide zones on Run */
-body[data-mode="RUN"] .hide-on-run { display: none !important; }
-
-/* Responsive */
-@media(max-width:1200px) {
-  #ed-topbar-r2 { gap: 8px; padding: 0 8px; }
-  .tb-zone { gap: 4px; }
-}
-@media(max-width:900px) {
-  .analyze-zone { display: none !important; }
-}
-\n
-#ed-topbar {
-  display: flex; flex-direction: column; width: 100%; flex-shrink: 0; z-index: 200;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
-}
-#ed-topbar-r1 {
-  display: flex; align-items: center; justify-content: space-between; height: 56px; padding: 0 16px;
-  background: var(--bg); border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-#ed-topbar-r2 {
-  display: flex; align-items: center; justify-content: flex-start; height: 48px; padding: 0 16px; gap: 16px;
-  background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.06); flex-wrap: wrap;
-}
-.r1-left, .r1-center, .r1-right { display: flex; align-items: center; gap: 12px; }
-.tb-zone { display: flex; align-items: center; gap: 8px; }
-.analyze-zone { background: rgba(255,255,255,0.04); border-radius: 6px; padding: 4px; }
-.tb-dropdown-menu.show { display: flex !important; }
-.tb-dropdown-menu .tb-btn { width: 100%; justify-content: flex-start; border-radius: 4px; padding: 6px 8px; height: auto; }
-.tb-dropdown-menu .tb-btn:hover { background: var(--bg3); }
-#btn-wire { cursor: not-allowed; opacity: 0.5; }
-
-/* Build/Run Hero override */
-#ed-topbar-r1 .lr-container { transform: scale(1.15); box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
-#ed-topbar-r1 .lr-btn.act { background: var(--acc); color: var(--bg); }
-
-/* Hide zones on Run */
-body[data-mode="RUN"] .hide-on-run { display: none !important; }
-
-/* Responsive */
-@media(max-width:1200px) {
-  #ed-topbar-r2 { gap: 8px; padding: 0 8px; }
-  .tb-zone { gap: 4px; }
-}
-@media(max-width:900px) {
-  .analyze-zone { display: none !important; }
-}
-\n
-#ed-topbar {
-  display: flex; flex-direction: column; width: 100%; flex-shrink: 0; z-index: 200;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
-}
-#ed-topbar-r1 {
-  display: flex; align-items: center; justify-content: space-between; height: 56px; padding: 0 16px;
-  background: var(--bg); border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-#ed-topbar-r2 {
-  display: flex; align-items: center; justify-content: flex-start; height: 48px; padding: 0 16px; gap: 16px;
-  background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.06); flex-wrap: wrap;
-}
-.r1-left, .r1-center, .r1-right { display: flex; align-items: center; gap: 12px; }
-.tb-zone { display: flex; align-items: center; gap: 8px; }
-.analyze-zone { background: rgba(255,255,255,0.04); border-radius: 6px; padding: 4px; }
-.tb-dropdown-menu.show { display: flex !important; }
-.tb-dropdown-menu .tb-btn { width: 100%; justify-content: flex-start; border-radius: 4px; padding: 6px 8px; height: auto; }
-.tb-dropdown-menu .tb-btn:hover { background: var(--bg3); }
-#btn-wire { cursor: not-allowed; opacity: 0.5; }
-
-/* Build/Run Hero override */
-#ed-topbar-r1 .lr-container { transform: scale(1.15); box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
-#ed-topbar-r1 .lr-btn.act { background: var(--acc); color: var(--bg); }
-
-/* Hide zones on Run */
-body[data-mode="RUN"] .hide-on-run { display: none !important; }
-
-/* Responsive */
-@media(max-width:1200px) {
-  #ed-topbar-r2 { gap: 8px; padding: 0 8px; }
-  .tb-zone { gap: 4px; }
-}
-@media(max-width:900px) {
-  .analyze-zone { display: none !important; }
-}
-\n</style>
+</style>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2349,6 +2202,68 @@ body[data-mode="RUN"] .hide-on-run { display: none !important; }
         <button onclick="toggleAppFullscreen()" title="Toggle Fullscreen" style="background:transparent;border:none;color:var(--t2);cursor:pointer;padding:4px;display:flex;align-items:center;transition:color 0.2s;" onmouseover="this.style.color='var(--t1)'" onmouseout="this.style.color='var(--t2)'">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
         </button>
+        <button id="btn-find" title="Find Component" style="background:transparent;border:none;color:var(--t2);cursor:pointer;padding:4px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
+        <button id="btn-ic-mgr" title="Manage ICs" style="background:transparent;border:none;color:var(--t2);cursor:pointer;padding:4px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg></button>
+        <button id="btn-shortcuts" title="Shortcuts" style="background:transparent;border:none;color:var(--t2);cursor:pointer;padding:4px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></button>
+
+  <div class="ov" id="ov-find">
+    <div class="ov-inner" style="max-width:300px">
+      <div class="ov-h">
+        <h3>Find Component</h3>
+        <button class="mclose" id="find-cl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+      </div>
+      <div class="ov-body">
+        <p style="margin-bottom:10px;">Enter Component ID (e.g. g14):</p>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="find-in" style="flex:1;background:var(--bg0);color:var(--t1);border:1px solid var(--b2);border-radius:4px;padding:6px 10px;font-family:var(--fmono);" placeholder="g0">
+          <button class="tb-btn-text" id="find-go" style="background:var(--acc);color:#fff;">Find</button>
+        </div>
+        <p id="find-err" style="color:var(--er);margin-top:10px;display:none;font-size:13px;">Component not found!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- IC Manager Modal -->
+  <div class="ov" id="ov-ic-mgr">
+    <div class="ov-inner" style="max-width:500px">
+      <div class="ov-h">
+        <h3>Manage Custom ICs</h3>
+        <button class="mclose" id="ic-mgr-cl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+      </div>
+      <div class="ov-body">
+        <p>Your saved custom IC packages are listed here. You can delete them below.</p>
+        <div id="ic-mgr-list" style="margin-top:10px; max-height:400px; overflow-y:auto; border:1px solid var(--b2); border-radius:4px; padding:10px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shortcuts Modal -->
+  <div class="ov" id="ov-shortcuts">
+    <div class="ov-inner" style="max-width:500px">
+      <div class="ov-h">
+        <h3>Keyboard Shortcuts</h3>
+        <button class="mclose" id="shortcuts-cl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+      </div>
+      <div class="ov-body">
+        <table style="width:100%; border-collapse:collapse; margin-top:10px; text-align:left;">
+          <tr style="border-bottom:1px solid var(--b2);">
+            <th style="padding:8px 0;">Shortcut</th>
+            <th>Action</th>
+          </tr>
+          <tr><td style="padding:6px 0;"><code>Space</code></td><td>Play/Pause Simulation</td></tr>
+          <tr><td style="padding:6px 0;"><code>Del / Backspace</code></td><td>Delete Selected</td></tr>
+          <tr><td style="padding:6px 0;"><code>Ctrl + Z</code></td><td>Undo</td></tr>
+          <tr><td style="padding:6px 0;"><code>Ctrl + Y</code></td><td>Redo</td></tr>
+          <tr><td style="padding:6px 0;"><code>Ctrl + C</code></td><td>Copy Selected</td></tr>
+          <tr><td style="padding:6px 0;"><code>Ctrl + V</code></td><td>Paste</td></tr>
+          <tr><td style="padding:6px 0;"><code>Shift + Drag</code></td><td>Box Selection</td></tr>
+          <tr><td style="padding:6px 0;"><code>Right Click</code></td><td>Component Properties Menu</td></tr>
+          <tr><td style="padding:6px 0;"><code>Double Click</code></td><td>Add Wire Point</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
         <a href="https://docs.google.com/forms/d/e/1FAIpQLSc5AzzP2NccDkCbKAb5mVvefYFc5_X-EkJZx5RLWO7aqQ_8cw/viewform" target="_blank" id="btn-feedback-dash" title="Feedback / Contact" style="text-decoration:none;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:6px;background:var(--bg2);border:1px solid var(--b1);color:var(--t2);transition:all .2s ease;" onmouseover="this.style.borderColor='#7248b9';this.style.color='#7248b9';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='var(--b1)';this.style.color='var(--t2)';this.style.transform='none'">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="17" y2="8"></line><line x1="12" y1="12" x2="17" y2="12"></line><line x1="12" y1="16" x2="17" y2="16"></line><line x1="8" y1="8" x2="8.01" y2="8"></line><line x1="8" y1="12" x2="8.01" y2="12"></line><line x1="8" y1="16" x2="8.01" y2="16"></line></svg>
         </a>
@@ -2641,24 +2556,32 @@ body[data-mode="RUN"] .hide-on-run { display: none !important; }
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
   </button>
   <div id="ed-topbar">
-  <!-- ROW 1 -->
-  <div id="ed-topbar-r1">
-    <div class="r1-left">
+    <div class="tb-group">
       <img src="/icon.webp" style="width:24px;height:24px;border-radius:6px;margin-right:8px;box-shadow:0 2px 6px rgba(0,0,0,0.5);cursor:pointer;" onclick="showProjects()" title="Back to Dashboard" alt="Logo">
       <button class="tb-btn" id="ed-back" title="Back to projects" aria-label="Back">
-        <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
-      <!-- Project Name + dropdown caret -->
-      <div style="display:flex; align-items:center; cursor:pointer;" onclick="showProjects()">
-        <div class="ed-project-name" id="ed-proj-name" title="Click to rename" tabindex="0">Untitled</div>
-        <svg style="width:14px; height:14px; color:var(--t3); margin-left:2px;" viewBox="0 0 24 24"><path fill="currentColor" d="M7 10l5 5 5-5z"/></svg>
-      </div>
+        <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+      <div class="ed-project-name" id="ed-proj-name" title="Click to rename" tabindex="0">Untitled</div>
     </div>
     
-    <div class="r1-center">
+    <div class="tsep"></div>
+    
+    <!-- Panels Left -->
+    <div class="tb-group">
+      <button class="tb-btn-text" id="btn-sb" title="Toggle Library" aria-label="Library">
+        <svg viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+        Library
+      </button>
+      <button class="tb-btn-text" id="btn-rp" title="Toggle Properties" aria-label="Properties">
+        <svg viewBox="0 0 24 24"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+        Props
+      </button>
+      
+      <!-- LIQUID RADIO COMPONENT -->
       <div class="lr-container" style="margin-left:2px;">
         <div class="lr-group">
-          <input type="radio" id="lr-test" name="env-toggle" value="test" checked onchange="msg('Mode switched to: BUILD', 'ok'); document.body.setAttribute('data-mode', 'BUILD');">
-          <input type="radio" id="lr-prod" name="env-toggle" value="prod" onchange="msg('Mode switched to: RUN', 'ok'); document.body.setAttribute('data-mode', 'RUN');">
+          <input type="radio" id="lr-test" name="env-toggle" value="test" checked onchange="msg('Mode switched to: BUILD', 'ok')">
+          <input type="radio" id="lr-prod" name="env-toggle" value="prod" onchange="msg('Mode switched to: RUN', 'ok')">
           
           <div class="lr-glass-filter"></div>
           
@@ -2670,199 +2593,191 @@ body[data-mode="RUN"] .hide-on-run { display: none !important; }
       </div>
     </div>
 
-    <div class="r1-right">
-      <button class="tb-btn" id="btn-find" title="Find Component" aria-label="Find">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
-      <button class="tb-btn" id="btn-guide" style="border:1px solid var(--b2); border-radius:14px; padding:4px 12px; font-size:12px; width:auto; height:28px;">Guide</button>
-      <button class="tb-btn" style="background:var(--acc); color:var(--bg); font-weight:bold; border-radius:14px; padding:4px 12px; font-size:12px; width:auto; height:28px;" onclick="window.open('/pro','_blank')">Upgrade to Pro</button>
-      
-      <!-- Avatar/More Menu -->
-      <div class="tb-dropdown-container" style="position:relative;">
-        <button class="tb-btn" id="btn-avatar-menu" title="Menu" onclick="this.nextElementSibling.classList.toggle('show')">
-          <svg viewBox="0 0 24 24" style="width:20px;height:20px;"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/><path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 16v.01M12 12v-4"/></svg>
-        </button>
-        <div class="tb-dropdown-menu" style="display:none; position:absolute; right:0; top:36px; background:var(--bg2); border:1px solid var(--b2); border-radius:8px; padding:8px; min-width:160px; z-index:999; box-shadow:0 4px 20px rgba(0,0,0,0.5); flex-direction:column; gap:4px;">
-          <button class="tb-btn" id="btn-hlp" title="Help" aria-label="Help">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
-      </button>
-          <button class="tb-btn" title="About SQGATE" onclick="document.getElementById('ov-about').classList.add('open')">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-      </button>
-          <a href="https://docs.google.com/forms/d/e/1FAIpQLSc5AzzP2NccDkCbKAb5mVvefYFc5_X-EkJZx5RLWO7aqQ_8cw/viewform" target="_blank" id="btn-feedback-ed" title="Feedback / Contact" style="text-decoration:none;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:6px;color:var(--t2);transition:all .2s ease;flex-shrink:0;" onmouseover="this.style.color='#7248b9'" onmouseout="this.style.color='var(--t2)'">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="17" y2="8"></line><line x1="12" y1="12" x2="17" y2="12"></line><line x1="12" y1="16" x2="17" y2="16"></line><line x1="8" y1="8" x2="8.01" y2="8"></line><line x1="8" y1="12" x2="8.01" y2="12"></line><line x1="8" y1="16" x2="8.01" y2="16"></line></svg>
-      </a>
-          <button class="tb-btn" id="btn-shortcuts" title="Keyboard Shortcuts" aria-label="Shortcuts">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-9 10H8v-2h3v2zm0-3H8V9h3v2zm4 3h-3v-2h3v2zm0-3h-3V9h3v2z"/></svg>
-      </button>
-          <button class="tb-btn" id="btn-stats" title="Simulation Statistics" aria-label="Stats">
-        <svg viewBox="0 0 24 24"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
-      </button>
-          <button class="tb-btn" id="btn-drc" title="Design Rule Check" aria-label="DRC">
-        <svg viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg>
-      </button>
-          <button class="tb-btn" id="btn-tmpl" title="Circuit Templates" aria-label="Templates">
-        <svg viewBox="0 0 24 24"><path d="M2 12a10 10 0 1 0 20 0 10 10 0 1 0-20 0"/></svg>
-      </button>
-          <button class="tb-btn" id="btn-examples" title="Load Pre-built Examples" aria-label="Examples">
-        <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      </button>
-          <button class="tb-btn" id="btn-puzzle-nav" title="Logic Quest Puzzle" aria-label="Puzzle" onclick="window.open('/puzzle/index.html','_blank')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.439 7.85c-.049.322.059.648.289.878l1.568 1.568c.47.47.706 1.087.706 1.704s-.235 1.233-.706 1.704l-1.611 1.611a.98.98 0 0 0-.253.902l.331 2.158c.16 1.041-.35 2.1-1.282 2.646l-1.88.11c-.322.018-.616.19-.806.471l-1.183 1.758c-.569.845-1.579 1.233-2.585.992l-2.072-.494a.98.98 0 0 0-.915.163l-1.61 1.182c-.853.626-2.043.626-2.896 0l-1.61-1.182a.98.98 0 0 0-.915-.163l-2.072.494c-1.006.241-2.016-.147-2.585-.992l-1.183-1.758a.98.98 0 0 0-.806-.471l-1.88-.11c-.932-.546-1.442-1.605-1.282-2.646l.331-2.158a.98.98 0 0 0-.253-.902L.544 13.7c-.94-.94-.94-2.468 0-3.408l1.568-1.568c.23-.23.338-.556.289-.878L2.07 5.688C1.91 4.647 2.42 3.588 3.352 3.042l1.88-.11c.322-.018.616-.19.806-.471l1.183-1.758C7.79.162 8.8-.226 9.806.015l2.072.494a.98.98 0 0 0 .915-.163l1.61-1.182c.853-.626 2.043-.626 2.896 0l1.61 1.182c.28.206.634.265.915.163l2.072-.494c1.006-.241 2.016.147 2.585.992l1.183 1.758c.19.281.484.453.806.471l1.88.11c.932.546 1.442 1.605 1.282 2.646l-.331 2.158z"/><circle cx="12" cy="12" r="3"/></svg>
-      </button>
-          <button class="tb-btn" id="btn-kmap-nav" title="Karnaugh Map Solver" aria-label="K-Map" onclick="window.open('/k-map/index.html','_blank')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
-      </button>
-          <button class="tb-btn" id="btn-fsm-nav" title="FSM Designer" aria-label="FSM" onclick="window.open('/fsm/index.html','_blank')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="19" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><path d="M10.5 10.5L7 7"/><path d="M13.5 13.5L17 17"/></svg>
-      </button>
-          <button class="tb-btn" id="btn-bom" title="Bill of Materials" aria-label="BOM">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-      </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ROW 2 -->
-  <div id="ed-topbar-r2">
-    <!-- Zone A: History -->
-    <div class="tb-zone">
-      <button class="tb-btn" id="btn-undo" title="Undo (Ctrl+Z)" aria-label="Undo" disabled>
-        <svg viewBox="0 0 24 24"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg></button>
-      <button class="tb-btn" id="btn-redo" title="Redo (Ctrl+Y)" aria-label="Redo" disabled>
-        <svg viewBox="0 0 24 24"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"/></svg></button>
-      <button class="tb-btn" id="btn-clr" title="Clear Canvas" aria-label="Clear Canvas">
-        <svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-      </button>
-    </div>
     <div class="tsep"></div>
-    
-    <!-- Zone B: Edit -->
-    <div class="tb-zone hide-on-run">
-      <button class="tb-btn" id="btn-annot" title="Add Note" aria-label="Add Note">
-        <svg viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></button>
-      <button class="tb-btn" id="btn-lbl-tg" title="Toggle Labels" aria-label="Labels">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg></button>
-      <button class="tb-btn" id="btn-wire" title="Wire / Connect (Coming Soon)"><svg viewBox="0 0 24 24"><path d="M4 12h16m-4-4l4 4-4 4"/></svg></button>
-      <button class="tb-btn" id="btn-pkg" onclick="pkgSel()" title="Package selected logic into a Custom IC" aria-label="Create IC">
+
+    <!-- Edit Tools Center -->
+    <div class="tb-group">
+      <button class="tb-btn" id="btn-undo" title="Undo (Ctrl+Z)" aria-label="Undo" disabled>
+        <svg viewBox="0 0 24 24"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
+      </button>
+      <button class="tb-btn" id="btn-redo" title="Redo (Ctrl+Y)" aria-label="Redo" disabled>
+        <svg viewBox="0 0 24 24"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"/></svg>
+      </button>
+      <button class="tb-btn-text" id="btn-clr" title="Clear Canvas" aria-label="Clear Canvas">
+        <svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+        Clear
+      </button>
+      <button class="tb-btn-text" id="btn-pkg" onclick="pkgSel()" title="Package selected logic into a Custom IC" aria-label="Create IC">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-       <span style="margin-left:6px">Custom ICs</span></button>
-      <button class="tb-btn-text" id="btn-ic-mgr" title="Manage Custom ICs" aria-label="IC Manager">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-        <span style="font-size: 13px; font-weight: 500;">Custom ICs</span>
+        Create IC
       </button>
       <button class="tb-btn" id="btn-autolayout" title="Auto-arrange Layout" aria-label="Layout">
-    <svg viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
-  </button>
-      <button class="tb-btn" id="btn-flip" title="Flip Selection" aria-label="Flip">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12H3"/><path d="M18 9l3 3-3 3"/><path d="M6 9l-3 3 3 3"/></svg>
+        <svg viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
       </button>
-      <button class="tb-btn" id="btn-lock" title="Lock Component" aria-label="Lock">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      <button class="tb-btn" id="btn-annot" title="Add Note" aria-label="Add Note">
+        <svg viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
       </button>
-    </div>
-    <div class="tsep hide-on-run"></div>
-    
-    <!-- Zone C: View -->
-    <div class="tb-zone hide-on-run">
       <button class="tb-btn" id="btn-grid-tg" title="Toggle Grid" aria-label="Grid">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg></button>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
+      </button>
+      <button class="tb-btn" id="btn-lbl-tg" title="Toggle Labels" aria-label="Labels">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
+      </button>
       <button class="tb-btn" id="btn-fit" title="Zoom to Fit" aria-label="Fit">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg></button>
-      <button class="tb-btn" id="btn-theme" title="Toggle Dark/Light Mode" aria-label="Theme">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="19.78" x2="19.78" y2="21.2"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="4.22" x2="19.78" y2="5.64"/></svg></button>
-      <button class="tb-btn" id="btn-fs" title="Toggle Fullscreen" aria-label="Fullscreen">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
-      <button class="tb-btn" id="btn-sb" title="Toggle Library" aria-label="Library">
-        <svg viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
-      </button>
-      <button class="tb-btn" id="btn-rp" title="Toggle Properties" aria-label="Properties">
-        <svg viewBox="0 0 24 24"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
-      </button>
-    </div>
-    <div class="tsep hide-on-run"></div>
-    
-    <!-- Zone D: Sim -->
-    <div class="tb-zone">
-      <button class="tb-btn-text" id="btn-synth" title="Auto-Synthesize Circuit" aria-label="Synthesize" onclick="document.getElementById('synth-modal').classList.add('show')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M7.5 4.21l4.5 2.6 4.5-2.6"/><path d="M7.5 19.79V14.6L3 12"/><path d="M21 12l-4.5 2.6v5.19"/><path d="M3.27 6.96L12 12.01l8.73-5.05"/><path d="M12 22.08V12"/></svg>
-        <span style="font-size: 13px; font-weight: 500;">Auto-Synth</span>
-      </button>
-      <button class="tb-btn" id="btn-speed" title="Simulation Speed" aria-label="Speed">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
       </button>
       <button class="tb-btn" id="btn-clock-tg" title="Global Clock Pulse" aria-label="Clock">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       </button>
-      <button class="tb-btn" id="btn-rand" title="Randomize Inputs" aria-label="Randomize">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+      <button class="tb-btn" id="btn-flip" title="Flip Selection" aria-label="Flip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12H3"/><path d="M18 9l3 3-3 3"/><path d="M6 9l-3 3 3 3"/></svg>
+      </button>
+      <button class="tb-btn" id="btn-lock" title="Lock Component" aria-label="Lock">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      </button>
+      <button class="tb-btn" id="btn-print" title="Print Schematic" aria-label="Print">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
       </button>
     </div>
+    
     <div class="tsep"></div>
     
-    <!-- Zone E: Analyze -->
-    <div class="tb-zone analyze-zone">
+    <!-- Data / Export -->
+    <div class="tb-group">
       <button class="tb-btn-text" id="btn-tb" title="Automated Testbenches" aria-label="Testbench">
         <svg viewBox="0 0 24 24"><path d="M9 22h6m-3-2v-5m-7 1a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v10Z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
-        <span style="font-size: 13px; font-weight: 500;">Testbench</span>
+        Tests
       </button>
       <button class="tb-btn-text" id="btn-tt" title="Truth Table Generator" aria-label="Truth Table">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
-        <span style="font-size: 13px; font-weight: 500;">Truth Table</span>
+        Table
       </button>
       <button class="tb-btn-text" id="btn-wave" title="Waveform Viewer" aria-label="Waves">
         <svg viewBox="0 0 24 24"><path d="M2 12h4l2-9 4 18 2-9h8"/></svg>
-        <span style="font-size: 13px; font-weight: 500;">Waveform</span>
+        Waves
       </button>
       <button class="tb-btn-text" id="btn-verilog" title="Export to Verilog/VHDL" aria-label="Verilog">
         <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-        <span style="font-size: 13px; font-weight: 500;">Verilog</span>
+        Code
       </button>
+      <button class="tb-btn-text" id="btn-examples" title="Load Pre-built Examples" aria-label="Examples">
+        <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        Examples
+      </button>
+      
+      <button class="tb-btn-text" id="btn-find" title="Find Component" aria-label="Find">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Find
+      </button>
+
+      <div class="tsep" style="margin: 0 4px;"></div>
+
+      <button class="tb-btn-text" id="btn-synth" title="Auto-Synthesize Circuit" aria-label="Synthesize" onclick="document.getElementById('synth-modal').classList.add('show')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M7.5 4.21l4.5 2.6 4.5-2.6"/><path d="M7.5 19.79V14.6L3 12"/><path d="M21 12l-4.5 2.6v5.19"/><path d="M3.27 6.96L12 12.01l8.73-5.05"/><path d="M12 22.08V12"/></svg>
+        Synthesize
+      </button>
+
+      <button class="tb-btn-text" id="btn-rand" title="Randomize Inputs" aria-label="Randomize">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+        Randomize
+      </button>
+
+      <button class="tb-btn-text" id="btn-ic-mgr" title="Manage Custom ICs" aria-label="IC Manager">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        IC Manager
+      </button>
+
+      <button class="tb-btn-text" id="btn-shortcuts" title="Keyboard Shortcuts" aria-label="Shortcuts">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-9 10H8v-2h3v2zm0-3H8V9h3v2zm4 3h-3v-2h3v2zm0-3h-3V9h3v2z"/></svg>
+        Shortcuts
+      </button>
+
+      <button class="tb-btn-text" id="btn-kmap-nav" title="Karnaugh Map Solver" aria-label="K-Map" onclick="window.open('/k-map/index.html','_blank')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
+        K-Map
+      </button>
+
+      <button class="tb-btn-text" id="btn-fsm-nav" title="FSM Designer" aria-label="FSM" onclick="window.open('/fsm/index.html','_blank')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="19" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><path d="M10.5 10.5L7 7"/><path d="M13.5 13.5L17 17"/></svg>
+        FSM
+      </button>
+
+      <button class="tb-btn-text" id="btn-puzzle-nav" title="Logic Quest Puzzle" aria-label="Puzzle" onclick="window.open('/puzzle/index.html','_blank')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.439 7.85c-.049.322.059.648.289.878l1.568 1.568c.47.47.706 1.087.706 1.704s-.235 1.233-.706 1.704l-1.611 1.611a.98.98 0 0 0-.253.902l.331 2.158c.16 1.041-.35 2.1-1.282 2.646l-1.88.11c-.322.018-.616.19-.806.471l-1.183 1.758c-.569.845-1.579 1.233-2.585.992l-2.072-.494a.98.98 0 0 0-.915.163l-1.61 1.182c-.853.626-2.043.626-2.896 0l-1.61-1.182a.98.98 0 0 0-.915-.163l-2.072.494c-1.006.241-2.016-.147-2.585-.992l-1.183-1.758a.98.98 0 0 0-.806-.471l-1.88-.11c-.932-.546-1.442-1.605-1.282-2.646l.331-2.158a.98.98 0 0 0-.253-.902L.544 13.7c-.94-.94-.94-2.468 0-3.408l1.568-1.568c.23-.23.338-.556.289-.878L2.07 5.688C1.91 4.647 2.42 3.588 3.352 3.042l1.88-.11c.322-.018.616-.19.806-.471l1.183-1.758C7.79.162 8.8-.226 9.806.015l2.072.494a.98.98 0 0 0 .915-.163l1.61-1.182c.853-.626 2.043-.626 2.896 0l1.61 1.182c.28.206.634.265.915.163l2.072-.494c1.006-.241 2.016.147 2.585.992l1.183 1.758c.19.281.484.453.806.471l1.88.11c.932.546 1.442 1.605 1.282 2.646l-.331 2.158z"/><circle cx="12" cy="12" r="3"/></svg>
+        Quest
+      </button>
+      <button class="tb-btn-text" id="btn-speed" title="Simulation Speed" aria-label="Speed">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Speed: 1x
+      </button>
+      <button class="tb-btn-text" id="btn-bom" title="Bill of Materials" aria-label="BOM">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        BOM
+      </button>
+      <button class="tb-btn-text" id="btn-png" title="Export as Image" aria-label="Export PNG">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        PNG
+      </button>
+      <button class="tb-btn-text" id="btn-dl-json" title="Backup Project JSON" aria-label="Backup">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Backup
+      </button>
+      <button class="tb-btn-text" id="btn-ul-json" title="Restore Project JSON" aria-label="Restore" onclick="document.getElementById('json-upload').click()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Restore
+      </button>
+      <input type="file" id="json-upload" style="display:none" accept=".json">
     </div>
-    <div class="tsep"></div>
-    
-    <!-- Zone F: Export -->
-    <div class="tb-zone">
-      <div class="tb-dropdown-container" style="position:relative;">
-        <button class="tb-btn" id="btn-export-menu" title="Export Options" onclick="this.nextElementSibling.classList.toggle('show')" style="width:auto; padding:0 12px;">
-          Export <svg style="width:14px; height:14px; margin-left:4px;" viewBox="0 0 24 24"><path fill="currentColor" d="M7 10l5 5 5-5z"/></svg>
-        </button>
-        <div class="tb-dropdown-menu" style="display:none; position:absolute; left:0; top:36px; background:var(--bg2); border:1px solid var(--b2); border-radius:8px; padding:8px; min-width:140px; z-index:999; box-shadow:0 4px 20px rgba(0,0,0,0.5); flex-direction:column; gap:4px;">
-          <button class="tb-btn" id="btn-print" title="Print Schematic" aria-label="Print">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><path d="M6 14h12v8H6z"/></svg></button>
-          <button class="tb-btn" id="btn-png" title="Export as Image" aria-label="Export PNG">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+
+    <!-- Right Side Tools -->
+    <div class="tb-group-right">
+      <button class="tb-btn" id="btn-theme" title="Toggle Dark/Light Mode" aria-label="Theme">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="19.78" x2="19.78" y2="21.2"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="4.22" x2="19.78" y2="5.64"/></svg>
       </button>
-          <button class="tb-btn" id="btn-dl-json" title="Backup Project JSON" aria-label="Backup">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
-          <button class="tb-btn" id="btn-share" onclick="shareCircuit()" title="Share Circuit via Link" aria-label="Share">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+      <button class="tb-btn" id="btn-fs" title="Toggle Fullscreen" aria-label="Fullscreen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
       </button>
-          <button class="tb-btn" id="btn-ul-json" title="Restore Project JSON" aria-label="Restore" onclick="document.getElementById('json-upload').click()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <a href="/pricing.html" class="tb-btn-text" id="btn-pro-nav" style="border: 1px solid var(--acc); color: var(--acc); text-decoration: none; padding: 4px 10px; border-radius: 6px;">
+        Upgrade to Pro
+      </a>
+      <button class="tb-btn" id="btn-drc" title="Design Rule Check" aria-label="DRC">
+        <svg viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg>
       </button>
-          <input type="file" id="json-upload" style="display:none" accept=".json">
-        </div>
-      </div>
+      <button class="tb-btn" id="btn-stats" title="Simulation Statistics" aria-label="Stats">
+        <svg viewBox="0 0 24 24"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+      </button>
+      <button class="tb-btn" id="btn-tmpl" title="Circuit Templates" aria-label="Templates">
+        <svg viewBox="0 0 24 24"><path d="M2 12a10 10 0 1 0 20 0 10 10 0 1 0-20 0"/></svg>
+      </button>
+
+
+      <button class="tb-btn" id="btn-hlp" title="Help" aria-label="Help">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+      </button>
+
+      <button class="tb-btn" id="btn-share" onclick="shareCircuit()" title="Share Circuit via Link" aria-label="Share">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+      </button>
+
+      <!-- Primary Action -->
+      <button class="tb-btn-primary guide-pop" id="btn-guide" onclick="startTour()" aria-label="Interactive Guide">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        Guide
+      </button>
+      
+      <div class="tsep" style="margin-left:4px"></div>
+      
+      <!-- About -->
+      <button class="tb-btn" title="About SQGATE" onclick="document.getElementById('ov-about').classList.add('open')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+      </button>
+      <!-- Feedback -->
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSc5AzzP2NccDkCbKAb5mVvefYFc5_X-EkJZx5RLWO7aqQ_8cw/viewform" target="_blank" id="btn-feedback-ed" title="Feedback / Contact" style="text-decoration:none;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:6px;color:var(--t2);transition:all .2s ease;flex-shrink:0;" onmouseover="this.style.color='#7248b9'" onmouseout="this.style.color='var(--t2)'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="17" y2="8"></line><line x1="12" y1="12" x2="17" y2="12"></line><line x1="12" y1="16" x2="17" y2="16"></line><line x1="8" y1="8" x2="8.01" y2="8"></line><line x1="8" y1="12" x2="8.01" y2="12"></line><line x1="8" y1="16" x2="8.01" y2="16"></line></svg>
+      </a>
     </div>
   </div>
-</div>
-  
-<!-- DUMMIES TO PREVENT JS CRASHES -->
-<div style="display:none;">
-  <div id="btn-upgrade-pro"></div>
-  <div id="btn-exp-proj-json"></div>
-  <div id="btn-ortho"></div>
-  <div id="btn-export"></div>
-  <div id="btn-step"></div>
-  <div id="ov-ic-mgr"></div>
-  <div id="ic-mgr-cl"></div>
-  <div id="ic-mgr-list"></div>
-  <div id="ov-shortcuts"></div>
-  <div id="shortcuts-cl"></div>
-  <div id="ed-wrap"></div>
-</div>
-<div id="ed-body">
+  <div id="ed-body">
     <!-- SIDEBAR -->
     <div id="sidebar">
       <div id="sb-srch"><input id="sb-in" placeholder="Search…" autocomplete="off" spellcheck="false"></div>
@@ -2881,7 +2796,7 @@ body[data-mode="RUN"] .hide-on-run { display: none !important; }
         <button class="tb-btn" id="btn-zo" title="Zoom Out" aria-label="Zoom Out" style="font-weight:bold;font-size:18px;">&minus;</button>
         <span id="zoom-lbl">100%</span>
         <button class="tb-btn" id="btn-zi" title="Zoom In" aria-label="Zoom In" style="font-weight:bold;font-size:18px;">+</button>
-        <button class="tb-btn" id="btn-fit-zoom" title="Fit to Screen" aria-label="Fit"><svg viewBox="0 0 24 24"><path d="M3 3h6v2H5v4H3V3m18 0h-6v2h4v4h2V3m0 18h-6v-2h4v-4h2v6M3 21h6v-2H5v-4H3v6"/></svg></button>
+        <button class="tb-btn" id="btn-fit" title="Fit to Screen" aria-label="Fit"><svg viewBox="0 0 24 24"><path d="M3 3h6v2H5v4H3V3m18 0h-6v2h4v4h2V3m0 18h-6v-2h4v-4h2v6M3 21h6v-2H5v-4H3v6"/></svg></button>
       </div>
       <div id="assignment-banner" style="display:none; position:absolute; top:12px; left:50%; transform:translateX(-50%); z-index:100; background:var(--bg); border:1px solid var(--acc); color:var(--acc); padding:6px 16px; border-radius:16px; font-size:13px; font-weight:600; box-shadow:0 4px 12px rgba(0,0,0,0.3); pointer-events:none;">
         🎓 Assignment Mode Active
@@ -5656,9 +5571,76 @@ document.getElementById('btn-verilog').addEventListener('click', function() {
 document.getElementById('btn-hlp').addEventListener('click',function(){document.getElementById('ov-hlp').classList.add('open');});
 document.getElementById('hlp-cl').addEventListener('click',function(){document.getElementById('ov-hlp').classList.remove('open');});
 
+document.getElementById('btn-autolayout').addEventListener('click', function() {
+  saveUndoState();
+  const step = 20 * S.zoom;
+  S.gates.forEach(g => {
+    g.x = Math.round(g.x / step) * step;
+    g.y = Math.round(g.y / step) * step;
+  });
+  reposAll();
+  drawGrid();
+  msg('Snapped all components to grid', 'sc');
+});
 
+document.getElementById('btn-annot').addEventListener('click', function() {
+  let gid = 'g'+Date.now();
+  S.gates.push({ id: gid, type: 'text', x: S.panX * -1 + 100, y: S.panY * -1 + 100, txt: 'Text Note' });
+  saveUndoState();
+  reposAll();
+  msg('Added text annotation', 'sc');
+});
 
+document.getElementById('btn-stats').addEventListener('click', function() {
+  let stats = '<table style="width:100%; border-collapse:collapse;">';
+  stats += '<tr style="border-bottom:1px solid var(--b2);"><td style="padding:4px 0;">Total Components</td><td style="text-align:right;">' + S.gates.length + '</td></tr>';
+  stats += '<tr style="border-bottom:1px solid var(--b2);"><td style="padding:4px 0;">Total Wires</td><td style="text-align:right;">' + S.wires.length + '</td></tr>';
+  let types = {};
+  S.gates.forEach(g => types[g.type] = (types[g.type]||0)+1);
+  for(let t in types) {
+    stats += '<tr><td style="padding:4px 0; color:var(--t3);">' + (DEF[t]?DEF[t].lbl:t) + '</td><td style="text-align:right; color:var(--t3);">' + types[t] + '</td></tr>';
+  }
+  stats += '</table>';
+  document.getElementById('stats-results').innerHTML = stats;
+  document.getElementById('ov-stats').classList.add('open');
+});
+document.getElementById('stats-cl').addEventListener('click', function(){document.getElementById('ov-stats').classList.remove('open');});
 
+document.getElementById('btn-drc').addEventListener('click', function() {
+  let errs = [];
+  let warns = [];
+  
+  // Find multi-driven inputs
+  let inputCount = {};
+  S.wires.forEach(w => {
+    let key = w.to + '-' + w.tip;
+    inputCount[key] = (inputCount[key]||0)+1;
+    if(inputCount[key] > 1) errs.push('Short circuit detected on ' + (DEF[S.gates.find(g=>g.id===w.to)?.type]?.lbl||w.to) + ' input pin ' + w.tip);
+  });
+  
+  // Find floating inputs
+  S.gates.forEach(g => {
+    let d = gdef(g);
+    if(d && d.nc > 0) {
+      for(let i=0; i<d.nc; i++) {
+        let hasWire = S.wires.some(w => w.to === g.id && w.tip === i);
+        if(!hasWire) warns.push('Floating input pin ' + i + ' on ' + d.lbl + ' gate');
+      }
+    }
+  });
+
+  let html = '';
+  if(errs.length===0 && warns.length===0) {
+    html = '<div style="color:var(--acc); font-size:16px; margin-bottom:12px;">✅ 0 Errors, 0 Warnings</div>No design rules violated!';
+  } else {
+    html = '<div style="margin-bottom:12px;">Found <span style="color:#ef4444;">' + errs.length + ' Errors</span> and <span style="color:#eab308;">' + warns.length + ' Warnings</span>.</div>';
+    errs.forEach(e => html += '<div style="color:#ef4444; margin-bottom:4px;">❌ ' + e + '</div>');
+    warns.forEach(w => html += '<div style="color:#eab308; margin-bottom:4px;">⚠️ ' + w + '</div>');
+  }
+  document.getElementById('drc-results').innerHTML = html;
+  document.getElementById('ov-drc').classList.add('open');
+});
+document.getElementById('drc-cl').addEventListener('click', function(){document.getElementById('ov-drc').classList.remove('open');});
 
 document.getElementById('ov-hlp').addEventListener('click',function(e){if(e.target===e.currentTarget)e.currentTarget.classList.remove('open');});
 
@@ -5688,6 +5670,13 @@ document.getElementById('btn-fs').addEventListener('click', function() {
 });
 
 // Feature: Theme Toggle
+document.getElementById('btn-theme').addEventListener('click', function() {
+  let isLight = document.body.classList.toggle('theme-light');
+  document.getElementById('pg-editor').classList.toggle('theme-light', isLight);
+  localStorage.setItem('sqgate-theme', isLight ? 'light' : 'dark');
+  msg(isLight ? 'Light Mode' : 'Dark Mode', 'sc');
+  drawGrid();
+});
 
 // Feature: Simulation Speed
 let simSpeedIndex = 0;
@@ -5898,7 +5887,7 @@ function doZoom(f){
 }
 document.getElementById('btn-zi').addEventListener('click',function(){doZoom(1.2);});
 document.getElementById('btn-zo').addEventListener('click',function(){doZoom(1/1.2);});
-document.getElementById('btn-fit-zoom').addEventListener('click',function(){
+document.getElementById('btn-fit').addEventListener('click',function(){
   if(!S.gates.length)return;
   const W=cvwrap.clientWidth,H=cvwrap.clientHeight;
   const xs=S.gates.map(function(g){return g.x;}),ys=S.gates.map(function(g){return g.y;});
@@ -10373,18 +10362,6 @@ function synthesizeCircuit() {
 </div>
 
 <script src="/cookie-consent.js"></script>
-
-  <div id="btn-exp-proj-json"></div>
-  <div id="btn-ortho"></div>
-  <div id="btn-export"></div>
-  <div id="btn-step"></div>
-  <div id="ov-ic-mgr"></div>
-  <div id="ic-mgr-cl"></div>
-  <div id="ic-mgr-list"></div>
-  <div id="ov-shortcuts"></div>
-  <div id="shortcuts-cl"></div>
-  <div id="ed-wrap"></div>
-</div>
 </body>
 
 </html>
