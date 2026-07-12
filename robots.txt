@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow:
+
+User-agent: Google-Extended
+Allow: /
+Disallow:
+
+Sitemap: https://sqgate.online/sitemap.xml

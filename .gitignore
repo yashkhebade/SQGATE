@@ -1,0 +1,12 @@
+node_modules/
+dist/
+dist_cf/
+out/
+.env
+.DS_Store
+
+# Our temporary AI patch scripts (Optional: you can delete these entirely)
+patch*.py
+
+# WebAssembly/Rust build artifacts
+simulation-engine/target/

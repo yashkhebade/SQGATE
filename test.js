@@ -1,0 +1,6258 @@
+
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-72EG9VJELZ');
+
+(adsbygoogle = window.adsbygoogle || []).push({});
+(adsbygoogle = window.adsbygoogle || []).push({});
+
+// ==========================================
+// SQGATE PRO LICENSING
+// ==========================================
+const PRO_HASH = '37894a8d0f1b2c45e69f8d57'; // Obfuscated hash comparison
+const MASTER_KEY = 'SQGATE-PRO-2026'; // Simple hardcoded master key for now
+
+function checkProStatus() {
+  return localStorage.getItem('sqgate_pro_status') === 'active';
+}
+
+function unlockPro(key) {
+  if (key.trim().toUpperCase() === MASTER_KEY) {
+    localStorage.setItem('sqgate_pro_status', 'active');
+    return true;
+  }
+  return false;
+}
+
+function showProModal(featureName) {
+  const m = document.getElementById('pro-modal');
+  if(m) {
+    document.getElementById('pro-feature-name').textContent = featureName;
+    m.style.display = 'flex';
+  }
+}
+// ==========================================
+function customPrompt(msgText, defaultVal, callback) {
+  var ov = document.getElementById('ov-prompt');
+  document.getElementById('pr-msg').textContent = msgText;
+  var inp = document.getElementById('pr-inp');
+  inp.value = defaultVal || '';
+  ov.classList.add('open');
+  inp.focus(); inp.select();
+  var ok = document.getElementById('pr-ok');
+  var cancel = document.getElementById('pr-cancel');
+  
+  function cleanup() {
+    ov.classList.remove('open');
+    ok.onclick = null; cancel.onclick = null; inp.onkeydown = null;
+  }
+  ok.onclick = function() { var v = inp.value; cleanup(); callback(v); };
+  cancel.onclick = function() { cleanup(); callback(null); };
+  inp.onkeydown = function(e) {
+    if(e.key==='Enter') ok.click();
+    if(e.key==='Escape') cancel.click();
+  };
+}
+// ═══════════════════════════════════════════════════════
+// GATE DEFINITIONS
+// ═══════════════════════════════════════════════════════
+const CATS = [
+  {id:'io',    lbl:'I / O',       col:'#3dba6e', types:['input','output','clock','const0','const1','led','seg7','hexdisp']},
+  {id:'buses', lbl:'Buses',       col:'#9a58b8', types:['split4','merge4','split8','merge8']},
+  {id:'gates', lbl:'Logic Gates', col:'#4890d8', types:['buffer','and','or','not','nand','nor','xor','xnor']},
+  {id:'arith', lbl:'Arithmetic',  col:'#e09626', types:['ha','fa','add4','alu8']},
+  {id:'plex',  lbl:'Plexers',     col:'#7860c8', types:['mux2','mux4','dmux2','dmux4','enc4','dec2']},
+  {id:'seq',   lbl:'Sequential',  col:'#c09428', types:['sr','dlatch','dff','jkff','tff','count8','shift8']},
+  {id:'mem',   lbl:'Memory',      col:'#d04080', types:['rom8','ram8']},
+  {id:'ic7400',lbl:'7400 Series', col:'#2f3640', types:['ic7400','ic7402','ic7404','ic7408','ic7432','ic7486']},
+  {id:'custom',lbl:'Custom Gates',col:'#50a878', types:[]},
+];
+
+const DEF = {
+  input: {lbl:'IN',   w:52, h:40,  nc:0,np:1,cls:'ti',  tip:'Toggle Input\nClick body to switch 0↔1'},
+  output:{lbl:'OUT',  w:58, h:40,  nc:1,np:0,cls:'to',  tip:'Output Probe — shows signal'},
+  clock: {lbl:'CLK',  w:64, h:54,  nc:0,np:1,cls:'tck', tip:'Clock oscillator\nDouble-click → set freq in Props'},
+  const0:{lbl:'0',    w:40, h:34,  nc:0,np:1,cls:'tc0', tip:'Constant LOW (0)'},
+  const1:{lbl:'1',    w:40, h:34,  nc:0,np:1,cls:'tc1', tip:'Constant HIGH (1)'},
+  led:   {lbl:'LED',  w:52, h:52,  nc:1,np:0,cls:'tled',tip:'LED — lights up when input is HIGH'},
+  seg7:  {lbl:'SEG7', w:80, h:110, nc:7,np:0,cls:'tseg',tip:'7-Segment Display\nInputs: a,b,c,d,e,f,g\nShows hex digit 0–F'},
+  matrix:{lbl:'8x8',  w:120, h:130, nc:16,np:0,cls:'tmtx',tip:'8x8 LED Matrix\nR0-R7, C0-C7\nLights up when R=1, C=1'},
+  merge4: {lbl:'MERGE', w:70, h:74, nc:4,np:1,cls:'tmg',tip:'4-Bit Merger\n4 single bits -> 1 4-bit bus',sub:'4-BIT'},
+  split4: {lbl:'SPLIT', w:70, h:74, nc:1,np:4,cls:'tsp',tip:'4-Bit Splitter\n1 4-bit bus -> 4 single bits',sub:'4-BIT'},
+  merge8: {lbl:'MERGE', w:70, h:122, nc:8,np:1,cls:'tmg',tip:'8-Bit Merger\n8 single bits -> 1 8-bit bus',sub:'8-BIT'},
+  split8: {lbl:'SPLIT', w:70, h:122, nc:1,np:8,cls:'tsp',tip:'8-Bit Splitter\n1 8-bit bus -> 8 single bits',sub:'8-BIT'},
+  hexdisp:{lbl:'HEX',   w:52, h:76, nc:1,np:0,cls:'thx',tip:'Hex Display\nTakes a 4-bit bus input'},
+  rom8:   {lbl:'ROM', w:86, h:66, nc:1,np:1,cls:'trm', tip:'ROM (256x8)\nDouble-click to edit data',sub:'8-BIT'},
+  ram8:   {lbl:'RAM', w:96, h:100, nc:4,np:1,cls:'trm', tip:'RAM (256x8)\nA,Din,WE,CLK -> Dout',sub:'8-BIT'},
+  alu8:   {lbl:'ALU', w:110, h:86, nc:3,np:3,cls:'tal', tip:'8-Bit ALU\nA,B,OP -> Y,Cout,Z',sub:'8-BIT'},
+  count8: {lbl:'CNT', w:96, h:100, nc:4,np:2,cls:'tct', tip:'8-Bit Counter\nCLK,EN,CLR,UP',sub:'8-BIT'},
+  shift8: {lbl:'SHF', w:96, h:100, nc:4,np:2,cls:'tsh', tip:'8-Bit Shift Register\nCLK,LD,Din,Sin',sub:'8-BIT'},
+  buffer:{lbl:'BUF',  w:56, h:38,  nc:1,np:1,cls:'tbf', tip:'Buffer — passes signal'},
+  and:   {lbl:'AND',  w:66, h:44,  nc:2,np:1,cls:'tan', tip:'AND — all inputs HIGH'},
+  or:    {lbl:'OR',   w:60, h:44,  nc:2,np:1,cls:'tor', tip:'OR — any input HIGH'},
+  not:   {lbl:'NOT',  w:56, h:38,  nc:1,np:1,cls:'tno', tip:'NOT — inverts input'},
+  nand:  {lbl:'NAND', w:70, h:44,  nc:2,np:1,cls:'tna', tip:'NAND — NOT AND (universal)'},
+  nor:   {lbl:'NOR',  w:64, h:44,  nc:2,np:1,cls:'tnr', tip:'NOR — NOT OR'},
+  xor:   {lbl:'XOR',  w:60, h:44,  nc:2,np:1,cls:'txo', tip:'XOR — inputs differ'},
+  xnor:  {lbl:'XNOR', w:70, h:44,  nc:2,np:1,cls:'txn', tip:'XNOR — inputs match'},
+  ha:    {lbl:'HA',   w:90, h:54,  nc:2,np:2,cls:'tah', tip:'Half Adder\nA,B → Sum,Carry',sub:'HALF ADD'},
+  fa:    {lbl:'FA',   w:94, h:62,  nc:3,np:2,cls:'taf', tip:'Full Adder\nA,B,Cin → Sum,Cout',sub:'FULL ADD'},
+  add4:  {lbl:'4BIT', w:110, h:122, nc:9,np:5,cls:'taa', tip:'4-Bit Adder\nA3-A0,B3-B0,Ci→S3-S0,Co',sub:'ADDER'},
+  mux2:  {lbl:'MUX',  w:86, h:60,  nc:3,np:1,cls:'tm2', tip:'2:1 MUX\nA,B,S→Y  S=0→A  S=1→B',sub:'2:1'},
+  mux4:  {lbl:'MUX',  w:90, h:92,  nc:6,np:1,cls:'tm4', tip:'4:1 MUX\nD0-D3,S0,S1→Y',sub:'4:1'},
+  dmux2: {lbl:'DMUX', w:86, h:60,  nc:2,np:2,cls:'td2', tip:'1:2 DEMUX\nIN,S→Y0,Y1',sub:'1:2'},
+  dmux4: {lbl:'DMUX', w:90, h:92,  nc:3,np:4,cls:'td4', tip:'1:4 DEMUX\nIN,S0,S1→Y0-Y3',sub:'1:4'},
+  enc4:  {lbl:'ENC',  w:86, h:74,  nc:4,np:2,cls:'te4', tip:'4:2 Priority Encoder\nI0-I3→A0,A1',sub:'4:2'},
+  dec2:  {lbl:'DEC',  w:86, h:74,  nc:2,np:4,cls:'tdc', tip:'2:4 Decoder\nA0,A1→Y0-Y3',sub:'2:4'},
+  sr:    {lbl:'SR',   w:90, h:66,  nc:2,np:2,cls:'tsr', tip:'SR Latch\nS,R→Q,Q̄  S=R=1 INVALID!',sub:'LATCH'},
+  dlatch:{lbl:'D',    w:90, h:66,  nc:2,np:2,cls:'tdl', tip:'D Latch\nD,E→Q,Q̄  Transparent E=1',sub:'LATCH'},
+  dff:   {lbl:'D-FF', w:96, h:82,  nc:3,np:2,cls:'tdf', tip:'D Flip-Flop\nD,CLK,RST→Q,Q̄  Captures D on CLK↑'},
+  jkff:  {lbl:'JK-FF',w:100, h:82,  nc:3,np:2,cls:'tjk', tip:'JK Flip-Flop\nJ,K,CLK→Q,Q̄\n00=hold 01=reset 10=set 11=toggle'},
+  tff:   {lbl:'T-FF', w:90, h:66,  nc:2,np:2,cls:'ttf', tip:'T Flip-Flop\nT,CLK→Q,Q̄  Toggles on CLK↑ T=1'},
+  ic7400:{lbl:'7400', w:140, h:180, nc:8, np:4, cls:'tic', tip:'7400 Quad 2-Input NAND\n14-Pin IC', sub:'NAND'},
+  ic7402:{lbl:'7402', w:140, h:180, nc:8, np:4, cls:'tic', tip:'7402 Quad 2-Input NOR\n14-Pin IC', sub:'NOR'},
+  ic7404:{lbl:'7404', w:140, h:180, nc:6, np:6, cls:'tic', tip:'7404 Hex Inverter\n14-Pin IC', sub:'NOT'},
+  ic7408:{lbl:'7408', w:140, h:180, nc:8, np:4, cls:'tic', tip:'7408 Quad 2-Input AND\n14-Pin IC', sub:'AND'},
+  ic7432:{lbl:'7432', w:140, h:180, nc:8, np:4, cls:'tic', tip:'7432 Quad 2-Input OR\n14-Pin IC', sub:'OR'},
+  ic7486:{lbl:'7486', w:140, h:180, nc:8, np:4, cls:'tic', tip:'7486 Quad 2-Input XOR\n14-Pin IC', sub:'XOR'},
+};
+
+const PLBL = {
+  led:   {i:['IN'],o:[]},
+  seg7:  {i:['a','b','c','d','e','f','g'],o:[]},
+  keypad:{i:[],o:['Y3','Y2','Y1','Y0']},
+  matrix:{i:['R0','R1','R2','R3','R4','R5','R6','R7','C0','C1','C2','C3','C4','C5','C6','C7'],o:[]},
+  merge4: {i:['B3','B2','B1','B0'],o:['B(4)']},
+  split4: {i:['B(4)'],o:['B3','B2','B1','B0']},
+  merge8: {i:['B7','B6','B5','B4','B3','B2','B1','B0'],o:['B(8)']},
+  split8: {i:['B(8)'],o:['B7','B6','B5','B4','B3','B2','B1','B0']},
+  hexdisp:{i:['B(4)'],o:[]},
+  rom8:   {i:['A(8)'], o:['D(8)']},
+  ram8:   {i:['A(8)','Din(8)','WE','CLK'], o:['Dout(8)']},
+  alu8:   {i:['A(8)','B(8)','OP(4)'], o:['Y(8)','Cout','Z']},
+  count8: {i:['CLK','EN','CLR','UP'], o:['Q(8)','TC']},
+  shift8: {i:['CLK','LD','Din(8)','Sin'], o:['Dout(8)','Sout']},
+  ha:    {i:['A','B'],o:['Σ','Co']},
+  fa:    {i:['A','B','Ci'],o:['Σ','Co']},
+  add4:  {i:['A3','A2','A1','A0','B3','B2','B1','B0','Ci'],o:['S3','S2','S1','S0','Co']},
+  mux2:  {i:['A','B','S'],o:['Y']},
+  mux4:  {i:['D0','D1','D2','D3','S0','S1'],o:['Y']},
+  dmux2: {i:['IN','S'],o:['Y0','Y1']},
+  dmux4: {i:['IN','S0','S1'],o:['Y0','Y1','Y2','Y3']},
+  enc4:  {i:['I0','I1','I2','I3'],o:['A0','A1']},
+  dec2:  {i:['A0','A1'],o:['Y0','Y1','Y2','Y3']},
+  sr:    {i:['S','R'],o:['Q','Q̄']},
+  dlatch:{i:['D','E'],o:['Q','Q̄']},
+  dff:   {i:['D','▶','R'],o:['Q','Q̄']},
+  jkff:  {i:['J','K','▶'],o:['Q','Q̄']},
+  tff:   {i:['T','▶'],o:['Q','Q̄']},
+};
+
+const GCOL={
+  input:'#58a858',output:'#a85858',clock:'#5890c0',const0:'#7a8090',const1:'#c0a030',
+  led:'#e04848',seg7:'#e09626',keypad:'#58a858',matrix:'#e04848',
+  merge4:'#9a58b8', split4:'#9a58b8', merge8:'#9a58b8', split8:'#9a58b8', hexdisp:'#e09626',
+  rom8:'#d04080', ram8:'#d04080', alu8:'#4080d0', count8:'#40d0a0', shift8:'#40d0a0',
+  buffer:'#5888a0',and:'#4890d8',or:'#48aa68',not:'#e04858',nand:'#9860cc',
+  nor:'#c86098',xor:'#d25898',xnor:'#c06860',
+  ha:'#e09626',fa:'#e09626',add4:'#3dba6e',
+  mux2:'#5878c8',mux4:'#5878c8',dmux2:'#7860c8',dmux4:'#7860c8',
+  enc4:'#58a0b8',dec2:'#58a0b8',
+  sr:'#c09428',dlatch:'#c09428',dff:'#a07018',jkff:'#a07018',tff:'#a07018',
+};
+
+// ═══════════════════════════════════════════════════════
+// AUTH & USERS
+// ═══════════════════════════════════════════════════════
+let CU = null; // current user { email, name }
+
+// ── GUEST FALLBACK: always have a working user so simulator needs no login ──
+var GUEST_USER = {email: 'guest', name: 'Guest Session'};
+
+function authLoad() {
+  try { CU = JSON.parse(localStorage.getItem('lgf_session') || 'null'); } catch(e){ CU = null; }
+  if (!CU || !CU.email) {
+    // No saved session → auto-start as guest so simulator works immediately
+    CU = GUEST_USER;
+  }
+}
+function authSave() {
+  localStorage.setItem('lgf_session', CU ? JSON.stringify(CU) : 'null');
+}
+function getUserData(email) {
+  try { return JSON.parse(localStorage.getItem('lgf_user_' + email) || '{}'); } catch(e){ return {}; }
+}
+function setUserData(email, data) {
+  localStorage.setItem('lgf_user_' + email, JSON.stringify(data));
+  
+  // Sync to Supabase in the background
+  if (email !== 'guest' && SUPABASE_ANON_KEY) {
+    fetch('https://vemphsxvtlzfmeyjnbeq.supabase.co/rest/v1/users', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'Prefer': 'resolution=merge-duplicates'
+      },
+      body: JSON.stringify({
+        email: email,
+        name: data.name || '',
+        is_pro: data.isPro || false,
+        projects: data.projects || {}
+      })
+    }).catch(e => console.error('Sync error:', e));
+  }
+}
+function registerUser(email, name) {
+  const existing = getUserData(email);
+  if (!existing.projects) {
+    setUserData(email, { name, projects: {} });
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// PROJECT MANAGEMENT
+// ═══════════════════════════════════════════════════════
+let PROJ = null; // { id, name, data:{gates,wires,custom} }
+
+function getProjects() {
+  if (!CU || !CU.email) return {};
+  const ud = getUserData(CU.email);
+  return ud.projects || {};
+}
+function saveProject(id, name, data) {
+  if (!CU || !CU.email) return;
+  const ud = getUserData(CU.email);
+  if (!ud.projects) ud.projects = {};
+  ud.projects[id] = { id, name, data, updatedAt: Date.now(), owner: CU.email };
+  setUserData(CU.email, ud);
+}
+function deleteProject(id) {
+  if (!CU || !CU.email) return;
+  const ud = getUserData(CU.email);
+  delete ud.projects[id];
+  setUserData(CU.email, ud);
+}
+// TELEMETRY & AI DATA COLLECTION
+var TELEMETRY_ENDPOINT = "https://vemphsxvtlzfmeyjnbeq.supabase.co/rest/v1/circuits"; 
+var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlbXBoc3h2dGx6Zm1leWpuYmVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyMjU0MzEsImV4cCI6MjA5NzgwMTQzMX0.wGJ8PBs7ilfA6AD7zxwsmXoyZWGhMEkFgcHV_TvIio4";
+var _lastTelemetryTime = 0;
+
+function captureTelemetry(data) {
+  if (localStorage.getItem('sqgate_cookie_consent') !== 'accepted') return;
+  if (!TELEMETRY_ENDPOINT || !SUPABASE_ANON_KEY) return;
+  
+  // PRIVACY GUARD: Do not collect data if the user is signed in with a real email
+  if (CU && CU.email !== 'guest') return;
+
+  var now = Date.now();
+  // We removed the 60-second debounce so it saves instantly on every 10s auto-save
+  _lastTelemetryTime = now;
+
+  var payload = {
+    timestamp: now,
+    project_name: PROJ ? PROJ.name : "Untitled",
+    gate_count: data.gates.length,
+    wire_count: data.wires.length,
+    topology: {
+      gates: data.gates.map(function(g){ return {type: g.type, x: g.x, y: g.y, val: g.value}; }),
+      wires: data.wires.map(function(w){ return {fg: w.fg, tg: w.tg}; })
+    },
+    topology2: {
+      gates: data.gates.map(function(g){ return {type: g.type, x: g.x, y: g.y, val: g.value}; }),
+      wires: data.wires.map(function(w){ return {fg: w.fg, tg: w.tg}; })
+    }
+  };
+
+  fetch(TELEMETRY_ENDPOINT, {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify(payload)
+  }).catch(function(e){ console.log("Telemetry upload skipped."); });
+}
+
+function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+const S = {
+  gates:[], wires:[], sel:null, msel:new Set(),
+  placing:null, wfrom:null, wprev:null,
+  zoom:1, panX:50, panY:40, nid:1,
+  custom:{},  // name → custom gate def
+  dirty:false, pdirty:false,
+};
+
+// ═══════════════════════════════════════════════════════
+// UTIL
+// ═══════════════════════════════════════════════════════
+const cvwrap = document.getElementById('cvwrap');
+const gridCv = document.getElementById('grid-cv');
+const wireSvg = document.getElementById('wire-svg');
+const gateLyr = document.getElementById('gate-lyr');
+const selBox  = document.getElementById('sel-box');
+const tipEl   = document.getElementById('tip');
+const cmenu   = document.getElementById('cmenu');
+let cmGid = null;
+
+function w2s(wx,wy){return{x:wx*S.zoom+S.panX,y:wy*S.zoom+S.panY}}
+function s2w(sx,sy){return{x:(sx-S.panX)/S.zoom,y:(sy-S.panY)/S.zoom}}
+function snap(v){return Math.round(v/20)*20}
+
+function gdef(gate){
+  if(gate.type==='custom'){
+    const c=S.custom[gate.cn];
+    return c?c._def:DEF.buffer;
+  }
+  return DEF[gate.type]||DEF.buffer;
+}
+function gplbl(gate){
+  if(gate.type==='custom'){const c=S.custom[gate.cn];return c?{i:c.ins,o:c.outs}:{i:[],o:[]};}
+  return PLBL[gate.type]||{i:[],o:[]};
+}
+
+// Pin screen position — uses percentage-based layout
+function pxy(gate,isOut,idx){
+  const d=gdef(gate);
+  const count=isOut?d.np:d.nc;
+  if(idx<0||idx>=count)return null;
+  const pct=(idx+1)/(count+1);
+  
+  const cx = gate.x + d.w/2;
+  const cy = gate.y + d.h/2;
+  const px_rel = (isOut ? d.w : 0) - d.w/2;
+  const py_rel = d.h * pct - d.h/2;
+  
+  const rot = gate.rot || 0;
+  let px_rot = px_rel, py_rot = py_rel;
+  if (rot === 1) { px_rot = -py_rel; py_rot = px_rel; }
+  else if (rot === 2) { px_rot = -px_rel; py_rot = -py_rel; }
+  else if (rot === 3) { px_rot = py_rel; py_rot = -px_rel; }
+  
+  const wx = cx + px_rot;
+  const wy = cy + py_rot;
+  const s=w2s(wx,wy);
+  return{x:s.x,y:s.y};
+}
+
+// ═══════════════════════════════════════════════════════
+// GRID
+// ═══════════════════════════════════════════════════════
+function drawGrid(){
+  const W=cvwrap.clientWidth,H=cvwrap.clientHeight;
+  if(!W||!H)return;
+  gridCv.width=W;gridCv.height=H;
+  wireSvg.setAttribute('width',W);wireSvg.setAttribute('height',H);
+  const c=gridCv.getContext('2d');
+  c.clearRect(0,0,W,H);
+  const step=20*S.zoom;
+  const ox=((S.panX%step)+step)%step;
+  const oy=((S.panY%step)+step)%step;
+  c.fillStyle = document.getElementById('pg-editor').classList.contains('theme-light') ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.06)';
+  for(let x=ox;x<W;x+=step){
+    for(let y=oy;y<H;y+=step){
+      c.fillRect(x-1,y-1,2,2);
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// GATE ELEMENT — no CSS transform, real pixel sizing
+// ═══════════════════════════════════════════════════════
+function mkGateEl(gate){
+  const d=gdef(gate);
+  const pl=gplbl(gate)||{};
+  const typeCls=gate.type==='custom'?'tcu':d.cls||'tbf';
+
+  const el=document.createElement('div');
+  el.className='gate '+typeCls;
+  el.dataset.gid=gate.id;
+
+  const body=document.createElement('div');
+  body.className='gbody';
+
+  // Content label (centered)
+  const cnt=document.createElement('div');
+  cnt.style.cssText='text-align:center;pointer-events:none;z-index:1;width:100%';
+
+  if(gate.type==='input'){
+    cnt.innerHTML=`<div class="gval" id="gv${gate.id}">0</div>`;
+  }else if(gate.type==='output'){
+    cnt.innerHTML=`<div style="font-size:.65em;color:var(--t3);letter-spacing:1px">OUT</div><div class="gval" id="gv${gate.id}">?</div>`;
+  }else if(gate.type==='clock'){
+    cnt.innerHTML=`<div class="glbl" style="font-size:.75em">CLK</div>
+      <div class="cwv" id="cwv${gate.id}">
+        <div class="cs lo"></div><div class="cs hi"></div>
+        <div class="cs lo"></div><div class="cs hi"></div>
+      </div>
+      <div style="font-size:.6em;color:var(--t3);margin-top:2px" id="cfl${gate.id}">${gate.freq||1}Hz</div>`;
+  }else if(['sr','dlatch','dff','jkff','tff'].includes(gate.type)){
+    cnt.innerHTML=`<div class="glbl">${d.lbl}</div>
+      <div class="gsub" id="gsub${gate.id}">${d.sub||''}</div>
+      <div class="gqval" id="gv${gate.id}">Q=0</div>`;
+  }else if(gate.type==='led'){
+    cnt.innerHTML=`<div class="led-circle" id="led${gate.id}">OFF</div>`;
+  }else if(gate.type==='seg7' || gate.type==='hexdisp'){
+    cnt.innerHTML=`<canvas id="seg${gate.id}" width="52" height="76" style="display:block;margin:0 auto" aria-label="7-Segment Display"></canvas>`;
+  }else if(gate.type==='matrix'){
+    cnt.innerHTML=`<canvas id="mtx${gate.id}" width="104" height="104" style="display:block;margin:0 auto;background:#080808;border-radius:4px;box-shadow:inset 0 0 4px #000" aria-label="LED Matrix Display"></canvas>`;
+  }else if(gate.type==='keypad'){
+    var html = '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-top:6px;width:76px;margin-left:auto;margin-right:auto">';
+    ['1','2','3','C','4','5','6','D','7','8','9','E','A','0','B','F'].forEach(function(k){
+      html += '<button class="kp-btn" data-k="'+k+'">'+k+'</button>';
+    });
+    html += '</div>';
+    cnt.innerHTML=`<div class="glbl">${d.lbl}</div>${d.sub?`<div class="gsub">${d.sub}</div>`:''}` + html;
+}else{
+    cnt.innerHTML=`<div class="glbl">${d.lbl}</div>${d.sub?`<div class="gsub">${d.sub}</div>`:''}`;
+  }
+  body.appendChild(cnt);
+
+  if(gate.type==='keypad'){
+    cnt.querySelectorAll('.kp-btn').forEach(function(btn){
+      btn.addEventListener('mousedown', function(e){
+        e.stopPropagation();
+        var k = btn.dataset.k;
+        gate.value = parseInt(k, 16);
+        simulate();
+        S.pdirty=true;
+      });
+    });
+  }
+
+  for(let i=0;i<d.nc;i++){
+    const pin=document.createElement('div');
+    pin.className='pin';
+    pin.dataset.gid=gate.id;pin.dataset.dir='in';pin.dataset.idx=i;
+    body.appendChild(pin);
+    if((pl.i||[])[i]){
+      const lb=document.createElement('div');
+      lb.className='plbl';
+      lb.dataset.side='in';lb.dataset.idx=i;
+      lb.textContent=pl.i[i];
+      body.appendChild(lb);
+    }
+  }
+
+  for(let i=0;i<d.np;i++){
+    const pin=document.createElement('div');
+    pin.className='pin';
+    pin.dataset.gid=gate.id;pin.dataset.dir='out';pin.dataset.idx=i;
+    body.appendChild(pin);
+    if((pl.o||[])[i]){
+      const lb=document.createElement('div');
+      lb.className='plbl';
+      lb.dataset.side='out';lb.dataset.idx=i;
+      lb.textContent=pl.o[i];
+      body.appendChild(lb);
+    }
+  }
+
+  el.appendChild(body);
+  posGate(gate,el);
+  return el;
+}
+
+function posGate(gate,el){
+  el=el||gate.el;if(!el)return;
+  const d=gdef(gate);
+  const s=w2s(gate.x,gate.y);
+  const pw=d.w*S.zoom;
+  const ph=d.h*S.zoom;
+
+  el.style.left=s.x+'px';
+  el.style.top=s.y+'px';
+  el.style.width=pw+'px';
+  el.style.height=ph+'px';
+  var rot = gate.rot || 0;
+  el.style.transform = 'rotate(' + (rot * 90) + 'deg)';
+
+  // Scale font relative to zoom — clamp to readable range
+  const fs=Math.max(6,Math.min(14,Math.round(10.5*S.zoom)));
+  const body=el.querySelector('.gbody');
+  if(body) body.style.fontSize=fs+'px';
+
+  // Reposition pins using REAL pixel positions (not %)
+  // This ensures pins align with wire endpoints from pxy()
+  const inCount=d.nc,outCount=d.np;
+
+  el.querySelectorAll('.pin[data-dir="in"]').forEach(function(pin){
+    const idx=parseInt(pin.dataset.idx);
+    const pyPct=(idx+1)/(inCount+1); // 0..1 fraction of gate height
+    const pyPx=ph*pyPct - 5; // 5 = pin radius
+    pin.style.cssText='position:absolute;left:-5px;top:'+pyPx+'px;width:10px;height:10px;border-radius:50%;background:var(--bg0);border:1.5px solid var(--b2);cursor:crosshair;pointer-events:all;transition:transform .1s,border-color .1s,background .1s,box-shadow .1s;z-index:20';
+  });
+
+  el.querySelectorAll('.pin[data-dir="out"]').forEach(function(pin){
+    const idx=parseInt(pin.dataset.idx);
+    const pyPct=(idx+1)/(outCount+1);
+    const pyPx=ph*pyPct - 5;
+    pin.style.cssText='position:absolute;right:-5px;left:auto;top:'+pyPx+'px;width:10px;height:10px;border-radius:50%;background:var(--bg0);border:1.5px solid var(--b2);cursor:crosshair;pointer-events:all;transition:transform .1s,border-color .1s,background .1s,box-shadow .1s;z-index:20';
+  });
+
+  // Reposition pin labels at matching pixel positions
+  const lblFs=Math.max(6,Math.min(10,Math.round(8*S.zoom)));
+  el.querySelectorAll('.plbl[data-side="in"]').forEach(function(lb){
+    const idx=parseInt(lb.dataset.idx);
+    const pyPct=(idx+1)/(inCount+1);
+    const pyPx=ph*pyPct;
+    lb.style.cssText='position:absolute;font-family:var(--fmono);color:var(--t3);pointer-events:none;white-space:nowrap;font-size:'+lblFs+'px;left:'+(Math.max(8,9*S.zoom))+'px;top:'+pyPx+'px;margin-top:-'+(lblFs/2+1)+'px;z-index:5;line-height:1';
+  });
+  el.querySelectorAll('.plbl[data-side="out"]').forEach(function(lb){
+    const idx=parseInt(lb.dataset.idx);
+    const pyPct=(idx+1)/(outCount+1);
+    const pyPx=ph*pyPct;
+    lb.style.cssText='position:absolute;font-family:var(--fmono);color:var(--t3);pointer-events:none;white-space:nowrap;font-size:'+lblFs+'px;right:'+(Math.max(8,9*S.zoom))+'px;left:auto;top:'+pyPx+'px;margin-top:-'+(lblFs/2+1)+'px;z-index:5;text-align:right;line-height:1';
+  });
+
+  // Re-apply signal classes that may have been cleared
+  el.querySelectorAll('.pin').forEach(function(pin){
+    if(!pin.classList.contains('hi')&&!pin.classList.contains('lo')){
+      // Keep existing signal state
+    }
+  });
+}
+
+function reposAll(){S.gates.forEach(function(g){posGate(g);});drawWires();}
+
+// ═══════════════════════════════════════════════════════
+// PLACE GATE
+// ═══════════════════════════════════════════════════════
+function place(type,wx,wy){
+  if (S.gates.length >= 20 && !checkProStatus()) {
+    showProModal('Unlimited Components');
+    return null;
+  }
+  let rt=type,cn=null;
+  if(type.startsWith('custom:')){rt='custom';cn=type.slice(7);}
+  const d=rt==='custom'?S.custom[cn]?._def:DEF[rt];
+  if(!d){msg('Unknown: '+type,'er');return null;}
+  const gate={
+    id:S.nid++,type:rt,cn,
+    x:snap(wx-d.w/2),y:snap(wy-d.h/2),
+    value:0,q:0,prevClk:0,freq:1,lastTog:Date.now(),fault:false,
+  };
+  const el=mkGateEl(gate);
+  gate.el=el;
+  gateLyr.appendChild(el);
+  S.gates.push(gate);
+  bindGate(gate);
+  simulate();stUpd();S.dirty=true;
+  msg('Placed '+d.lbl,'ok');
+  return gate;
+}
+
+// ═══════════════════════════════════════════════════════
+// SIMULATION ENGINE
+// ═══════════════════════════════════════════════════════
+function simulate(){
+  const ov={};const done=new Set();
+  // Seed sources
+  S.gates.forEach(function(g){
+    if(['input','clock','const0','const1'].includes(g.type)){
+      ov[g.id]=calcGate(g,[]);done.add(g.id);
+    }
+  });
+  // Propagate
+  const max=S.gates.length*10+50;
+  for(let it=0;it<max&&done.size<S.gates.length;it++){
+    for(const gate of S.gates){
+      if(done.has(gate.id))continue;
+      const d=gdef(gate);const ins=[];let ok=true;
+      for(let i=0;i<d.nc;i++){
+        const w=S.wires.find(function(w){return w.tg===gate.id&&w.tp===i;});
+        if(w){if(ov[w.fg]===undefined){ok=false;break;}ins.push(ov[w.fg][w.fp]??0);}
+        else ins.push(0);
+      }
+      if(!ok)continue;
+      ov[gate.id]=calcGate(gate,ins);done.add(gate.id);
+    }
+  }
+  // Wire signals
+  S.wires.forEach(function(w){w.sig=(ov[w.fg]||[])[w.fp]??0;});
+  // DOM updates
+  S.gates.forEach(function(g){
+    if(g.type==='input'){
+      const e=document.getElementById('gv'+g.id);
+      if(e){e.textContent=g.value;e.style.color=g.value?'var(--hi)':'var(--lo)';}
+    }
+    if(g.type==='output'){
+      const e=document.getElementById('gv'+g.id);
+      if(e){const w=S.wires.find(function(w){return w.tg===g.id&&w.tp===0;});
+        const v=w!=null?w.sig:'?';e.textContent=v;
+        e.style.color=v===1?'var(--hi)':v===0?'var(--lo)':'var(--t3)';}
+    }
+    if(['sr','dlatch','dff','jkff','tff'].includes(g.type)){
+      const e=document.getElementById('gv'+g.id);
+      if(e){e.textContent='Q='+(g.q?1:0);e.style.color=g.q?'var(--hi)':'var(--lo)';}
+      if(g.el)g.el.classList.toggle('fault',!!g.fault);
+    }
+    if(g.type==='clock'){
+      const cw=document.getElementById('cwv'+g.id);
+      if(cw)cw.querySelectorAll('.cs').forEach(function(s,i){
+        s.className='cs '+((i%2===(g.value?0:1))?'hi':'lo');
+      });
+    }
+    // LED update
+    if(g.type==='led'){
+      const ledEl=document.getElementById('led'+g.id);
+      if(ledEl){
+        const w=S.wires.find(function(w){return w.tg===g.id&&w.tp===0;});
+        const on=w?w.sig===1:false;
+        ledEl.classList.toggle('on',on);
+        ledEl.textContent=on?'ON':'OFF';
+      }
+    }
+    // 7-Segment update
+    if(g.type==='seg7'){
+      const cv=document.getElementById('seg'+g.id);
+      if(cv){
+        const segs=[];
+        for(let pi=0;pi<7;pi++){
+          const w=S.wires.find(function(w){return w.tg===g.id&&w.tp===pi;});
+          segs.push(w?w.sig===1:false);
+        }
+        drawSeg7(cv,segs);
+      }
+    }
+    // Hex Display update
+    if(g.type==='hexdisp'){
+      const cv=document.getElementById('seg'+g.id);
+      if(cv){
+        const w=S.wires.find(function(w){return w.tg===g.id&&w.tp===0;});
+        const v = w ? w.sig : 0;
+        const font = [0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f,0x77,0x7c,0x39,0x5e,0x79,0x71];
+        const bits = font[v&15];
+        const segs = [bits&1, (bits>>1)&1, (bits>>2)&1, (bits>>3)&1, (bits>>4)&1, (bits>>5)&1, (bits>>6)&1];
+        drawSeg7(cv,segs);
+      }
+    }
+    // Matrix update
+    if(g.type==='matrix'){
+      const cv=document.getElementById('mtx'+g.id);
+      if(cv){
+        const rows=[], cols=[];
+        for(let pi=0;pi<8;pi++){
+          const w=S.wires.find(function(w){return w.tg===g.id&&w.tp===pi;});
+          rows.push(w?w.sig===1:false);
+        }
+        for(let pi=8;pi<16;pi++){
+          const w=S.wires.find(function(w){return w.tg===g.id&&w.tp===pi;});
+          cols.push(w?w.sig===1:false);
+        }
+        drawMatrix(cv,rows,cols);
+      }
+    }
+    // Pin colors
+    if(g.el){
+      g.el.querySelectorAll('.pin').forEach(function(pin){
+        const isOut=pin.dataset.dir==='out';
+        const idx=parseInt(pin.dataset.idx);
+        let sig=null;
+        if(isOut)sig=(ov[g.id]||[])[idx];
+        else{const w=S.wires.find(function(w){return w.tg===g.id&&w.tp===idx;});if(w)sig=w.sig;}
+        pin.classList.remove('hi','lo');
+        if(sig===1)pin.classList.add('hi');
+        else if(sig===0)pin.classList.add('lo');
+      });
+    }
+  });
+  if(!window.simWirePending){
+    window.simWirePending = true;
+    requestAnimationFrame(function(){
+      drawWires();
+      window.simWirePending = false;
+    });
+  }
+  S.pdirty=true;
+}
+
+function calcGate(gate,ins){
+  const t=gate.type;
+  const i=function(n){return ins[n]!==undefined?(ins[n]?1:0):0;};
+  switch(t){
+    case 'input': return[gate.value?1:0];
+    case 'clock': return[gate.value?1:0];
+    case 'const0':return[0];
+    case 'const1':return[1];
+    case 'buffer':return[i(0)];
+    case 'and':   return[i(0)&i(1)];
+    case 'or':    return[i(0)|i(1)];
+    case 'not':   return[i(0)?0:1];
+    case 'nand':  return[(i(0)&i(1))?0:1];
+    case 'nor':   return[(i(0)|i(1))?0:1];
+    case 'xor':   return[i(0)^i(1)];
+    case 'xnor':  return[(i(0)^i(1))?0:1];
+    case 'ic7400':return[!(i(0)&i(1))?1:0, !(i(2)&i(3))?1:0, !(i(4)&i(5))?1:0, !(i(6)&i(7))?1:0];
+    case 'ic7402':return[!(i(0)|i(1))?1:0, !(i(2)|i(3))?1:0, !(i(4)|i(5))?1:0, !(i(6)|i(7))?1:0];
+    case 'ic7404':return[i(0)?0:1, i(1)?0:1, i(2)?0:1, i(3)?0:1, i(4)?0:1, i(5)?0:1];
+    case 'ic7408':return[i(0)&i(1), i(2)&i(3), i(4)&i(5), i(6)&i(7)];
+    case 'ic7432':return[i(0)|i(1), i(2)|i(3), i(4)|i(5), i(6)|i(7)];
+    case 'ic7486':return[i(0)^i(1), i(2)^i(3), i(4)^i(5), i(6)^i(7)];
+    case 'output':return[i(0)];
+    case 'led':   return[];
+    case 'seg7':  return[];
+    case 'hexdisp':return[];
+    case 'merge4': return [(i(0)<<3) | (i(1)<<2) | (i(2)<<1) | i(3)];
+    case 'split4': { const v=ins[0]||0; return [(v>>3)&1, (v>>2)&1, (v>>1)&1, v&1]; }
+    case 'merge8': return [(i(0)<<7)|(i(1)<<6)|(i(2)<<5)|(i(3)<<4)|(i(4)<<3)|(i(5)<<2)|(i(6)<<1)|i(7)];
+    case 'split8': { const v=ins[0]||0; return [(v>>7)&1,(v>>6)&1,(v>>5)&1,(v>>4)&1,(v>>3)&1,(v>>2)&1,(v>>1)&1,v&1]; }
+    
+    case 'rom8':{
+      if(!gate.mem) gate.mem = new Uint8Array(256);
+      return [gate.mem[ins[0]||0]];
+    }
+    case 'ram8':{
+      const clk=i(3);
+      if(!gate.mem) gate.mem = new Uint8Array(256);
+      if(gate.prevClk===undefined) gate.prevClk=clk;
+      const addr = ins[0]||0;
+      if(clk&&!gate.prevClk){
+        if(i(2)) gate.mem[addr] = ins[1]||0;
+      }
+      gate.prevClk=clk;
+      return [gate.mem[addr]];
+    }
+    case 'alu8':{
+      const a = ins[0]||0, b = ins[1]||0, op = ins[2]||0;
+      let y=0, c=0;
+      switch(op){
+        case 0: y=a+b; c=(y>255)?1:0; break;
+        case 1: y=a-b; c=(y<0)?1:0; break;
+        case 2: y=a&b; break;
+        case 3: y=a|b; break;
+        case 4: y=a^b; break;
+        case 5: y=a<<1; c=(a>>7)&1; break;
+        case 6: y=a>>1; c=a&1; break;
+        case 7: y=(~a)&255; break;
+      }
+      y = y&255;
+      return [y, c, (y===0)?1:0];
+    }
+    case 'count8':{
+      const clk=i(0);
+      if(gate.q===undefined) gate.q=0;
+      if(gate.prevClk===undefined) gate.prevClk=clk;
+      if(i(2)) gate.q=0;
+      else if(clk&&!gate.prevClk){
+        if(i(1)) {
+          if(i(3)) gate.q = (gate.q+1)&255;
+          else gate.q = (gate.q-1)&255;
+        }
+      }
+      gate.prevClk=clk;
+      const tc = (i(3) && gate.q===255) || (!i(3) && gate.q===0);
+      return [gate.q, tc?1:0];
+    }
+    case 'shift8':{
+      const clk=i(0);
+      if(gate.q===undefined) gate.q=0;
+      if(gate.prevClk===undefined) gate.prevClk=clk;
+      if(clk&&!gate.prevClk){
+        if(i(1)) gate.q = ins[2]||0;
+        else gate.q = ((gate.q<<1) | i(3)) & 255;
+      }
+      gate.prevClk=clk;
+      return [gate.q, (gate.q>>7)&1];
+    }
+    case 'ha':{const s=i(0)^i(1),c=i(0)&i(1);return[s,c];}
+    case 'fa':{const s=i(0)^i(1)^i(2),c=(i(0)&i(1))|(i(1)&i(2))|(i(0)&i(2));return[s,c];}
+    case 'add4':{
+      const A=(i(0)<<3)|(i(1)<<2)|(i(2)<<1)|i(3);
+      const B=(i(4)<<3)|(i(5)<<2)|(i(6)<<1)|i(7);
+      const r=A+B+i(8);
+      return[(r>>3)&1,(r>>2)&1,(r>>1)&1,r&1,r>15?1:0];
+    }
+    case 'mux2':return[i(2)?i(1):i(0)];
+    case 'mux4':{const sel=(i(5)<<1)|i(4);return[i(sel)];}
+    case 'dmux2':return[i(1)?0:i(0),i(1)?i(0):0];
+    case 'dmux4':{const sel=(i(2)<<1)|i(1),o=[0,0,0,0];o[sel]=i(0);return o;}
+    case 'enc4':{if(i(3))return[1,1];if(i(2))return[0,1];if(i(1))return[1,0];return[0,0];}
+    case 'dec2':{const sel=(i(1)<<1)|i(0),o=[0,0,0,0];o[sel]=1;return o;}
+    case 'sr':{
+      if(gate.q===undefined) gate.q=0;
+      if(i(0)&&i(1)){gate.fault=true;return[0,0];}
+      gate.fault=false;
+      if(i(0))gate.q=1;else if(i(1))gate.q=0;
+      return[gate.q?1:0,gate.q?0:1];
+    }
+    case 'dlatch':{
+      if(gate.q===undefined) gate.q=0;
+      if(i(1))gate.q=i(0);
+      return[gate.q?1:0,gate.q?0:1];
+    }
+    case 'dff':{
+      const clk=i(1);
+      if(gate.q===undefined) gate.q=0;
+      if(gate.prevClk===undefined) gate.prevClk=clk;
+      if(i(2))gate.q=0;else if(clk&&!gate.prevClk)gate.q=i(0);
+      gate.prevClk=clk;return[gate.q?1:0,gate.q?0:1];
+    }
+    case 'jkff':{
+      const clk=i(2);
+      if(gate.q===undefined) gate.q=0;
+      if(gate.prevClk===undefined) gate.prevClk=clk;
+      if(clk&&!gate.prevClk){
+        if(i(0)&&i(1))gate.q=gate.q?0:1;
+        else if(i(0))gate.q=1;else if(i(1))gate.q=0;
+      }
+      gate.prevClk=clk;return[gate.q?1:0,gate.q?0:1];
+    }
+    case 'tff':{
+      const clk=i(1);
+      if(gate.q===undefined) gate.q=0;
+      if(gate.prevClk===undefined) gate.prevClk=clk;
+      if(clk&&!gate.prevClk&&i(0))gate.q=gate.q?0:1;
+      gate.prevClk=clk;return[gate.q?1:0,gate.q?0:1];
+    }
+    case 'custom':return calcCustom(gate,ins);
+    default:return[0];
+  }
+}
+
+function calcCustom(gate,iv){
+  const c=S.custom[gate.cn];if(!c)return[0];
+  if(c.type==='truth'){
+    const idx=iv.reduce(function(a,v,i){return a|((v?1:0)<<(c.ins.length-1-i));},0);
+    return(c.table[idx]||c.outs.map(function(){return 0;})).slice();
+  }
+  if(c.type==='sub'){
+    const lg=JSON.parse(JSON.stringify(c.circuit.gates));
+    const lw=c.circuit.wires;const ov={};
+    c.inputIds.forEach(function(id,ii){
+      const g=lg.find(function(g){return g.id===id;});
+      if(g){g.value=iv[ii]??0;ov[id]=[g.value];}
+    });
+    const done=new Set(c.inputIds);
+    for(let it=0;it<lg.length*10+30&&done.size<lg.length;it++){
+      for(const g of lg){
+        if(done.has(g.id))continue;
+        const d=DEF[g.type]||DEF.buffer;
+        const ins=[];let ok=true;
+        for(let pi=0;pi<d.nc;pi++){
+          const w=lw.find(function(w){return w.tg===g.id&&w.tp===pi;});
+          if(w){if(!ov[w.fg]){ok=false;break;}ins.push(ov[w.fg][w.fp]??0);}
+          else ins.push(0);
+        }
+        if(!ok)continue;
+        ov[g.id]=calcGate(Object.assign({},g),ins);done.add(g.id);
+      }
+    }
+    return c.outputIds.map(function(id){return(ov[id]||[0])[0];});
+  }
+  return[0];
+}
+
+// ═══════════════════════════════════════════════════════
+// WIRE DRAWING
+// ═══════════════════════════════════════════════════════
+function bz(x1,y1,x2,y2){
+  const mx = (x1 + x2) / 2;
+  const rad = Math.min(6, Math.abs(x2 - x1)/2, Math.abs(y2 - y1)/2);
+  if (rad < 1) return `M${x1} ${y1} L${mx} ${y1} L${mx} ${y2} L${x2} ${y2}`;
+  const dirY = y2 > y1 ? 1 : -1;
+  const dirX = x2 > x1 ? 1 : -1;
+  return `M${x1} ${y1} L${mx - rad*dirX} ${y1} Q${mx} ${y1} ${mx} ${y1 + rad*dirY} L${mx} ${y2 - rad*dirY} Q${mx} ${y2} ${mx + rad*dirX} ${y2} L${x2} ${y2}`;
+}
+
+function routeOrthogonal(fp, tp, boxes) {
+  function naive(yOffset) {
+    if (tp.x > fp.x + 20 && !yOffset) {
+      var midX = (fp.x + tp.x) / 2;
+      return [{x:fp.x, y:fp.y}, {x:midX, y:fp.y}, {x:midX, y:tp.y}, {x:tp.x, y:tp.y}];
+    } else {
+      var midY = yOffset || (fp.y + tp.y) / 2;
+      return [{x:fp.x, y:fp.y}, {x:fp.x+20, y:fp.y}, {x:fp.x+20, y:midY}, {x:tp.x-20, y:midY}, {x:tp.x-20, y:tp.y}, {x:tp.x, y:tp.y}];
+    }
+  }
+  function intersect(pA, pB) {
+    var minX = Math.min(pA.x, pB.x), maxX = Math.max(pA.x, pB.x);
+    var minY = Math.min(pA.y, pB.y), maxY = Math.max(pA.y, pB.y);
+    for(var i=0; i<boxes.length; i++) {
+      var b=boxes[i];
+      if (maxX > b.x0 && minX < b.x1 && maxY > b.y0 && minY < b.y1) return b;
+    }
+    return null;
+  }
+  function checkPath(pts) {
+    for(var i=0; i<pts.length-1; i++) {
+      var col = intersect(pts[i], pts[i+1]);
+      if (col) return col;
+    }
+    return null;
+  }
+
+  var p = naive();
+  var col = checkPath(p);
+  if (!col) return p;
+
+  var pTop = naive(col.y0 - 20);
+  if (!checkPath(pTop)) return pTop;
+
+  var pBot = naive(col.y1 + 20);
+  if (!checkPath(pBot)) return pBot;
+
+  return p;
+}
+
+function drawWires(){
+  while(wireSvg.firstChild)wireSvg.removeChild(wireSvg.firstChild);
+
+  var boxes = [];
+  if (S.ortho) {
+    boxes = S.gates.map(function(g){
+      var d = gdef(g);
+      var s = w2s(g.x, g.y);
+      return {x0: s.x - 15, y0: s.y - 15, x1: s.x + d.w*S.zoom + 15, y1: s.y + d.h*S.zoom + 15, gid: g.id};
+    });
+  }
+
+  S.wires.forEach(function(w){
+    const fg=S.gates.find(function(g){return g.id===w.fg;});
+    const tg=S.gates.find(function(g){return g.id===w.tg;});
+    if(!fg||!tg)return;
+    const fp=pxy(fg,true,w.fp);const tp=pxy(tg,false,w.tp);
+    if(!fp||!tp)return;
+    let d = '';
+    if (S.ortho) {
+      var validBoxes = boxes.filter(function(b){ return b.gid !== fg.id && b.gid !== tg.id; });
+      var pts = routeOrthogonal(fp, tp, validBoxes);
+      d = 'M' + pts[0].x + ',' + pts[0].y;
+      for (var i=1; i<pts.length; i++) d += ' L' + pts[i].x + ',' + pts[i].y;
+    } else {
+      d=bz(fp.x,fp.y,tp.x,tp.y);
+    }
+    // Hitbox
+    const hit=document.createElementNS('http://www.w3.org/2000/svg','path');
+    hit.setAttribute('d',d);hit.setAttribute('fill','none');
+    hit.setAttribute('stroke','transparent');hit.setAttribute('stroke-width','12');
+    hit.setAttribute('pointer-events','stroke');hit.style.cursor='pointer';
+    hit.dataset.wid=w.id; // mark as wire hitbox for background click detection
+    ;(function(wid){
+      hit.addEventListener('click',function(e){
+        e.stopPropagation();
+        S.wires=S.wires.filter(function(x){return x.id!==wid;});
+        simulate();stUpd();S.dirty=true;msg('Wire deleted','ok');
+      });
+    })(w.id);
+    wireSvg.appendChild(hit);
+    // Visual
+    const plbl = gplbl(fg);
+    const pName = (plbl.o||[])[w.fp] || '';
+    let wCls = w.sig ? 'w-hi' : 'w-lo';
+    if(pName.includes('(4)')) wCls = 'w-bus4';
+    else if(pName.includes('(8)')) wCls = 'w-bus8';
+
+    const vis=document.createElementNS('http://www.w3.org/2000/svg','path');
+    vis.setAttribute('d',d);
+    vis.setAttribute('class','wvis '+wCls);
+    if (S.a11y && !w.sig) vis.setAttribute('stroke-dasharray', '6, 6');
+    vis.setAttribute('pointer-events','none');
+    wireSvg.appendChild(vis);
+  });
+  if(S.wprev){
+    const pv=document.createElementNS('http://www.w3.org/2000/svg','path');
+    pv.setAttribute('d',bz(S.wprev.x1,S.wprev.y1,S.wprev.x2,S.wprev.y2));
+    pv.setAttribute('class','w-prev');pv.setAttribute('pointer-events','none');
+    wireSvg.appendChild(pv);
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// GATE EVENTS
+// ═══════════════════════════════════════════════════════
+function bindGate(gate){
+  const el=gate.el;
+  let moved=false,sx,sy,ox,oy;
+
+  el.addEventListener('mousedown',function(e){
+    if(e.button!==0||e.target.classList.contains('pin'))return;
+    e.preventDefault();e.stopPropagation();hideCM();
+
+    if(e.shiftKey){
+      if(S.msel.has(gate.id)){S.msel.delete(gate.id);el.classList.remove('msel');}
+      else{S.msel.add(gate.id);el.classList.add('msel');}
+      if(S.sel!==null){const g2=S.gates.find(function(g){return g.id===S.sel;});if(g2&&g2.el)g2.el.classList.remove('sel');S.sel=null;}
+      stUpd();return;
+    }
+
+    if(!S.msel.has(gate.id)){ selGate(gate.id); }
+    moved=false;sx=e.clientX;sy=e.clientY;
+    const inM=S.msel.size>1&&S.msel.has(gate.id);
+    const origs={};
+    if(inM)S.msel.forEach(function(id){const g2=S.gates.find(function(g){return g.id===id;});if(g2)origs[id]={x:g2.x,y:g2.y};});
+    else{ox=gate.x;oy=gate.y;}
+
+    function mm(ev){
+      const dx=(ev.clientX-sx)/S.zoom,dy=(ev.clientY-sy)/S.zoom;
+      if(Math.abs(dx)>2||Math.abs(dy)>2)moved=true;
+      if(!moved)return;
+      if(inM){
+        S.msel.forEach(function(id){
+          const g2=S.gates.find(function(g){return g.id===id;});
+          if(g2&&origs[id]){g2.x=snap(origs[id].x+dx);g2.y=snap(origs[id].y+dy);posGate(g2);}
+        });
+      }else{gate.x=snap(ox+dx);gate.y=snap(oy+dy);posGate(gate);}
+      drawWires();S.dirty=true;
+    }
+    function mu(){
+      if(!moved&&gate.type==='input'){gate.value=gate.value?0:1;simulate();S.dirty=true;}
+      document.removeEventListener('mousemove',mm);document.removeEventListener('mouseup',mu);
+    }
+    document.addEventListener('mousemove',mm);document.addEventListener('mouseup',mu);
+  });
+
+  el.addEventListener('dblclick',function(e){
+    if(gate.type==='clock'){e.stopPropagation();selGate(gate.id);msg('Set clock frequency in Properties panel \u2192','wa');}
+    if(gate.type==='rom8'){
+      e.stopPropagation();
+      window.currentAsmTargetId = gate.id;
+      document.getElementById('asm-code').value = gate.asmCode || "#DEFINE NOP 0x00\n#DEFINE ADD 0x10\n#DEFINE JMP 0x80\n\nSTART:\n  NOP\n  ADD\n  0x05\n  JMP\n  START\n";
+      document.getElementById('asm-log').textContent = "Ready to compile. Double-click on ROM opens this editor.";
+      document.getElementById('ov-asm').classList.add('open');
+    }
+  });
+
+  el.addEventListener('contextmenu',function(e){
+    e.preventDefault();e.stopPropagation();
+    cmGid=gate.id;selGate(gate.id);
+    cmenu.style.display='block';
+    cmenu.style.left=Math.min(e.clientX,window.innerWidth-175)+'px';
+    cmenu.style.top=Math.min(e.clientY,window.innerHeight-150)+'px';
+  });
+
+  el.addEventListener('mouseenter',function(e){
+    if(e.target.classList.contains('pin'))return;
+    tipEl.textContent=gdef(gate).tip||gdef(gate).lbl;tipEl.style.display='block';
+  });
+  el.addEventListener('mousemove',function(e){tipEl.style.left=(e.clientX+14)+'px';tipEl.style.top=(e.clientY-6)+'px';});
+  el.addEventListener('mouseleave',function(){tipEl.style.display='none';});
+
+  el.querySelectorAll('.pin').forEach(function(pin){
+    pin.addEventListener('mousedown',function(e){
+      e.stopPropagation();e.preventDefault();
+      const isOut=pin.dataset.dir==='out';const idx=parseInt(pin.dataset.idx);
+
+      if(S.wfrom){
+        if(S.wfrom.gid===gate.id){cancelWire('Cannot wire to same gate');return;}
+        let fg,fp,tg,tp;
+        if(S.wfrom.isOut&&!isOut){fg=S.wfrom.gid;fp=S.wfrom.pidx;tg=gate.id;tp=idx;}
+        else if(!S.wfrom.isOut&&isOut){fg=gate.id;fp=idx;tg=S.wfrom.gid;tp=S.wfrom.pidx;}
+        else{cancelWire('Connect OUTPUT pin → INPUT pin');return;}
+        S.wires=S.wires.filter(function(w){return!(w.tg===tg&&w.tp===tp);});
+        S.wires.push({id:S.nid++,fg,fp,tg,tp,sig:0});
+        cancelWire('');simulate();stUpd();S.dirty=true;msg('Connected!','ok');
+      }else{
+        S.wfrom={gid:gate.id,pidx:idx,isOut};
+        pin.classList.add('wiring');
+        cvwrap.classList.add('wi');
+        msg('Wiring… click another pin or Esc to cancel','');
+      }
+    });
+    pin.addEventListener('mouseenter',function(e){
+      const isOut=pin.dataset.dir==='out';const idx=parseInt(pin.dataset.idx);
+      const pl=gplbl(gate);const nm=isOut?(pl.o||[])[idx]:(pl.i||[])[idx];
+      if(nm){tipEl.textContent=(isOut?'→ OUT: ':'← IN: ')+nm;tipEl.style.display='block';}
+    });
+    pin.addEventListener('mousemove',function(e){tipEl.style.left=(e.clientX+12)+'px';tipEl.style.top=(e.clientY-5)+'px';});
+    pin.addEventListener('mouseleave',function(){tipEl.style.display='none';});
+  });
+}
+
+function cancelWire(m){
+  document.querySelectorAll('.pin.wiring').forEach(function(p){p.classList.remove('wiring');});
+  S.wfrom=null;S.wprev=null;cvwrap.classList.remove('wi');drawWires();
+  if(m)msg(m,'er');
+}
+
+// ═══════════════════════════════════════════════════════
+// SELECTION
+// ═══════════════════════════════════════════════════════
+function selGate(id){
+  if(S.sel!==null){const g=S.gates.find(function(g){return g.id===S.sel;});if(g&&g.el)g.el.classList.remove('sel');}
+  S.sel=id;S.msel.clear();S.gates.forEach(function(g){g.el&&g.el.classList.remove('msel');});
+  if(id!==null){const g=S.gates.find(function(g){return g.id===id;});if(g&&g.el)g.el.classList.add('sel');}
+  stUpd();S.pdirty=true;
+}
+function deselAll(){selGate(null);}
+
+function delGate(id){
+  const g=S.gates.find(function(g){return g.id===id;});if(!g)return;
+  S.wires=S.wires.filter(function(w){return w.fg!==id&&w.tg!==id;});
+  if(g.el)g.el.remove();
+  S.gates=S.gates.filter(function(g){return g.id!==id;});
+  if(S.sel===id)selGate(null);
+  simulate();stUpd();S.dirty=true;
+}
+function delSel(){const ids=S.sel!==null?[S.sel]:[...S.msel];ids.forEach(function(id){delGate(id);});}
+function dupGate(id){
+  const g=S.gates.find(function(g){return g.id===id;});if(!g)return;
+  const d=gdef(g);const key=g.type==='custom'?'custom:'+g.cn:g.type;
+  place(key,g.x+d.w+22,g.y);
+}
+
+// ═══════════════════════════════════════════════════════
+// CANVAS EVENTS
+// ═══════════════════════════════════════════════════════
+let panning=false,psx,psy,pox,poy,rbStart=null;
+
+cvwrap.addEventListener('mousedown',function(e){
+  if(e.button===1){
+    panning=true;psx=e.clientX;psy=e.clientY;pox=S.panX;poy=S.panY;
+    cvwrap.classList.add('pan','dragging');e.preventDefault();return;
+  }
+  if(e.button!==0)return;
+  // Consider wire-svg background, grid-cv, gate-lyr, sel-box, and svg itself as "background"
+  // Wire hitbox paths have data-wid so check for that
+  var isWireHit = e.target && e.target.tagName==='path' && e.target.dataset && e.target.dataset.wid;
+  if(isWireHit) return; // let wire hitbox handler handle it
+  const onBg=e.target===cvwrap||e.target===gridCv||e.target===gateLyr||e.target===wireSvg||e.target===selBox||e.target.tagName==='svg';
+  if(!onBg)return;
+  if(S.placing){
+    const r=cvwrap.getBoundingClientRect();
+    const w=s2w(e.clientX-r.left,e.clientY-r.top);
+    place(S.placing,w.x,w.y);return;
+  }
+  if(S.wfrom){cancelWire('Cancelled');return;}
+  const r=cvwrap.getBoundingClientRect();
+  rbStart={sx:e.clientX-r.left,sy:e.clientY-r.top};
+  selBox.style.display='none';deselAll();
+});
+
+cvwrap.addEventListener('mousemove',function(e){
+  const r=cvwrap.getBoundingClientRect();
+  const cx=e.clientX-r.left,cy=e.clientY-r.top;
+  const w=s2w(cx,cy);
+  document.getElementById('st-c').textContent=Math.round(w.x)+','+Math.round(w.y);
+  if(S.wfrom){
+    const fg=S.gates.find(function(g){return g.id===S.wfrom.gid;});
+    if(fg){const fp=pxy(fg,S.wfrom.isOut,S.wfrom.pidx);if(fp){S.wprev={x1:fp.x,y1:fp.y,x2:cx,y2:cy};drawWires();}}
+  }
+  if(rbStart){
+    const dx=cx-rbStart.sx,dy=cy-rbStart.sy;
+    if(Math.abs(dx)>6||Math.abs(dy)>6){
+      const bx=Math.min(cx,rbStart.sx),by=Math.min(cy,rbStart.sy);
+      selBox.style.cssText='display:block;left:'+bx+'px;top:'+by+'px;width:'+Math.abs(dx)+'px;height:'+Math.abs(dy)+'px';
+    }
+  }
+});
+
+cvwrap.addEventListener('mouseup',function(e){
+  if(rbStart){
+    const r=cvwrap.getBoundingClientRect();
+    const cx=e.clientX-r.left,cy=e.clientY-r.top;
+    const dx=cx-rbStart.sx,dy=cy-rbStart.sy;
+    if(Math.abs(dx)>6||Math.abs(dy)>6){
+      const wx0=(Math.min(cx,rbStart.sx)-S.panX)/S.zoom;
+      const wy0=(Math.min(cy,rbStart.sy)-S.panY)/S.zoom;
+      const wx1=(Math.max(cx,rbStart.sx)-S.panX)/S.zoom;
+      const wy1=(Math.max(cy,rbStart.sy)-S.panY)/S.zoom;
+      S.gates.forEach(function(g){
+        const d=gdef(g);
+        if(g.x<wx1&&g.x+d.w>wx0&&g.y<wy1&&g.y+d.h>wy0){S.msel.add(g.id);if(g.el)g.el.classList.add('msel');}
+      });
+      if(S.msel.size)msg(S.msel.size+' selected','ok');
+    }
+    rbStart=null;selBox.style.display='none';
+  }
+});
+
+cvwrap.addEventListener('click',function(e){
+  hideCM();
+  var isWireHit=e.target&&e.target.tagName==='path'&&e.target.dataset&&e.target.dataset.wid;
+  if(isWireHit) return;
+  const onBg=e.target===cvwrap||e.target===gridCv||e.target===gateLyr||e.target===wireSvg||e.target.tagName==='svg';
+  if(onBg&&!S.placing&&!S.wfrom)deselAll();
+});
+
+cvwrap.addEventListener('wheel',function(e){
+  e.preventDefault();
+  const r=cvwrap.getBoundingClientRect();
+  const mx=e.clientX-r.left,my=e.clientY-r.top;
+  const f=e.deltaY<0?1.12:1/1.12;
+  const nz=Math.min(4,Math.max(.18,S.zoom*f));
+  S.panX=mx-(mx-S.panX)*(nz/S.zoom);S.panY=my-(my-S.panY)*(nz/S.zoom);S.zoom=nz;
+  document.getElementById('zoom-lbl').textContent=Math.round(nz*100)+'%';
+  reposAll();drawGrid();
+},{passive:false});
+
+document.addEventListener('mousemove',function(e){
+  if(!panning)return;
+  S.panX=pox+(e.clientX-psx);S.panY=poy+(e.clientY-psy);reposAll();drawGrid();
+});
+document.addEventListener('mouseup',function(e){
+  if(e.button===1){panning=false;cvwrap.classList.remove('pan','dragging');}
+});
+
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){cancelWire('');setPlacing(null);deselAll();}
+  if((e.key==='Delete'||e.key==='Backspace')&&!e.target.matches('input,textarea,select')){
+    e.preventDefault();delSel();
+  }
+  if(e.key==='?' && !e.target.matches('input,textarea,select')){
+    document.getElementById('ov-hlp').classList.toggle('open');
+  }
+});
+
+// ═══════════════════════════════════════════════════════
+// CLOCK ENGINE — time-based, no tick modulo glitch
+// ═══════════════════════════════════════════════════════
+setInterval(function(){
+  const now=Date.now();let dirty=false;
+  S.gates.forEach(function(g){
+    if(g.type!=='clock')return;
+    const halfMs=500/(g.freq||1);
+    if(!g.lastTog)g.lastTog=now;
+    if(now-g.lastTog>=halfMs){
+      g.value=g.value?0:1;
+      g.lastTog=now;
+      dirty=true;
+    }
+  });
+  if(dirty)simulate();
+},10);
+
+// Lazy props refresh
+setInterval(function(){if(S.pdirty){S.pdirty=false;renderProps();}},66);
+// Auto-save every 10s
+setInterval(function(){if(S.dirty&&PROJ){autoSave();S.dirty=false;}},10000);
+
+// ═══════════════════════════════════════════════════════
+// SIDEBAR
+// ═══════════════════════════════════════════════════════
+function buildSidebar(){
+  const list=document.getElementById('sb-list');list.innerHTML='';
+  CATS.forEach(function(cat){
+    const h=document.createElement('div');h.className='ch';h.dataset.cid=cat.id;
+    h.innerHTML='<span class="cdot" style="background:'+cat.col+'"></span>'+cat.lbl+'<span class="carr">▶</span>';
+    list.appendChild(h);
+    const b=document.createElement('div');b.className='cb';b.dataset.cid=cat.id;
+    list.appendChild(b);
+    if(cat.id==='custom'){
+      rebuildCustomCat(b);
+    }else{
+      cat.types.forEach(function(type){
+        const d=DEF[type];if(!d)return;
+        addSBI(type,d.lbl+(d.sub?' '+d.sub:''),d.nc+':'+d.np,GCOL[type]||'#888',d.tip||d.lbl,b);
+      });
+    }
+    h.addEventListener('click',function(){h.classList.toggle('open');b.classList.toggle('open');});
+  });
+  ['io','buses','gates','arith','plex','seq','mem','custom'].forEach(function(id){
+    document.querySelectorAll('.ch[data-cid="'+id+'"],.cb[data-cid="'+id+'"]').forEach(function(el){el.classList.add('open');});
+  });
+}
+
+function addSBI(type,lbl,pins,col,tip,container,prepend){
+  const item=document.createElement('div');item.className='sbi';item.dataset.type=type;item.title=tip||lbl;
+  item.innerHTML='<span class="sbi-ic" style="background:'+col+'"></span>'+lbl+'<span class="sbi-pins">'+pins+'</span>';
+  item.addEventListener('click',function(){setPlacing(type);});
+  if(prepend&&container.firstChild)container.insertBefore(item,container.firstChild);
+  else container.appendChild(item);
+}
+
+function rebuildCustomCat(container){
+  if(!container)container=document.querySelector('.cb[data-cid="custom"]');
+  if(!container)return;
+  // Keep only the add/manage buttons at end, rebuild custom items first
+  container.innerHTML='';
+  Object.keys(S.custom).forEach(function(name){
+    const c=S.custom[name];
+    addSBI('custom:'+name,name,c.ins.length+':'+c.outs.length,'#50a878',c.desc||name,container);
+  });
+  const nb=document.createElement('div');nb.className='cust-add';nb.innerHTML='<span>⊕</span>New Custom Gate';nb.onclick=openCGModal;container.appendChild(nb);
+  const mb=document.createElement('div');mb.className='cust-add';mb.style.marginTop='2px';mb.innerHTML='<span>⊞</span>Manage Library';mb.onclick=openMgModal;container.appendChild(mb);
+}
+
+function setPlacing(type){
+  S.placing=type;
+  document.querySelectorAll('.sbi').forEach(function(i){i.classList.toggle('placing',i.dataset.type===type);});
+  if(type){
+    cvwrap.classList.add('pc');
+    const d=type.startsWith('custom:')?S.custom[type.slice(7)]?._def:DEF[type];
+    msg('Placing '+(d?d.lbl:type)+' — click canvas, Esc to cancel','ok');
+  }else{cvwrap.classList.remove('pc');}
+}
+
+document.getElementById('sb-in').addEventListener('input',function(e){
+  const q=e.target.value.toLowerCase();
+  document.querySelectorAll('.sbi').forEach(function(item){
+    const m=!q||item.textContent.toLowerCase().includes(q);
+    item.style.display=m?'':'none';
+    if(m&&q){const pb=item.closest('.cb');const ph=pb&&document.querySelector('.ch[data-cid="'+pb.dataset.cid+'"]');if(pb)pb.classList.add('open');if(ph)ph.classList.add('open');}
+  });
+});
+
+document.getElementById('btn-sb').addEventListener('click',function(){document.getElementById('sidebar').classList.toggle('off');});
+document.getElementById('btn-rp').addEventListener('click',function(){document.getElementById('rp').classList.toggle('off');});
+
+// ═══════════════════════════════════════════════════════
+// PROPERTIES PANEL
+// ═══════════════════════════════════════════════════════
+function renderProps(){
+  const body=document.getElementById('rpb');
+  if(S.msel.size>1){
+    body.innerHTML='<div class="ph">'+S.msel.size+' gates selected</div><div style="font-size:11px;color:var(--t3);margin-bottom:8px">Shift+click to add/remove</div><div class="psep"></div><button class="pbtn" id="pp-pkg">⊞ Package as Custom Gate</button><button class="pbtn rd" id="pp-da">🗑 Delete All</button>';
+    document.getElementById('pp-pkg')&&document.getElementById('pp-pkg').addEventListener('click',pkgSel);
+    document.getElementById('pp-da')&&document.getElementById('pp-da').addEventListener('click',delSel);
+    return;
+  }
+  const id=S.sel;
+  if(id===null){body.innerHTML='<p style="color:var(--t3);font-size:11.5px;margin-top:6px">Select a gate</p>';return;}
+  const gate=S.gates.find(function(g){return g.id===id;});
+  if(!gate){body.innerHTML='—';return;}
+  const d=gdef(gate),pl=gplbl(gate);
+  let h='';
+  h+='<div class="ph">'+d.lbl+' #'+gate.id+'</div>';
+  h+='<div class="pr"><span class="pk">type</span><span class="pv">'+gate.type+'</span></div>';
+  h+='<div class="pr"><span class="pk">pos</span><span class="pv">'+gate.x+','+gate.y+'</span></div>';
+  h+='<div class="psep"></div>';
+  if(gate.type==='input'){
+    h+='<div class="pr"><span class="pk">value</span><span class="pv" style="color:'+(gate.value?'var(--hi)':'var(--lo)')+';font-family:var(--fmono)">'+gate.value+'</span></div>';
+    h+='<button class="pbtn" id="pp-tog">Toggle 0 ↔ 1</button>';
+  }
+  if(gate.type==='clock'){
+    h+='<div class="pr"><span class="pk">state</span><span class="pv" style="color:'+(gate.value?'var(--hi)':'var(--lo)')+'">'+( gate.value?'HIGH':'LOW')+'</span></div>';
+    h+='<div class="pr"><span class="pk">freq</span><span class="pv" style="font-family:var(--fmono)">'+gate.freq+' Hz</span></div>';
+    h+='<div class="ph" style="margin-top:8px">Frequency</div>';
+    h+='<div class="fqr">'+[0.5,1,2,5,10,20,50].map(function(f){return'<button class="fqb '+(gate.freq==f?'on':'')+'" data-f="'+f+'">'+f+'Hz</button>';}).join('')+'</div>';
+  }
+  if(['sr','dlatch','dff','jkff','tff'].includes(gate.type)){
+    const qv=gate.q?1:0;
+    h+='<div class="qdsp '+(gate.fault?'iv':qv?'hi':'lo')+'">'+(gate.fault?'INVALID':'Q = '+qv)+'</div>';
+    h+='<button class="pbtn" id="pp-rst">↺ Reset (Q=0)</button>';
+  }
+  if((pl.i||[]).length||(pl.o||[]).length){
+    h+='<div class="ph" style="margin-top:8px">Pins</div>';
+    (pl.i||[]).forEach(function(nm,i){
+      const w=S.wires.find(function(w){return w.tg===gate.id&&w.tp===i;});const s=w!=null?w.sig:null;
+      h+='<div class="pinrow"><div class="pindot '+(s===1?'hi':s===0?'lo':'')+'"></div><span class="pname">← '+nm+'</span><span class="psig">'+(s!==null?s:'nc')+'</span></div>';
+    });
+    (pl.o||[]).forEach(function(nm,i){
+      const w=S.wires.find(function(w){return w.fg===gate.id&&w.fp===i;});const s=w!=null?w.sig:null;
+      h+='<div class="pinrow"><div class="pindot '+(s===1?'hi':s===0?'lo':'')+'"></div><span class="pname">'+nm+' →</span><span class="psig">'+(s!==null?s:'nc')+'</span></div>';
+    });
+  }
+  h+='<div class="psep"></div>';
+  h+='<button class="pbtn" id="pp-dup">⧉ Duplicate</button>';
+  h+='<button class="pbtn rd" id="pp-del">🗑 Delete</button>';
+  body.innerHTML=h;
+
+  document.getElementById('pp-tog')&&document.getElementById('pp-tog').addEventListener('click',function(){gate.value=gate.value?0:1;simulate();S.dirty=true;S.pdirty=true;});
+  document.getElementById('pp-rst')&&document.getElementById('pp-rst').addEventListener('click',function(){gate.q=0;gate.prevClk=0;gate.fault=false;simulate();S.dirty=true;S.pdirty=true;});
+  document.getElementById('pp-dup')&&document.getElementById('pp-dup').addEventListener('click',function(){dupGate(gate.id);});
+  document.getElementById('pp-del')&&document.getElementById('pp-del').addEventListener('click',function(){delGate(gate.id);});
+  document.querySelectorAll('.fqb').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      gate.freq=parseFloat(btn.dataset.f);
+      gate.lastTog=Date.now(); // ← reset timing so change takes effect immediately
+      const fl=document.getElementById('cfl'+gate.id);if(fl)fl.textContent=gate.freq+'Hz';
+      document.querySelectorAll('.fqb').forEach(function(x){x.classList.toggle('on',x.dataset.f==gate.freq);});
+      S.dirty=true;
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// CUSTOM GATE WIZARD
+// ═══════════════════════════════════════════════════════
+let CGW={step:1,name:'',desc:'',ins:['A','B'],outs:['Y'],table:[]};
+
+function openCGModal(){
+  CGW={step:1,name:'',desc:'',ins:['A','B'],outs:['Y'],table:[]};
+  renderCG1();document.getElementById('ov-cg').classList.add('open');
+}
+function renderCG1(){
+  CGW.step=1;document.getElementById('cg-sl').textContent='Step 1 of 2';
+  document.getElementById('cg-bk').style.display='none';document.getElementById('cg-nx').textContent='Next →';
+  document.getElementById('cg-body').innerHTML=
+    '<div class="mr"><label>Gate Name</label><input class="mi" id="cgn" value="'+CGW.name+'" maxlength="20" placeholder="MYGATE" spellcheck="false"></div>'+
+    '<div class="mr"><label>Description</label><input class="mi" id="cgd" value="'+CGW.desc+'" placeholder="Optional"></div>'+
+    '<div class="mr"><label># Inputs</label><select class="msel" id="cgni">'+[1,2,3,4].map(function(n){return'<option'+(n===CGW.ins.length?' selected':'')+'>'+n+'</option>';}).join('')+'</select></div>'+
+    '<div class="mr"><label># Outputs</label><select class="msel" id="cgno">'+[1,2,3,4].map(function(n){return'<option'+(n===CGW.outs.length?' selected':'')+'>'+n+'</option>';}).join('')+'</select></div>'+
+    '<div class="mr" style="align-items:flex-start"><label>Input Names</label><div class="pnw" id="cgins">'+CGW.ins.map(function(n,i){return'<input class="pni" data-ii="'+i+'" value="'+n+'" maxlength="5" placeholder="I'+i+'">';}).join('')+'</div></div>'+
+    '<div class="mr" style="align-items:flex-start"><label>Output Names</label><div class="pnw" id="cgouts">'+CGW.outs.map(function(n,i){return'<input class="pni" data-oi="'+i+'" value="'+n+'" maxlength="5" placeholder="O'+i+'">';}).join('')+'</div></div>';
+  document.getElementById('cgni').onchange=function(e){const n=+e.target.value;CGW.ins=Array.from({length:n},function(_,i){return CGW.ins[i]||'I'+i;});renderCG1();};
+  document.getElementById('cgno').onchange=function(e){const n=+e.target.value;CGW.outs=Array.from({length:n},function(_,i){return CGW.outs[i]||'O'+i;});renderCG1();};
+}
+function renderCG2(){
+  CGW.step=2;document.getElementById('cg-sl').textContent='Step 2 of 2';
+  document.getElementById('cg-bk').style.display='';document.getElementById('cg-nx').textContent='💾 Save Gate';
+  const rows=1<<CGW.ins.length;
+  if(!CGW.table||CGW.table.length!==rows)CGW.table=Array.from({length:rows},function(){return CGW.outs.map(function(){return 0;});});
+  let th='<tr><th colspan="'+CGW.ins.length+'" style="border-right:1px solid var(--b2)">Inputs</th><th colspan="'+CGW.outs.length+'" style="color:var(--acc)">Outputs</th></tr>';
+  th+='<tr>'+CGW.ins.map(function(n){return'<th>'+n+'</th>';}).join('')+CGW.outs.map(function(n){return'<th>'+n+'</th>';}).join('')+'</tr>';
+  let tb='';
+  for(let r=0;r<rows;r++){
+    const bits=CGW.ins.map(function(_,i){return(r>>(CGW.ins.length-1-i))&1;});
+    tb+='<tr>'+bits.map(function(b){return'<td style="color:var(--t3)">'+b+'</td>';}).join('');
+    tb+=CGW.outs.map(function(_,oi){const v=CGW.table[r][oi];return'<td><div class="ttc '+(v?'v1':'')+'" data-r="'+r+'" data-o="'+oi+'">'+v+'</div></td>';}).join('');
+    tb+='</tr>';
+  }
+  document.getElementById('cg-body').innerHTML='<p style="font-size:11px;color:var(--t3);margin-bottom:8px">Click output cells to toggle 0↔1</p><div class="ttw"><table class="tt"><thead>'+th+'</thead><tbody id="ttbd">'+tb+'</tbody></table></div>';
+  document.getElementById('ttbd').addEventListener('click',function(e){
+    const cc=e.target.closest('.ttc');if(!cc)return;
+    const r=+cc.dataset.r,o=+cc.dataset.o;CGW.table[r][o]=CGW.table[r][o]?0:1;
+    cc.textContent=CGW.table[r][o];cc.className='ttc '+(CGW.table[r][o]?'v1':'');
+  });
+}
+document.getElementById('cg-nx').onclick=function(){
+  if(CGW.step===1){
+    CGW.name=document.getElementById('cgn').value.trim();
+    CGW.desc=document.getElementById('cgd').value.trim();
+    document.querySelectorAll('#cgins .pni').forEach(function(el,i){CGW.ins[i]=el.value.trim()||'I'+i;});
+    document.querySelectorAll('#cgouts .pni').forEach(function(el,i){CGW.outs[i]=el.value.trim()||'O'+i;});
+    if(!CGW.name){msg('Enter a gate name','er');return;}
+    if(!/^[a-zA-Z0-9_\-]{1,20}$/.test(CGW.name)){msg('Name: letters/digits/_/- only','er');return;}
+    renderCG2();
+  }else{
+    const nc=CGW.ins.length,np=CGW.outs.length;
+    S.custom[CGW.name]={
+      type:'truth',desc:CGW.desc,ins:CGW.ins,outs:CGW.outs,table:CGW.table,
+      _def:{lbl:CGW.name,w:Math.max(76,CGW.name.length*8+16),h:Math.max(60,Math.max(nc,np)*22+20),nc,np,cls:'tcu',tip:CGW.desc||CGW.name,sub:nc+'→'+np}
+    };
+    PLBL['custom:'+CGW.name]={i:CGW.ins,o:CGW.outs};
+    document.getElementById('ov-cg').classList.remove('open');
+    rebuildCustomCat();S.dirty=true;
+    msg('"'+CGW.name+'" saved — Custom Gates ↗','ok');
+  }
+};
+document.getElementById('cg-bk').onclick=function(){if(CGW.step===2)renderCG1();};
+document.getElementById('cg-x').onclick=function(){document.getElementById('ov-cg').classList.remove('open');};
+
+// ═══════════════════════════════════════════════════════
+// PACKAGE SELECTION AS SUBCIRCUIT
+// ═══════════════════════════════════════════════════════
+function pkgSel(){
+  const ids=S.msel.size>0?[...S.msel]:(S.sel!==null?[S.sel]:[]);
+  if(ids.length<2){msg('Select ≥2 gates (needs ≥1 INPUT + ≥1 OUTPUT)','er');return;}
+  const sg=ids.map(function(id){return S.gates.find(function(g){return g.id===id;});}).filter(Boolean);
+  const inp=sg.filter(function(g){return g.type==='input';});
+  const out=sg.filter(function(g){return g.type==='output';});
+  if(!inp.length||!out.length){msg('Needs ≥1 INPUT gate and ≥1 OUTPUT gate','er');return;}
+  let name='Sub'+Object.keys(S.custom).length;
+  try{const n=window.prompt('Name for this custom gate:',name);if(n&&n.trim())name=n.trim().replace(/[^a-zA-Z0-9_\-]/g,'');}catch(e){}
+  if(!name)name='Sub'+S.nid;
+  const sid=new Set(ids);
+  const cg=JSON.parse(JSON.stringify(sg.map(function(g){return{id:g.id,type:g.type,x:g.x,y:g.y,value:g.value,q:g.q,prevClk:g.prevClk,freq:g.freq,cn:g.cn};})));
+  const cw=S.wires.filter(function(w){return sid.has(w.fg)&&sid.has(w.tg);}).map(function(w){return Object.assign({},w);});
+  const nc=inp.length,np=out.length;
+  S.custom[name]={
+    type:'sub',desc:'Subcircuit',
+    ins:inp.map(function(_,i){return'I'+i;}),outs:out.map(function(_,i){return'O'+i;}),
+    inputIds:inp.map(function(g){return g.id;}),outputIds:out.map(function(g){return g.id;}),
+    circuit:{gates:cg,wires:cw},
+    _def:{lbl:name,w:Math.max(76,name.length*8+16),h:Math.max(60,Math.max(nc,np)*22+20),nc,np,cls:'tcu',tip:'Subcircuit: '+name,sub:nc+'→'+np}
+  };
+  PLBL['custom:'+name]={i:inp.map(function(_,i){return'I'+i;}),o:out.map(function(_,i){return'O'+i;})};
+  rebuildCustomCat();S.dirty=true;
+  msg('"'+name+'" packaged — find in Custom Gates','ok');
+}
+
+// ═══════════════════════════════════════════════════════
+// MANAGE MODAL
+// ═══════════════════════════════════════════════════════
+function openMgModal(){
+  const body=document.getElementById('mg-body');
+  const keys=Object.keys(S.custom);
+  if(!keys.length){body.innerHTML='<p style="color:var(--t3);font-size:11.5px">No custom gates yet.</p>';}
+  else{
+    body.innerHTML=keys.map(function(name){
+      const c=S.custom[name];
+      return '<div class="cgl"><div style="flex:1"><div style="font-weight:600">'+name+'</div><div style="font-size:10px;color:var(--t3)">'+(c.type==='truth'?'Truth Table':'Subcircuit')+' · '+c.ins.length+'in/'+c.outs.length+'out</div></div><button class="cgdel" data-n="'+name+'">✕</button></div>';
+    }).join('');
+    body.querySelectorAll('.cgdel').forEach(function(b){
+      b.addEventListener('click',function(){
+        const n=b.dataset.n;delete S.custom[n];delete PLBL['custom:'+n];
+        rebuildCustomCat();openMgModal();S.dirty=true;msg('"'+n+'" removed','');
+      });
+    });
+  }
+  document.getElementById('ov-mg').classList.add('open');
+}
+document.getElementById('mg-cl').onclick=function(){document.getElementById('ov-mg').classList.remove('open');};
+
+// ═══════════════════════════════════════════════════════
+// VERILOG EXPORT
+// ═══════════════════════════════════════════════════════
+let vMode='structural';
+
+function openVerilogModal(){
+  vMode='structural';
+  document.getElementById('ov-verilog').classList.add('open');
+  document.getElementById('v-export-area').style.display='';
+  document.getElementById('v-import-area').style.display='none';
+  document.getElementById('v-dl').style.display='flex';
+  updateVerilogTabs();
+  genVerilog();
+}
+
+function updateVerilogTabs(){
+  document.querySelectorAll('.vtab').forEach(function(t){
+    t.classList.toggle('on',t.id==='vt-'+vMode||(vMode==='import'&&t.id==='vt-import'));
+  });
+}
+
+document.querySelectorAll('.vtab').forEach(function(tab){
+  tab.addEventListener('click',function(){
+    if(tab.id==='vt-import'){
+      vMode='import';
+      document.getElementById('v-export-area').style.display='none';
+      document.getElementById('v-import-area').style.display='';
+      document.getElementById('v-dl').style.display='none';
+    }else{
+      vMode=tab.dataset.mode;
+      document.getElementById('v-export-area').style.display='';
+      document.getElementById('v-import-area').style.display='none';
+      document.getElementById('v-dl').style.display='flex';
+      genVerilog();
+    }
+    updateVerilogTabs();
+  });
+});
+
+function genVerilog(){
+  const inputs=S.gates.filter(function(g){return g.type==='input';});
+  const outputs=S.gates.filter(function(g){return g.type==='output';});
+  const pName=PROJ?PROJ.name.replace(/\W/g,'_'):'circuit';
+
+  // Name inputs/outputs
+  function inName(g,i){return'in_'+String.fromCharCode(65+i);}
+  function outName(g,i){return'out_'+i;}
+  const inMap={};inputs.forEach(function(g,i){inMap[g.id]=inName(g,i);});
+  const outMap={};outputs.forEach(function(g,i){outMap[g.id]=outName(g,i);});
+
+  // Assign a net name to each output pin of each gate
+  const netMap={};// key: gid+'_'+fp → wire name
+  let wCount=0;
+  function netName(gid,fp){
+    const k=gid+'_'+fp;
+    if(!netMap[k]){
+      // Check if this gate is an input
+      const g=S.gates.find(function(g){return g.id===gid;});
+      if(g&&g.type==='input'){netMap[k]=inMap[g.id]||'w'+wCount++;}
+      else{netMap[k]='w'+wCount++;}
+    }
+    return netMap[k];
+  }
+
+  // Pre-populate input nets
+  inputs.forEach(function(g){netMap[g.id+'_0']=inMap[g.id];});
+
+  // Generate nets for all connected output pins
+  S.wires.forEach(function(w){
+    if(!netMap[w.fg+'_'+w.fp]){netName(w.fg,w.fp);}
+  });
+
+  const netWidths={};
+  S.wires.forEach(function(w){
+    const n=netMap[w.fg+'_'+w.fp];
+    if(n){
+      const g=S.gates.find(function(gt){return gt.id===w.fg;});
+      let width=1;
+      if(g){
+        if(['rom8','ram8','alu8','count8','shift8','merge8'].includes(g.type) && w.fp===0) width=8;
+        else if(g.type==='merge4' && w.fp===0) width=4;
+      }
+      netWidths[n]=width;
+    }
+  });
+
+  // Gather all internal wire names
+  const internalNets=new Set();
+  S.wires.forEach(function(w){
+    const n=netMap[w.fg+'_'+w.fp];
+    if(n&&!Object.values(inMap).includes(n)&&!Object.values(outMap).includes(n))
+      internalNets.add(n);
+  });
+
+  const inPorts=inputs.map(function(g,i){return inMap[g.id];}).join(', ');
+  const outPorts=outputs.map(function(g,i){return outMap[g.id];}).join(', ');
+  const portList=[inPorts,outPorts].filter(Boolean).join(', ');
+
+  if(vMode==='vhdl'){
+    let code='-- Generated by SQGATE\n-- Mode: VHDL\n\nlibrary IEEE;\nuse IEEE.STD_LOGIC_1164.ALL;\n\n';
+    code+='entity '+pName+' is\n  Port (\n';
+    const vPorts=[];
+    if(inPorts) vPorts.push('    '+inputs.map(function(g){return inMap[g.id]+' : in STD_LOGIC';}).join(';\n    '));
+    if(outPorts) vPorts.push('    '+outputs.map(function(g){return outMap[g.id]+' : out STD_LOGIC';}).join(';\n    '));
+    code+=vPorts.join(';\n')+'\n  );\nend '+pName+';\n\n';
+    code+='architecture Behavioral of '+pName+' is\n';
+    internalNets.forEach(function(n){
+      const w=netWidths[n]||1;
+      if(w===8) code+='  signal '+n+' : STD_LOGIC_VECTOR(7 downto 0);\n';
+      else if(w===4) code+='  signal '+n+' : STD_LOGIC_VECTOR(3 downto 0);\n';
+      else code+='  signal '+n+' : STD_LOGIC;\n';
+    });
+    code+='begin\n';
+    
+    // Logic assignments
+    S.gates.forEach(function(gate){
+      if(['input','output','clock','const0','const1'].includes(gate.type))return;
+      const d=gdef(gate);
+      const ins=[];
+      for(let p=0;p<d.nc;p++){
+        const w=S.wires.find(function(w){return w.tg===gate.id&&w.tp===p;});
+        ins.push(w?netMap[w.fg+'_'+w.fp]||"'0'":"'0'");
+      }
+      for(let p=0;p<d.np;p++){
+        const net=netMap[gate.id+'_'+p];
+        if(!net) continue;
+        const gt = gate.type;
+        let expr = '';
+        if(gt==='and') expr = ins.join(' and ');
+        else if(gt==='or') expr = ins.join(' or ');
+        else if(gt==='nand') expr = ins.join(' nand ');
+        else if(gt==='nor') expr = ins.join(' nor ');
+        else if(gt==='xor') expr = ins.join(' xor ');
+        else if(gt==='xnor') expr = ins.join(' xnor ');
+        else if(gt==='not') expr = 'not '+ins[0];
+        else if(gt==='buffer') expr = ins[0];
+        else if(gt==='ic7400') expr = ins[p*2]+' nand '+ins[p*2+1];
+        else if(gt==='ic7402') expr = ins[p*2]+' nor '+ins[p*2+1];
+        else if(gt==='ic7404') expr = 'not '+ins[p];
+        else if(gt==='ic7408') expr = ins[p*2]+' and '+ins[p*2+1];
+        else if(gt==='ic7432') expr = ins[p*2]+' or '+ins[p*2+1];
+        else if(gt==='ic7486') expr = ins[p*2]+' xor '+ins[p*2+1];
+        else expr = "'0'; -- "+gt+" not mapped to VHDL yet";
+        code+='  '+net+' <= '+expr+';\n';
+      }
+    });
+    
+    // Assign outputs
+    outputs.forEach(function(g){
+      const w=S.wires.find(function(w){return w.tg===g.id&&w.tp===0;});
+      if(w){const src=netMap[w.fg+'_'+w.fp];code+='  '+outMap[g.id]+' <= '+(src||"'0'")+';\n';}
+    });
+    code+='end Behavioral;\n';
+    document.getElementById('vcode').textContent=code;
+    return;
+  }
+
+  let code='// Generated by SQGATE\n';
+  code+='// Mode: '+(vMode==='structural'?'Structural':'Behavioral')+'\n\n';
+
+  code+='module '+pName+'(\n';
+  code+='  '+[...(inPorts?['input wire '+inPorts]:[]),...(outPorts?['output '+(vMode==='behavioral'?'reg':'wire')+' '+outPorts]:[])].join(',\n  ');
+  code+='\n);\n\n';
+  
+  internalNets.forEach(function(n){
+    const w=netWidths[n]||1;
+    if(w===8) code+='  wire [7:0] '+n+';\n';
+    else if(w===4) code+='  wire [3:0] '+n+';\n';
+    else code+='  wire '+n+';\n';
+  });
+  if(internalNets.size) code+='\n';
+
+  if(vMode==='structural'){
+    // Output a primitive instantiation per gate
+    let gCount=0;
+    S.gates.forEach(function(gate){
+      if(['input','output','clock','const0','const1'].includes(gate.type))return;
+      const d=gdef(gate);
+      // Gather input nets
+      const ins=[];
+      for(let p=0;p<d.nc;p++){
+        const w=S.wires.find(function(w){return w.tg===gate.id&&w.tp===p;});
+        ins.push(w?netMap[w.fg+'_'+w.fp]||'1\'b0':'1\'b0');
+      }
+      // Gather output nets
+      const outs=[];
+      for(let p=0;p<d.np;p++){
+        outs.push(netMap[gate.id+'_'+p]||('_nc'+gCount));
+      }
+      const gn=gate.type.replace('ff','_ff').replace('dlatch','d_latch');
+      code+='  '+gn+' U'+gCount+'(';
+      const ports=ins.map(function(n,i){return'.i'+i+'('+n+')';});
+      outs.forEach(function(n,i){ports.push('.o'+i+'('+n+')');});
+      code+=ports.join(', ')+');\n';
+      gCount++;
+    });
+    // Output assignments
+    outputs.forEach(function(g,i){
+      const w=S.wires.find(function(w){return w.tg===g.id&&w.tp===0;});
+      if(w){const src=netMap[w.fg+'_'+w.fp];code+='  assign '+outMap[g.id]+' = '+(src||"1'b0")+';\n';}
+    });
+    // Primitive modules
+    if(gCount>0){
+      code+='\n// ─── Primitive definitions ───\n';
+      const seen=new Set();
+      S.gates.forEach(function(gate){
+        if(['input','output','clock','const0','const1'].includes(gate.type))return;
+        if(seen.has(gate.type))return;seen.add(gate.type);
+        const d=gdef(gate);
+        const iPorts=Array.from({length:d.nc},function(_,i){return'i'+i;});
+        const oPorts=Array.from({length:d.np},function(_,i){return'o'+i;});
+        const allPorts=[...iPorts,...oPorts];
+        const gn=gate.type.replace('ff','_ff').replace('dlatch','d_latch');
+        code+='\nmodule '+gn+'('+allPorts.join(', ')+');\n';
+        if(iPorts.length) {
+          iPorts.forEach(function(ip, idx) {
+             let w = 1;
+             if(['split8','rom8'].includes(gate.type) && idx===0) w = 8;
+             else if(['alu8','ram8'].includes(gate.type) && (idx===0 || idx===1)) w = 8;
+             else if(gate.type==='shift8' && idx===2) w = 8;
+             else if(['split4','hexdisp'].includes(gate.type) && idx===0) w = 4;
+             if(w===8) code += '  input wire [7:0] ' + ip + ';\n';
+             else if(w===4) code += '  input wire [3:0] ' + ip + ';\n';
+             else code += '  input wire ' + ip + ';\n';
+          });
+        }
+        if(oPorts.length) {
+          oPorts.forEach(function(op, idx) {
+             let w = 1;
+             if(['rom8','ram8','alu8','count8','shift8','merge8'].includes(gate.type) && idx===0) w = 8;
+             else if(gate.type==='merge4' && idx===0) w = 4;
+             let isR = isSeq(gate.type) ? 'reg' : 'wire';
+             if(w===8) code += '  output ' + isR + ' [7:0] ' + op + ';\n';
+             else if(w===4) code += '  output ' + isR + ' [3:0] ' + op + ';\n';
+             else code += '  output ' + isR + ' ' + op + ';\n';
+          });
+        }
+        code+=verilogPrimBody(gate.type,iPorts,oPorts);
+        code+='endmodule\n';
+      });
+    }
+  }else{
+    // Behavioral
+    code+='  always @(*) begin\n';
+    S.gates.forEach(function(gate){
+      if(['input','output','clock','const0','const1'].includes(gate.type))return;
+      const d=gdef(gate);
+      const ins=[];
+      for(let p=0;p<d.nc;p++){
+        const w=S.wires.find(function(w){return w.tg===gate.id&&w.tp===p;});
+        ins.push(w?netMap[w.fg+'_'+w.fp]||"1'b0":"1'b0");
+      }
+      for(let p=0;p<d.np;p++){
+        const net=netMap[gate.id+'_'+p];
+        if(net){code+='    '+net+' = '+verilogExpr(gate.type,ins,p)+';\n';}
+      }
+    });
+    outputs.forEach(function(g,i){
+      const w=S.wires.find(function(w){return w.tg===g.id&&w.tp===0;});
+      if(w){const src=netMap[w.fg+'_'+w.fp];code+='    '+outMap[g.id]+' = '+(src||"1'b0")+';\n';}
+    });
+    code+='  end\n';
+  }
+
+  code+='\nendmodule\n';
+  document.getElementById('vcode').textContent=code;
+}
+
+function isSeq(type){return['sr','dlatch','dff','jkff','tff','count8'].includes(type);}
+
+function verilogExpr(type,ins,outIdx){
+  const a=ins[0]||"1'b0",b=ins[1]||"1'b0",c=ins[2]||"1'b0";
+  switch(type){
+    case 'buffer':return a;
+    case 'and': return a+' & '+b;
+    case 'or':  return a+' | '+b;
+    case 'not': return '~'+a;
+    case 'nand':return '~('+a+' & '+b+')';
+    case 'nor': return '~('+a+' | '+b+')';
+    case 'xor': return a+' ^ '+b;
+    case 'xnor':return '~('+a+' ^ '+b+')';
+    case 'mux2':return c+'?'+b+':'+a;
+    default: return "1'b0";
+  }
+}
+
+function verilogPrimBody(type,iPorts,oPorts){
+  const a=iPorts[0]||"1'b0",b=iPorts[1]||"1'b0",c=iPorts[2]||"1'b0";
+  const o0=oPorts[0],o1=oPorts[1];
+  switch(type){
+    case 'buffer':return'  assign '+o0+' = '+a+';\n';
+    case 'and': return'  assign '+o0+' = '+a+' & '+b+';\n';
+    case 'or':  return'  assign '+o0+' = '+a+' | '+b+';\n';
+    case 'not': return'  assign '+o0+' = ~'+a+';\n';
+    case 'nand':return'  assign '+o0+' = ~('+a+' & '+b+');\n';
+    case 'nor': return'  assign '+o0+' = ~('+a+' | '+b+');\n';
+    case 'xor': return'  assign '+o0+' = '+a+' ^ '+b+';\n';
+    case 'xnor':return'  assign '+o0+' = ~('+a+' ^ '+b+');\n';
+    case 'ha':  return'  assign '+o0+' = '+a+' ^ '+b+';\n  assign '+o1+' = '+a+' & '+b+';\n';
+    case 'mux2':return'  assign '+o0+' = '+c+'?'+b+':'+a+';\n';
+    case 'count8': {
+      const clk=iPorts[0], en=iPorts[1], clr=iPorts[2], up=iPorts[3];
+      return '  always @(posedge '+clk+' or posedge '+clr+') begin\n'+
+             '    if ('+clr+') o0 <= 8\'d0;\n'+
+             '    else if ('+en+') begin\n'+
+             '      if ('+up+') o0 <= o0 + 1;\n'+
+             '      else o0 <= o0 - 1;\n'+
+             '    end\n'+
+             '  end\n'+
+             '  assign o1 = ('+up+' && o0 == 8\'d255) || (!'+up+' && o0 == 8\'d0);\n';
+    }
+    case 'split8':
+      return oPorts.map((o,i)=>'  assign '+o+' = '+a+'['+(7-i)+'];\n').join('');
+    case 'merge8':
+      return '  assign '+o0+' = {'+iPorts.join(', ')+'};\n';
+    case 'split4':
+      return oPorts.map((o,i)=>'  assign '+o+' = '+a+'['+(3-i)+'];\n').join('');
+    case 'merge4':
+      return '  assign '+o0+' = {'+iPorts.join(', ')+'};\n';
+    case 'ic7400':
+      return oPorts.map((o,i)=>'  assign '+o+' = ~('+iPorts[i*2]+' & '+iPorts[i*2+1]+');\n').join('');
+    case 'ic7402':
+      return oPorts.map((o,i)=>'  assign '+o+' = ~('+iPorts[i*2]+' | '+iPorts[i*2+1]+');\n').join('');
+    case 'ic7404':
+      return oPorts.map((o,i)=>'  assign '+o+' = ~'+iPorts[i]+';\n').join('');
+    case 'ic7408':
+      return oPorts.map((o,i)=>'  assign '+o+' = '+iPorts[i*2]+' & '+iPorts[i*2+1]+';\n').join('');
+    case 'ic7432':
+      return oPorts.map((o,i)=>'  assign '+o+' = '+iPorts[i*2]+' | '+iPorts[i*2+1]+';\n').join('');
+    case 'ic7486':
+      return oPorts.map((o,i)=>'  assign '+o+' = '+iPorts[i*2]+' ^ '+iPorts[i*2+1]+';\n').join('');
+    case 'hexdisp':
+      return '  // hexdisp (display only)\n';
+    default: return'  // '+type+'\n';
+  }
+}
+
+document.getElementById('v-dl').addEventListener('click',function(){
+  const code=document.getElementById('vcode').textContent;
+  if(!code)return;
+  const pName=(PROJ?PROJ.name:'circuit').replace(/\W/g,'_');
+  const blob=new Blob([code],{type:'text/plain'});
+  const url=URL.createObjectURL(blob);
+  const ext = (vMode === 'vhdl') ? '.vhd' : '.v';
+  const a=document.createElement('a');a.href=url;a.download=pName+ext;a.click();
+  URL.revokeObjectURL(url);
+  msg('Downloaded '+pName+ext,'ok');
+});
+document.getElementById('v-close').addEventListener('click',function(){document.getElementById('ov-verilog').classList.remove('open');});
+
+// ═══════════════════════════════════════════════════════
+// VERILOG IMPORT
+// ═══════════════════════════════════════════════════════
+function setupVerilogImport(){
+  const dz=document.getElementById('v-drop-zone');
+  const fi=document.getElementById('v-file-in');
+  dz.addEventListener('click',function(){fi.click();});
+  dz.addEventListener('dragover',function(e){e.preventDefault();dz.classList.add('drag-over');});
+  dz.addEventListener('dragleave',function(){dz.classList.remove('drag-over');});
+  dz.addEventListener('drop',function(e){
+    e.preventDefault();dz.classList.remove('drag-over');
+    const file=e.dataTransfer.files[0];if(file)readVFile(file);
+  });
+  fi.addEventListener('change',function(){if(fi.files[0])readVFile(fi.files[0]);});
+}
+function readVFile(file){
+  const reader=new FileReader();
+  reader.onload=function(e){parseVerilog(e.target.result);};
+  reader.readAsText(file);
+}
+// ─── Verilog token helpers ───────────────────────────────
+function vClean(src) {
+  // Remove line comments
+  src = src.replace(/\/\/[^\n]*/g, '');
+  // Remove block comments
+  src = src.replace(/\/\*[\s\S]*?\*\//g, '');
+  // Collapse whitespace
+  return src.replace(/\s+/g, ' ').trim();
+}
+
+function vSplitPorts(portStr) {
+  // Split port list respecting brackets
+  return portStr.split(',').map(function(p){ return p.trim(); }).filter(Boolean);
+}
+
+function vStripBits(name) {
+  // Remove bit-select like [3:0] from wire name
+  return name.replace(/\s*\[.*?\]\s*/g, '').trim();
+}
+
+function vConnect(src, tg, tp, deferredWires) {
+  if (!src) return;
+  if (src.isNet) deferredWires.push({ netName: src.netName, tg: tg, tp: tp });
+  else S.wires.push({id: S.nid++, fg: src.gid, fp: src.fp, tg: tg, tp: tp, sig: 0});
+}
+
+function vParseExpr(expr, wireMap, cx, cy, created, deferredWires) {
+  expr = expr.trim();
+  while (expr[0] === '(' && expr[expr.length-1] === ')') {
+    var depth = 0, wrapped = true;
+    for (var i = 0; i < expr.length-1; i++) {
+      if (expr[i]==='(') depth++;
+      else if (expr[i]===')') depth--;
+      if (depth===0 && i < expr.length-1) { wrapped=false; break; }
+    }
+    if (wrapped) expr = expr.slice(1,-1).trim();
+    else break;
+  }
+
+  var ternM = matchTernary(expr);
+  if (ternM) {
+    var selNet = vParseExpr(ternM.sel, wireMap, cx, cy, created, deferredWires);
+    var aNet   = vParseExpr(ternM.a,   wireMap, cx, cy, created, deferredWires);
+    var bNet   = vParseExpr(ternM.b,   wireMap, cx, cy, created, deferredWires);
+    var g = vPlaceGate('mux2', created);
+    vConnect(aNet, g.id, 0, deferredWires);
+    vConnect(bNet, g.id, 1, deferredWires);
+    vConnect(selNet, g.id, 2, deferredWires);
+    return {gid:g.id, fp:0};
+  }
+
+  if ((expr[0]==='~'||expr[0]==='!') && !expr.slice(1).match(/[&|^]/)) {
+    var inner = expr.slice(1).trim().replace(/^\(|\)$/g,'').trim();
+    var src = vParseExpr(inner, wireMap, cx, cy, created, deferredWires);
+    var g = vPlaceGate('not', created);
+    vConnect(src, g.id, 0, deferredWires);
+    return {gid:g.id, fp:0};
+  }
+
+  var ops = [
+    {op:'|',  type:'or' },
+    {op:'^',  type:'xor'},
+    {op:'&',  type:'and'}
+  ];
+  for (var oi=0; oi<ops.length; oi++) {
+    var parts = vSplitOp(expr, ops[oi].op);
+    if (parts.length >= 2) {
+      var left = vParseExpr(parts[0], wireMap, cx, cy, created, deferredWires);
+      for (var pi=1; pi<parts.length; pi++) {
+        var right = vParseExpr(parts[pi], wireMap, cx, cy, created, deferredWires);
+        var g = vPlaceGate(ops[oi].type, created);
+        vConnect(left, g.id, 0, deferredWires);
+        vConnect(right, g.id, 1, deferredWires);
+        left = {gid:g.id, fp:0};
+      }
+      return left;
+    }
+  }
+
+  var nandM = expr.match(/^[~!]\s*\(\s*(.+)\s*&\s*(.+)\s*\)$/);
+  if (nandM) {
+    var la = vParseExpr(nandM[1], wireMap, cx, cy, created, deferredWires);
+    var lb = vParseExpr(nandM[2], wireMap, cx, cy, created, deferredWires);
+    var g = vPlaceGate('nand', created);
+    vConnect(la, g.id, 0, deferredWires);
+    vConnect(lb, g.id, 1, deferredWires);
+    return {gid:g.id,fp:0};
+  }
+
+  var norM = expr.match(/^[~!]\s*\(\s*(.+)\s*\|\s*(.+)\s*\)$/);
+  if (norM) {
+    var la = vParseExpr(norM[1], wireMap, cx, cy, created, deferredWires);
+    var lb = vParseExpr(norM[2], wireMap, cx, cy, created, deferredWires);
+    var g = vPlaceGate('nor', created);
+    vConnect(la, g.id, 0, deferredWires);
+    vConnect(lb, g.id, 1, deferredWires);
+    return {gid:g.id,fp:0};
+  }
+
+  var constM = expr.match(/^(\d+'b)?([01])$/) || expr.match(/^[01]$/);
+  if (constM) {
+    var val = expr.replace(/.*b/,'').trim();
+    var ctype = val==='1' ? 'const1' : 'const0';
+    var g = vPlaceGate(ctype, created);
+    return {gid:g.id,fp:0};
+  }
+
+  var name = vStripBits(expr.replace(/[()]/g,'').trim());
+  if (name) return { isNet: true, netName: name };
+  return null;
+}
+
+function vSplitOp(expr, op) {
+  // Split expression on op, only at depth 0
+  var parts = [], depth = 0, cur = '';
+  for (var i=0; i<expr.length; i++) {
+    var ch = expr[i];
+    if (ch==='(') { depth++; cur+=ch; }
+    else if (ch===')') { depth--; cur+=ch; }
+    else if (ch===op && depth===0) { parts.push(cur.trim()); cur=''; }
+    else cur+=ch;
+  }
+  if (cur.trim()) parts.push(cur.trim());
+  return parts;
+}
+
+function matchTernary(expr) {
+  // Find sel ? a : b at depth 0
+  var depth=0, qPos=-1, cPos=-1;
+  for (var i=0; i<expr.length; i++) {
+    var ch=expr[i];
+    if (ch==='(') depth++;
+    else if (ch===')') depth--;
+    else if (ch==='?' && depth===0) qPos=i;
+    else if (ch===':' && depth===0 && qPos>=0) { cPos=i; break; }
+  }
+  if (qPos<0||cPos<0) return null;
+  return {
+    sel: expr.slice(0,qPos).trim(),
+    a:   expr.slice(qPos+1,cPos).trim(),
+    b:   expr.slice(cPos+1).trim(),
+  };
+}
+
+// Layout engine — gates auto-positioned in columns
+var vLayoutCol = 0, vLayoutRow = 0, vLayoutMaxRow = 8;
+var vColX = [], vColNextY = [];
+
+function vInitLayout(startX) {
+  vLayoutCol = 0; vLayoutRow = 0;
+  vColX = [startX]; vColNextY = [60];
+}
+function vPlaceGate(type, created) {
+  // Find which column this gate should go in based on what's available
+  // Simple: pack into rows first, then new column
+  if (!vColX[vLayoutCol]) { vColX[vLayoutCol]=vColX[vLayoutCol-1]+(type==='mux2'?120:100); vColNextY[vLayoutCol]=60; }
+  var gx = vColX[vLayoutCol];
+  var gy = vColNextY[vLayoutCol];
+  var g = place(type, gx, gy);
+  created.push(g);
+  var d = gdef(g);
+  vColNextY[vLayoutCol] += d.h + 20;
+  if (vColNextY[vLayoutCol] > 640) {
+    vLayoutCol++;
+    if (!vColX[vLayoutCol]) { vColX[vLayoutCol]=(vColX[vLayoutCol-1]||60)+140; vColNextY[vLayoutCol]=60; }
+  }
+  return g;
+}
+
+// ── Gate primitive instantiations (e.g. and U1 (.a(x), .b(y), .out(z))) ──
+function vParseInstances(src, wireMap, created, deferredWires) {
+  var PRIM_MAP = {
+    'and':'and','or':'or','not':'not','nand':'nand','nor':'nor',
+    'xor':'xor','xnor':'xnor','buf':'buffer','buffer':'buffer',
+    'and2':'and','or2':'or','not1':'not','nand2':'nand','nor2':'nor',
+  };
+  var instRe = /\b(\w+)\s+(\w+)\s*\(([^;]+)\)\s*;/g;
+  var m;
+  while ((m=instRe.exec(src))!==null) {
+    var primType = m[1].toLowerCase();
+    var gtype = PRIM_MAP[primType];
+    if (!gtype) continue;
+    var portStr = m[3];
+    var ports = {};
+    var portRe = /\.(\w+)\s*\(\s*(\w+)\s*\)/g;
+    var pm;
+    while ((pm=portRe.exec(portStr))!==null) {
+      ports[pm[1].toLowerCase()] = pm[2];
+    }
+    if (!Object.keys(ports).length) {
+      var positional = portStr.split(',').map(function(p){return p.trim().replace(/[()]/g,'');});
+      if (gtype==='not'||gtype==='buffer') { ports['o']=positional[0]; ports['i']=positional[1]||''; }
+      else { ports['o']=positional[0]; ports['i0']=positional[1]||''; ports['i1']=positional[2]||''; }
+    }
+    var g = vPlaceGate(gtype, created);
+    var outKeys = ['o','out','y','z','q'];
+    outKeys.forEach(function(k){ if(ports[k]) wireMap[ports[k]]={gid:g.id,fp:0}; });
+    var inKeys = ['i','i0','i1','a','b','in','d'];
+    inKeys.forEach(function(k,pi) {
+      var net=ports[k]||ports['i'+pi];
+      if (net) deferredWires.push({ netName: net, tg: g.id, tp: Math.max(0,pi-1>0?pi-1:0) });
+    });
+  }
+}
+
+function parseVerilog(src) {
+  var res = document.getElementById('v-parse-result');
+  res.textContent = 'Parsing…'; res.style.color='var(--aca)';
+
+  try {
+    var clean = vClean(src);
+
+    // ── 1. Extract module name ───────────────────────────
+    var modM = clean.match(/module\s+(\w+)\s*(?:#\s*\([^)]*\))?\s*\(([^;]*?)\)\s*;/);
+    if (!modM) {
+      // Try simpler form
+      var modM2 = clean.match(/module\s+(\w+)/);
+      if (!modM2) { res.style.color='var(--acr)'; res.textContent='No module declaration found. Make sure file contains: module name(...);'; return; }
+    }
+    var modName = (modM||modM2)[1];
+
+    // ── 2. Extract inputs and outputs ───────────────────
+    var inputNames=[], outputNames=[], wireNames=[];
+
+    // Style 1: input/output inside port list declaration  input wire [N:0] name1, name2;
+    var declRe = /\b(input|output|inout|wire|reg)\b(?:\s+(?:wire|reg|logic))?\s*(?:\[[^\]]*\])?\s*([^;)]+?)(?=\b(?:input|output|inout|wire|reg|assign|module|endmodule)\b|;|\)|$)/g;
+    var dm;
+    while ((dm=declRe.exec(clean))!==null) {
+      var kind=dm[1], names=dm[2].split(',').map(function(n){return vStripBits(n.trim());}).filter(Boolean);
+      if (kind==='input')  names.forEach(function(n){if(n)inputNames.push(n);});
+      else if(kind==='output') names.forEach(function(n){if(n)outputNames.push(n);});
+      else if(kind==='wire'||kind==='reg') names.forEach(function(n){if(n)wireNames.push(n);});
+    }
+
+    // Deduplicate
+    inputNames  = [...new Set(inputNames)];
+    outputNames = [...new Set(outputNames)];
+
+    // ── 3. Parse assign statements ──────────────────────
+    var assigns = [];
+    var assignRe = /assign\s+([\w\[\]]+)\s*=\s*([^;]+)\s*;/g;
+    var am;
+    while ((am=assignRe.exec(clean))!==null) {
+      assigns.push({ out: vStripBits(am[1].trim()), expr: am[2].trim() });
+    }
+
+    // ── 4. Build circuit ─────────────────────────────────
+    // Don't call clearCanvas() here — use the existing clear
+    // Backup current scene
+    var oldGates = S.gates; var oldWires = S.wires;
+    var oldNid = S.nid;
+    S.gates = []; S.wires = []; S.nid = 1;
+    deselAll(); stUpd();
+
+    var wireMap = {};   // net name → {gid, fp}
+    var created = [];
+    var deferredWires = [];
+
+    // Column layout
+    var INP_X = 60;
+    vInitLayout(INP_X + 180);
+
+    // ── Place inputs ──────────────────────────────────────
+    var INP_SPACING = 52;
+    inputNames.forEach(function(name, i) {
+      var g = place('input', INP_X, 60 + i * INP_SPACING);
+      wireMap[name] = {gid:g.id, fp:0};
+      GATE_NAMES[g.id] = name; updateGateNameTag(g);
+      created.push(g);
+    });
+
+    // ── Parse gate instantiations ─────────────────────────
+    vParseInstances(clean, wireMap, created, deferredWires);
+
+    // ── Process assign statements ─────────────────────────
+    assigns.forEach(function(asgn) {
+      var outName = asgn.out;
+      var result = vParseExpr(asgn.expr, wireMap, 0, 0, created, deferredWires);
+      if (result) {
+        if (result.isNet) {
+          var g = vPlaceGate('buffer', created);
+          vConnect(result, g.id, 0, deferredWires);
+          wireMap[outName] = {gid: g.id, fp: 0};
+        } else {
+          wireMap[outName] = result;
+        }
+      }
+    });
+
+    // ── Place outputs ─────────────────────────────────────
+    var maxX = 60;
+    created.forEach(function(g){ maxX = Math.max(maxX, g.x + gdef(g).w); });
+    var OUT_X = maxX + 120;
+    var OUT_SPACING = 52;
+    outputNames.forEach(function(name, i) {
+      var g = place('output', OUT_X, 60 + i * OUT_SPACING);
+      GATE_NAMES[g.id] = name; updateGateNameTag(g);
+      created.push(g);
+      deferredWires.push({ netName: name, tg: g.id, tp: 0, isOutputNode: true });
+    });
+
+    // ── PASS 2: Route all deferred wires ──────────────────
+    deferredWires.forEach(function(dw) {
+      var src = wireMap[dw.netName];
+      if (src) {
+        S.wires.push({id: S.nid++, fg: src.gid, fp: src.fp, tg: dw.tg, tp: dw.tp, sig: 0});
+      } else if (dw.isOutputNode) {
+        var warn = document.createElement('div');
+        warn.style.cssText='font-size:10px;color:var(--aca)';
+        warn.textContent='⚠ Output '+dw.netName+' not driven';
+        res.appendChild(warn);
+      }
+    });
+
+    // If nothing was created (empty module or only ports)
+    if (created.length === 0 && inputNames.length === 0 && outputNames.length === 0) {
+      res.style.color='var(--aca)';
+      res.textContent='Module found but no parseable logic (no assign statements or instantiations). Try a module with assign statements.';
+      return;
+    }
+
+    // Create Subcircuit instead of placing on canvas
+    var inp = created.filter(g => g.type === 'input');
+    var out = created.filter(g => g.type === 'output');
+    if (inp.length > 0 && out.length > 0) {
+      var nc = inp.length; var np = out.length;
+      var cg = JSON.parse(JSON.stringify(S.gates.map(g => ({id:g.id,type:g.type,x:g.x,y:g.y,value:g.value,q:g.q,prevClk:g.prevClk,freq:g.freq,cn:g.cn}))));
+      var cw = S.wires.map(w => Object.assign({}, w));
+      S.custom[modName] = {
+        type:'sub', desc:'Verilog Import',
+        ins: inp.map((_,i) => 'I'+i), outs: out.map((_,i) => 'O'+i),
+        inputIds: inp.map(g => g.id), outputIds: out.map(g => g.id),
+        circuit: {gates:cg, wires:cw},
+        _def: {lbl:modName, w:Math.max(76, modName.length*8+16), h:Math.max(60, Math.max(nc,np)*22+20), nc, np, cls:'tcu', tip:'Verilog: '+modName, sub:nc+' '+np}
+      };
+      rebuildCustomCat();
+      msg('Verilog imported as subcircuit: '+modName, 'ok');
+      res.textContent = '✔ Successfully imported ' + modName + '!';
+      res.style.color = 'var(--acb)';
+      setTimeout(() => {
+        document.getElementById('ov-hub').classList.remove('open');
+        // Auto-select the imported component so they can click to drop it
+        setPlacing('custom:'+modName);
+        // Ensure the custom category is open and scrolled into view
+        var customCat = document.querySelector('.ch[data-cid="custom"]');
+        if (customCat && !customCat.classList.contains('open')) customCat.click();
+        var customList = document.querySelector('.cb[data-cid="custom"]');
+        if (customList) customList.scrollIntoView({behavior: 'smooth', block: 'end'});
+      }, 1000);
+    } else {
+      msg('Verilog imported but missing inputs/outputs.', 'wa');
+      res.textContent = '⚠ Imported, but missing inputs or outputs.';
+    }
+
+    // Clean up temporary DOM elements created during parse
+    S.gates.forEach(g => { if(g.el) g.el.remove(); });
+    document.querySelectorAll('.wvis, .wbg').forEach(el => el.remove());
+
+    // Restore old scene
+    S.gates = oldGates; S.wires = oldWires; S.nid = oldNid;
+    simulate(); stUpd();
+
+  } catch(err) {
+    res.style.color='var(--acr)';
+    res.textContent='Parse error: '+err.message+' — Check the browser console for details.';
+    console.error('[SQGATE Verilog Import]', err);
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// CONTEXT MENU
+// ═══════════════════════════════════════════════════════
+function hideCM(){cmenu.style.display='none';}
+document.addEventListener('click',hideCM);
+document.getElementById('cm-del').onclick=function(){if(cmGid!==null)delGate(cmGid);hideCM();};
+document.getElementById('cm-dup').onclick=function(){if(cmGid!==null)dupGate(cmGid);hideCM();};
+document.getElementById('cm-rst').onclick=function(){
+  const g=S.gates.find(function(g){return g.id===cmGid;});
+  if(g){g.q=0;g.prevClk=0;g.fault=false;simulate();}hideCM();
+};
+document.getElementById('cm-pkg').onclick=function(){pkgSel();hideCM();};
+
+// ═══════════════════════════════════════════════════════
+// TOPBAR BUTTONS
+// ═══════════════════════════════════════════════════════
+let clearArmed=false,clearArmTimer=null;
+document.getElementById('btn-clr').addEventListener('click',function(){
+  const btn=document.getElementById('btn-clr');
+  if(!clearArmed){
+    clearArmed=true;btn.classList.add('confirm-btn');
+    btn.innerHTML='<svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Sure?';
+    clearArmTimer=setTimeout(function(){
+      clearArmed=false;btn.classList.remove('confirm-btn');
+      btn.innerHTML='<svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg> Clear';
+    },2500);
+    msg('Click Clear again to confirm','wa');return;
+  }
+  clearArmed=false;clearTimeout(clearArmTimer);btn.classList.remove('confirm-btn');
+  btn.innerHTML='<svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg> Clear';
+  clearCanvas();
+});
+
+function clearCanvas(){
+  S.gates.forEach(function(g){if(g.el)g.el.remove();});
+  S.gates=[];S.wires=[];deselAll();simulate();stUpd();S.dirty=true;msg('Canvas cleared','');
+}
+
+document.getElementById('btn-pkg').addEventListener('click',pkgSel);
+document.getElementById('btn-verilog').addEventListener('click', function() {
+  openVerilogModal();
+});
+document.getElementById('btn-hlp').addEventListener('click',function(){document.getElementById('ov-hlp').classList.add('open');});
+document.getElementById('hlp-cl').addEventListener('click',function(){document.getElementById('ov-hlp').classList.remove('open');});
+document.getElementById('ov-hlp').addEventListener('click',function(e){if(e.target===e.currentTarget)e.currentTarget.classList.remove('open');});
+
+// Zoom buttons
+function doZoom(f){
+  const W=cvwrap.clientWidth,H=cvwrap.clientHeight;
+  const nz=Math.min(4,Math.max(.18,S.zoom*f));
+  S.panX=W/2-(W/2-S.panX)*(nz/S.zoom);S.panY=H/2-(H/2-S.panY)*(nz/S.zoom);S.zoom=nz;
+  document.getElementById('zoom-lbl').textContent=Math.round(nz*100)+'%';
+  reposAll();drawGrid();
+}
+document.getElementById('btn-zi').addEventListener('click',function(){doZoom(1.2);});
+document.getElementById('btn-zo').addEventListener('click',function(){doZoom(1/1.2);});
+document.getElementById('btn-fit').addEventListener('click',function(){
+  if(!S.gates.length)return;
+  const W=cvwrap.clientWidth,H=cvwrap.clientHeight;
+  const xs=S.gates.map(function(g){return g.x;}),ys=S.gates.map(function(g){return g.y;});
+  const xe=S.gates.map(function(g){return g.x+gdef(g).w;}),ye=S.gates.map(function(g){return g.y+gdef(g).h;});
+  const x0=Math.min.apply(null,xs)-32,y0=Math.min.apply(null,ys)-32;
+  const x1=Math.max.apply(null,xe)+32,y1=Math.max.apply(null,ye)+32;
+  const nz=Math.min(W/(x1-x0),H/(y1-y0),2.5);
+  S.zoom=nz;S.panX=-x0*nz+(W-(x1-x0)*nz)/2;S.panY=-y0*nz+(H-(y1-y0)*nz)/2;
+  document.getElementById('zoom-lbl').textContent=Math.round(nz*100)+'%';
+  reposAll();drawGrid();
+});
+
+// Back to projects
+document.getElementById('ed-back').addEventListener('click',function(){
+  autoSave();showProjects();
+});
+
+// Rename project
+document.getElementById('ed-proj-name').addEventListener('click',function(){
+  customPrompt('Project name:', PROJ?PROJ.name:'Untitled', function(newName) {
+    if(newName&&newName.trim()){
+      if(!PROJ) {
+        PROJ = {id: genId(), name: newName.trim(), data: projDataSnapshot()};
+      } else {
+        PROJ.name=newName.trim();
+      }
+      document.getElementById('ed-proj-name').textContent=PROJ.name;
+      autoSave();S.dirty=true;
+    }
+  });
+});
+
+
+
+// ═══════════════════════════════════════════════════════
+// STATUS
+// ═══════════════════════════════════════════════════════
+function stUpd(){
+  document.getElementById('st-g').textContent=S.gates.length;
+  document.getElementById('st-w').textContent=S.wires.length;
+  const sc=S.msel.size||(S.sel!==null?1:0);
+  document.getElementById('st-s').textContent=sc?sc+' gate(s)':'—';
+}
+let msgT;
+function msg(txt,cls){
+  const el=document.getElementById('stmsg');el.textContent=txt;
+  el.className=cls==='ok'?'s-ok':cls==='er'?'s-er':cls==='wa'?'s-wa':'';
+  clearTimeout(msgT);if(txt)msgT=setTimeout(function(){el.textContent='Ready';el.className='s-ok';},5000);
+}
+
+// ═══════════════════════════════════════════════════════
+// PERSISTENCE — project data
+// ═══════════════════════════════════════════════════════
+function projDataSnapshot(){
+  return {
+    gates: S.gates.map(function(g){
+      return {id:g.id,type:g.type,cn:g.cn,x:g.x,y:g.y,
+              value:g.value,q:g.q,prevClk:g.prevClk,freq:g.freq,fault:g.fault,
+              asmCode:g.asmCode,mem:g.mem?Array.from(g.mem):null};
+    }),
+    wires:  S.wires.map(function(w){ return Object.assign({},w); }),
+    custom: JSON.parse(JSON.stringify(S.custom)),
+    nid:    S.nid,
+  };
+}
+
+function loadProjData(data){
+  if(!data) return;
+  
+
+
+  S.gates.forEach(function(g){ if(g.el) g.el.remove(); });
+  S.gates=[]; S.wires=[]; S.sel=null; S.msel.clear();
+  S.custom = data.custom||{};
+  S.nid    = data.nid||1;
+  Object.keys(S.custom).forEach(function(name){
+    var c=S.custom[name];
+    PLBL['custom:'+name]={i:c.ins,o:c.outs};
+    if(!c._def){
+      var nc=c.ins.length,np=c.outs.length;
+      c._def={lbl:name,w:Math.max(76,name.length*8+16),h:Math.max(60,Math.max(nc,np)*22+20),
+              nc,np,cls:'tcu',tip:c.desc||name,sub:nc+'→'+np};
+    }
+  });
+  GATE_NAMES  = data.gateNames  || {};
+  WIRE_LABELS = data.wireLabels || {};
+  (data.gates||[]).forEach(function(gd){
+    var gate = Object.assign({lastTog:Date.now()},gd);
+    if(gate.mem) gate.mem = new Uint8Array(gate.mem);
+    var el   = mkGateEl(gate);
+    gate.el  = el;
+    gateLyr.appendChild(el);
+    S.gates.push(gate);
+    bindGate(gate);
+    if(GATE_NAMES[gate.id]) updateGateNameTag(gate);
+  });
+  S.wires = (data.wires||[]).map(function(w){ return Object.assign({},w); });
+  reposAll();
+  simulate(); stUpd(); buildSidebar();
+}
+
+function autoSave(){
+  if(!PROJ||!CU) return;
+  var data = projDataSnapshot();
+  PROJ.data = data;
+  saveProject(PROJ.id, PROJ.name, data);
+  captureTelemetry(data);
+}
+
+// ═══════════════════════════════════════════════════════
+// PAGE NAVIGATION
+// ═══════════════════════════════════════════════════════
+function showPage(id){
+  ['pg-login','pg-projects','pg-editor'].forEach(function(p){
+    var el = document.getElementById(p);
+    if(el) el.style.display = (p===id) ? 'flex' : 'none';
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// LOGIN — Google button fills in the form, user confirms
+// ═══════════════════════════════════════════════════════
+
+
+document.getElementById('login-btn').addEventListener('click', doLogin);
+document.getElementById('guest-btn').addEventListener('click', function(){
+  CU = GUEST_USER;
+  authSave();
+  showProjects();
+});
+document.getElementById('login-email').addEventListener('keydown', function(e){ if(e.key==='Enter') document.getElementById('login-name').focus(); });
+document.getElementById('login-name').addEventListener('keydown',  function(e){ if(e.key==='Enter') doLogin(); });
+
+async function doLogin(){
+  var email = document.getElementById('login-email').value.trim().toLowerCase();
+  var name  = document.getElementById('login-name').value.trim();
+  var err   = document.getElementById('login-err');
+  err.style.color='var(--acr)';
+
+  if(!email){
+    err.textContent='Please enter your Gmail address'; return;
+  }
+  if(!email.includes('@') || !email.includes('.')){
+    err.textContent='Enter a valid email address (e.g. name@gmail.com)'; return;
+  }
+  if(!name){
+    // Auto-generate name from email if not provided
+    name = email.split('@')[0].replace(/[._-]/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase();});
+    document.getElementById('login-name').value = name;
+  }
+
+  err.textContent='';
+  CU = {email:email, name:name};
+  authSave();
+  
+  let btn = document.getElementById('login-btn');
+  let oldText = btn.textContent;
+  btn.textContent = 'Syncing...';
+  
+  try {
+    let res = await fetch('https://vemphsxvtlzfmeyjnbeq.supabase.co/rest/v1/users?email=eq.' + encodeURIComponent(email), {
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+      }
+    });
+    let data = await res.json();
+    if (data && data.length > 0) {
+      let cloudUser = data[0];
+      let localData = {
+        name: cloudUser.name,
+        isPro: cloudUser.is_pro,
+        projects: cloudUser.projects || {}
+      };
+      localStorage.setItem('lgf_user_' + email, JSON.stringify(localData));
+    } else {
+      registerUser(email, name);
+    }
+  } catch(e) {
+    console.error("Login sync failed", e);
+    registerUser(email, name);
+  }
+  
+  btn.textContent = oldText;
+  showProjects();
+}
+
+// ═══════════════════════════════════════════════════════
+// PROJECTS PAGE
+// ═══════════════════════════════════════════════════════
+function showProjects(){
+  // Always ensure we have a user (guest fallback)
+  if (!CU || !CU.email) { CU = GUEST_USER; }
+  showPage('pg-projects');
+  var ud = getUserData(CU.email);
+  var isGuest = (CU.email === 'guest');
+  var nameText = isGuest ? 'Guest Session' : CU.email;
+  var avatarChar = isGuest ? '👾' : (CU.name||CU.email)[0].toUpperCase();
+
+  if (ud.isPro) {
+    document.getElementById('pu-email').innerHTML = nameText + ' <span style="background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700;margin-left:8px;vertical-align:middle;box-shadow:0 2px 4px rgba(99,102,241,0.3);">PRO</span>';
+    document.getElementById('dash-logo-text').innerHTML = 'SQGATE <span style="font-size:10px;color:var(--t3);font-weight:400;letter-spacing:1px;background:linear-gradient(135deg,#6366f1,#4f46e5);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:800;margin-left:4px;">PRO</span>';
+    var btnPro = document.getElementById('btn-upgrade-pro');
+    if(btnPro) btnPro.style.display = 'none';
+    var btnProDash = document.getElementById('btn-upgrade-pro-dash');
+    if(btnProDash) btnProDash.style.display = 'none';
+  } else {
+    document.getElementById('pu-email').textContent = nameText;
+    document.getElementById('dash-logo-text').innerHTML = 'SQGATE';
+    var btnPro = document.getElementById('btn-upgrade-pro');
+    if(btnPro) btnPro.style.display = 'flex';
+    var btnProDash = document.getElementById('btn-upgrade-pro-dash');
+    if(btnProDash) btnProDash.style.display = 'inline-block';
+  }
+
+  document.getElementById('pu-avatar').textContent = avatarChar;
+
+  // Logout btn: for guest acts as Sign In; for real user acts as Sign Out
+  var logoutBtn = document.getElementById('btn-logout');
+  if (logoutBtn) {
+    if (isGuest) {
+      logoutBtn.textContent = 'Sign In';
+      logoutBtn.onclick = function(){ showPage('pg-login'); };
+    } else {
+      logoutBtn.textContent = 'Sign out';
+      logoutBtn.onclick = null; // restored to original event listener
+    }
+  }
+
+  // Workspace subtitle: hint guests to sign in, hide for logged-in users
+  var wsSub = document.getElementById('workspace-subtitle');
+  if (wsSub) wsSub.style.display = isGuest ? 'block' : 'none';
+  
+  renderProjGrid(ud.projects||{});
+}
+window.selectedProjects = new Set();
+function updateDeleteSelectedBtn() {
+  const container = document.getElementById('multi-delete-container');
+  const text = document.getElementById('multi-delete-text');
+  if (window.selectedProjects.size > 0) {
+    container.style.display = 'flex';
+    text.textContent = window.selectedProjects.size + ' project' + (window.selectedProjects.size > 1 ? 's' : '') + ' selected';
+  } else {
+    container.style.display = 'none';
+  }
+}
+function clearProjectSelection() {
+  window.selectedProjects.clear();
+  updateDeleteSelectedBtn();
+  showProjects();
+}
+function deleteSelectedProjects() {
+  if(!window.confirm('Delete ' + window.selectedProjects.size + ' project(s)? This cannot be undone.')) return;
+  window.selectedProjects.forEach(id => deleteProject(id));
+  window.selectedProjects.clear();
+  updateDeleteSelectedBtn();
+  showProjects();
+  msg('Projects deleted', '');
+}
+
+function renderProjGrid(projects){
+  var grid = document.getElementById('proj-grid');
+  grid.innerHTML = '';
+
+  // 1. Action Cards at the top of the grid
+  const actions = [
+    { id: 'ac-imp-v', iconSvg: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:8px;color:var(--acc);"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>', title: 'Import .v File', action: function(){ document.getElementById('import-v-file').click(); } },
+    { id: 'ac-imp-proj', iconSvg: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:8px;color:var(--acc);"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>', title: 'Import Project', action: function(){ document.getElementById('import-proj-file').click(); } }
+  ];
+
+  actions.forEach(function(a){
+    var card = document.createElement('div');
+    card.className = 'proj-card new-card'; // use same dashed styling for all action cards
+    card.innerHTML = a.iconSvg + '<span style="font-weight:600">'+a.title+'</span>';
+    card.style.flexDirection = 'column';
+    card.addEventListener('click', a.action);
+    grid.appendChild(card);
+  });
+
+  // 2. Sort by most recently updated
+  var sorted = Object.values(projects).sort(function(a,b){
+    return (b.updatedAt||0)-(a.updatedAt||0);
+  });
+
+  // 3. Empty State Check
+  if (sorted.length === 0) {
+    var empty = document.createElement('div');
+    empty.style.gridColumn = '1 / -1';
+    empty.style.padding = '64px 20px';
+    empty.style.textAlign = 'center';
+    empty.style.color = 'var(--t3)';
+    empty.innerHTML = '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:16px;color:var(--t3);opacity:0.5;"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 15h3M1 9h3M1 15h3"/></svg><div style="font-size:14px;font-weight:500;">No projects yet. Launch the simulator to build your first circuit.</div>';
+    grid.appendChild(empty);
+    return; // nothing left to render
+  }
+
+
+
+  sorted.forEach(function(p){
+    try {
+      var card = document.createElement('div');
+      card.className = 'proj-card';
+      card.style.position = 'relative';
+
+      var gateCount = (p.data && p.data.gates) ? p.data.gates.length : 0;
+      var wireCount = (p.data && p.data.wires) ? p.data.wires.length : 0;
+      var dateStr   = p.updatedAt ? new Date(p.updatedAt).toLocaleDateString() : 'Never';
+
+      var isSelected = window.selectedProjects && window.selectedProjects.has(p.id);
+
+      card.innerHTML =
+        '<input type="checkbox" class="proj-checkbox" style="position:absolute; top:12px; left:12px; transform:scale(1.2); cursor:pointer; z-index:10; accent-color:#ef4444;" '+(isSelected?'checked':'')+'>'+
+        '<div class="proj-card-name" style="padding-left:24px;">'+escHtml(p.name)+'</div>'+
+        '<div class="proj-card-meta" style="padding-left:24px;">'+gateCount+' gates &middot; '+wireCount+' wires &middot; '+dateStr+'</div>'+
+        '<div class="proj-card-badge" style="padding-left:24px;">'+p.id+'</div>';
+
+      if (isSelected) {
+        card.style.borderColor = '#ef4444';
+        card.style.background = 'rgba(239,68,68,0.05)';
+      }
+
+      card.addEventListener('click', function(){ openProject(p); });
+
+      // Rename on double-click
+      card.addEventListener('dblclick', function(e){
+        e.stopPropagation();
+        customPrompt('Rename project:', p.name, function(newName) {
+          if(newName && newName.trim()){
+            p.name = newName.trim();
+            saveProject(p.id, p.name, p.data);
+            showProjects();
+          }
+        });
+      });
+
+      // Checkbox event
+      var cb = card.querySelector('.proj-checkbox');
+      cb.addEventListener('click', function(e){
+        e.stopPropagation();
+        if (cb.checked) window.selectedProjects.add(p.id);
+        else window.selectedProjects.delete(p.id);
+        updateDeleteSelectedBtn();
+        if (cb.checked) {
+          card.style.borderColor = '#ef4444';
+          card.style.background = 'rgba(239,68,68,0.05)';
+        } else {
+          card.style.borderColor = '';
+          card.style.background = '';
+        }
+      });
+
+      // Delete button
+      var del = document.createElement('button');
+      del.textContent = '×';
+      del.title = 'Delete project';
+      del.style.cssText = 'position:absolute;top:8px;right:8px;background:none;border:none;cursor:pointer;'+
+        'color:var(--t3);font-size:18px;line-height:1;transition:color .1s;padding:2px 6px;border-radius:3px';
+      del.addEventListener('mouseenter', function(){ del.style.color='var(--acr)'; });
+      del.addEventListener('mouseleave', function(){ del.style.color='var(--t3)'; });
+      del.addEventListener('click', function(e){
+        e.stopPropagation();
+        if(!window.confirm || window.confirm('Delete "'+p.name+'"? This cannot be undone.')){
+          deleteProject(p.id);
+          if (window.selectedProjects) {
+            window.selectedProjects.delete(p.id);
+            updateDeleteSelectedBtn();
+          }
+          showProjects();
+          msg('Project deleted','');
+        }
+      });
+      card.appendChild(del);
+      grid.appendChild(card);
+    } catch(err) {
+      console.error("Corrupted project skipped:", p, err);
+    }
+  });
+}
+
+function escHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function createNewProject(){
+  var id   = genId();
+  var num  = Object.keys(getProjects()).length + 1;
+  var name = 'Project ' + num;
+  
+  // Blank Canvas
+  var data = {gates:[], wires:[], custom:{}, nid:1};
+  
+  saveProject(id, name, data);
+  openProject({id, name, data});
+}
+
+function openProject(p){
+  PROJ = {id:p.id, name:p.name, data:p.data};
+  showPage('pg-editor');
+  document.getElementById('ed-proj-name').textContent = p.name;
+  S.zoom=1; S.panX=50; S.panY=40;
+  document.getElementById('zoom-lbl').textContent = '100%';
+
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      drawGrid();
+      loadProjData(p.data);
+      buildSidebar();
+      requestAnimationFrame(function(){
+        reposAll();
+        drawGrid();
+        if(S.gates.length > 0){
+          setTimeout(function(){ document.getElementById('btn-fit').click(); }, 120);
+        }
+      });
+    });
+  });
+}
+
+// Project page action buttons
+document.getElementById('btn-logout').addEventListener('click', function(){
+  if(PROJ) autoSave();
+  if(CU && CU.email !== 'guest') {
+    if(!confirm('Sign out of ' + CU.email + '?')) return;
+  }
+  // Revert to guest — simulator stays fully usable, no black screen
+  CU = GUEST_USER;
+  authSave();
+  PROJ = null;
+  
+  // Clear login form
+  document.getElementById('login-email').value='';
+  document.getElementById('login-name').value='';
+  document.getElementById('login-err').textContent='';
+  
+  showProjects();
+});
+
+// Import .v from projects page
+document.getElementById('pa-import-v').addEventListener('click', function(){
+  document.getElementById('import-v-file').click();
+});
+document.getElementById('import-v-file').addEventListener('change', function(){
+  var file = this.files[0]; if(!file) return;
+  createNewProject();
+  showPage('pg-editor');
+  readVFile(file);
+});
+
+// Import project JSON from projects page
+document.getElementById('pa-import-proj').addEventListener('click', function(){
+  document.getElementById('import-proj-file').click();
+});
+document.getElementById('import-proj-file').addEventListener('change', function(){
+  var file = this.files[0]; if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      var proj = JSON.parse(e.target.result);
+      var id   = genId();
+      var name = (proj.name||'Imported')+' (copy)';
+      saveProject(id, name, proj.data||{});
+      showProjects();
+      msg('Project imported: '+name,'ok');
+    }catch(err){
+      msg('Invalid project file — check it is a SQGATE JSON export','er');
+    }
+  };
+  reader.readAsText(file);
+  this.value = '';
+});
+
+
+// ═══════════════════════════════════════════════════════
+// FEATURE 1: UNDO / REDO
+// ═══════════════════════════════════════════════════════
+const HIST = { stack: [], idx: -1, maxSize: 60 };
+
+function histSnapshot() {
+  // Lightweight snapshot — serialize essential state
+  return JSON.stringify({
+    gates: S.gates.map(function(g) {
+      return { id:g.id,type:g.type,cn:g.cn,x:g.x,y:g.y,
+               value:g.value,q:g.q,prevClk:g.prevClk,freq:g.freq,fault:g.fault,
+               asmCode:g.asmCode,mem:g.mem?Array.from(g.mem):null };
+    }),
+    wires: S.wires.map(function(w) { return Object.assign({},w); }),
+    nid: S.nid,
+  });
+}
+
+function histPush() {
+  // Drop everything after current index
+  HIST.stack = HIST.stack.slice(0, HIST.idx + 1);
+  HIST.stack.push(histSnapshot());
+  if (HIST.stack.length > HIST.maxSize) HIST.stack.shift();
+  HIST.idx = HIST.stack.length - 1;
+  histUpdateButtons();
+}
+
+function histUndo() {
+  if (HIST.idx <= 0) return;
+  HIST.idx--;
+  histRestore(JSON.parse(HIST.stack[HIST.idx]));
+  histUpdateButtons();
+  msg('Undo', 'ok');
+}
+
+function histRedo() {
+  if (HIST.idx >= HIST.stack.length - 1) return;
+  HIST.idx++;
+  histRestore(JSON.parse(HIST.stack[HIST.idx]));
+  histUpdateButtons();
+  msg('Redo', 'ok');
+}
+
+function histRestore(snap) {
+  // Remove all gate elements
+  S.gates.forEach(function(g) { if (g.el) g.el.remove(); });
+  S.gates = []; S.wires = []; S.sel = null; S.msel.clear();
+  S.nid = snap.nid;
+  // Recreate gates
+  snap.gates.forEach(function(gd) {
+    var gate = Object.assign({ lastTog: Date.now() }, gd);
+    if(gate.mem) gate.mem = new Uint8Array(gate.mem);
+    var el = mkGateEl(gate);
+    gate.el = el;
+    gateLyr.appendChild(el);
+    S.gates.push(gate);
+    bindGate(gate);
+  });
+  S.wires = snap.wires.map(function(w) { return Object.assign({}, w); });
+  simulate(); stUpd();
+}
+
+function histUpdateButtons() {
+  var u = document.getElementById('btn-undo');
+  var r = document.getElementById('btn-redo');
+  if (u) u.disabled = (HIST.idx <= 0);
+  if (r) r.disabled = (HIST.idx >= HIST.stack.length - 1);
+}
+
+// Wrap state-changing operations to snapshot before each
+var _origPlace = place;
+place = function(type, wx, wy) {
+  histPush();
+  return _origPlace(type, wx, wy);
+};
+
+var _origDelGate = delGate;
+delGate = function(id) {
+  histPush();
+  return _origDelGate(id);
+};
+
+document.getElementById('btn-undo').addEventListener('click', histUndo);
+document.getElementById('btn-redo').addEventListener('click', histRedo);
+
+// Keyboard undo/redo (injected into existing keydown handler by adding a new one)
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key === 'z') { e.preventDefault(); histUndo(); }
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.shiftKey && e.key === 'z'))) { e.preventDefault(); histRedo(); }
+  if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
+    e.preventDefault();
+    if (S.sel !== null) { histPush(); dupGate(S.sel); }
+  }
+});
+
+// ═══════════════════════════════════════════════════════
+
+// PHASE 5: ECOSYSTEM & COLLABORATION
+/* document.getElementById('btn-exp-proj-json').addEventListener('click', function() { document.getElementById('exp-json').click(); }); */
+
+
+
+// FEATURE 2: WAVEFORM VIEWER
+// ═══════════════════════════════════════════════════════
+var WAVE = {
+  recording: false,
+  ticks: 0,
+  maxTicks: 500,
+  signals: {},   // signalKey → { label, color, samples:[] }
+  zoom: 1,
+  scrollX: 0,
+};
+
+var waveLblCv  = document.getElementById('wave-labels-cv');
+var waveCv     = document.getElementById('wave-cv');
+var wavePanel  = document.getElementById('wave-panel');
+var waveHeader = document.getElementById('wave-header');
+
+waveHeader.addEventListener('click', function() {
+  var isExpanded = wavePanel.classList.toggle('expanded');
+  if (isExpanded) { setTimeout(drawWaveform, 50); }
+});
+
+document.getElementById('btn-wave').addEventListener('click', function() {
+  var isExpanded = wavePanel.classList.toggle('expanded');
+  if (isExpanded) { setTimeout(drawWaveform, 50); }
+});
+
+document.getElementById('wave-clear-btn').addEventListener('click', function(e) {
+  e.stopPropagation();
+  WAVE.ticks = 0; WAVE.signals = {}; WAVE.recording = false;
+  document.getElementById('wave-play-btn').textContent = '▶ Record';
+  document.getElementById('wave-tick-lbl').textContent = '0 ticks';
+  drawWaveform();
+});
+
+document.getElementById('wave-export-btn').addEventListener('click', function(e){
+  e.stopPropagation();
+  var cvL = document.getElementById('wave-labels-cv');
+  var cvW = document.getElementById('wave-cv');
+  var tmp = document.createElement('canvas');
+  tmp.width = cvL.width + cvW.width;
+  tmp.height = Math.max(cvL.height, cvW.height);
+  var ctx = tmp.getContext('2d');
+  ctx.fillStyle = '#121217';
+  ctx.fillRect(0,0,tmp.width,tmp.height);
+  ctx.drawImage(cvL, 0, 0);
+  ctx.drawImage(cvW, cvL.width, 0);
+  var a = document.createElement('a');
+  a.href = tmp.toDataURL('image/png');
+  a.download = 'SQGATE_waveform.png';
+  a.click();
+});
+
+document.getElementById('wave-expand-btn').addEventListener('click', function(e){
+  e.stopPropagation();
+  var wp = document.getElementById('wave-panel');
+  wp.classList.toggle('fullscreen');
+  wp.classList.add('expanded');
+  this.innerHTML = wp.classList.contains('fullscreen') ? '🗗 Minimize' : '⛶ Fullscreen';
+  setTimeout(function(){ drawWaveform(); }, 50);
+});
+
+document.getElementById('wave-play-btn').addEventListener('click', function(e) {
+  e.stopPropagation();
+  WAVE.recording = !WAVE.recording;
+  this.textContent = WAVE.recording ? '⏹ Stop' : '▶ Record';
+  if (WAVE.recording) {
+    // Initialize signals for all trackable gates
+    S.gates.forEach(function(g) {
+      if (['input','output','clock'].includes(g.type)) {
+        var key = g.id + '_0';
+        var lbl = g.type === 'input' ? 'IN#'+g.id : g.type === 'output' ? 'OUT#'+g.id : 'CLK#'+g.id;
+        if (!WAVE.signals[key]) {
+          WAVE.signals[key] = {
+            label: lbl,
+            color: g.type==='clock' ? '#4a9ede' : g.type==='input' ? '#3dba6e' : '#e04848',
+            samples: [],
+          };
+        }
+      }
+    });
+    msg('Waveform recording started — toggle inputs or let clock run', 'ok');
+  }
+});
+
+// Record waveform sample — called from simulate()
+function waveRecord() {
+  if (!WAVE.recording || WAVE.ticks >= WAVE.maxTicks) return;
+  WAVE.ticks++;
+  document.getElementById('wave-tick-lbl').textContent = WAVE.ticks + ' ticks';
+  S.gates.forEach(function(g) {
+    if (!['input','output','clock'].includes(g.type)) return;
+    var key = g.id + '_0';
+    if (WAVE.signals[key]) {
+      var val = 0;
+      if (g.type === 'input' || g.type === 'clock') val = g.value ? 1 : 0;
+      else {
+        var w = S.wires.find(function(w) { return w.tg === g.id && w.tp === 0; });
+        val = w ? w.sig : 0;
+      }
+      WAVE.signals[key].samples.push(val);
+    }
+  });
+  if (WAVE.ticks % 5 === 0 && wavePanel.classList.contains('expanded')) drawWaveform();
+  else if (S.mode !== 'run' && wavePanel.classList.contains('expanded')) drawWaveform();
+  if (WAVE.ticks >= WAVE.maxTicks) {
+    WAVE.recording = false;
+    document.getElementById('wave-play-btn').textContent = '▶ Record';
+    msg('Waveform recording complete ('+WAVE.maxTicks+' ticks)', 'ok');
+  }
+}
+
+function drawWaveform() {
+  var wrap = document.getElementById('wave-canvas-wrap');
+  var lblCol = document.getElementById('wave-labels-col');
+  if (!wrap || !lblCol) return;
+
+  // Use the wave-body container height minus wave-header
+  var bodyEl = document.getElementById('wave-body');
+  var H = bodyEl ? bodyEl.clientHeight : 0;
+  var W = wrap.clientWidth;
+  var lblW = 110;
+
+  if (!H || H < 10) return;
+
+  // Size both canvases to actual pixels
+  waveCv.width  = Math.max(W, 200);
+  waveCv.height = H;
+  waveLblCv.width  = lblW;
+  waveLblCv.height = H;
+  // Make label canvas fill its container
+  waveLblCv.style.width  = lblW + 'px';
+  waveLblCv.style.height = H + 'px';
+  waveCv.style.width  = waveCv.width + 'px';
+  waveCv.style.height = H + 'px';
+
+  var sigs = Object.values(WAVE.signals);
+  var ctx   = waveCv.getContext('2d');
+  var lctx  = waveLblCv.getContext('2d');
+
+  // Fill backgrounds
+  ctx.fillStyle  = '#0c0e12'; ctx.fillRect(0,0,waveCv.width,H);
+  lctx.fillStyle = '#12151e'; lctx.fillRect(0,0,lblW,H);
+
+  if (!sigs.length) {
+    ctx.fillStyle = '#4a5470';
+    ctx.font = '11px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('Click ▶ Record to start capturing signals', waveCv.width/2, H/2);
+    return;
+  }
+
+  var rowH  = Math.max(28, Math.floor(H / sigs.length));
+  var tickW = Math.max(2, Math.min(20, Math.floor(waveCv.width / Math.max(WAVE.ticks, 50))));
+
+  // Tick grid
+  ctx.strokeStyle = '#1c2030'; ctx.lineWidth = .6;
+  for (var t = 0; t < WAVE.ticks; t += 10) {
+    var tx = t * tickW;
+    ctx.beginPath(); ctx.moveTo(tx,0); ctx.lineTo(tx,H); ctx.stroke();
+    if (t > 0 && tx < waveCv.width) {
+      ctx.fillStyle = '#2e3550';
+      ctx.font = '9px monospace'; ctx.textAlign = 'left';
+      ctx.fillText(t, tx+2, H-3);
+    }
+  }
+
+  sigs.forEach(function(sig, si) {
+    var y0  = si * rowH;
+    var hi  = y0 + 4;
+    var lo  = y0 + rowH - 4;
+    var mid = y0 + rowH / 2;
+
+    // Alternating row background
+    if (si % 2 === 0) {
+      ctx.fillStyle = 'rgba(255,255,255,0.015)';
+      ctx.fillRect(0, y0, waveCv.width, rowH);
+    }
+
+    // Label column
+    lctx.fillStyle = '#1a1408'; lctx.fillRect(0, y0, lblW, rowH);
+    lctx.strokeStyle = '#302010'; lctx.lineWidth = .5;
+    lctx.beginPath(); lctx.moveTo(0,y0+rowH); lctx.lineTo(lblW,y0+rowH); lctx.stroke();
+    lctx.fillStyle = sig.color;
+    lctx.font = 'bold 10px monospace'; lctx.textAlign = 'left';
+    lctx.fillText(sig.label, 6, mid + 4);
+    var lastVal = sig.samples.length ? sig.samples[sig.samples.length-1] : 0;
+    lctx.beginPath(); lctx.arc(lblW-10, mid, 4, 0, Math.PI*2);
+    lctx.fillStyle = lastVal ? sig.color : '#1e3050'; lctx.fill();
+
+    if (!sig.samples.length) return;
+
+    // Draw waveform
+    ctx.strokeStyle = sig.color; ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    var prev = sig.samples[0];
+    ctx.moveTo(0, prev ? hi : lo);
+    for (var i = 0; i < sig.samples.length; i++) {
+      var x  = i * tickW;
+      var nx = (i+1) * tickW;
+      var v  = sig.samples[i];
+      var py = v ? hi : lo;
+      if (v !== prev) { ctx.lineTo(x, prev?hi:lo); ctx.lineTo(x, py); }
+      ctx.lineTo(nx, py);
+      prev = v;
+    }
+    ctx.stroke();
+
+    // Glow fill under HIGH portions
+    ctx.save(); ctx.globalAlpha = 0.07; ctx.fillStyle = sig.color;
+    ctx.beginPath(); ctx.moveTo(0, lo);
+    prev = sig.samples[0];
+    ctx.lineTo(0, prev?hi:lo);
+    for (var i = 0; i < sig.samples.length; i++) {
+      var x=i*tickW, nx=(i+1)*tickW, v=sig.samples[i], py=v?hi:lo;
+      if(v!==prev){ctx.lineTo(x,prev?hi:lo);ctx.lineTo(x,py);}
+      ctx.lineTo(nx,py); prev=v;
+    }
+    ctx.lineTo(sig.samples.length*tickW, lo); ctx.closePath(); ctx.fill();
+    ctx.restore();
+  });
+}
+
+// Hook waveRecord into simulate
+var _origSimulate = simulate;
+simulate = function() {
+  _origSimulate();
+  waveRecord();
+};
+
+// ═══════════════════════════════════════════════════════
+
+/*
+document.getElementById('btn-ortho').addEventListener('click', function() {
+  S.ortho = !S.ortho;
+  this.style.color = S.ortho ? 'var(--aca)' : '';
+  drawWires();
+  msg('Orthogonal routing ' + (S.ortho ? 'ON' : 'OFF'), 'ok');
+});
+*/
+
+document.getElementById('tb-close').addEventListener('click', () => document.getElementById('ov-tb').classList.remove('open'));
+document.getElementById('btn-tb').addEventListener('click', () => document.getElementById('ov-tb').classList.add('open'));
+
+/*
+document.getElementById('tb-run').addEventListener('click', function() {
+  var code = document.getElementById('tb-code').value;
+  var lines = code.split('\n');
+  var res = document.getElementById('tb-res');
+  res.innerHTML = '';
+  
+  var passed = 0, failed = 0;
+  var inGates = S.gates.filter(g => g.type === 'input');
+  
+  function findGate(str, type) {
+    str = str.trim();
+    for(var id in GATE_NAMES) { if(GATE_NAMES[id]===str) { var g = S.gates.find(g=>g.id==id && g.type===type); if(g) return g; } }
+    if(str.startsWith('IN#') && type==='input') return S.gates.find(g=>g.id==str.replace('IN#',''));
+    if(str.startsWith('OUT#') && type==='output') return S.gates.find(g=>g.id==str.replace('OUT#',''));
+    return null;
+  }
+
+  var backups = inGates.map(g => g.value);
+  
+  lines.forEach((line, lineIdx) => {
+    line = line.trim();
+    if(!line || line.startsWith('//')) return;
+    var parts = line.split('->');
+    if(parts.length!==2) { res.innerHTML += '<div style="color:var(--acr)">Line '+(lineIdx+1)+': Invalid syntax</div>'; return; }
+    
+    var ins = parts[0].split(',');
+    var outs = parts[1].split(',');
+    
+    ins.forEach(i => {
+      var kv = i.split('=');
+      if(kv.length!==2) return;
+      var g = findGate(kv[0], 'input');
+      if(g) g.value = parseInt(kv[1]) ? true : false;
+    });
+    
+    for(var k=0; k<4; k++) simulate();
+    
+    var lineFail = false;
+    var errs = [];
+    outs.forEach(o => {
+      var kv = o.split('=');
+      if(kv.length!==2) return;
+      var g = findGate(kv[0], 'output');
+      if(g) {
+        var val = 0;
+        var w = S.wires.find(w => w.tg === g.id && w.tp === 0);
+        if(w) val = w.sig ? 1 : 0;
+        var expected = parseInt(kv[1]);
+        if(val !== expected) { lineFail = true; errs.push(`${kv[0]} expected ${expected} got ${val}`); }
+      }
+    });
+    
+    if(lineFail) {
+      failed++;
+      res.innerHTML += '<div style="color:var(--acr)">Test '+(lineIdx+1)+' FAILED: ' + errs.join(', ') + '</div>';
+    } else {
+      passed++;
+      res.innerHTML += '<div style="color:var(--aca)">Test '+(lineIdx+1)+' PASSED</div>';
+    }
+  });
+  
+  inGates.forEach((g,i) => g.value = backups[i]);
+  simulate(); stUpd();
+  
+  res.innerHTML = `<div style="margin-top:8px;font-weight:bold;color:${failed>0?'var(--acr)':'var(--aca)'}">${passed} Passed, ${failed} Failed</div>` + res.innerHTML;
+});
+*/
+// END TESTBENCH
+
+// FEATURE 3: TRUTH TABLE GENERATOR
+// ═══════════════════════════════════════════════════════
+var ttData = { inputs:[], outputs:[], rows:[], boolExprs:[] };
+
+document.getElementById('btn-tt').addEventListener('click', openTTModal);
+document.getElementById('tt-close').addEventListener('click', function() { document.getElementById('ov-tt').classList.remove('open'); });
+
+document.getElementById('tt-regen').addEventListener('click', function() { genTruthTable(); renderTTContent(); });
+document.getElementById('tt-csv').addEventListener('click', exportTTCSV);
+
+document.querySelectorAll('.tt-tab').forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.tt-tab').forEach(function(t) { t.classList.remove('on'); });
+    tab.classList.add('on');
+    renderTTContent();
+  });
+});
+
+function openTTModal() {
+  genTruthTable();
+  renderTTContent();
+  document.getElementById('ov-tt').classList.add('open');
+}
+
+function genTruthTable() {
+  // Find all input and output gates
+  var inputGates  = S.gates.filter(function(g) { return g.type === 'input'; });
+  var outputGates = S.gates.filter(function(g) { return g.type === 'output'; });
+
+  if (!inputGates.length) { ttData = { inputs:[], outputs:[], rows:[], boolExprs:[] }; return; }
+
+  ttData.inputs  = inputGates.map(function(g, i) { return { gate:g, name:'A'+i }; });
+  ttData.outputs = outputGates.map(function(g, i) { return { gate:g, name:'Y'+i }; });
+
+  var n = inputGates.length;
+  var rows = 1 << Math.min(n, 8); // cap at 256 rows
+  ttData.rows = [];
+
+  // Save current input values
+  var savedVals = inputGates.map(function(g) { return g.value; });
+
+  for (var r = 0; r < rows; r++) {
+    // Set inputs
+    inputGates.forEach(function(g, i) {
+      g.value = (r >> (n - 1 - i)) & 1;
+    });
+    // Run simulation
+    _origSimulate();
+    // Read output values
+    var inVals  = inputGates.map(function(g) { return g.value; });
+    var outVals = outputGates.map(function(g) {
+      var w = S.wires.find(function(w) { return w.tg === g.id && w.tp === 0; });
+      return w ? w.sig : 0;
+    });
+    ttData.rows.push({ in: inVals, out: outVals });
+  }
+
+  // Restore original input values
+  inputGates.forEach(function(g, i) { g.value = savedVals[i]; });
+  _origSimulate();
+
+  // Derive Boolean expressions (SOP form)
+  ttData.boolExprs = outputGates.map(function(og, oi) {
+    var terms = [];
+    ttData.rows.forEach(function(row) {
+      if (row.out[oi] === 1) {
+        var term = inputGates.map(function(ig, ii) {
+          return row.in[ii] ? ttData.inputs[ii].name : ttData.inputs[ii].name + "'";
+        }).join('·');
+        terms.push(term);
+      }
+    });
+    if (!terms.length) return ttData.outputs[oi].name + ' = 0';
+    if (terms.length === rows) return ttData.outputs[oi].name + ' = 1';
+    return ttData.outputs[oi].name + ' = ' + terms.join(' + ');
+  });
+}
+
+function renderTTContent() {
+  var activeTab = document.querySelector('.tt-tab.on');
+  var tab = activeTab ? activeTab.dataset.tab : 'table';
+  var content = document.getElementById('tt-tab-content');
+
+  if (!ttData.inputs.length) {
+    content.innerHTML = '<div class="tt-gen-info" style="color:var(--acr)">No INPUT gates found on canvas. Place at least one INPUT gate to generate a truth table.</div>';
+    return;
+  }
+
+  if (tab === 'table') {
+    var n = ttData.inputs.length;
+    var rows = ttData.rows;
+    var html = '<div class="tt-gen-info">'+n+' input(s) → '+(1<<Math.min(n,8))+' rows | '+ttData.outputs.length+' output(s)</div>';
+    html += '<div class="tt-gen-wrap"><table class="tt-gen-table"><thead><tr>';
+    ttData.inputs.forEach(function(inp) { html += '<th class="inp-h">'+inp.name+'</th>'; });
+    ttData.outputs.forEach(function(out) { html += '<th class="out-h">'+out.name+'</th>'; });
+    html += '</tr></thead><tbody>';
+    rows.forEach(function(row) {
+      html += '<tr>';
+      row.in.forEach(function(v) { html += '<td class="v'+v+'">'+v+'</td>'; });
+      row.out.forEach(function(v) { html += '<td class="v'+v+'">'+v+'</td>'; });
+      html += '</tr>';
+    });
+    html += '</tbody></table></div>';
+    content.innerHTML = html;
+
+  } else if (tab === 'bool') {
+    var html = '<div class="tt-gen-info">Sum-of-Products (SOP) Boolean expressions for each output:</div>';
+    html += '<div class="tt-gen-expr">';
+    if (ttData.boolExprs.length) {
+      html += ttData.boolExprs.join('\n');
+    } else {
+      html += '(No outputs connected)';
+    }
+    html += '</div>';
+    html += '<div style="font-size:11px;color:var(--t3);line-height:1.7">A\' = NOT A &nbsp;·&nbsp; A·B = AND &nbsp;·&nbsp; A+B = OR</div>';
+    content.innerHTML = html;
+
+  } else if (tab === 'kmap') {
+    var n = ttData.inputs.length;
+    if (n === 5 || n === 6) {
+      if (!checkProStatus()) {
+        content.innerHTML = '<div class="tt-gen-info" style="color:var(--aca);text-align:center;padding:20px;"><div style="font-size:24px;margin-bottom:10px;">🔒</div>5 and 6 variable K-Maps are a Pro feature!<br><br><button class="ov-btn primary" onclick="showProModal(\'5 & 6 Variable K-Maps\')">Unlock SQGATE Pro</button></div>';
+        return;
+      } else {
+        content.innerHTML = '<div class="tt-gen-info" style="color:var(--acg);text-align:center;padding:20px;">👑 Pro Unlocked!<br><br>5 & 6 Variable K-Maps UI is coming in the next update!</div>';
+        return;
+      }
+    }
+    if (n !== 2 && n !== 3 && n !== 4) {
+      content.innerHTML = '<div class="tt-gen-info" style="color:var(--aca)">K-Map requires 2 to 6 inputs. Current: '+n+' input(s).</div>';
+      return;
+    }
+    // Build K-Map for first output only
+    var html = '<div class="tt-gen-info">K-Map for '+( ttData.outputs[0]?ttData.outputs[0].name:'Y0')+'  (Gray code order)</div>';
+    if (n === 2) {
+      // 2x2 K-Map: rows=A, cols=B
+      html += '<table class="tt-gen-table" style="max-width:200px"><thead><tr><th></th><th>B=0</th><th>B=1</th></tr></thead><tbody>';
+      [[0,1],[2,3]].forEach(function(row, ri) {
+        html += '<tr><td style="color:var(--t2);font-weight:700">A='+(ri)+'</td>';
+        row.forEach(function(idx) {
+          var v = ttData.rows[idx] ? ttData.rows[idx].out[0] : 0;
+          html += '<td class="v'+v+'" style="font-size:16px;font-weight:700">'+v+'</td>';
+        });
+        html += '</tr>';
+      });
+      html += '</tbody></table>';
+    } else if (n === 3) {
+      // 4x2: rows=AB (gray: 00,01,11,10), cols=C
+      var gray4 = [0,1,3,2];
+      html += '<table class="tt-gen-table" style="max-width:220px"><thead><tr><th>AB\\C</th><th>0</th><th>1</th></tr></thead><tbody>';
+      gray4.forEach(function(ab) {
+        var a=(ab>>1)&1, b=ab&1;
+        html += '<tr><td style="color:var(--t2);font-weight:600">'+a+''+b+'</td>';
+        [0,1].forEach(function(c) {
+          var minterm = (a<<2)|(b<<1)|c;
+          var v = ttData.rows[minterm] ? ttData.rows[minterm].out[0] : 0;
+          html += '<td class="v'+v+'" style="font-size:15px;font-weight:700">'+v+'</td>';
+        });
+        html += '</tr>';
+      });
+      html += '</tbody></table>';
+    } else {
+      // n=4: 4x4 K-Map
+      var gray4 = [0,1,3,2];
+      html += '<table class="tt-gen-table"><thead><tr><th>AB\\CD</th>';
+      gray4.forEach(function(cd){ html += '<th>'+((cd>>1)&1)+''+( cd&1)+'</th>'; });
+      html += '</tr></thead><tbody>';
+      gray4.forEach(function(ab) {
+        var a=(ab>>1)&1, b=ab&1;
+        html += '<tr><td style="color:var(--t2);font-weight:600">'+a+''+b+'</td>';
+        gray4.forEach(function(cd) {
+          var c=(cd>>1)&1, d=cd&1;
+          var minterm=(a<<3)|(b<<2)|(c<<1)|d;
+          var v = ttData.rows[minterm] ? ttData.rows[minterm].out[0] : 0;
+          html += '<td class="v'+v+'" style="font-size:14px;font-weight:700">'+v+'</td>';
+        });
+        html += '</tr>';
+      });
+      html += '</tbody></table>';
+    }
+    content.innerHTML = html;
+  }
+}
+
+function exportTTCSV() {
+  if (!ttData.inputs.length) return;
+  var lines = [ttData.inputs.map(function(i){return i.name;}).concat(ttData.outputs.map(function(o){return o.name;})).join(',')];
+  ttData.rows.forEach(function(row) {
+    lines.push(row.in.concat(row.out).join(','));
+  });
+  var csv = lines.join('\n');
+  var blob = new Blob([csv], {type:'text/csv'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a'); a.href=url; a.download='truth_table.csv'; a.click();
+  URL.revokeObjectURL(url);
+  msg('Truth table exported as CSV', 'ok');
+}
+
+// ═══════════════════════════════════════════════════════
+// FEATURE 4: IEEE GATE SHAPES (SVG inside gate body)
+// ═══════════════════════════════════════════════════════
+// Override the gate body rendering to use SVG shapes for basic gates
+
+var IEEE_TYPES = ['and','nand','or','nor','xor','xnor','not','buffer'];
+
+var _origMkGateEl = mkGateEl;
+mkGateEl = function(gate) {
+  var el = _origMkGateEl(gate);
+  if (IEEE_TYPES.includes(gate.type)) {
+    attachIEEEShape(gate, el);
+  } else if (gate.type.startsWith('ic74')) {
+    attachICShape(gate, el);
+  }
+  return el;
+};
+
+function attachIEEEShape(gate, el) {
+  var body = el.querySelector('.gbody');
+  if (!body) return;
+  // Hide the text label — we'll use the SVG shape instead
+  var cnt = body.querySelector('div[style*="text-align:center"]');
+  if (cnt) cnt.style.display = 'none';
+
+  var svgNS = 'http://www.w3.org/2000/svg';
+  var svg = document.createElementNS(svgNS, 'svg');
+  svg.setAttribute('class', 'gate-svg-body');
+  svg.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none';
+  svg.setAttribute('viewBox', '0 0 100 100');
+  svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+
+  var g = document.createElementNS(svgNS, 'g');
+  g.style.fill = 'currentColor';
+  g.style.stroke = 'currentColor';
+  g.style.strokeWidth = '2';
+  g.style.opacity = '0.9';
+
+  var path = document.createElementNS(svgNS, 'path');
+  var pathD = '';
+  var circle = null;
+
+  switch(gate.type) {
+    case 'buffer':
+      pathD = 'M15 10 L85 50 L15 90 Z';
+      break;
+    case 'not':
+      pathD = 'M15 10 L75 50 L15 90 Z';
+      circle = {cx:84, cy:50, r:7};
+      break;
+    case 'and':
+      pathD = 'M15 15 L55 15 Q85 15 85 50 Q85 85 55 85 L15 85 Z';
+      break;
+    case 'nand':
+      pathD = 'M15 15 L50 15 Q78 15 78 50 Q78 85 50 85 L15 85 Z';
+      circle = {cx:87, cy:50, r:8};
+      break;
+    case 'or':
+      pathD = 'M15 15 Q35 15 55 15 Q85 30 85 50 Q85 70 55 85 Q35 85 15 85 Q30 65 30 50 Q30 35 15 15 Z';
+      break;
+    case 'nor':
+      pathD = 'M15 15 Q33 15 50 15 Q78 30 78 50 Q78 70 50 85 Q33 85 15 85 Q28 65 28 50 Q28 35 15 15 Z';
+      circle = {cx:87, cy:50, r:8};
+      break;
+    case 'xor':
+      pathD = 'M22 15 Q40 15 58 15 Q88 30 88 50 Q88 70 58 85 Q40 85 22 85 Q36 65 36 50 Q36 35 22 15 Z';
+      // Extra curved line
+      var extraPath = document.createElementNS(svgNS, 'path');
+      extraPath.setAttribute('d', 'M12 15 Q26 35 26 50 Q26 65 12 85');
+      extraPath.setAttribute('fill', 'none');
+      extraPath.setAttribute('stroke', 'currentColor');
+      extraPath.setAttribute('stroke-width', '2');
+      g.appendChild(extraPath);
+      break;
+    case 'xnor':
+      pathD = 'M22 15 Q38 15 52 15 Q80 30 80 50 Q80 70 52 85 Q38 85 22 85 Q36 65 36 50 Q36 35 22 15 Z';
+      var extraPath2 = document.createElementNS(svgNS, 'path');
+      extraPath2.setAttribute('d', 'M12 15 Q26 35 26 50 Q26 65 12 85');
+      extraPath2.setAttribute('fill', 'none');
+      extraPath2.setAttribute('stroke', 'currentColor');
+      extraPath2.setAttribute('stroke-width', '2');
+      g.appendChild(extraPath2);
+      circle = {cx:90, cy:50, r:8};
+      break;
+  }
+
+  if (pathD) {
+    path.setAttribute('d', pathD);
+    path.setAttribute('fill-opacity', '0.18');
+    path.setAttribute('stroke-width', '2');
+    g.appendChild(path);
+  }
+
+  if (circle) {
+    var c = document.createElementNS(svgNS, 'circle');
+    c.setAttribute('cx', circle.cx); c.setAttribute('cy', circle.cy); c.setAttribute('r', circle.r);
+    c.setAttribute('fill-opacity', '0.18');
+    g.appendChild(c);
+  }
+
+  // Gate type label (small, inside shape)
+  var text = document.createElementNS(svgNS, 'text');
+  var labels = {and:'&',or:'≥1',not:'1',nand:'⊼',nor:'⊽',xor:'=1',xnor:'≡',buffer:'1'};
+  text.textContent = labels[gate.type] || gate.type.toUpperCase();
+  text.setAttribute('x', '50'); text.setAttribute('y', '55');
+  text.setAttribute('text-anchor', 'middle');
+  text.setAttribute('font-size', '18');
+  text.setAttribute('font-family', 'monospace');
+  text.setAttribute('font-weight', '700');
+  text.setAttribute('fill', 'currentColor');
+  text.setAttribute('stroke', 'none');
+  text.style.pointerEvents = 'none';
+  g.appendChild(text);
+
+  svg.appendChild(g);
+  body.appendChild(svg);
+}
+
+function attachICShape(gate, el) {
+  var body = el.querySelector('.gbody');
+  if (!body) return;
+  
+  // Keep the label, but move it to the top
+  var cnt = body.querySelector('div[style*="text-align:center"]');
+  if (cnt) {
+    cnt.style.position = 'absolute';
+    cnt.style.top = '10%';
+    cnt.style.width = '100%';
+    cnt.style.transform = 'translateY(-50%)';
+    cnt.style.fontSize = '0.9em';
+    cnt.style.color = '#cbd5e1';
+  }
+  
+  // Make body transparent
+  body.style.background = 'transparent';
+  body.style.border = 'none';
+  body.style.boxShadow = 'none';
+  
+  var svgNS = 'http://www.w3.org/2000/svg';
+  var svg = document.createElementNS(svgNS, 'svg');
+  svg.setAttribute('class', 'ic-svg-body');
+  svg.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:0;';
+  
+  // Use absolute pixel dimensions for exact drawing
+  svg.setAttribute('viewBox', '0 0 140 180');
+  
+  // 1. Draw the IC body
+  var rect = document.createElementNS(svgNS, 'path');
+  var bgPath = "M 6 0 L 55 0 A 15 15 0 0 1 85 0 L 134 0 Q 140 0 140 6 L 140 174 Q 140 180 134 180 L 6 180 Q 0 180 0 174 L 0 6 Q 0 0 6 0 Z";
+  rect.setAttribute('d', bgPath);
+  rect.setAttribute('fill', '#1e293b');
+  rect.setAttribute('stroke', '#64748b');
+  rect.setAttribute('stroke-width', '2');
+  svg.appendChild(rect);
+  
+  // 2. Draw internal wiring
+  var isHex = (gate.type === 'ic7404');
+  var numGates = isHex ? 6 : 4;
+  var logicSym = '';
+  if(gate.type==='ic7400') logicSym='&';
+  if(gate.type==='ic7408') logicSym='&';
+  if(gate.type==='ic7432') logicSym='≥1';
+  if(gate.type==='ic7402') logicSym='≥1';
+  if(gate.type==='ic7486') logicSym='=1';
+  if(gate.type==='ic7404') logicSym='1';
+  var isInv = ['ic7400','ic7402','ic7404'].includes(gate.type);
+  
+  var w = 140, h = 180;
+  
+  var wires = document.createElementNS(svgNS, 'path');
+  var wd = '';
+  
+  for (var gi=0; gi<numGates; gi++) {
+    var outPy = h*(gi+1)/(numGates+1);
+    var cx = w * 0.55;
+    var cy = outPy;
+    var boxW = 18, boxH = 18;
+    
+    // Output wire
+    wd += ' M ' + (cx + boxW/2 + (isInv?3:0)) + ' ' + cy + ' L ' + w + ' ' + cy;
+    
+    // Input wires
+    if (isHex) {
+      var inPy = h*(gi+1)/(numGates+1);
+      wd += ' M 0 ' + inPy + ' L ' + (cx - boxW/2) + ' ' + cy;
+    } else {
+      var inPy1 = h*(gi*2+1)/(8+1);
+      var inPy2 = h*(gi*2+2)/(8+1);
+      wd += ' M 0 ' + inPy1 + ' L ' + (cx - boxW/2 - 5) + ' ' + inPy1 + ' L ' + (cx - boxW/2 - 5) + ' ' + (cy - 4) + ' L ' + (cx - boxW/2) + ' ' + (cy - 4);
+      wd += ' M 0 ' + inPy2 + ' L ' + (cx - boxW/2 - 5) + ' ' + inPy2 + ' L ' + (cx - boxW/2 - 5) + ' ' + (cy + 4) + ' L ' + (cx - boxW/2) + ' ' + (cy + 4);
+    }
+    
+    // Logic box
+    var box = document.createElementNS(svgNS, 'rect');
+    box.setAttribute('x', cx - boxW/2); box.setAttribute('y', cy - boxH/2);
+    box.setAttribute('width', boxW); box.setAttribute('height', boxH);
+    box.setAttribute('fill', '#1e293b'); box.setAttribute('stroke', '#94a3b8');
+    box.setAttribute('stroke-width', '1.5');
+    svg.appendChild(box);
+    
+    if (isInv) {
+      var inv = document.createElementNS(svgNS, 'circle');
+      inv.setAttribute('cx', cx + boxW/2 + 1.5); inv.setAttribute('cy', cy);
+      inv.setAttribute('r', 1.5);
+      inv.setAttribute('fill', '#1e293b'); inv.setAttribute('stroke', '#94a3b8');
+      inv.setAttribute('stroke-width', '1.5');
+      svg.appendChild(inv);
+    }
+    
+    var text = document.createElementNS(svgNS, 'text');
+    text.setAttribute('x', cx); text.setAttribute('y', cy + 1);
+    text.setAttribute('fill', '#cbd5e1');
+    text.setAttribute('font-size', '9');
+    text.setAttribute('font-family', 'monospace');
+    text.setAttribute('text-anchor', 'middle');
+    text.setAttribute('dominant-baseline', 'middle');
+    text.textContent = logicSym;
+    svg.appendChild(text);
+  }
+  
+  wires.setAttribute('d', wd);
+  wires.setAttribute('fill', 'none');
+  wires.setAttribute('stroke', '#64748b');
+  wires.setAttribute('stroke-width', '1.5');
+  
+  svg.insertBefore(wires, svg.children[1]); // Insert after the body rect
+  
+  body.insertBefore(svg, body.firstChild);
+}
+
+// ═══════════════════════════════════════════════════════
+// FEATURE 5: EXPORT PNG / SVG
+// ═══════════════════════════════════════════════════════
+document.getElementById('btn-export').addEventListener('click', function() {
+  document.getElementById('ov-export').classList.add('open');
+});
+document.getElementById('exp-close').addEventListener('click', function() {
+  document.getElementById('ov-export').classList.remove('open');
+});
+
+document.getElementById('exp-png').addEventListener('click', exportPNG);
+document.getElementById('exp-svg').addEventListener('click', exportSVG);
+document.getElementById('exp-json').addEventListener('click', function() {
+  autoSave();
+  var snap = projDataSnapshot();
+  var blob = new Blob([JSON.stringify({name:PROJ?PROJ.name:'circuit',data:snap},null,2)],{type:'application/json'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a'); a.href=url; a.download=(PROJ?PROJ.name:'circuit').replace(/\W/g,'_')+'.json'; a.click();
+  URL.revokeObjectURL(url);
+  document.getElementById('ov-export').classList.remove('open');
+  msg('Project JSON exported', 'ok');
+});
+
+function exportPNG() {
+  if (!S.gates.length) { msg('No gates to export', 'er'); return; }
+  var scale = 2; // retina
+  // Compute bounding box in world coords
+  var xs = S.gates.map(function(g){return g.x;}), ys = S.gates.map(function(g){return g.y;});
+  var xe = S.gates.map(function(g){return g.x+gdef(g).w;}), ye = S.gates.map(function(g){return g.y+gdef(g).h;});
+  var x0=Math.min.apply(null,xs)-30, y0=Math.min.apply(null,ys)-30;
+  var x1=Math.max.apply(null,xe)+30, y1=Math.max.apply(null,ye)+30;
+  var W=(x1-x0)*scale, H=(y1-y0)*scale;
+
+  var canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  var ctx = canvas.getContext('2d');
+
+  // Background
+  ctx.fillStyle = '#1a1e28';
+  ctx.fillRect(0,0,W,H);
+
+  // Grid
+  var step = 20*scale;
+  ctx.strokeStyle = '#1c2030'; ctx.lineWidth = 0.6;
+  for (var gx=(((-x0*scale)%step)+step)%step; gx<W; gx+=step) { ctx.beginPath();ctx.moveTo(gx,0);ctx.lineTo(gx,H);ctx.stroke(); }
+  for (var gy=(((-y0*scale)%step)+step)%step; gy<H; gy+=step) { ctx.beginPath();ctx.moveTo(0,gy);ctx.lineTo(W,gy);ctx.stroke(); }
+
+  // Wires
+  S.wires.forEach(function(wire) {
+    var fg=S.gates.find(function(g){return g.id===wire.fg;}), tg=S.gates.find(function(g){return g.id===wire.tg;});
+    if(!fg||!tg)return;
+    var def_fg=gdef(fg), def_tg=gdef(tg);
+    var np_fg=def_fg.np, nc_tg=def_tg.nc;
+    var fy=(wire.fp+1)/(np_fg+1)*def_fg.h, ty=(wire.tp+1)/(nc_tg+1)*def_tg.h;
+    var fx1=(fg.x+def_fg.w-x0)*scale, fy1=(fg.y+fy-y0)*scale;
+    var tx1=(tg.x-x0)*scale, ty1=(tg.y+ty-y0)*scale;
+    var mx=fx1+(tx1-fx1)*0.55;
+    ctx.beginPath();
+    ctx.moveTo(fx1,fy1);
+    ctx.bezierCurveTo(mx,fy1,mx,ty1,tx1,ty1);
+    ctx.strokeStyle = wire.sig===1 ? '#e04848' : '#1e3050';
+    ctx.lineWidth = wire.sig===1 ? 2.5*scale/2 : 2*scale/2;
+    if (wire.sig===1) { ctx.shadowColor='#e04848'; ctx.shadowBlur=4; }
+    ctx.stroke();
+    ctx.shadowBlur=0;
+  });
+
+  // Gates
+  S.gates.forEach(function(gate) {
+    var d=gdef(gate);
+    var gx=(gate.x-x0)*scale, gy=(gate.y-y0)*scale;
+    var gw=d.w*scale, gh=d.h*scale;
+    var r=4*scale;
+
+    // Gate body
+    var colors = {
+      input:{bg:'#162616',border:'#3a6a3a',txt:'#58a858'},
+      output:{bg:'#261616',border:'#6a3a3a',txt:'#a85858'},
+      clock:{bg:'#161e36',border:'#385090',txt:'#5890c0'},
+      and:{bg:'#162448',border:'#385090',txt:'#4890d8'},
+      or:{bg:'#162a1e',border:'#386042',txt:'#48aa68'},
+      not:{bg:'#36161a',border:'#882838',txt:'#e04858'},
+      nand:{bg:'#261636',border:'#683898',txt:'#9860cc'},
+      nor:{bg:'#361636',border:'#883888',txt:'#c86098'},
+      xor:{bg:'#32182c',border:'#823868',txt:'#d25898'},
+      xnor:{bg:'#2e1818',border:'#784038',txt:'#c06860'},
+      default:{bg:'#1e2336',border:'#353c50',txt:'#8590ac'},
+    };
+    var c = colors[gate.type] || colors.default;
+
+    ctx.fillStyle = c.bg;
+    ctx.strokeStyle = c.border;
+    ctx.lineWidth = 1.5*scale/2;
+    ctx.beginPath();
+    ctx.moveTo(gx+r,gy); ctx.lineTo(gx+gw-r,gy); ctx.arcTo(gx+gw,gy,gx+gw,gy+r,r);
+    ctx.lineTo(gx+gw,gy+gh-r); ctx.arcTo(gx+gw,gy+gh,gx+gw-r,gy+gh,r);
+    ctx.lineTo(gx+r,gy+gh); ctx.arcTo(gx,gy+gh,gx,gy+gh-r,r);
+    ctx.lineTo(gx,gy+r); ctx.arcTo(gx,gy,gx+r,gy,r);
+    ctx.closePath(); ctx.fill(); ctx.stroke();
+
+    // Label
+    ctx.fillStyle = c.txt;
+    ctx.font = 'bold '+Math.round(11*scale/2)+'px monospace';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    var label = d.lbl;
+    if (gate.type==='input') label = gate.value ? '1' : '0';
+    else if (['sr','dlatch','dff','jkff','tff'].includes(gate.type)) label = d.lbl+'\nQ='+(gate.q?1:0);
+    
+    if (gate.type.startsWith('ic74')) {
+      // Draw label at the top instead of center
+      ctx.fillText(label, gx+gw/2, gy+gh*0.1);
+      ctx.font = '500 '+Math.round(8*scale/2)+'px monospace';
+      ctx.fillText(d.sub||'', gx+gw/2, gy+gh*0.18);
+      
+      // Draw internal wiring
+      ctx.strokeStyle = c.border;
+      ctx.lineWidth = 1 * scale/2;
+      var isHex = (gate.type === 'ic7404');
+      var numGates = isHex ? 6 : 4;
+      var logicSym = '';
+      if(gate.type==='ic7400') logicSym='&';
+      if(gate.type==='ic7408') logicSym='&';
+      if(gate.type==='ic7432') logicSym='≥1';
+      if(gate.type==='ic7402') logicSym='≥1';
+      if(gate.type==='ic7486') logicSym='=1';
+      if(gate.type==='ic7404') logicSym='1';
+      var isInv = ['ic7400','ic7402','ic7404'].includes(gate.type);
+      
+      for(var gi=0; gi<numGates; gi++) {
+        var outPy = gy+gh*(gi+1)/(numGates+1);
+        var cx = gx + gw*0.6;
+        var cy = outPy;
+        var boxW = 18*scale/2;
+        var boxH = 18*scale/2;
+        
+        // Output wire
+        ctx.beginPath(); ctx.moveTo(cx+boxW/2 + (isInv?3*scale/2:0), cy); ctx.lineTo(gx+gw, cy); ctx.stroke();
+        
+        // Input wires
+        if (isHex) {
+          var inPy = gy+gh*(gi+1)/(numGates+1);
+          ctx.beginPath(); ctx.moveTo(gx, inPy); ctx.lineTo(cx-boxW/2, cy); ctx.stroke();
+        } else {
+          var inPy1 = gy+gh*(gi*2+1)/(8+1);
+          var inPy2 = gy+gh*(gi*2+2)/(8+1);
+          ctx.beginPath();
+          ctx.moveTo(gx, inPy1); ctx.lineTo(cx-boxW/2-4*scale, inPy1); ctx.lineTo(cx-boxW/2-4*scale, cy-3*scale); ctx.lineTo(cx-boxW/2, cy-3*scale);
+          ctx.moveTo(gx, inPy2); ctx.lineTo(cx-boxW/2-4*scale, inPy2); ctx.lineTo(cx-boxW/2-4*scale, cy+3*scale); ctx.lineTo(cx-boxW/2, cy+3*scale);
+          ctx.stroke();
+        }
+        
+        // Draw miniature logic box (IEEE rectangular style)
+        ctx.fillStyle = c.bg;
+        ctx.fillRect(cx-boxW/2, cy-boxH/2, boxW, boxH);
+        ctx.strokeRect(cx-boxW/2, cy-boxH/2, boxW, boxH);
+        
+        if (isInv) {
+          ctx.beginPath(); ctx.arc(cx+boxW/2+1.5*scale/2, cy, 1.5*scale/2, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+        }
+        
+        ctx.fillStyle = c.txt;
+        ctx.font = Math.round(9*scale/2)+'px monospace';
+        ctx.fillText(logicSym, cx, cy);
+      }
+    } else {
+      ctx.fillText(label, gx+gw/2, gy+gh/2);
+    }
+
+    // Pins
+    var inC=d.nc, outC=d.np, pinR=4*scale/2;
+    for (var pi=0; pi<inC; pi++) {
+      var py=gy+gh*(pi+1)/(inC+1);
+      var w=S.wires.find(function(w){return w.tg===gate.id&&w.tp===pi;});
+      ctx.beginPath(); ctx.arc(gx,py,pinR,0,Math.PI*2);
+      ctx.fillStyle = w&&w.sig===1?'#e04848':'#1e3050'; ctx.fill();
+    }
+    for (var pi=0; pi<outC; pi++) {
+      var py=gy+gh*(pi+1)/(outC+1);
+      var w=S.wires.find(function(w){return w.fg===gate.id&&w.fp===pi;});
+      ctx.beginPath(); ctx.arc(gx+gw,py,pinR,0,Math.PI*2);
+      ctx.fillStyle = w&&w.sig===1?'#e04848':'#1e3050'; ctx.fill();
+    }
+  });
+
+  var url = canvas.toDataURL('image/png');
+  var a = document.createElement('a');
+  a.href = url; a.download = (PROJ?PROJ.name:'circuit').replace(/\W/g,'_')+'.png';
+  a.click();
+  document.getElementById('ov-export').classList.remove('open');
+  msg('PNG exported ('+Math.round(W/scale)+'×'+Math.round(H/scale)+'px)', 'ok');
+}
+
+function exportSVG() {
+  if (!S.gates.length) { msg('No gates to export', 'er'); return; }
+  var xs=S.gates.map(function(g){return g.x;}), ys=S.gates.map(function(g){return g.y;});
+  var xe=S.gates.map(function(g){return g.x+gdef(g).w;}), ye=S.gates.map(function(g){return g.y+gdef(g).h;});
+  var x0=Math.min.apply(null,xs)-30, y0=Math.min.apply(null,ys)-30;
+  var x1=Math.max.apply(null,xe)+30, y1=Math.max.apply(null,ye)+30;
+  var W=x1-x0, H=y1-y0;
+  var ns='http://www.w3.org/2000/svg';
+
+  var lines = ['<?xml version="1.0" encoding="UTF-8"?>'];
+  lines.push('<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'">');
+  lines.push('<rect width="'+W+'" height="'+H+'" fill="#1a1e28"/>');
+  lines.push('<g id="wires">');
+
+  S.wires.forEach(function(wire) {
+    var fg=S.gates.find(function(g){return g.id===wire.fg;}), tg=S.gates.find(function(g){return g.id===wire.tg;});
+    if(!fg||!tg)return;
+    var df=gdef(fg), dt=gdef(tg);
+    var fy=(wire.fp+1)/(df.np+1)*df.h, ty=(wire.tp+1)/(dt.nc+1)*dt.h;
+    var fx1=fg.x+df.w-x0, fy1=fg.y+fy-y0;
+    var tx1=tg.x-x0, ty1=tg.y+ty-y0;
+    var mx=fx1+(tx1-fx1)*0.55;
+    var color = wire.sig===1?'#e04848':'#1e3050';
+    var sw = wire.sig===1?'2.5':'2';
+    lines.push('<path d="M'+fx1+' '+fy1+' C'+mx+' '+fy1+' '+mx+' '+ty1+' '+tx1+' '+ty1+'" stroke="'+color+'" stroke-width="'+sw+'" fill="none" stroke-linecap="round"/>');
+  });
+
+  lines.push('</g><g id="gates">');
+
+  S.gates.forEach(function(gate) {
+    var d=gdef(gate);
+    var gx=gate.x-x0, gy=gate.y-y0;
+    var GCOL_MAP={input:'#3a6a3a',output:'#6a3a3a',and:'#385090',or:'#386042',not:'#882838',nand:'#683898',nor:'#883888',xor:'#823868',xnor:'#784038',clock:'#385090',default:'#353c50'};
+    var GFILL={input:'#162616',output:'#261616',and:'#162448',or:'#162a1e',not:'#36161a',nand:'#261636',nor:'#361636',xor:'#32182c',xnor:'#2e1818',clock:'#161e36',default:'#1e2336'};
+    var GTXT={input:'#58a858',output:'#a85858',and:'#4890d8',or:'#48aa68',not:'#e04858',nand:'#9860cc',nor:'#c86098',xor:'#d25898',xnor:'#c06860',clock:'#5890c0',default:'#8590ac'};
+    var bc=GCOL_MAP[gate.type]||GCOL_MAP.default;
+    var bg=GFILL[gate.type]||GFILL.default;
+    var tc=GTXT[gate.type]||GTXT.default;
+    lines.push('<rect x="'+gx+'" y="'+gy+'" width="'+d.w+'" height="'+d.h+'" rx="4" fill="'+bg+'" stroke="'+bc+'" stroke-width="1.5"/>');
+    var lbl=d.lbl; if(gate.type==='input')lbl=gate.value?'1':'0';
+    lines.push('<text x="'+(gx+d.w/2)+'" y="'+(gy+d.h/2+4)+'" text-anchor="middle" font-family="monospace" font-size="11" font-weight="700" fill="'+tc+'">'+lbl+'</text>');
+    // Pin dots
+    for(var pi=0;pi<d.nc;pi++){var py=gy+d.h*(pi+1)/(d.nc+1);lines.push('<circle cx="'+gx+'" cy="'+py+'" r="4" fill="#1e3050"/>');}
+    for(var pi=0;pi<d.np;pi++){var py=gy+d.h*(pi+1)/(d.np+1);lines.push('<circle cx="'+(gx+d.w)+'" cy="'+py+'" r="4" fill="#1e3050"/>');}
+  });
+
+  lines.push('</g></svg>');
+  var svgStr = lines.join('\n');
+  var blob = new Blob([svgStr], {type:'image/svg+xml'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a'); a.href=url; a.download=(PROJ?PROJ.name:'circuit').replace(/\W/g,'_')+'.svg'; a.click();
+  URL.revokeObjectURL(url);
+  document.getElementById('ov-export').classList.remove('open');
+  msg('SVG exported', 'ok');
+}
+
+// ═══════════════════════════════════════════════════════
+// COPY / PASTE
+// ═══════════════════════════════════════════════════════
+var CLIPBOARD = null; // { gates:[], wires:[] } — relative offsets
+
+function copySelected() {
+  var ids = S.sel !== null ? [S.sel] : [...S.msel];
+  if (!ids.length) { msg('Nothing selected to copy', 'er'); return; }
+  var gates = ids.map(function(id){ return S.gates.find(function(g){ return g.id===id; }); }).filter(Boolean);
+  var minX = Math.min.apply(null, gates.map(function(g){ return g.x; }));
+  var minY = Math.min.apply(null, gates.map(function(g){ return g.y; }));
+  var idSet = new Set(ids);
+  CLIPBOARD = {
+    gates: gates.map(function(g){ return Object.assign({}, g, {el:undefined, x:g.x-minX, y:g.y-minY}); }),
+    wires: S.wires.filter(function(w){ return idSet.has(w.fg) && idSet.has(w.tg); }).map(function(w){ return Object.assign({},w); }),
+  };
+  msg('Copied ' + ids.length + ' gate(s) — Ctrl+V to paste', 'ok');
+}
+
+function pasteClipboard() {
+  if (!CLIPBOARD || !CLIPBOARD.gates.length) { msg('Nothing to paste', 'er'); return; }
+  if (S.gates.length + CLIPBOARD.gates.length > 20 && !checkProStatus()) {
+    showProModal('Unlimited Components');
+    return;
+  }
+  histPush();
+  // Offset paste by 40px
+  var ox = 60, oy = 60;
+  var idMap = {}; // old id → new id
+  CLIPBOARD.gates.forEach(function(og) {
+    var newGate = Object.assign({}, og, {
+      id: S.nid++,
+      x: snap(og.x + ox),
+      y: snap(og.y + oy),
+      el: undefined,
+      lastTog: Date.now(),
+    });
+    idMap[og.id] = newGate.id;
+    var el = mkGateEl(newGate);
+    newGate.el = el;
+    gateLyr.appendChild(el);
+    S.gates.push(newGate);
+    bindGate(newGate);
+  });
+  CLIPBOARD.wires.forEach(function(ow) {
+    if (idMap[ow.fg] && idMap[ow.tg]) {
+      S.wires.push({ id: S.nid++, fg: idMap[ow.fg], fp: ow.fp, tg: idMap[ow.tg], tp: ow.tp, sig: 0 });
+    }
+  });
+  simulate(); stUpd(); S.dirty = true;
+  msg('Pasted ' + CLIPBOARD.gates.length + ' gate(s)', 'ok');
+}
+
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey||e.metaKey) && e.key==='c' && !e.target.matches('input,textarea,select')) { e.preventDefault(); copySelected(); }
+  if ((e.ctrlKey||e.metaKey) && e.key==='v' && !e.target.matches('input,textarea,select')) { e.preventDefault(); pasteClipboard(); }
+  if ((e.ctrlKey||e.metaKey) && e.key==='a' && !e.target.matches('input,textarea,select')) {
+    e.preventDefault();
+    S.msel.clear(); S.sel=null;
+    S.gates.forEach(function(g){ S.msel.add(g.id); if(g.el)g.el.classList.add('msel'); });
+    stUpd(); msg('All gates selected', 'ok');
+  }
+});
+
+// ── Context menu copy ──
+document.getElementById('cmenu').insertAdjacentHTML('afterbegin',
+  '<div class="cmi" id="cm-copy">⎘ Copy</div><div class="cmsep"></div>');
+document.getElementById('cm-copy').addEventListener('click', function(){ copySelected(); hideCM(); });
+
+// ═══════════════════════════════════════════════════════
+// WIRE LABELS
+// ═══════════════════════════════════════════════════════
+var WIRE_LABELS = {}; // wireId → label string
+
+// Draw labels on wires — called after drawWires
+var _origDrawWires2 = drawWires;
+drawWires = function() {
+  _origDrawWires2();
+  // Remove old label elements
+  document.querySelectorAll('.wire-lbl').forEach(function(el){ el.remove(); });
+  // Add labels for named wires
+  S.wires.forEach(function(wire) {
+    var lbl = WIRE_LABELS[wire.id];
+    if (!lbl) return;
+    var fg = S.gates.find(function(g){ return g.id===wire.fg; });
+    var tg = S.gates.find(function(g){ return g.id===wire.tg; });
+    if (!fg || !tg) return;
+    var fp = pxy(fg, true, wire.fp);
+    var tp = pxy(tg, false, wire.tp);
+    if (!fp || !tp) return;
+    var mx = (fp.x + tp.x) / 2, my = (fp.y + tp.y) / 2;
+    var el = document.createElement('div');
+    el.className = 'wire-lbl';
+    el.textContent = lbl;
+    el.style.left = mx + 'px';
+    el.style.top = (my - 10) + 'px';
+    cvwrap.appendChild(el);
+  });
+};
+
+// Double-click on wire SVG to label it
+wireSvg.addEventListener('dblclick', function(e) {
+  var hit = e.target;
+  var wid = hit && hit.dataset && hit.dataset.wid ? parseInt(hit.dataset.wid) : null;
+  if (!wid) return;
+  var current = WIRE_LABELS[wid] || '';
+  var inp = document.createElement('input');
+  inp.className = 'wire-lbl-edit';
+  inp.value = current;
+  inp.placeholder = 'net name…';
+  inp.style.left = (e.clientX - 50) + 'px';
+  inp.style.top  = (e.clientY - 14) + 'px';
+  document.body.appendChild(inp);
+  inp.focus(); inp.select();
+  function finish() {
+    var v = inp.value.trim();
+    if (v) WIRE_LABELS[wid] = v; else delete WIRE_LABELS[wid];
+    inp.remove(); drawWires(); S.dirty = true;
+  }
+  inp.addEventListener('blur', finish);
+  inp.addEventListener('keydown', function(e){ if (e.key==='Enter') inp.blur(); if (e.key==='Escape'){ inp.value=''; inp.blur(); } });
+});
+
+// Store wire ids on SVG hitbox elements for label editing
+var _origDW = drawWires;
+// Patch the hitbox to carry wid dataset — already done in original drawWires via closure
+
+// ═══════════════════════════════════════════════════════
+// GATE RENAME (double-click input/output/clock)
+// ═══════════════════════════════════════════════════════
+var GATE_NAMES = {}; // gateId → custom name
+
+function attachRenameToGate(gate) {
+  if (!['input','output','clock'].includes(gate.type)) return;
+  gate.el.addEventListener('dblclick', function(e) {
+    e.stopPropagation();
+    var r = gate.el.getBoundingClientRect();
+    var inp = document.createElement('input');
+    inp.className = 'gate-name-input';
+    inp.value = GATE_NAMES[gate.id] || '';
+    inp.placeholder = 'label…';
+    inp.style.left = (r.left + r.width/2 - 60) + 'px';
+    inp.style.top  = (r.bottom + 4) + 'px';
+    document.body.appendChild(inp);
+    inp.focus(); inp.select();
+    function finish() {
+      var v = inp.value.trim();
+      if (v) GATE_NAMES[gate.id] = v; else delete GATE_NAMES[gate.id];
+      inp.remove(); updateGateNameTag(gate); S.dirty = true;
+    }
+    inp.addEventListener('blur', finish);
+    inp.addEventListener('keydown', function(e){ if(e.key==='Enter')inp.blur(); if(e.key==='Escape'){inp.value='';inp.blur();} });
+  });
+}
+
+function updateGateNameTag(gate) {
+  var existing = gate.el.querySelector('.gate-name-tag');
+  if (existing) existing.remove();
+  var name = GATE_NAMES[gate.id];
+  if (!name) return;
+  var tag = document.createElement('div');
+  tag.className = 'gate-name-tag';
+  tag.textContent = name;
+  gate.el.style.overflow = 'visible';
+  gate.el.appendChild(tag);
+}
+
+// Patch bindGate to add rename
+var _origBindGate2 = bindGate;
+bindGate = function(gate) {
+  _origBindGate2(gate);
+  attachRenameToGate(gate);
+  updateGateNameTag(gate);
+};
+
+// ═══════════════════════════════════════════════════════
+// STEP-BY-STEP SIMULATION
+// ═══════════════════════════════════════════════════════
+var STEP = { active: false, queue: [], currentIdx: 0, running: false };
+
+var btnStep = document.getElementById('btn-step');
+if(btnStep) btnStep.addEventListener('click', toggleStepMode);
+document.getElementById('step-exit').addEventListener('click', exitStepMode);
+document.getElementById('step-fwd').addEventListener('click', stepForward);
+document.getElementById('step-rst').addEventListener('click', function(){ STEP.currentIdx=0; highlightStep(-1); updateStepInfo(); });
+document.getElementById('step-play').addEventListener('click', function() {
+  STEP.running = !STEP.running;
+  this.textContent = STEP.running ? '⏸ Pause' : '▶ Run';
+  if (STEP.running) stepLoop();
+});
+
+function toggleStepMode() {
+  if (STEP.active) { exitStepMode(); return; }
+  STEP.active = true;
+  document.getElementById('step-bar').classList.add('on');
+  var btnStep = document.getElementById('btn-step');
+  if(btnStep) btnStep.classList.add('act');
+  // Build propagation queue: topological order
+  STEP.queue = buildTopoQueue();
+  STEP.currentIdx = 0;
+  STEP.running = false;
+  document.getElementById('step-play').textContent = '▶ Run';
+  // Reset all gate highlights
+  S.gates.forEach(function(g){ if(g.el) g.el.style.filter=''; });
+  updateStepInfo();
+  msg('Step mode: press ⏭ Step to propagate gate-by-gate', 'ok');
+}
+
+function exitStepMode() {
+  STEP.active = false; STEP.running = false;
+  document.getElementById('step-bar').classList.remove('on');
+  var btnStep = document.getElementById('btn-step');
+  if(btnStep) btnStep.classList.remove('act');
+  S.gates.forEach(function(g){ if(g.el) g.el.style.filter=''; });
+  // Remove step wire highlights
+  wireSvg.querySelectorAll('.step-path-hi').forEach(function(el){ el.classList.remove('step-path-hi'); });
+  simulate();
+}
+
+function buildTopoQueue() {
+  var order = [];
+  var sources = S.gates.filter(function(g){ return ['input','clock','const0','const1'].includes(g.type); });
+  var rest = S.gates.filter(function(g){ return !['input','clock','const0','const1'].includes(g.type); });
+  return sources.concat(rest);
+}
+
+function stepForward() {
+  if (!STEP.queue.length) return;
+  if (STEP.currentIdx >= STEP.queue.length) STEP.currentIdx = 0;
+  highlightStep(STEP.currentIdx);
+  STEP.currentIdx++;
+  updateStepInfo();
+}
+
+function stepLoop() {
+  if (!STEP.running || !STEP.active) return;
+  stepForward();
+  if (STEP.currentIdx >= STEP.queue.length) {
+    STEP.currentIdx = 0; STEP.running = false;
+    document.getElementById('step-play').textContent = '▶ Run';
+  } else {
+    setTimeout(stepLoop, 300);
+  }
+}
+
+function highlightStep(idx) {
+  // Clear previous
+  S.gates.forEach(function(g){ if(g.el){ g.el.style.boxShadow=''; g.el.style.zIndex=''; } });
+  wireSvg.querySelectorAll('path').forEach(function(p){ p.classList.remove('step-path-hi'); });
+  if (idx < 0 || idx >= STEP.queue.length) { simulate(); return; }
+  var gate = STEP.queue[idx];
+  if (!gate || !gate.el) return;
+  // Highlight active gate
+  gate.el.style.boxShadow = '0 0 0 3px ' + (gate.type==='input'?'#3dba6e':'#4a9ede') + ', 0 0 20px rgba(74,158,222,.4)';
+  gate.el.style.zIndex = '100';
+  // Simulate up to this gate
+  var ov = {};
+  var done = new Set();
+  S.gates.forEach(function(g){
+    if(['input','clock','const0','const1'].includes(g.type)){ov[g.id]=calcGate(g,[]);done.add(g.id);}
+  });
+  for (var qi = 0; qi <= idx; qi++) {
+    var g = STEP.queue[qi];
+    if (!g || done.has(g.id)) continue;
+    var d = gdef(g); var ins = []; var ok = true;
+    for (var pi = 0; pi < d.nc; pi++) {
+      var w = S.wires.find(function(w){ return w.tg===g.id&&w.tp===pi; });
+      if (w) { if(ov[w.fg]===undefined){ok=false;break;} ins.push(ov[w.fg][w.fp]??0); }
+      else ins.push(0);
+    }
+    if (!ok) continue;
+    ov[g.id] = calcGate(g, ins); done.add(g.id);
+  }
+  // Update wire signals from partial computation
+  S.wires.forEach(function(w){ w.sig=(ov[w.fg]||[])[w.fp]??0; });
+  // Highlight wires connected to active gate
+  wireSvg.querySelectorAll('path[data-step-gate]').forEach(function(p){ p.removeAttribute('data-step-gate'); p.classList.remove('step-path-hi'); });
+  drawWires();
+  // Re-highlight step wires
+  if (gate) {
+    S.wires.forEach(function(wire) {
+      if (wire.tg === gate.id) {
+        // Find the visible wire path (second child for each wire pair)
+        wireSvg.querySelectorAll('path.wvis').forEach(function(path, pi) {
+          if (pi === S.wires.indexOf(wire)) path.classList.add('step-path-hi');
+        });
+      }
+    });
+  }
+}
+
+function updateStepInfo() {
+  var g = STEP.queue[STEP.currentIdx];
+  var info = g ? ('Next: ' + gdef(g).lbl + ' #' + g.id + ' (' + (STEP.currentIdx+1) + '/' + STEP.queue.length + ')') : 'End of propagation';
+  document.getElementById('step-info').textContent = info;
+}
+
+// ═══════════════════════════════════════════════════════
+// DRC — DESIGN RULE CHECK
+// ═══════════════════════════════════════════════════════
+
+document.getElementById('btn-drc').addEventListener('click', function(){
+  document.getElementById('ov-drc').classList.add('open');
+  const result = runDRC(S.gates, S.wires, S.custom);
+  
+  const mappedErrors = result.errors.map(function(v) {
+    return {
+      type: 'error', icon: '🔴',
+      title: v.rule,
+      desc: v.message + (v.netId ? ' [Net: ' + v.netId + ']' : ''),
+      gid: (v.gates && v.gates[0] && typeof v.gates[0] === 'number') ? v.gates[0] : (v.icInstance || null)
+    };
+  });
+  
+  const mappedWarnings = [].concat(result.warnings, result.info).map(function(v) {
+    return {
+      type: v.severity === 'info' ? 'info' : 'warn',
+      icon: v.severity === 'info' ? 'ℹ️' : '⚠',
+      title: v.rule,
+      desc: v.message + (v.netId ? ' [Net: ' + v.netId + ']' : ''),
+      gid: (v.gates && v.gates[0] && typeof v.gates[0] === 'number') ? v.gates[0] : (v.icInstance || null)
+    };
+  });
+  
+  renderDRC(mappedErrors, mappedWarnings);
+  if (typeof simulate === 'function') simulate();
+  if (typeof stUpd === 'function') stUpd();
+  S.dirty = true;
+});
+document.getElementById('drc-close').addEventListener('click', function(){ document.getElementById('ov-drc').classList.remove('open'); });
+document.getElementById('drc-run').addEventListener('click', function(){ document.getElementById('btn-drc').click(); });
+
+
+// -----------------------------------------------------------------------
+// CONFIG — verify these against your real DEF object before trusting R9
+// -----------------------------------------------------------------------
+const DRC_SEQUENTIAL_TYPES = new Set(["sr", "dlatch", "dff", "jkff", "tff"]);
+const DRC_SOURCE_TYPES = new Set(["input", "clock"]);
+const DRC_SINK_TYPES = new Set(["output"]);
+
+// ASSUMPTION (please verify against your real DEF pin ordering):
+const DRC_CLOCK_PIN_INDEX = {
+  dff: 1,
+  jkff: 2,
+  tff: 1,
+};
+
+const DRC_DEFAULT_FANOUT_LIMIT = 8;
+
+function drcGateDef(gate, customLib) {
+  if (gate.type === "custom") {
+    const pkg = customLib ? customLib[gate.cn] : null;
+    if (!pkg || !pkg._def) return { nc: 0, np: 0 };
+    return pkg._def;
+  }
+  const d = DEF[gate.type];
+  return d || { nc: 0, np: 0 };
+}
+
+function pinKey(gateId, dir, idx) {
+  return `${gateId}:${dir}:${idx}`;
+}
+
+class DrcUnionFind {
+  constructor() {
+    this.parent = new Map();
+    this.rank = new Map();
+  }
+  find(x) {
+    if (!this.parent.has(x)) {
+      this.parent.set(x, x);
+      this.rank.set(x, 0);
+    }
+    if (this.parent.get(x) !== x) {
+      this.parent.set(x, this.find(this.parent.get(x)));
+    }
+    return this.parent.get(x);
+  }
+  union(a, b) {
+    const ra = this.find(a);
+    const rb = this.find(b);
+    if (ra === rb) return;
+    const rankA = this.rank.get(ra);
+    const rankB = this.rank.get(rb);
+    if (rankA < rankB) this.parent.set(ra, rb);
+    else if (rankA > rankB) this.parent.set(rb, ra);
+    else {
+      this.parent.set(rb, ra);
+      this.rank.set(ra, rankA + 1);
+    }
+  }
+}
+
+function drcExtractNets(gates, wires, customLib) {
+  const uf = new DrcUnionFind();
+  const inputPins = new Map();
+  const outputPins = new Map();
+
+  for (const g of gates) {
+    const d = drcGateDef(g, customLib);
+    for (let i = 0; i < (d.nc || 0); i++) {
+      inputPins.set(pinKey(g.id, "in", i), { gateId: g.id, idx: i, type: g.type });
+    }
+    for (let i = 0; i < (d.np || 0); i++) {
+      outputPins.set(pinKey(g.id, "out", i), { gateId: g.id, idx: i, type: g.type });
+    }
+  }
+
+  for (const w of wires) {
+    const fromKey = pinKey(w.fg, "out", w.fp);
+    const toKey = pinKey(w.tg, "in", w.tp);
+    uf.find(fromKey);
+    uf.find(toKey);
+    uf.union(fromKey, toKey);
+  }
+
+  const allKeys = new Set([...inputPins.keys(), ...outputPins.keys()]);
+  const groups = new Map();
+
+  for (const key of allKeys) {
+    const root = uf.find(key);
+    if (!groups.has(root)) groups.set(root, { drivers: [], loads: [] });
+    if (outputPins.has(key)) groups.get(root).drivers.push(outputPins.get(key));
+    if (inputPins.has(key)) groups.get(root).loads.push(inputPins.get(key));
+  }
+
+  return [...groups.values()].map((g, i) => ({ id: `net_${i}`, ...g }));
+}
+
+function drcCheckNets(nets, opts, pathPrefix) {
+  const violations = [];
+  const fanoutLimit = opts.fanoutLimit ?? DRC_DEFAULT_FANOUT_LIMIT;
+
+  for (const net of nets) {
+    if (net.drivers.length === 0 && net.loads.length > 0) {
+      violations.push({
+        rule: "R1_FLOATING_INPUT",
+        severity: "error",
+        message: "Input pin(s) not driven by any output.",
+        netId: pathPrefix + net.id,
+        gates: net.loads.map((p) => p.gateId),
+        pins: net.loads.map((p) => ({ gateId: p.gateId, idx: p.idx })),
+      });
+    }
+
+    if (net.drivers.length > 1) {
+      violations.push({
+        rule: "R2_DRIVER_CONFLICT",
+        severity: "error",
+        message: `${net.drivers.length} outputs are wired onto the same net (electrical conflict).`,
+        netId: pathPrefix + net.id,
+        gates: net.drivers.map((p) => p.gateId),
+      });
+    }
+
+    if (net.drivers.length === 1 && net.loads.length === 0) {
+      violations.push({
+        rule: "R3_DANGLING_OUTPUT",
+        severity: "warning",
+        message: "Output is not connected to anything.",
+        netId: pathPrefix + net.id,
+        gates: net.drivers.map((p) => p.gateId),
+      });
+    }
+
+    if (net.loads.length > fanoutLimit) {
+      violations.push({
+        rule: "R7_FANOUT_OVERLOAD",
+        severity: "warning",
+        message: `Net drives ${net.loads.length} inputs, exceeding recommended fanout of ${fanoutLimit}.`,
+        netId: pathPrefix + net.id,
+      });
+    }
+
+    const isClockDriven = net.drivers.some((d) => d.type === "clock");
+    if (isClockDriven) {
+      const nonClockLoads = net.loads.filter((l) => {
+        const clkIdx = DRC_CLOCK_PIN_INDEX[l.type];
+        return clkIdx === undefined || clkIdx !== l.idx;
+      });
+      if (nonClockLoads.length > 0) {
+        violations.push({
+          rule: "R9_CLOCK_AS_DATA",
+          severity: "warning",
+          message: "Clock signal feeds a non-clock (data) input — check intent.",
+          netId: pathPrefix + net.id,
+          gates: nonClockLoads.map((p) => p.gateId),
+        });
+      }
+    }
+  }
+
+  return violations;
+}
+
+function drcCheckDuplicateWires(wires, pathPrefix) {
+  const seen = new Map();
+  const violations = [];
+  for (const w of wires) {
+    const key = `${w.fg}.${w.fp}->${w.tg}.${w.tp}`;
+    if (seen.has(key)) {
+      violations.push({
+        rule: "R5_DUPLICATE_WIRE",
+        severity: "warning",
+        message: "Duplicate wire between the same two pins.",
+        wires: [seen.get(key), pathPrefix + w.id],
+      });
+    } else {
+      seen.set(key, pathPrefix + w.id);
+    }
+  }
+  return violations;
+}
+
+function drcCheckIsolatedComponents(gates, wires, customLib, pathPrefix) {
+  const touched = new Set();
+  for (const w of wires) {
+    touched.add(w.fg);
+    touched.add(w.tg);
+  }
+  const violations = [];
+  for (const g of gates) {
+    const d = drcGateDef(g, customLib);
+    const totalPins = (d.nc || 0) + (d.np || 0);
+    if (totalPins > 0 && !touched.has(g.id)) {
+      violations.push({
+        rule: "R4_ISOLATED_COMPONENT",
+        severity: "info",
+        message: "Component has no connections.",
+        gates: [pathPrefix + g.id],
+      });
+    }
+  }
+  return violations;
+}
+
+function drcBuildGateGraph(gates, nets) {
+  const adj = new Map();
+  for (const g of gates) adj.set(g.id, new Set());
+
+  for (const net of nets) {
+    const combDrivers = net.drivers.filter((d) => !DRC_SEQUENTIAL_TYPES.has(d.type));
+    const combLoads = net.loads.filter((l) => !DRC_SEQUENTIAL_TYPES.has(l.type));
+    for (const d of combDrivers) {
+      for (const l of combLoads) {
+        if (adj.has(d.gateId)) adj.get(d.gateId).add(l.gateId);
+      }
+    }
+  }
+  return adj;
+}
+
+function drcTarjanSCC(adj) {
+  let index = 0;
+  const indices = new Map();
+  const lowlink = new Map();
+  const onStack = new Map();
+  const stack = [];
+  const sccs = [];
+
+  for (const start of adj.keys()) {
+    if (indices.has(start)) continue;
+    const workStack = [{ node: start, it: adj.get(start).values() }];
+    indices.set(start, index);
+    lowlink.set(start, index);
+    index++;
+    stack.push(start);
+    onStack.set(start, true);
+
+    while (workStack.length > 0) {
+      const frame = workStack[workStack.length - 1];
+      const next = frame.it.next();
+
+      if (!next.done) {
+        const child = next.value;
+        if (!indices.has(child)) {
+          indices.set(child, index);
+          lowlink.set(child, index);
+          index++;
+          stack.push(child);
+          onStack.set(child, true);
+          workStack.push({ node: child, it: adj.get(child).values() });
+        } else if (onStack.get(child)) {
+          lowlink.set(frame.node, Math.min(lowlink.get(frame.node), indices.get(child)));
+        }
+      } else {
+        workStack.pop();
+        if (workStack.length > 0) {
+          const parent = workStack[workStack.length - 1].node;
+          lowlink.set(parent, Math.min(lowlink.get(parent), lowlink.get(frame.node)));
+        }
+        if (lowlink.get(frame.node) === indices.get(frame.node)) {
+          const comp = [];
+          let w;
+          do {
+            w = stack.pop();
+            onStack.set(w, false);
+            comp.push(w);
+          } while (w !== frame.node);
+          sccs.push(comp);
+        }
+      }
+    }
+  }
+  return sccs;
+}
+
+function drcCheckCombinationalLoops(gates, nets, pathPrefix) {
+  const adj = drcBuildGateGraph(gates, nets);
+  const sccs = drcTarjanSCC(adj);
+  const violations = [];
+  for (const comp of sccs) {
+    const selfLoop = comp.length === 1 && adj.get(comp[0]).has(comp[0]);
+    if (comp.length > 1 || selfLoop) {
+      violations.push({
+        rule: "R8_COMBINATIONAL_LOOP",
+        severity: "error",
+        message: "Combinational feedback loop — no clocked element breaks the cycle.",
+        gates: comp.map((id) => pathPrefix + id),
+      });
+    }
+  }
+  return violations;
+}
+
+function drcRunInternal(gates, wires, customLib, opts, pathPrefix) {
+  const nets = drcExtractNets(gates, wires, customLib);
+
+  let violations = [
+    ...drcCheckNets(nets, opts, pathPrefix),
+    ...drcCheckDuplicateWires(wires, pathPrefix),
+    ...drcCheckIsolatedComponents(gates, wires, customLib, pathPrefix),
+    ...drcCheckCombinationalLoops(gates, nets, pathPrefix),
+  ];
+
+  const icGates = gates.filter((g) => g.type === "custom" && g.cn);
+  for (const icGate of icGates) {
+    const pkg = customLib ? customLib[icGate.cn] : null;
+    if (!pkg || !pkg.circuit) {
+      violations.push({
+        rule: "R10_MISSING_IC_DEFINITION",
+        severity: "error",
+        message: `Custom IC "${icGate.cn}" is referenced but has no internal definition.`,
+        gates: [pathPrefix + icGate.id],
+      });
+      continue;
+    }
+    const nestedPrefix = `${pathPrefix}${icGate.id}(${icGate.cn})::`;
+    const nested = drcRunInternal(
+      pkg.circuit.gates,
+      pkg.circuit.wires,
+      customLib,
+      opts,
+      nestedPrefix
+    );
+    violations.push(
+      ...nested.map((v) => ({
+        ...v,
+        rule: v.rule.startsWith("R10_") ? v.rule : `${v.rule}_IN_IC`,
+        icInstance: icGate.id,
+        icDefinition: icGate.cn,
+      }))
+    );
+  }
+
+  return violations;
+}
+
+function runDRC(gates, wires, customLib, opts = {}) {
+  const all = drcRunInternal(gates, wires, customLib, opts, "");
+  const errors = all.filter((v) => v.severity === "error");
+  const warnings = all.filter((v) => v.severity === "warning");
+  const info = all.filter((v) => v.severity === "info");
+
+  const faultedGateIds = new Set();
+  for (const v of errors) {
+    if (v.icInstance) faultedGateIds.add(v.icInstance);
+    (v.gates || []).forEach((gid) => {
+      if (typeof gid === "number" || (typeof gid === "string" && !gid.includes("::"))) {
+        faultedGateIds.add(gid);
+      }
+    });
+  }
+  for (const g of gates) {
+    g.fault = faultedGateIds.has(g.id);
+  }
+
+  return {
+    errors,
+    warnings,
+    info,
+    summary: {
+      errorCount: errors.length,
+      warningCount: warnings.length,
+      infoCount: info.length,
+      clean: errors.length === 0,
+    },
+  };
+}
+function renderDRC(errors, warnings) {
+  var body = document.getElementById('drc-body');
+  var all = errors.concat(warnings);
+  if (!all.length) {
+    body.innerHTML = '<div class="drc-ok">✓ No issues found — circuit looks clean!</div>';
+    return;
+  }
+  var html = '<div style="margin-bottom:10px;font-size:11.5px;color:var(--t3)">' +
+    errors.length + ' error(s), ' + warnings.length + ' warning(s)</div>';
+  all.forEach(function(item) {
+    html += '<div class="drc-item" data-gid="'+(item.gid||'')+'">' +
+      '<div class="drc-icon">'+item.icon+'</div>' +
+      '<div><div class="drc-title" style="color:'+(item.type==='error'?'var(--acr)':'var(--aca)')+'">'+item.title+'</div>' +
+      '<div class="drc-desc">'+item.desc+'</div></div></div>';
+  });
+  body.innerHTML = html;
+  // Click to highlight gate
+  body.querySelectorAll('.drc-item[data-gid]').forEach(function(row) {
+    row.addEventListener('click', function() {
+      var gid = parseInt(row.dataset.gid);
+      if (!gid) return;
+      var g = S.gates.find(function(g){ return g.id===gid; });
+      if (!g) return;
+      selGate(gid);
+      // Pan to gate
+      var d = gdef(g);
+      var W=cvwrap.clientWidth, H=cvwrap.clientHeight;
+      S.panX = W/2 - (g.x + d.w/2)*S.zoom;
+      S.panY = H/2 - (g.y + d.h/2)*S.zoom;
+      reposAll(); drawGrid();
+      document.getElementById('ov-drc').classList.remove('open');
+    });
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// SPOTLIGHT SEARCH (Space to open)
+// ═══════════════════════════════════════════════════════
+function openSpotlight() {
+  document.getElementById('spotlight').classList.add('open');
+  document.getElementById('spotlight-backdrop').style.display = 'block';
+  document.getElementById('spotlight-input').value = '';
+  renderSpotlightResults('');
+  setTimeout(function(){ document.getElementById('spotlight-input').focus(); }, 50);
+}
+function closeSpotlight() {
+  document.getElementById('spotlight').classList.remove('open');
+  document.getElementById('spotlight-backdrop').style.display = 'none';
+}
+
+document.getElementById('spotlight-input').addEventListener('input', function(e){
+  renderSpotlightResults(e.target.value.toLowerCase());
+});
+
+var spFocusIdx = -1;
+document.getElementById('spotlight-input').addEventListener('keydown', function(e){
+  var items = document.querySelectorAll('.sp-item');
+  if (e.key === 'Escape') { closeSpotlight(); return; }
+  if (e.key === 'ArrowDown') {
+    spFocusIdx = Math.min(spFocusIdx+1, items.length-1);
+    items.forEach(function(i,n){ i.classList.toggle('focused',n===spFocusIdx); });
+    return;
+  }
+  if (e.key === 'ArrowUp') {
+    spFocusIdx = Math.max(spFocusIdx-1, 0);
+    items.forEach(function(i,n){ i.classList.toggle('focused',n===spFocusIdx); });
+    return;
+  }
+  if (e.key === 'Enter') {
+    var focused = document.querySelector('.sp-item.focused') || items[0];
+    if (focused) focused.click();
+    return;
+  }
+});
+
+function renderSpotlightResults(q) {
+  var res = document.getElementById('spotlight-results');
+  spFocusIdx = -1;
+  var all = [];
+  // Gate types
+  CATS.forEach(function(cat) {
+    if (cat.id === 'custom') return;
+    cat.types.forEach(function(type) {
+      var d = DEF[type]; if (!d) return;
+      if (!q || d.lbl.toLowerCase().includes(q) || type.includes(q) || (d.sub||'').toLowerCase().includes(q)) {
+        all.push({ cat: cat.lbl, label: d.lbl + (d.sub?' ('+d.sub+')':''), type, col: GCOL[type]||'#888', kind:'place' });
+      }
+    });
+  });
+  // Custom gates
+  Object.keys(S.custom).forEach(function(name) {
+    if (!q || name.toLowerCase().includes(q)) {
+      all.push({ cat:'Custom Gates', label:name, type:'custom:'+name, col:'#50a878', kind:'place' });
+    }
+  });
+  // Commands
+  var cmds = [
+    { label:'Undo', icon:'↩', action:histUndo, key:'Ctrl+Z' },
+    { label:'Redo', icon:'↪', action:histRedo, key:'Ctrl+Y' },
+    { label:'Fit to screen', icon:'⊡', action:function(){ document.getElementById('btn-fit').click(); }, key:'' },
+    { label:'Run DRC', icon:'⚑', action:function(){ document.getElementById('btn-drc').click(); }, key:'' },
+    { label:'Open Truth Table', icon:'⊞', action:openTTModal, key:'' },
+{ label:'Toggle Waveform', icon:'〜', action:function(){ document.getElementById('btn-wave').click(); }, key:'' },
+    { label:'Export PNG', icon:'🖼', action:exportPNG, key:'' },
+    { label:'Export SVG', icon:'✦', action:exportSVG, key:'' },
+    { label:'Step Simulation', icon:'⏵', action:toggleStepMode, key:'' },
+    { label:'Select All', icon:'⊡', action:function(){ document.dispatchEvent(new KeyboardEvent('keydown',{key:'a',ctrlKey:true})); }, key:'Ctrl+A' },
+  ];
+  cmds.forEach(function(cmd){
+    if (!q || cmd.label.toLowerCase().includes(q)) {
+      all.push({ cat:'Commands', label:cmd.label, icon:cmd.icon, action:cmd.action, key:cmd.key, kind:'cmd' });
+    }
+  });
+
+  // Group by category
+  var cats = {};
+  all.forEach(function(item){ if(!cats[item.cat]) cats[item.cat]=[]; cats[item.cat].push(item); });
+
+  var html = '';
+  var shown = 0;
+  Object.keys(cats).forEach(function(cat) {
+    if (shown >= 20) return;
+    html += '<div class="sp-cat">'+cat+'</div>';
+    cats[cat].slice(0,6).forEach(function(item) {
+      if (shown++ >= 20) return;
+      var icon = item.col ? '<span class="sp-item-icon" style="background:'+item.col+'"></span>' : '<span style="font-size:14px">'+item.icon+'</span>';
+      html += '<div class="sp-item" data-type="'+(item.type||'')+'" data-kind="'+item.kind+'" data-idx="'+shown+'">' +
+        icon + '<span class="sp-item-label">'+item.label+'</span>' +
+        (item.key?'<span class="sp-item-key">'+item.key+'</span>':'') + '</div>';
+    });
+  });
+  if (!html) html = '<div style="padding:20px;text-align:center;color:var(--t3);font-size:13px">No results for "'+q+'"</div>';
+  res.innerHTML = html;
+
+  // Bind actions
+  res.querySelectorAll('.sp-item').forEach(function(item, idx) {
+    var spItem = all[idx];
+    item.addEventListener('click', function() {
+      closeSpotlight();
+      if (!spItem) return;
+      if (spItem.kind === 'place') {
+        setPlacing(spItem.type);
+      } else if (spItem.kind === 'cmd' && spItem.action) {
+        spItem.action();
+      }
+    });
+  });
+}
+
+// Keyboard shortcut: Space to open spotlight (when not typing in input)
+document.addEventListener('keydown', function(e) {
+  if (e.key === ' ' && !e.target.matches('input,textarea,select') && document.getElementById('pg-editor').style.display !== 'none') {
+    e.preventDefault();
+    if (document.getElementById('spotlight').classList.contains('open')) closeSpotlight();
+    else openSpotlight();
+  }
+});
+
+// ═══════════════════════════════════════════════════════
+// KEYBOARD PLACEMENT SHORTCUTS  (A/O/N/I/X etc.)
+// ═══════════════════════════════════════════════════════
+var PLACEMENT_KEYS = {
+  'a':'and', 'o':'or', 'n':'not', 'i':'input', 'q':'output',
+  'x':'xor', 'b':'buffer', 'd':'dff', 'c':'clock',
+  '1':'const1', '0':'const0',
+};
+document.addEventListener('keydown', function(e) {
+  if (e.target.matches('input,textarea,select')) return;
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  if (document.getElementById('pg-editor').style.display === 'none') return;
+  if (document.getElementById('spotlight').classList.contains('open')) return;
+  var type = PLACEMENT_KEYS[e.key.toLowerCase()];
+  if (type) { e.preventDefault(); setPlacing(type); msg('Press '+e.key.toUpperCase()+': placing '+DEF[type].lbl+' — click canvas', 'ok'); }
+  if (e.key.toLowerCase() === 'z' && !e.ctrlKey && !e.metaKey) { e.preventDefault(); document.getElementById('btn-fit').click(); }
+  if (e.key === 'Escape') { setPlacing(null); deselAll(); }
+});
+
+// ═══════════════════════════════════════════════════════
+// MINIMAP
+// ═══════════════════════════════════════════════════════
+var mmCv = document.getElementById('minimap-cv');
+var mmVP = document.getElementById('minimap-viewport');
+var mmVisible = false;
+
+document.getElementById('minimap-toggle').addEventListener('click', function() {
+  mmVisible = !mmVisible;
+  document.getElementById('minimap').classList.toggle('visible', mmVisible);
+  if (mmVisible) drawMinimap();
+});
+
+// Click on minimap to pan
+document.getElementById('minimap').addEventListener('click', function(e) {
+  if (!S.gates.length) return;
+  var r = mmCv.getBoundingClientRect();
+  var cx = (e.clientX - r.left) / 160;
+  var cy = (e.clientY - r.top)  / 100;
+  var bounds = getWorldBounds();
+  var wx = bounds.x0 + cx * (bounds.x1 - bounds.x0);
+  var wy = bounds.y0 + cy * (bounds.y1 - bounds.y0);
+  var W = cvwrap.clientWidth, H = cvwrap.clientHeight;
+  S.panX = W/2 - wx * S.zoom;
+  S.panY = H/2 - wy * S.zoom;
+  reposAll(); drawGrid(); drawMinimap();
+});
+
+function getWorldBounds() {
+  if (!S.gates.length) return {x0:0,y0:0,x1:800,y1:600};
+  var xs=S.gates.map(function(g){return g.x;}), ys=S.gates.map(function(g){return g.y;});
+  var xe=S.gates.map(function(g){return g.x+gdef(g).w;}), ye=S.gates.map(function(g){return g.y+gdef(g).h;});
+  return {
+    x0:Math.min.apply(null,xs)-40, y0:Math.min.apply(null,ys)-40,
+    x1:Math.max.apply(null,xe)+40, y1:Math.max.apply(null,ye)+40,
+  };
+}
+
+function drawMinimap() {
+  if (!mmVisible) return;
+  var W=160, H=100;
+  mmCv.width=W; mmCv.height=H;
+  var ctx = mmCv.getContext('2d');
+  ctx.fillStyle = '#0c0e12'; ctx.fillRect(0,0,W,H);
+
+  if (!S.gates.length) return;
+  var b = getWorldBounds();
+  var scaleX = W / (b.x1-b.x0), scaleY = H / (b.y1-b.y0);
+  var sc = Math.min(scaleX, scaleY);
+  var offX = (W - (b.x1-b.x0)*sc)/2, offY = (H - (b.y1-b.y0)*sc)/2;
+
+  function wx(v){ return offX + (v-b.x0)*sc; }
+  function wy(v){ return offY + (v-b.y0)*sc; }
+
+  // Draw wires
+  S.wires.forEach(function(wire) {
+    var fg=S.gates.find(function(g){return g.id===wire.fg;}), tg=S.gates.find(function(g){return g.id===wire.tg;});
+    if(!fg||!tg)return;
+    var df=gdef(fg), dt=gdef(tg);
+    var fy=(wire.fp+1)/(df.np+1)*df.h, ty=(wire.tp+1)/(dt.nc+1)*dt.h;
+    ctx.strokeStyle=wire.sig===1?'#e04848':'#1e3050'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(wx(fg.x+df.w),wy(fg.y+fy)); ctx.lineTo(wx(tg.x),wy(tg.y+ty)); ctx.stroke();
+  });
+
+  // Draw gates as colored rectangles
+  S.gates.forEach(function(g) {
+    var d=gdef(g);
+    var col=GCOL[g.type]||'#505a78';
+    ctx.fillStyle=col; ctx.globalAlpha=0.7;
+    ctx.fillRect(wx(g.x), wy(g.y), Math.max(3,d.w*sc), Math.max(3,d.h*sc));
+    ctx.globalAlpha=1;
+  });
+
+  // Viewport indicator
+  var cvW=cvwrap.clientWidth, cvH=cvwrap.clientHeight;
+  var vpx0=(-S.panX/S.zoom), vpy0=(-S.panY/S.zoom);
+  var vpx1=vpx0+cvW/S.zoom, vpy1=vpy0+cvH/S.zoom;
+  mmVP.style.left   = wx(vpx0)+'px'; mmVP.style.top    = wy(vpy0)+'px';
+  mmVP.style.width  = (wx(vpx1)-wx(vpx0))+'px';
+  mmVP.style.height = (wy(vpy1)-wy(vpy0))+'px';
+}
+
+// Update minimap on any canvas change
+var _origReposAll = reposAll;
+reposAll = function(){ _origReposAll(); drawMinimap(); };
+
+// ═══════════════════════════════════════════════════════
+// CIRCUIT TEMPLATES
+// ═══════════════════════════════════════════════════════
+var TEMPLATES = [
+  {
+    name: 'SR Latch', icon: '⊡', desc: '2 NOR gates → SR Latch',
+    build: function(ox,oy){ buildSRLatch(ox,oy); },
+  },
+  {
+    name: 'D Flip-Flop + Clock', icon: '⏵', desc: 'Clock → D-FF with inputs/outputs',
+    build: function(ox,oy){ buildDFFDemo(ox,oy); },
+  },
+  {
+    name: '4-Bit Adder', icon: '⊞', desc: 'Full 4-bit binary adder with carry',
+    build: function(ox,oy){ buildAdder4Demo(ox,oy); },
+  },
+  {
+    name: 'Half Adder', icon: '⊕', desc: 'XOR + AND → Sum, Carry',
+    build: function(ox,oy){ buildHalfAdder(ox,oy); },
+  },
+  {
+    name: 'MUX 2:1', icon: '⊃', desc: '2 inputs + select → 1 output',
+    build: function(ox,oy){ buildMux2Demo(ox,oy); },
+  },
+  {
+    name: 'JK Flip-Flop', icon: '⟲', desc: 'JK-FF with clock + all outputs',
+    build: function(ox,oy){ buildJKDemo(ox,oy); },
+  },
+  {
+    name: '2-Bit Counter', icon: '↑', desc: 'Two T-FFs with clock — counts 0→3',
+    build: function(ox,oy){ build2BitCounter(ox,oy); },
+  },
+  {
+    name: 'NAND Gate Array', icon: '⊼', desc: 'AND + OR + NOT built from NAND only',
+    build: function(ox,oy){ buildNANDOnly(ox,oy); },
+  }
+];
+
+document.getElementById('btn-tmpl').addEventListener('click', openTmplModal);
+document.getElementById('tmpl-close').addEventListener('click', function(){ document.getElementById('ov-tmpl').classList.remove('open'); });
+
+function openTmplModal() {
+  var grid = document.getElementById('tmpl-grid');
+  grid.innerHTML = '';
+  TEMPLATES.forEach(function(t, idx) {
+    var card = document.createElement('div');
+    card.className = 'export-opt';
+    card.innerHTML = '<div class="export-opt-icon">'+t.icon+'</div>' +
+      '<div><div class="export-opt-label">'+t.name+'</div>' +
+      '<div class="export-opt-desc">'+t.desc+'</div></div>';
+    card.addEventListener('click', function() {
+      document.getElementById('ov-tmpl').classList.remove('open');
+      // Find free area
+      var ox = S.gates.length ? Math.max.apply(null, S.gates.map(function(g){return g.x+gdef(g).w;}))+80 : 60;
+      var oy = 60;
+      histPush();
+      t.build(ox, oy);
+      msg('Template "'+t.name+'" placed!', 'ok');
+      setTimeout(function(){ document.getElementById('btn-fit').click(); }, 100);
+    });
+    grid.appendChild(card);
+  });
+  document.getElementById('ov-tmpl').classList.add('open');
+}
+
+function W(fg,fp,tg,tp){ S.wires.push({id:S.nid++,fg:fg.id,fp,tg:tg.id,tp,sig:0}); }
+
+function buildHalfAdder(ox,oy) {
+  var a=place('input',ox,oy); a.value=1;
+  var b=place('input',ox,oy+60); b.value=1;
+  var xg=place('xor',ox+160,oy+10);
+  var ag=place('and',ox+160,oy+70);
+  var os=place('output',ox+320,oy+10);
+  var oc=place('output',ox+320,oy+70);
+  W(a,0,xg,0);W(a,0,ag,0);W(b,0,xg,1);W(b,0,ag,1);W(xg,0,os,0);W(ag,0,oc,0);
+  GATE_NAMES[a.id]='A'; GATE_NAMES[b.id]='B';
+  GATE_NAMES[os.id]='Sum'; GATE_NAMES[oc.id]='Carry';
+  updateGateNameTag(a);updateGateNameTag(b);updateGateNameTag(os);updateGateNameTag(oc);
+  simulate();stUpd();
+}
+
+function buildSRLatch(ox,oy) {
+  var s=place('input',ox,oy); var r=place('input',ox,oy+80);
+  var nor1=place('nor',ox+140,oy+10);
+  var nor2=place('nor',ox+140,oy+80);
+  var q=place('output',ox+280,oy+10);
+  var qb=place('output',ox+280,oy+80);
+  W(s,0,nor1,0);W(r,0,nor2,1);
+  W(nor1,0,q,0);W(nor2,0,qb,0);
+  // Cross-coupling (feedback) — Q̄ → NOR1, Q → NOR2
+  W(nor2,0,nor1,1);W(nor1,0,nor2,0);
+  GATE_NAMES[s.id]='S';GATE_NAMES[r.id]='R';GATE_NAMES[q.id]='Q';GATE_NAMES[qb.id]='Q̄';
+  [s,r,q,qb].forEach(function(g){updateGateNameTag(g);});
+  simulate();stUpd();
+}
+
+function buildDFFDemo(ox,oy) {
+  var clk=place('clock',ox,oy); clk.freq=2;
+  var d=place('input',ox,oy+120); d.value=1;
+  
+  var not_d = place('not', ox+100, oy+140);
+  var nand1 = place('nand', ox+200, oy+20);
+  var nand2 = place('nand', ox+200, oy+120);
+  var nand3 = place('nand', ox+320, oy+20);
+  var nand4 = place('nand', ox+320, oy+120);
+  
+  var oq=place('output',ox+440,oy+20);
+  var oqb=place('output',ox+440,oy+120);
+
+  W(d,0,nand1,0); W(d,0,not_d,0);
+  W(not_d,0,nand2,1);
+  W(clk,0,nand1,1); W(clk,0,nand2,0);
+  
+  // input stage output to SR latch
+  W(nand1,0,nand3,0); // S -> nand3 input A
+  W(nand2,0,nand4,1); // R -> nand4 input B
+  
+  // SR latch feedback
+  W(nand4,0,nand3,1); W(nand3,0,nand4,0);
+  
+  W(nand3,0,oq,0); W(nand4,0,oqb,0);
+
+  GATE_NAMES[d.id]='D';GATE_NAMES[clk.id]='CLK';
+  GATE_NAMES[oq.id]='Q';GATE_NAMES[oqb.id]='Q̄';
+  [d,clk,oq,oqb].forEach(function(g){updateGateNameTag(g);});
+  simulate();stUpd();
+}
+
+function buildAdder4Demo(ox,oy) {
+  var inputs=[];
+  for(var i=0;i<8;i++){
+    var inp=place('input',ox,oy+10+i*40);
+    inputs.push(inp);
+    inp.value=0;
+    GATE_NAMES[inp.id] = (i<4) ? 'A'+i : 'B'+(i-4);
+    updateGateNameTag(inp);
+  }
+  
+  var fa0 = place('fa', ox+200, oy+40);
+  var fa1 = place('fa', ox+320, oy+100);
+  var fa2 = place('fa', ox+440, oy+160);
+  var fa3 = place('fa', ox+560, oy+220);
+  var fas = [fa0, fa1, fa2, fa3];
+  
+  for(var i=0;i<4;i++){
+    W(inputs[i], 0, fas[i], 0); // A
+    W(inputs[i+4], 0, fas[i], 1); // B
+    if (i > 0) W(fas[i-1], 1, fas[i], 2); // Cout to Cin
+  }
+  var const0 = place('const0', ox+100, oy+100);
+  W(const0, 0, fa0, 2);
+
+  var outs=[];
+  for(var i=0;i<4;i++){
+    var out=place('output',ox+750, oy+40+i*60);
+    W(fas[i], 0, out, 0);
+    GATE_NAMES[out.id] = 'S'+i;
+    updateGateNameTag(out);
+  }
+  var cout=place('output',ox+750, oy+300);
+  W(fa3, 1, cout, 0);
+  GATE_NAMES[cout.id] = 'Cout'; updateGateNameTag(cout);
+
+  simulate();stUpd();
+}
+
+function buildMux2Demo(ox,oy) {
+  var a=place('input',ox,oy); var b=place('input',ox,oy+120);
+  var s=place('input',ox,oy+200); s.value=0;
+  
+  var not_s = place('not', ox+100, oy+150);
+  var and1 = place('and', ox+200, oy+20);
+  var and2 = place('and', ox+200, oy+120);
+  var org = place('or', ox+320, oy+70);
+  var out=place('output',ox+440,oy+70);
+  
+  W(s,0,not_s,0);
+  W(not_s,0,and1,1); W(a,0,and1,0); // S-bar, I0
+  W(s,0,and2,1); W(b,0,and2,0); // S, I1
+  W(and1,0,org,0); W(and2,0,org,1);
+  W(org,0,out,0);
+
+  GATE_NAMES[a.id]='I0';GATE_NAMES[b.id]='I1';GATE_NAMES[s.id]='S';GATE_NAMES[out.id]='Y';
+  [a,b,s,out].forEach(function(g){updateGateNameTag(g);});
+  simulate();stUpd();
+}
+
+function buildJKDemo(ox,oy) {
+  var j=place('input',ox,oy); var k=place('input',ox,oy+180);
+  var clk=place('clock',ox,oy+90); clk.freq=2;
+  
+  var andJ = place('and', ox+120, oy);
+  var andK = place('and', ox+120, oy+180);
+  
+  var nand1 = place('nand', ox+240, oy+20);
+  var nand2 = place('nand', ox+240, oy+160);
+  
+  var nand3 = place('nand', ox+380, oy+20);
+  var nand4 = place('nand', ox+380, oy+160);
+  
+  var oq=place('output',ox+500,oy+20);
+  var oqb=place('output',ox+500,oy+160);
+
+  W(j,0,andJ,0); W(clk,0,andJ,1);
+  W(k,0,andK,1); W(clk,0,andK,0);
+  
+  W(andJ,0,nand1,0); 
+  W(andK,0,nand2,1);
+  
+  // Feedback from outputs to input stage
+  W(nand4,0,nand1,1); // Q-bar to nand1
+  W(nand3,0,nand2,0); // Q to nand2
+  
+  // Input stage to SR Latch
+  W(nand1,0,nand3,0); 
+  W(nand2,0,nand4,1);
+  
+  // SR latch feedback
+  W(nand4,0,nand3,1); W(nand3,0,nand4,0);
+  
+  W(nand3,0,oq,0); W(nand4,0,oqb,0);
+
+  GATE_NAMES[j.id]='J';GATE_NAMES[k.id]='K';GATE_NAMES[clk.id]='CLK';
+  GATE_NAMES[oq.id]='Q';GATE_NAMES[oqb.id]='Q̄';
+  [j,k,clk,oq,oqb].forEach(function(g){updateGateNameTag(g);});
+  simulate();stUpd();
+}
+
+function build2BitCounter(ox,oy) {
+  var clk=place('clock',ox,oy+40); clk.freq=2;
+  var t1=place('tff',ox+120,oy);
+  var t2=place('tff',ox+260,oy);
+  var q0=place('output',ox+400,oy+10);
+  var q1=place('output',ox+400,oy+60);
+  // T=1 always via const
+  var c1=place('const1',ox+20,oy-30);
+  
+  W(c1,0,t1,0);W(clk,0,t1,1);
+  // As per reference: TFF0 output Q0 -> TFF1 clock input. AND TFF1 T input connected to Q0.
+  W(t1,0,t2,1); // Q0 to T2 CLK
+  W(t1,0,t2,0); // Q0 to T2 T
+  
+  W(t1,0,q0,0);W(t2,0,q1,0);
+  GATE_NAMES[q0.id]='Q0';GATE_NAMES[q1.id]='Q1';GATE_NAMES[clk.id]='CLK';
+  [q0,q1,clk].forEach(function(g){updateGateNameTag(g);});
+  simulate();stUpd();
+}
+
+function buildNANDOnly(ox,oy) {
+  // Show AND, OR, NOT built from NAND
+  var a=place('input',ox,oy); var b=place('input',ox,oy+60);
+  a.value=1; b.value=1;
+  // NOT from NAND (tie both inputs)
+  var not_a=place('nand',ox+120,oy-20);
+  W(a,0,not_a,0);W(a,0,not_a,1);
+  var not_b=place('nand',ox+120,oy+50);
+  W(b,0,not_b,0);W(b,0,not_b,1);
+  // AND from NAND: (A NAND B) NAND (A NAND B)
+  var nab=place('nand',ox+200,oy+20);
+  W(a,0,nab,0);W(b,0,nab,1);
+  var and_out=place('nand',ox+300,oy+20);
+  W(nab,0,and_out,0);W(nab,0,and_out,1);
+  // OR from NAND: (A') NAND (B')
+  var or_out=place('nand',ox+240,oy+80);
+  W(not_a,0,or_out,0);W(not_b,0,or_out,1);
+  // Outputs
+  var o_not=place('output',ox+260,oy-20); W(not_a,0,o_not,0); GATE_NAMES[o_not.id]='NOT A';
+  var o_and=place('output',ox+420,oy+20); W(and_out,0,o_and,0); GATE_NAMES[o_and.id]='A AND B';
+  var o_or=place('output',ox+380,oy+80);  W(or_out,0,o_or,0);  GATE_NAMES[o_or.id]='A OR B';
+  [o_not,o_and,o_or].forEach(function(g){updateGateNameTag(g);});
+  GATE_NAMES[a.id]='A'; GATE_NAMES[b.id]='B';
+  updateGateNameTag(a); updateGateNameTag(b);
+  simulate();stUpd();
+}
+
+function build8BitCPU(ox, oy) {
+  addAnnotation(ox, oy - 60, "8-BIT HARVARD CPU ARCHITECTURE\n==============================\nPC: 8-Bit Counter\nROM: Instruction Memory\nRAM: Data Memory\nALU: 8-Bit (Add/Sub/Logic)\nACC: 8-Bit Register");
+
+  // --- CONTROLS ---
+  var clk = place('clock', ox, oy); clk.freq = 2;
+  var en = place('input', ox, oy - 40); en.value = 1;
+  var const1 = place('const1', ox + 50, oy + 20);
+  GATE_NAMES[clk.id] = 'SYS CLK';
+  GATE_NAMES[en.id] = 'RUN';
+
+  // --- PROGRAM COUNTER (8-Bit) ---
+  var pc = place('count8', ox + 150, oy);
+  W(clk, 0, pc, 0); // CLK
+  W(en, 0, pc, 1); // EN
+  W(const1, 0, pc, 3); // UP
+  addAnnotation(ox + 150, oy - 40, "Program Counter");
+
+  // --- ROM (Instruction Memory) ---
+  var rom = place('rom8', ox + 300, oy);
+  rom.mem = new Uint8Array(256);
+  rom.mem.set([0x10, 0x21, 0x32, 0x40, 0x00]);
+  W(pc, 0, rom, 0); // PC Q(8) to ROM A(8)
+  GATE_NAMES[rom.id] = 'INSTRUCTION ROM';
+
+  // --- INSTRUCTION DECODER ---
+  var split = place('split8', ox + 420, oy);
+  W(rom, 0, split, 0); // ROM D(8) to SPLIT B(8)
+  var dec = place('dec2', ox + 520, oy - 40);
+  W(split, 6, dec, 0); // Opcode high bit
+  W(split, 7, dec, 1); // Opcode high bit
+  addAnnotation(ox + 520, oy - 80, "Instruction Decoder");
+
+  // --- ALU (8-Bit) ---
+  var alu_op = place('input', ox + 600, oy - 140);
+  GATE_NAMES[alu_op.id] = 'ALU OP';
+  
+  var alu = place('alu8', ox + 680, oy - 100);
+  GATE_NAMES[alu.id] = 'ALU';
+  W(alu_op, 0, alu, 2); // OP to ALU
+
+  // --- ACCUMULATOR ---
+  var acc = place('shift8', ox + 820, oy - 100);
+  GATE_NAMES[acc.id] = 'ACCUMULATOR';
+  W(clk, 0, acc, 0); // CLK
+  W(const1, 0, acc, 1); // LD=1
+  W(alu, 0, acc, 2); // ALU Y(8) to ACC Din(8)
+  W(acc, 0, alu, 0); // ACC Dout(8) to ALU A(8)
+
+  // --- RAM (Data Memory) ---
+  var ram = place('ram8', ox + 680, oy + 80);
+  var ram_we = place('input', ox + 550, oy + 120);
+  GATE_NAMES[ram_we.id] = 'RAM WE';
+  GATE_NAMES[ram.id] = 'DATA RAM';
+  W(acc, 0, ram, 1); // ACC to RAM Din
+  W(clk, 0, ram, 3); // CLK
+  W(ram_we, 0, ram, 2); // WE to RAM
+  W(ram, 0, alu, 1); // RAM Dout to ALU B
+  
+  // Wire Instruction Address to RAM
+  var addr_merge = place('merge8', ox + 520, oy + 120);
+  var const0 = place('const0', ox + 450, oy + 180);
+  W(split, 3, addr_merge, 3);
+  W(split, 2, addr_merge, 2);
+  W(split, 1, addr_merge, 1);
+  W(split, 0, addr_merge, 0);
+  W(const0, 0, addr_merge, 4);
+  W(const0, 0, addr_merge, 5);
+  W(const0, 0, addr_merge, 6);
+  W(const0, 0, addr_merge, 7);
+  W(addr_merge, 0, ram, 0); // RAM Addr
+  
+  addAnnotation(ox + 680, oy + 40, "Data Memory");
+
+  [clk, en, rom, alu_op, alu, acc, ram_we, ram].forEach(function(g){updateGateNameTag(g);});
+  simulate();stUpd();
+  reposAll();
+}
+
+function build4BitCPU(ox,oy) {
+  addAnnotation(ox, oy - 60, "4-BIT CPU ARCHITECTURE (S-4)\n==========================\nPC: 4-Bit Counter\nROM: 16x8 Instructions\nIR: 4-bit Op / 4-bit Operand\nALU: 4-Bit Add/Sub\nACC: 4-Bit Register");
+
+  // --- CLOCK & CONTROLS ---
+  var clk = place('clock', ox, oy); clk.freq = 1;
+  var en = place('input', ox, oy - 60); en.value = 1;
+  var const1 = place('const1', ox + 50, oy - 60);
+  GATE_NAMES[clk.id] = 'MAIN CLK';
+  GATE_NAMES[en.id] = 'RUN';
+
+  // --- PC (4-Bit via count8) ---
+  var pc = place('count8', ox + 150, oy);
+  W(clk, 0, pc, 0); // CLK
+  W(en, 0, pc, 1); // EN
+  W(const1, 0, pc, 3); // UP
+  addAnnotation(ox + 150, oy - 40, "Program Counter");
+
+  // --- ROM ---
+  var rom = place('rom8', ox + 300, oy);
+  rom.mem = new Uint8Array(256);
+  // Example program: Load 3, Add 2, Sub 1
+  rom.mem.set([0x03, 0x02, 0x11, 0x00]); 
+  // Opcode: high nibble (0=ADD, 1=SUB)
+  W(pc, 0, rom, 0);
+  GATE_NAMES[rom.id] = 'INSTRUCTION ROM';
+
+  // --- IR / DECODE ---
+  var split = place('split8', ox + 420, oy);
+  W(rom, 0, split, 0);
+  addAnnotation(ox + 420, oy - 40, "IR / Decode");
+  
+  // Opcode (Sub flag) = B4 (index 3 of split output)
+  var sub_buf = place('buffer', ox + 520, oy - 40);
+  W(split, 3, sub_buf, 0); // B4
+  GATE_NAMES[sub_buf.id] = 'ALU_SUB';
+
+  // --- ALU (4-BIT ADDER) ---
+  var alu = place('add4', ox + 700, oy - 20);
+  GATE_NAMES[alu.id] = '4-BIT ALU';
+  
+  // B inputs: operand (B0..B3) XOR SUB
+  // B0 is split index 7, B1 is 6, B2 is 5, B3 is 4
+  var xors = [];
+  for(var i=0; i<4; i++) {
+    var x = place('xor', ox + 560, oy + 40 + i*40);
+    W(split, 7 - i, x, 0); // Operand bit
+    W(sub_buf, 0, x, 1);   // SUB flag
+    W(x, 0, alu, 7 - i);   // alu B inputs: B0=7, B1=6, B2=5, B3=4
+    xors.push(x);
+  }
+  W(sub_buf, 0, alu, 8); // Ci = SUB
+
+  // --- ACCUMULATOR (4x DFF) ---
+  var acc3 = place('dff', ox + 860, oy - 40);
+  var acc2 = place('dff', ox + 860, oy + 40);
+  var acc1 = place('dff', ox + 860, oy + 120);
+  var acc0 = place('dff', ox + 860, oy + 200);
+  var accs = [acc3, acc2, acc1, acc0];
+  
+  addAnnotation(ox + 860, oy - 80, "Accumulator");
+
+  // ALU -> ACC
+  W(alu, 0, acc3, 0); // S3 -> D
+  W(alu, 1, acc2, 0); // S2 -> D
+  W(alu, 2, acc1, 0); // S1 -> D
+  W(alu, 3, acc0, 0); // S0 -> D
+
+  for(var i=0; i<4; i++) {
+    W(clk, 0, accs[i], 1); // CLK
+    // ACC -> ALU A (A3=0, A2=1, A1=2, A0=3)
+    W(accs[i], 0, alu, i);
+  }
+
+  [clk, en, pc, rom, sub_buf, alu, acc3, acc2, acc1, acc0].forEach(function(g){updateGateNameTag(g);});
+  simulate();stUpd();
+  reposAll();
+}
+
+// ═══════════════════════════════════════════════════════
+// FEATURE A: 7-SEGMENT DISPLAY RENDERER
+// ═══════════════════════════════════════════════════════
+// Segments: a=top, b=top-right, c=bot-right, d=bottom,
+//           e=bot-left, f=top-left, g=middle
+// Input order: [a,b,c,d,e,f,g]
+function drawMatrix(cv, rows, cols) {
+  var ctx=cv.getContext('2d');
+  ctx.clearRect(0,0,104,104);
+  var ON='#ef4444', OFF='#2a0a0a';
+  for(var r=0; r<8; r++) {
+    for(var c=0; c<8; c++) {
+      ctx.beginPath();
+      ctx.arc(8 + c*12.5, 8 + r*12.5, 4.5, 0, 2*Math.PI);
+      ctx.fillStyle = (rows[r] && cols[c]) ? ON : OFF;
+      if (rows[r] && cols[c]) {
+        ctx.shadowColor = ON; ctx.shadowBlur = 6;
+      } else {
+        ctx.shadowBlur = 0;
+      }
+      ctx.fill();
+    }
+  }
+}
+
+function drawSeg7(cv, segs) {
+  var W=52, H=76;
+  if (cv.width !== W) cv.width=W;
+  if (cv.height !== H) cv.height=H;
+  var ctx=cv.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#080808';
+  ctx.fillRect(0,0,W,H);
+
+  var ON='#ff3030', OFF='#2a0a0a';
+  var T=5; // thickness
+  var PAD=4;
+  var MX=PAD+T/2, MY=PAD+T/2;
+  var W2=W-PAD*2-T, H2=(H-PAD*2-T)/2;
+
+  function hrect(x,y,w,col){
+    ctx.fillStyle=col;
+    ctx.beginPath();
+    ctx.moveTo(x+T/2,y);
+    ctx.lineTo(x+w-T/2,y);
+    ctx.lineTo(x+w,y+T/2);
+    ctx.lineTo(x+w-T/2,y+T);
+    ctx.lineTo(x+T/2,y+T);
+    ctx.lineTo(x,y+T/2);
+    ctx.closePath(); ctx.fill();
+  }
+  function vrect(x,y,h,col){
+    ctx.fillStyle=col;
+    ctx.beginPath();
+    ctx.moveTo(x,y+T/2);
+    ctx.lineTo(x+T/2,y);
+    ctx.lineTo(x+T,y+T/2);
+    ctx.lineTo(x+T,y+h-T/2);
+    ctx.lineTo(x+T/2,y+h);
+    ctx.lineTo(x,y+h-T/2);
+    ctx.closePath(); ctx.fill();
+  }
+
+  // a: top
+  hrect(MX, MY, W2, segs[0]?ON:OFF);
+  // b: top-right
+  vrect(MX+W2, MY+T/2, H2-T/2, segs[1]?ON:OFF);
+  // c: bot-right
+  vrect(MX+W2, MY+H2, H2-T/2, segs[2]?ON:OFF);
+  // d: bottom
+  hrect(MX, MY+H2*2, W2, segs[3]?ON:OFF);
+  // e: bot-left
+  vrect(MX, MY+H2, H2-T/2, segs[4]?ON:OFF);
+  // f: top-left
+  vrect(MX, MY+T/2, H2-T/2, segs[5]?ON:OFF);
+  // g: middle
+  hrect(MX, MY+H2-T/2, W2, segs[6]?ON:OFF);
+}
+
+// ═══════════════════════════════════════════════════════
+// FEATURE B: TEXT ANNOTATIONS
+// ═══════════════════════════════════════════════════════
+var ANNOTS = []; // { id, x, y, text, el }
+var annotLayer = document.getElementById('annot-layer');
+annotLayer.style.pointerEvents = 'none'; // let clicks through when not editing
+var annotNextId = 1;
+var selAnnot = null;
+
+document.getElementById('btn-annot').addEventListener('click', function() {
+  // Place an annotation at canvas center
+  var W=cvwrap.clientWidth, H=cvwrap.clientHeight;
+  var wp = s2w(W/2, H/2);
+  addAnnotation(wp.x, wp.y, 'Double-click to edit');
+  msg('Note placed — double-click to edit text', 'ok');
+});
+
+function addAnnotation(wx, wy, text) {
+  var ann = { id: annotNextId++, x:snap(wx), y:snap(wy), text: text||'Note' };
+  ANNOTS.push(ann);
+  var el = document.createElement('div');
+  el.className = 'annot';
+  el.dataset.aid = ann.id;
+  ann.el = el;
+
+  var body = document.createElement('div');
+  body.className = 'annot-body';
+  body.textContent = ann.text;
+  el.appendChild(body);
+  annotLayer.appendChild(el);
+  annotLayer.style.pointerEvents = 'all';
+
+  posAnnot(ann);
+  bindAnnot(ann);
+  S.dirty = true;
+  return ann;
+}
+
+function posAnnot(ann) {
+  var s = w2s(ann.x, ann.y);
+  ann.el.style.left = s.x + 'px';
+  ann.el.style.top  = s.y + 'px';
+  ann.el.style.transform = 'scale('+S.zoom+')';
+  ann.el.style.transformOrigin = '0 0';
+}
+
+function posAllAnnots() {
+  ANNOTS.forEach(function(a){ posAnnot(a); });
+}
+
+function bindAnnot(ann) {
+  var el = ann.el;
+  var body = el.querySelector('.annot-body');
+  var moved=false, sx,sy,ox,oy;
+
+  el.addEventListener('mousedown', function(e) {
+    if (e.button!==0) return;
+    e.stopPropagation();
+    // Deselect gates
+    deselAll();
+    // Select this annotation
+    if (selAnnot && selAnnot.id !== ann.id) selAnnot.el.classList.remove('sel-annot');
+    selAnnot = ann;
+    el.classList.add('sel-annot');
+
+    moved=false; sx=e.clientX; sy=e.clientY; ox=ann.x; oy=ann.y;
+    function mm(ev){
+      var dx=(ev.clientX-sx)/S.zoom, dy=(ev.clientY-sy)/S.zoom;
+      if(Math.abs(dx)>2||Math.abs(dy)>2) moved=true;
+      if(!moved) return;
+      ann.x=snap(ox+dx); ann.y=snap(oy+dy); posAnnot(ann); S.dirty=true;
+    }
+    function mu(){ document.removeEventListener('mousemove',mm); document.removeEventListener('mouseup',mu); }
+    document.addEventListener('mousemove',mm); document.addEventListener('mouseup',mu);
+  });
+
+  // Double-click to edit
+  el.addEventListener('dblclick', function(e) {
+    e.stopPropagation();
+    var ta = document.createElement('textarea');
+    ta.className = 'annot-edit';
+    ta.value = ann.text;
+    el.appendChild(ta);
+    ta.focus(); ta.select();
+    function finish() {
+      ann.text = ta.value.trim() || '…';
+      body.textContent = ann.text;
+      ta.remove(); S.dirty = true;
+    }
+    ta.addEventListener('blur', finish);
+    ta.addEventListener('keydown', function(e) {
+      if (e.key==='Escape') { ta.value=ann.text; ta.blur(); }
+      if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); ta.blur(); }
+    });
+  });
+
+  // Right-click to delete
+  el.addEventListener('contextmenu', function(e) {
+    e.preventDefault(); e.stopPropagation();
+    ANNOTS = ANNOTS.filter(function(a){ return a.id!==ann.id; });
+    el.remove(); S.dirty=true;
+    msg('Annotation deleted','');
+  });
+}
+
+// Delete selected annotation on Del key
+document.addEventListener('keydown', function(e) {
+  if ((e.key==='Delete'||e.key==='Backspace') && selAnnot && !e.target.matches('input,textarea,select')) {
+    ANNOTS = ANNOTS.filter(function(a){ return a.id!==selAnnot.id; });
+    selAnnot.el.remove(); selAnnot=null; S.dirty=true;
+  }
+});
+
+// Patch reposAll to include annotations
+var _origReposAll2 = reposAll;
+reposAll = function(){ _origReposAll2(); posAllAnnots(); };
+
+// Save/load annotations with project data
+var _origProjDataSnapshot = projDataSnapshot;
+projDataSnapshot = function() {
+  var snap = _origProjDataSnapshot();
+  snap.annots = ANNOTS.map(function(a){ return {id:a.id,x:a.x,y:a.y,text:a.text}; });
+  snap.annotNextId = annotNextId;
+  snap.gateNames  = Object.assign({}, GATE_NAMES);
+  snap.wireLabels = Object.assign({}, WIRE_LABELS);
+  return snap;
+};
+
+var _origLoadProjData2 = loadProjData;
+loadProjData = function(data){
+  _origLoadProjData2(data);
+  // Clear annotations
+  ANNOTS.forEach(function(a){ if(a.el)a.el.remove(); });
+  ANNOTS = []; selAnnot = null;
+  annotNextId = data.annotNextId || 1;
+  (data.annots||[]).forEach(function(a){ addAnnotation(a.x,a.y,a.text); });
+  // Reset history after load (use different name to avoid conflict below)
+  setTimeout(function(){ initHistory(); }, 200);
+};
+
+// ═══════════════════════════════════════════════════════
+// FEATURE C: LIGHT / DARK THEME TOGGLE
+// ═══════════════════════════════════════════════════════
+var isLightTheme = false; // Default simulation to dark theme
+
+document.getElementById('btn-theme').addEventListener('click', function() {
+  isLightTheme = !isLightTheme;
+  document.getElementById('pg-editor').classList.toggle('theme-light', isLightTheme);
+  this.textContent = isLightTheme ? '◑ Dark' : '◑ Light';
+  try { localStorage.setItem('lgf_theme', isLightTheme?'light':'dark'); } catch(e){}
+  drawGrid(); drawWires(); drawMinimap();
+  msg('Theme: '+(isLightTheme?'Light':'Dark'), 'ok');
+});
+
+(function(){
+  if(isLightTheme) {
+    document.getElementById('pg-editor').classList.add('theme-light');
+  }
+})();
+
+// ═══════════════════════════════════════════════════════
+// FEATURE D: AUTO LAYOUT (Sugiyama-inspired topo layout)
+// ═══════════════════════════════════════════════════════
+document.getElementById('btn-autolayout').addEventListener('click', function() {
+  if (!S.gates.length) { msg('No gates to arrange', 'er'); return; }
+  histPush();
+  autoLayout();
+  // Brief flash animation
+  document.getElementById('gate-lyr').classList.add('layout-anim');
+  setTimeout(function(){ document.getElementById('gate-lyr').classList.remove('layout-anim'); }, 500);
+  setTimeout(function(){ document.getElementById('btn-fit').click(); }, 100);
+  msg('Auto-layout applied', 'ok');
+  S.dirty = true;
+});
+
+function autoLayout() {
+  // 1. Assign each gate to a "rank" (column) using BFS from source gates
+  var rank = {};
+  var sources = S.gates.filter(function(g){
+    return ['input','clock','const0','const1'].includes(g.type);
+  });
+
+  // BFS
+  var queue = sources.slice();
+  sources.forEach(function(g){ rank[g.id] = 0; });
+
+  // For gates not reachable, give them rank based on topological sort
+  S.gates.forEach(function(g){
+    if(rank[g.id]===undefined) rank[g.id] = 0;
+  });
+
+  var visited = new Set();
+  while (queue.length) {
+    var g = queue.shift();
+    if (visited.has(g.id)) continue;
+    visited.add(g.id);
+    var outWires = S.wires.filter(function(w){ return w.fg===g.id; });
+    outWires.forEach(function(w) {
+      var tg = S.gates.find(function(g){ return g.id===w.tg; });
+      if (!tg) return;
+      var newRank = (rank[g.id]||0) + 1;
+      if (rank[tg.id]===undefined || newRank > rank[tg.id]) {
+        rank[tg.id] = newRank;
+      }
+      queue.push(tg);
+    });
+  }
+
+  // Output gates get max rank + 1
+  S.gates.forEach(function(g){
+    if (g.type==='output' || g.type==='led' || g.type==='seg7' || g.type==='matrix') {
+      var inWires = S.wires.filter(function(w){ return w.tg===g.id; });
+      if (inWires.length) {
+        var maxSrcRank = Math.max.apply(null, inWires.map(function(w){ return rank[w.fg]||0; }));
+        rank[g.id] = maxSrcRank + 1;
+      }
+    }
+  });
+
+  // 2. Group by rank
+  var cols = {};
+  S.gates.forEach(function(g){
+    var r = rank[g.id] || 0;
+    if (!cols[r]) cols[r] = [];
+    cols[r].push(g);
+  });
+
+  // 3. Position gates — column spacing based on widest gate
+  var COL_PAD = 80, ROW_PAD = 28;
+  var startX = 60, startY = 60;
+  var colX = startX;
+
+  var maxRank = Math.max.apply(null, Object.keys(cols).map(Number));
+  for (var r=0; r<=maxRank; r++) {
+    var col = cols[r];
+    if (!col || !col.length) { colX += 120; continue; }
+
+    // Sort by vertical position (preserve relative order)
+    col.sort(function(a,b){ return a.y - b.y; });
+
+    var maxW = Math.max.apply(null, col.map(function(g){ return gdef(g).w; }));
+    var curY = startY;
+
+    col.forEach(function(g) {
+      var d = gdef(g);
+      g.x = colX;
+      g.y = curY;
+      posGate(g);
+      curY += d.h + ROW_PAD;
+    });
+
+    colX += maxW + COL_PAD;
+  }
+
+  drawWires();
+  posAllAnnots();
+}
+
+// ═══════════════════════════════════════════════════════
+// FEATURE E: SIMULATION STATISTICS
+// ═══════════════════════════════════════════════════════
+var statsOpen = false;
+
+document.getElementById('btn-stats').addEventListener('click', function() {
+  statsOpen = !statsOpen;
+  var panel = document.getElementById('stats-panel');
+  panel.classList.toggle('vis', statsOpen);
+  this.classList.toggle('act', statsOpen);
+  if (statsOpen) updateStats();
+});
+
+function updateStats() {
+  if (!statsOpen) return;
+  var panel = document.getElementById('stats-content');
+  var gates = S.gates;
+  var wires = S.wires;
+
+  if (!gates.length) {
+    panel.innerHTML = '<div style="color:var(--t3);font-size:11.5px">No gates on canvas</div>';
+    return;
+  }
+
+  // Gate count by type
+  var typeCounts = {};
+  gates.forEach(function(g){ typeCounts[g.type]=(typeCounts[g.type]||0)+1; });
+
+  // Fan-out: max wires from any single output pin
+  var fanOut = {};
+  wires.forEach(function(w){
+    var k=w.fg+'_'+w.fp;
+    fanOut[k]=(fanOut[k]||0)+1;
+  });
+  var maxFanOut = Object.values(fanOut).length ? Math.max.apply(null,Object.values(fanOut)) : 0;
+  var avgFanOut = wires.length && gates.length ? (wires.length/gates.length).toFixed(1) : 0;
+
+  // Critical path: longest chain of logic gates (BFS from inputs to outputs)
+  var depth = {};
+  var sourceGates = gates.filter(function(g){ return ['input','clock','const0','const1'].includes(g.type); });
+  sourceGates.forEach(function(g){ depth[g.id]=0; });
+
+  var sortedGates = topoSortGates();
+  sortedGates.forEach(function(g) {
+    var inWires = wires.filter(function(w){ return w.tg===g.id; });
+    if (inWires.length) {
+      var maxD = Math.max.apply(null, inWires.map(function(w){ return depth[w.fg]||0; }));
+      depth[g.id] = maxD + 1;
+    } else if (depth[g.id]===undefined) {
+      depth[g.id] = 0;
+    }
+  });
+
+  var maxDepth = Object.values(depth).length ? Math.max.apply(null,Object.values(depth)) : 0;
+
+  // Find critical path gates
+  var critGates = [];
+  var outputGates = gates.filter(function(g){ return g.type==='output'||g.type==='led'||g.type==='seg7'||g.type==='matrix'; });
+  outputGates.forEach(function(og){
+    var cur = og;
+    var path = [og.id];
+    for (var step=0; step<50; step++) {
+      var inW = wires.filter(function(w){ return w.tg===cur.id; });
+      if (!inW.length) break;
+      var bestW = inW.reduce(function(best,w){ return (depth[w.fg]||0)>(depth[best.fg]||0)?w:best; });
+      var prev = gates.find(function(g){ return g.id===bestW.fg; });
+      if (!prev) break;
+      path.push(prev.id);
+      cur = prev;
+    }
+    critGates = critGates.concat(path);
+  });
+  critGates = [...new Set(critGates)];
+
+  // Highlight critical path
+  gates.forEach(function(g){
+    if (g.el) { g.el.style.boxShadow=''; }
+  });
+  critGates.forEach(function(gid){
+    var g=gates.find(function(g){return g.id===gid;});
+    if (g&&g.el) g.el.style.boxShadow='0 0 0 2px var(--aca), 0 0 10px rgba(224,160,48,.4)';
+  });
+
+  // Highlight critical wires
+  wireSvg.querySelectorAll('.crit-wire').forEach(function(el){el.classList.remove('crit-wire');});
+  // (Wire highlighting would need wire-by-wire tracking — mark visually via class)
+
+  // Build HTML
+  var html = '<div class="stat-h">Overview</div>';
+  html += '<div class="stat-row"><span class="stat-k">Total gates</span><span class="stat-v">'+gates.length+'</span></div>';
+  html += '<div class="stat-row"><span class="stat-k">Total wires</span><span class="stat-v">'+wires.length+'</span></div>';
+  html += '<div class="stat-row"><span class="stat-k">Critical path</span><span class="stat-v">'+maxDepth+' gates</span></div>';
+  html += '<div class="stat-row"><span class="stat-k">Max fan-out</span><span class="stat-v">'+maxFanOut+'</span></div>';
+  html += '<div class="stat-row"><span class="stat-k">Avg fan-out</span><span class="stat-v">'+avgFanOut+'</span></div>';
+
+  // Gate type breakdown
+  html += '<div class="stat-h">Gate Types</div>';
+  var knownTypes = ['and','or','not','nand','nor','xor','xnor','buffer',
+                    'ha','fa','add4','mux2','mux4','dmux2','dmux4',
+                    'sr','dlatch','dff','jkff','tff','custom'];
+  var total = gates.length;
+  knownTypes.forEach(function(type){
+    var cnt=typeCounts[type];
+    if(!cnt) return;
+    var pct=Math.round(cnt/total*100);
+    var col=GCOL[type]||'#607090';
+    html += '<div class="stat-row"><span class="stat-k" style="display:flex;align-items:center;gap:4px">' +
+      '<span style="width:7px;height:7px;border-radius:50%;background:'+col+';display:inline-block"></span>' +
+      type.toUpperCase()+'</span><span class="stat-v">'+cnt+'</span></div>';
+    html += '<div class="stat-bar"><div class="stat-bar-fill" style="width:'+pct+'%;background:'+col+'"></div></div>';
+  });
+
+  // I/O breakdown
+  var inCnt = (typeCounts['input']||0)+(typeCounts['const0']||0)+(typeCounts['const1']||0)+(typeCounts['clock']||0)+(typeCounts['keypad']||0);
+  var outCnt = (typeCounts['output']||0)+(typeCounts['led']||0)+(typeCounts['seg7']||0)+(typeCounts['matrix']||0);
+  if(inCnt||outCnt){
+    html += '<div class="stat-h">I / O</div>';
+    if(inCnt) html += '<div class="stat-row"><span class="stat-k">Inputs / Clocks</span><span class="stat-v">'+inCnt+'</span></div>';
+    if(outCnt) html += '<div class="stat-row"><span class="stat-k">Outputs / LEDs</span><span class="stat-v">'+outCnt+'</span></div>';
+  }
+
+  html += '<div class="stat-h" style="display:flex;align-items:center;justify-content:space-between">' +
+    'Critical Path' +
+    '<span style="font-size:9px;color:var(--aca);cursor:pointer" id="stats-clear-hi">Clear highlight</span></div>';
+  if (critGates.length) {
+    html += '<div class="stat-path">'+critGates.map(function(gid){
+      var g=gates.find(function(g){return g.id===gid;});
+      return g?(gdef(g).lbl+'#'+gid):'?';
+    }).join(' →\n')+'</div>';
+  } else {
+    html += '<div style="color:var(--t3);font-size:11px">No output gates found</div>';
+  }
+
+  html += '<button class="pbtn" id="stats-close-btn" style="margin-top:10px">✕ Close</button>';
+  panel.innerHTML = html;
+
+  document.getElementById('stats-close-btn').addEventListener('click', function(){
+    statsOpen=false;
+    document.getElementById('stats-panel').classList.remove('vis');
+    document.getElementById('btn-stats').classList.remove('act');
+    // Clear highlights
+    gates.forEach(function(g){ if(g.el)g.el.style.boxShadow=''; });
+  });
+  document.getElementById('stats-clear-hi').addEventListener('click', function(){
+    gates.forEach(function(g){ if(g.el)g.el.style.boxShadow=''; });
+  });
+}
+
+function topoSortGates() {
+  var result=[], visited=new Set();
+  function visit(gid){
+    if(visited.has(gid)) return;
+    visited.add(gid);
+    var inW=S.wires.filter(function(w){return w.tg===gid;});
+    inW.forEach(function(w){visit(w.fg);});
+    var g=S.gates.find(function(g){return g.id===gid;});
+    if(g) result.push(g);
+  }
+  S.gates.forEach(function(g){visit(g.id);});
+  return result;
+}
+
+// Hook updateStats into simulate (lazy, after pdirty refresh)
+var _origRenderProps2 = renderProps;
+renderProps = function(){
+  _origRenderProps2();
+  if(statsOpen) updateStats();
+};
+
+// ═══════════════════════════════════════════════════════
+// INIT HISTORY WITH EMPTY SNAPSHOT
+// ═══════════════════════════════════════════════════════
+function initHistory() { HIST.stack=[]; HIST.idx=-1; histPush(); histUpdateButtons(); }
+
+// ── Waveform panel drag-to-resize ──
+// Drag upward from wave-header to make panel taller
+(function(){
+  var wp = document.getElementById('wave-panel');
+  var wh = document.getElementById('wave-header');
+  var dragging=false, startY, startH;
+  wh.addEventListener('mousedown', function(e){
+    if(e.target.classList.contains('wh-btn')) return;
+    // Only start drag if clicking on the header itself (not the toggle area)
+    dragging=true; startY=e.clientY; startH=wp.offsetHeight;
+    e.preventDefault(); e.stopPropagation();
+  });
+  document.addEventListener('mousemove', function(e){
+    if(!dragging) return;
+    // Dragging up = increasing height
+    var delta = startY - e.clientY;
+    var newH = Math.max(28, Math.min(500, startH + delta));
+    wp.style.transition='none';
+    wp.style.height=newH+'px';
+    wp.style.minHeight=newH+'px';
+    if(newH > 28){
+      wp.classList.add('expanded');
+    } else {
+      wp.classList.remove('expanded');
+    }
+    drawWaveform();
+  });
+  document.addEventListener('mouseup', function(){
+    if(dragging){ dragging=false; wp.style.transition=''; }
+  });
+})();
+
+// ── Patch openProject to reset wave state and history ──
+var _origOpenProject = openProject;
+openProject = function(p){
+  _origOpenProject(p);
+  setTimeout(function(){
+    initHistory();
+    WAVE.signals={}; WAVE.ticks=0; WAVE.recording=false;
+    document.getElementById('wave-play-btn').textContent='▶ Record';
+    document.getElementById('wave-tick-lbl').textContent='0 ticks';
+    if(document.getElementById('wave-panel').classList.contains('expanded')){
+      drawWaveform();
+    }
+  }, 300);
+};
+
+// ── ASM Compiler Logic ──
+function compileASM() {
+  const code = document.getElementById('asm-code').value;
+  const logEl = document.getElementById('asm-log');
+  logEl.textContent = "Compiling...\n";
+  logEl.style.color = "var(--t2)";
+  
+  if (!window.currentAsmTargetId) {
+    logEl.textContent += "Error: No target ROM selected.";
+    logEl.style.color = "var(--acr)";
+    return;
+  }
+  
+  const targetGate = S.gates.find(g => g.id === window.currentAsmTargetId);
+  if (!targetGate) {
+    logEl.textContent += "Error: Target ROM gate no longer exists.";
+    logEl.style.color = "var(--acr)";
+    return;
+  }
+  
+  // Save the code to the gate so it persists
+  targetGate.asmCode = code;
+
+  const lines = code.split('\n');
+  const defines = {};
+  const labels = {};
+  
+  let parsedLines = [];
+  
+  // Pass 1: Parse Defines, Strip Comments, normalize tokens
+  for (let i = 0; i < lines.length; i++) {
+    let line = lines[i].split(';')[0].split('//')[0].trim();
+    if (!line) continue;
+    
+    if (line.toUpperCase().startsWith('#DEFINE')) {
+      const parts = line.split(/\s+/);
+      if (parts.length >= 3) {
+        defines[parts[1]] = parts[2];
+      }
+      continue;
+    }
+    
+    parsedLines.push({ num: i + 1, text: line });
+  }
+  
+  // Pass 2: Calculate Label Addresses
+  let currentAddr = 0;
+  for (let i = 0; i < parsedLines.length; i++) {
+    let text = parsedLines[i].text;
+    
+    if (text.endsWith(':')) {
+      labels[text.substring(0, text.length - 1)] = currentAddr;
+      parsedLines[i].isLabel = true;
+    } else if (text.toUpperCase().startsWith('.ORG')) {
+      const parts = text.split(/\s+/);
+      let valStr = parts[1];
+      let val = 0;
+      if (valStr.startsWith('0x') || valStr.startsWith('0X')) val = parseInt(valStr, 16);
+      else val = parseInt(valStr, 10);
+      currentAddr = val;
+      parsedLines[i].isOrg = true;
+    } else {
+      currentAddr++; // Each instruction/data takes 1 byte
+    }
+  }
+  
+  // Pass 3: Resolve Values and Generate Bytecode
+  const bytecode = new Uint8Array(256);
+  currentAddr = 0;
+  
+  for (let i = 0; i < parsedLines.length; i++) {
+    let p = parsedLines[i];
+    if (p.isLabel) continue;
+    if (p.isOrg) {
+       const parts = p.text.split(/\s+/);
+       let valStr = parts[1];
+       if (valStr.startsWith('0x') || valStr.startsWith('0X')) currentAddr = parseInt(valStr, 16);
+       else currentAddr = parseInt(valStr, 10);
+       continue;
+    }
+    
+    if (currentAddr >= 256) {
+      logEl.textContent += `Error on line ${p.num}: ROM capacity exceeded (256 bytes). Address: ${currentAddr}\n`;
+      logEl.style.color = "var(--acr)";
+      return;
+    }
+    
+    // Resolve tokens
+    let token = p.text;
+    
+    // Try to resolve as define
+    if (defines[token] !== undefined) {
+      token = defines[token];
+    }
+    
+    // Try to resolve as label
+    if (labels[token] !== undefined) {
+      token = labels[token].toString();
+    }
+    
+    // Parse value
+    let val = 0;
+    if (token.startsWith('0x') || token.startsWith('0X')) {
+      val = parseInt(token, 16);
+    } else if (!isNaN(parseInt(token, 10))) {
+      val = parseInt(token, 10);
+    } else {
+      logEl.textContent += `Error on line ${p.num}: Unknown token '${token}'\n`;
+      logEl.style.color = "var(--acr)";
+      return;
+    }
+    
+    bytecode[currentAddr] = val & 0xFF;
+    currentAddr++;
+  }
+  
+  // Flash to ROM
+  targetGate.mem = bytecode;
+  simulate();
+  S.pdirty = true;
+  drawGrid();
+  
+  logEl.textContent += `Success: Compiled ${currentAddr} bytes.\nFlashed to ROM #${targetGate.id}.`;
+  logEl.style.color = "var(--acb)";
+}
+
+document.getElementById('asm-compile-btn').addEventListener('click', compileASM);
+
+// ── ResizeObservers ──
+new ResizeObserver(function(){
+  drawGrid();
+  drawMinimap();
+}).observe(cvwrap);
+
+new ResizeObserver(function(){
+  if(document.getElementById('wave-panel').classList.contains('expanded')){
+    drawWaveform();
+  }
+}).observe(document.getElementById('wave-canvas-wrap'));
+
+//  INTERACTIVE ONBOARDING TOUR 
+var TOUR_STEPS = [
+  { sel: '#sidebar', title: 'Logic Gates Library', text: 'Drag and drop gates, inputs, and outputs onto the canvas. Scroll down to see advanced components like Flip-Flops and ALUs!' },
+  { sel: '#cvwrap', title: 'The Canvas', text: 'This is your workspace. We pre-loaded a simple NAND gate circuit for you. Try clicking the green IN gates to toggle them between 0 and 1!' },
+  { sel: '#btn-rp', title: 'Properties Panel', text: 'Select any component or wire on the canvas to view and edit its properties here (like naming an input, or changing bit-width).' },
+  { sel: '#btn-tt', title: 'Boolean & Karnaugh Maps', text: 'Instantly generate Truth Tables, Boolean algebra expressions, and Karnaugh Maps for your design!' },
+  { sel: '#btn-tb', title: 'Automated Testbenches', text: 'Write automated testbenches to verify your logic circuit\'s correctness.' },
+  { sel: '#btn-wave', title: 'Waveform Viewer', text: 'Click this button to see your circuit\'s signals over time. We will open it for a quick peek right now!', action: function() {
+      var wbtn = document.getElementById('btn-wave');
+      var panel = document.getElementById('wave-panel');
+      if (wbtn && panel) {
+          if (!panel.classList.contains('expanded')) wbtn.click();
+          setTimeout(function() {
+              if (panel.classList.contains('expanded') && document.getElementById('tour-overlay').style.display === 'block') {
+                  wbtn.click();
+              }
+          }, 2500);
+      }
+  }},
+  { sel: '#btn-verilog', title: 'Verilog Export', text: 'Once your circuit is built, click here to export it into professional Verilog code!' },
+  { sel: '#btn-export', title: 'Export & Save', text: 'You can export your schematic as a high-res image (PNG/SVG) or save the raw project file.' }
+];
+var tourIndex = -1;
+
+function startTour() {
+  document.getElementById('tour-overlay').style.display = 'block';
+  setTimeout(function(){
+    document.getElementById('tour-dialog').style.opacity = '1';
+    document.getElementById('tour-dialog').style.transform = 'translateY(0)';
+  }, 10);
+  tourIndex = -1;
+  nextTourStep();
+}
+
+function nextTourStep() {
+  tourIndex++;
+  if (tourIndex >= TOUR_STEPS.length) {
+    endTour();
+    return;
+  }
+  var step = TOUR_STEPS[tourIndex];
+  var el = document.querySelector(step.sel);
+  if (!el || el.offsetParent === null || el.offsetWidth === 0) { nextTourStep(); return; }
+
+  document.getElementById('tour-title-text').textContent = step.title;
+  document.getElementById('tour-text').textContent = step.text;
+  document.getElementById('tour-progress').textContent = (tourIndex + 1) + '/' + TOUR_STEPS.length;
+  document.getElementById('tour-next-btn').textContent = (tourIndex === TOUR_STEPS.length - 1) ? 'Finish' : 'Next';
+
+  var rect = el.getBoundingClientRect();
+  var hl = document.getElementById('tour-hl');
+  var pad = 6;
+  hl.style.left = (rect.left - pad) + 'px';
+  hl.style.top = (rect.top - pad) + 'px';
+  hl.style.width = (rect.width + pad*2) + 'px';
+  hl.style.height = (rect.height + pad*2) + 'px';
+
+  var dlg = document.getElementById('tour-dialog');
+  var dlgTop = rect.bottom + 20;
+  var dlgLeft = rect.left + (rect.width/2) - 160;
+  
+  // Keep dialog on screen vertically
+  if (dlgTop + 200 > window.innerHeight) {
+    dlgTop = rect.top - 220; 
+  }
+  if (dlgTop < 20) {
+    dlgTop = Math.max(20, window.innerHeight / 2 - 100);
+  }
+  
+  // Keep dialog on screen horizontally
+  if (dlgLeft < 20) dlgLeft = 20;
+  if (dlgLeft + 320 > window.innerWidth) dlgLeft = window.innerWidth - 340;
+
+  dlg.style.top = dlgTop + 'px';
+  dlg.style.left = dlgLeft + 'px';
+
+  if (step.action) {
+    step.action();
+  }
+}
+
+function endTour() {
+  var dlg = document.getElementById('tour-dialog');
+  dlg.style.opacity = '0';
+  dlg.style.transform = 'translateY(10px)';
+  setTimeout(function(){
+    document.getElementById('tour-overlay').style.display = 'none';
+  }, 300);
+}
+
+// ── wire-svg: enable pointer events so hitboxes work ──
+(function(){
+  var svg = document.getElementById('wire-svg');
+  if(svg) svg.style.pointerEvents = 'all';
+})();
+
+// ── START ──
+setupVerilogImport();
+authLoad();
+
+
+
+showProjects();
+// Touch to Mouse Event Translator for Mobile Support
+function touchHandler(event) {
+    if (event.touches.length > 1) return; // Ignore multi-touch
+    if (event.target.closest('#sidebar') || event.target.closest('#props-panel') || event.target.closest('.modal')) return; // Allow normal scrolling in sidebars
+    var touches = event.changedTouches, first = touches[0], type = "";
+    switch(event.type) {
+        case "touchstart": type = "mousedown"; break;
+        case "touchmove":  type="mousemove"; break;        
+        case "touchend":   type="mouseup"; break;
+        default: return;
+    }
+    var simulatedEvent = document.createEvent("MouseEvent");
+    simulatedEvent.initMouseEvent(type, true, true, window, 1, 
+                              first.screenX, first.screenY, 
+                              first.clientX, first.clientY, false, 
+                              false, false, false, 0/*left*/, null);
+    first.target.dispatchEvent(simulatedEvent);
+    // Prevent default scrolling on canvas so we can drag gates instead of scrolling the page
+    if (event.cancelable) event.preventDefault();
+}
+document.getElementById('cvwrap').addEventListener("touchstart", touchHandler, {passive: false});
+document.getElementById('cvwrap').addEventListener("touchmove", touchHandler, {passive: false});
+document.getElementById('cvwrap').addEventListener("touchend", touchHandler, {passive: false});
+
+// Mobile Fullscreen Toggle
+function toggleAppFullscreen() {
+  function lockLandscape() {
+    if (screen.orientation && screen.orientation.lock) {
+      screen.orientation.lock('landscape').catch(e => console.log('Orientation lock failed:', e));
+    }
+  }
+  if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+    const docElm = document.documentElement;
+    const req = docElm.requestFullscreen || docElm.webkitRequestFullscreen || docElm.mozRequestFullScreen || docElm.msRequestFullscreen;
+    if (req) {
+      const promise = req.call(docElm);
+      if (promise && promise.then) {
+        promise.then(lockLandscape).catch(err => console.log('Fullscreen error:', err));
+      } else {
+        lockLandscape();
+      }
+    } else {
+      lockLandscape();
+    }
+  } else {
+    const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+    if (exit) exit.call(document);
+    if (screen.orientation && screen.orientation.unlock) {
+      screen.orientation.unlock();
+    }
+  }
+}
+
+document.getElementById('mobile-fullscreen-btn').addEventListener('click', toggleAppFullscreen);
+window.forceLandscapeFullscreen = function() {
+  function lockLandscape() {
+    if (screen.orientation && screen.orientation.lock) {
+      screen.orientation.lock('landscape').catch(e => console.log('Orientation lock failed:', e));
+    }
+  }
+  if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+    const docElm = document.documentElement;
+    const req = docElm.requestFullscreen || docElm.webkitRequestFullscreen || docElm.mozRequestFullScreen || docElm.msRequestFullscreen;
+    if (req) {
+      const promise = req.call(docElm);
+      if (promise && promise.then) {
+        promise.then(lockLandscape).catch(err => console.log('Fullscreen error:', err));
+      } else {
+        lockLandscape();
+      }
+    } else {
+      lockLandscape();
+    }
+  }
+};
+
+
+// Hero Interactive Circuit Logic
+let hsw1 = false;
+let hsw2 = false;
+function toggleHeroSw(id) {
+  if (id === 1) hsw1 = !hsw1;
+  if (id === 2) hsw2 = !hsw2;
+  
+  const sw1El = document.getElementById('hero-sw1');
+  const sw2El = document.getElementById('hero-sw2');
+  const wire1 = document.getElementById('hero-wire1');
+  const wire2 = document.getElementById('hero-wire2');
+  const wireOut = document.getElementById('hero-wire-out');
+  const gate = document.getElementById('hero-gate');
+  const bulb = document.getElementById('hero-bulb-out');
+  
+  hsw1 ? sw1El.classList.add('active') : sw1El.classList.remove('active');
+  hsw2 ? sw2El.classList.add('active') : sw2El.classList.remove('active');
+  
+  hsw1 ? wire1.classList.add('hero-wire-active') : wire1.classList.remove('hero-wire-active');
+  hsw2 ? wire2.classList.add('hero-wire-active') : wire2.classList.remove('hero-wire-active');
+  
+  if (hsw1 && hsw2) {
+    wireOut.classList.add('hero-wire-active');
+    bulb.classList.add('active');
+    gate.querySelector('path').setAttribute('fill', 'rgba(34,211,238,0.25)');
+    gate.style.filter = 'url(#glow)';
+  } else {
+    wireOut.classList.remove('hero-wire-active');
+    bulb.classList.remove('active');
+    gate.querySelector('path').setAttribute('fill', 'rgba(34,211,238,0.05)');
+    gate.style.filter = 'none';
+  }
+}
+
+
+function openWaitlist(toolName) {
+  document.getElementById('wl-tool-name').innerText = toolName;
+  document.getElementById('waitlist-modal').classList.add('active');
+}
+function closeWaitlist() {
+  document.getElementById('waitlist-modal').classList.remove('active');
+}
+function submitWaitlist() {
+  const email = document.getElementById('wl-email').value;
+  if (!email || !email.includes('@')) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+  document.getElementById('wl-email').value = '';
+  closeWaitlist();
+  alert('Thanks for joining! We will notify you when it launches.');
+}
+
+
+// MOBILE INIT
+if (window.innerWidth <= 768) {
+  var sb = document.getElementById('sidebar');
+  var rp = document.getElementById('rp');
+  if(sb) sb.classList.add('off');
+  if(rp) rp.classList.add('off');
+}
+
+
+function shareCircuit() {
+  console.log("shareCircuit button clicked!");
+  try {
+    const snap = projDataSnapshot();
+    const jsonStr = JSON.stringify({name: PROJ ? PROJ.name : 'Shared Circuit', data: snap});
+    
+    // We do not encodeURIComponent here, btoa works fine with ascii from stringify
+    // except stringify might have non-ascii. We use a safe base64 encoding method:
+    const safeJson = unescape(encodeURIComponent(jsonStr));
+    const b64 = btoa(safeJson);
+    
+    const url = window.location.origin + window.location.pathname + '#load=' + b64;
+    
+    document.getElementById('share-url-input').value = url;
+    document.getElementById('share-modal').classList.add('show');
+    document.getElementById('share-copy-btn').textContent = "Copy Link";
+  } catch (err) {
+    console.error("Failed to generate share link:", err);
+    document.getElementById('share-url-input').value = "Error generating link: " + err.message;
+    document.getElementById('share-modal').classList.add('show');
+    document.getElementById('share-copy-btn').textContent = "Failed";
+  }
+}
+
+function copyShareUrl() {
+  const input = document.getElementById('share-url-input');
+  input.select();
+  input.setSelectionRange(0, 99999);
+  try {
+    document.execCommand('copy');
+    document.getElementById('share-copy-btn').textContent = "Copied!";
+  } catch(e) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(input.value).then(() => {
+        document.getElementById('share-copy-btn').textContent = "Copied!";
+      });
+    }
+  }
+}
+
+  // Guide and Share buttons use inline onclick handlers in the HTML
+
+  if (window.location.hash.startsWith('#load=')) {
+    try {
+      const b64 = window.location.hash.substring(6);
+      const decodedStr = decodeURIComponent(escape(atob(b64)));
+      const sharedData = JSON.parse(decodedStr);
+      
+      setTimeout(() => {
+        openProject({
+          id: genId(),
+          name: sharedData.name || 'Shared Circuit',
+          data: sharedData.data
+        });
+        msg("Loaded shared circuit successfully!", "ok");
+        history.replaceState(null, null, window.location.pathname);
+      }, 300);
+    } catch(err) {
+      console.error("Failed to load shared circuit", err);
+      // Fallback in case they used the old link format
+      try {
+        const jsonStr = decodeURIComponent(atob(window.location.hash.substring(6)));
+        const sharedData = JSON.parse(jsonStr);
+        setTimeout(() => {
+          openProject({ id: genId(), name: sharedData.name, data: sharedData.data });
+          msg("Loaded shared circuit successfully!", "ok");
+          history.replaceState(null, null, window.location.pathname);
+        }, 300);
+      } catch(e2) {}
+    }
+  }
+
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').then((registration) => {
+        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+      }).catch((error) => {
+        console.log('ServiceWorker registration failed: ', error);
+      });
+    });
+  }
