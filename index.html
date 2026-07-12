@@ -2756,7 +2756,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
         <button class="tb-btn" id="btn-zo" title="Zoom Out" aria-label="Zoom Out" style="font-weight:bold;font-size:18px;">&minus;</button>
         <span id="zoom-lbl">100%</span>
         <button class="tb-btn" id="btn-zi" title="Zoom In" aria-label="Zoom In" style="font-weight:bold;font-size:18px;">+</button>
-        <button class="tb-btn" id="btn-fit" title="Fit to Screen" aria-label="Fit"><svg viewBox="0 0 24 24"><path d="M3 3h6v2H5v4H3V3m18 0h-6v2h4v4h2V3m0 18h-6v-2h4v-4h2v6M3 21h6v-2H5v-4H3v6"/></svg></button>
+        <button class="tb-btn" id="btn-fit-zoom" title="Fit to Screen" aria-label="Fit"><svg viewBox="0 0 24 24"><path d="M3 3h6v2H5v4H3V3m18 0h-6v2h4v4h2V3m0 18h-6v-2h4v-4h2v6M3 21h6v-2H5v-4H3v6"/></svg></button>
       </div>
       <div id="assignment-banner" style="display:none; position:absolute; top:12px; left:50%; transform:translateX(-50%); z-index:100; background:var(--bg); border:1px solid var(--acc); color:var(--acc); padding:6px 16px; border-radius:16px; font-size:13px; font-weight:600; box-shadow:0 4px 12px rgba(0,0,0,0.3); pointer-events:none;">
         🎓 Assignment Mode Active
@@ -5531,76 +5531,9 @@ document.getElementById('btn-verilog').addEventListener('click', function() {
 document.getElementById('btn-hlp').addEventListener('click',function(){document.getElementById('ov-hlp').classList.add('open');});
 document.getElementById('hlp-cl').addEventListener('click',function(){document.getElementById('ov-hlp').classList.remove('open');});
 
-document.getElementById('btn-autolayout').addEventListener('click', function() {
-  saveUndoState();
-  const step = 20 * S.zoom;
-  S.gates.forEach(g => {
-    g.x = Math.round(g.x / step) * step;
-    g.y = Math.round(g.y / step) * step;
-  });
-  reposAll();
-  drawGrid();
-  msg('Snapped all components to grid', 'sc');
-});
 
-document.getElementById('btn-annot').addEventListener('click', function() {
-  let gid = 'g'+Date.now();
-  S.gates.push({ id: gid, type: 'text', x: S.panX * -1 + 100, y: S.panY * -1 + 100, txt: 'Text Note' });
-  saveUndoState();
-  reposAll();
-  msg('Added text annotation', 'sc');
-});
 
-document.getElementById('btn-stats').addEventListener('click', function() {
-  let stats = '<table style="width:100%; border-collapse:collapse;">';
-  stats += '<tr style="border-bottom:1px solid var(--b2);"><td style="padding:4px 0;">Total Components</td><td style="text-align:right;">' + S.gates.length + '</td></tr>';
-  stats += '<tr style="border-bottom:1px solid var(--b2);"><td style="padding:4px 0;">Total Wires</td><td style="text-align:right;">' + S.wires.length + '</td></tr>';
-  let types = {};
-  S.gates.forEach(g => types[g.type] = (types[g.type]||0)+1);
-  for(let t in types) {
-    stats += '<tr><td style="padding:4px 0; color:var(--t3);">' + (DEF[t]?DEF[t].lbl:t) + '</td><td style="text-align:right; color:var(--t3);">' + types[t] + '</td></tr>';
-  }
-  stats += '</table>';
-  document.getElementById('stats-results').innerHTML = stats;
-  document.getElementById('ov-stats').classList.add('open');
-});
-document.getElementById('stats-cl').addEventListener('click', function(){document.getElementById('ov-stats').classList.remove('open');});
 
-document.getElementById('btn-drc').addEventListener('click', function() {
-  let errs = [];
-  let warns = [];
-  
-  // Find multi-driven inputs
-  let inputCount = {};
-  S.wires.forEach(w => {
-    let key = w.to + '-' + w.tip;
-    inputCount[key] = (inputCount[key]||0)+1;
-    if(inputCount[key] > 1) errs.push('Short circuit detected on ' + (DEF[S.gates.find(g=>g.id===w.to)?.type]?.lbl||w.to) + ' input pin ' + w.tip);
-  });
-  
-  // Find floating inputs
-  S.gates.forEach(g => {
-    let d = gdef(g);
-    if(d && d.nc > 0) {
-      for(let i=0; i<d.nc; i++) {
-        let hasWire = S.wires.some(w => w.to === g.id && w.tip === i);
-        if(!hasWire) warns.push('Floating input pin ' + i + ' on ' + d.lbl + ' gate');
-      }
-    }
-  });
-
-  let html = '';
-  if(errs.length===0 && warns.length===0) {
-    html = '<div style="color:var(--acc); font-size:16px; margin-bottom:12px;">✅ 0 Errors, 0 Warnings</div>No design rules violated!';
-  } else {
-    html = '<div style="margin-bottom:12px;">Found <span style="color:#ef4444;">' + errs.length + ' Errors</span> and <span style="color:#eab308;">' + warns.length + ' Warnings</span>.</div>';
-    errs.forEach(e => html += '<div style="color:#ef4444; margin-bottom:4px;">❌ ' + e + '</div>');
-    warns.forEach(w => html += '<div style="color:#eab308; margin-bottom:4px;">⚠️ ' + w + '</div>');
-  }
-  document.getElementById('drc-results').innerHTML = html;
-  document.getElementById('ov-drc').classList.add('open');
-});
-document.getElementById('drc-cl').addEventListener('click', function(){document.getElementById('ov-drc').classList.remove('open');});
 
 document.getElementById('ov-hlp').addEventListener('click',function(e){if(e.target===e.currentTarget)e.currentTarget.classList.remove('open');});
 
@@ -5630,13 +5563,6 @@ document.getElementById('btn-fs').addEventListener('click', function() {
 });
 
 // Feature: Theme Toggle
-document.getElementById('btn-theme').addEventListener('click', function() {
-  let isLight = document.body.classList.toggle('theme-light');
-  document.getElementById('pg-editor').classList.toggle('theme-light', isLight);
-  localStorage.setItem('sqgate-theme', isLight ? 'light' : 'dark');
-  msg(isLight ? 'Light Mode' : 'Dark Mode', 'sc');
-  drawGrid();
-});
 
 // Feature: Simulation Speed
 let simSpeedIndex = 0;
@@ -5847,7 +5773,7 @@ function doZoom(f){
 }
 document.getElementById('btn-zi').addEventListener('click',function(){doZoom(1.2);});
 document.getElementById('btn-zo').addEventListener('click',function(){doZoom(1/1.2);});
-document.getElementById('btn-fit').addEventListener('click',function(){
+document.getElementById('btn-fit-zoom').addEventListener('click',function(){
   if(!S.gates.length)return;
   const W=cvwrap.clientWidth,H=cvwrap.clientHeight;
   const xs=S.gates.map(function(g){return g.x;}),ys=S.gates.map(function(g){return g.y;});
