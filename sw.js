@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sqgate-cache-v58';
+const CACHE_NAME = 'sqgate-cache-v59';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -17,7 +17,9 @@ const ASSETS_TO_CACHE = [
   '/icon.webp',
   '/login_bg_v3.png',
   '/simulator_preview.webp',
-  '/manifest.json'
+  '/manifest.json',
+  '/blog/assets/blog-demo.css',
+  '/blog/assets/blog-demo.js'
 ];
 
 self.addEventListener('install', (event) => {
