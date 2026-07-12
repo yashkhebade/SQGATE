@@ -2533,6 +2533,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
   </button>
   <div id="ed-topbar">
+    <!-- Group 1: Project & Core -->
     <div class="tb-group">
       <img src="/icon.webp" style="width:24px;height:24px;border-radius:6px;margin-right:8px;box-shadow:0 2px 6px rgba(0,0,0,0.5);cursor:pointer;" onclick="showProjects()" title="Back to Dashboard" alt="Logo">
       <button class="tb-btn" id="ed-back" title="Back to projects" aria-label="Back">
@@ -2543,7 +2544,6 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
     
     <div class="tsep"></div>
     
-    <!-- Panels Left -->
     <div class="tb-group">
       <button class="tb-btn" id="btn-sb" title="Toggle Library" aria-label="Library">
         <svg viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
@@ -2551,8 +2551,6 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       <button class="tb-btn" id="btn-rp" title="Toggle Properties" aria-label="Properties">
         <svg viewBox="0 0 24 24"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
       </button>
-      
-      <!-- LIQUID RADIO COMPONENT -->
       <div class="lr-container" style="margin-left:2px;">
         <div class="lr-group">
           <input type="radio" id="lr-test" name="env-toggle" value="test" checked onchange="msg('Mode switched to: BUILD', 'ok')">
@@ -2567,10 +2565,10 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
         </div>
       </div>
     </div>
-
+    
     <div class="tsep"></div>
 
-    <!-- Edit Tools Center -->
+    <!-- Group 2: History & Canvas Tools -->
     <div class="tb-group">
       <button class="tb-btn" id="btn-undo" title="Undo (Ctrl+Z)" aria-label="Undo" disabled>
         <svg viewBox="0 0 24 24"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
@@ -2581,14 +2579,11 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       <button class="tb-btn" id="btn-clr" title="Clear Canvas" aria-label="Clear Canvas">
         <svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
       </button>
-      <button class="tb-btn" id="btn-pkg" onclick="pkgSel()" title="Package selected logic into a Custom IC" aria-label="Create IC">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+      <button class="tb-btn" id="btn-find" title="Find Component" aria-label="Find">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       </button>
       <button class="tb-btn" id="btn-autolayout" title="Auto-arrange Layout" aria-label="Layout">
         <svg viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
-      </button>
-      <button class="tb-btn" id="btn-annot" title="Add Note" aria-label="Add Note">
-        <svg viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
       </button>
       <button class="tb-btn" id="btn-grid-tg" title="Toggle Grid" aria-label="Grid">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
@@ -2599,8 +2594,14 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       <button class="tb-btn" id="btn-fit" title="Zoom to Fit" aria-label="Fit">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
       </button>
-      <button class="tb-btn" id="btn-clock-tg" title="Global Clock Pulse" aria-label="Clock">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    </div>
+    
+    <div class="tsep"></div>
+    
+    <!-- Group 3: Component Tools -->
+    <div class="tb-group">
+      <button class="tb-btn" id="btn-annot" title="Add Note" aria-label="Add Note">
+        <svg viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
       </button>
       <button class="tb-btn" id="btn-flip" title="Flip Selection" aria-label="Flip">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12H3"/><path d="M18 9l3 3-3 3"/><path d="M6 9l-3 3 3 3"/></svg>
@@ -2608,14 +2609,34 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       <button class="tb-btn" id="btn-lock" title="Lock Component" aria-label="Lock">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
       </button>
-      <button class="tb-btn" id="btn-print" title="Print Schematic" aria-label="Print">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+      <button class="tb-btn" id="btn-rand" title="Randomize Inputs" aria-label="Randomize">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+      </button>
+      <button class="tb-btn" id="btn-clock-tg" title="Global Clock Pulse" aria-label="Clock">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       </button>
     </div>
     
     <div class="tsep"></div>
     
-    <!-- Data / Export -->
+    <!-- Group 4: ICs & Synthesis -->
+    <div class="tb-group">
+      <button class="tb-btn-text" id="btn-ic-mgr" title="Manage Custom ICs" aria-label="IC Manager">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        <span style="font-size: 13px; font-weight: 500;">Custom ICs</span>
+      </button>
+      <button class="tb-btn" id="btn-pkg" onclick="pkgSel()" title="Package selected logic into a Custom IC" aria-label="Create IC">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+      </button>
+      <button class="tb-btn-text" id="btn-synth" title="Auto-Synthesize Circuit" aria-label="Synthesize" onclick="document.getElementById('synth-modal').classList.add('show')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M7.5 4.21l4.5 2.6 4.5-2.6"/><path d="M7.5 19.79V14.6L3 12"/><path d="M21 12l-4.5 2.6v5.19"/><path d="M3.27 6.96L12 12.01l8.73-5.05"/><path d="M12 22.08V12"/></svg>
+        <span style="font-size: 13px; font-weight: 500;">Auto-Synth</span>
+      </button>
+    </div>
+    
+    <div class="tsep"></div>
+    
+    <!-- Group 5: Advanced Analysis -->
     <div class="tb-group">
       <button class="tb-btn-text" id="btn-tb" title="Automated Testbenches" aria-label="Testbench">
         <svg viewBox="0 0 24 24"><path d="M9 22h6m-3-2v-5m-7 1a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v10Z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
@@ -2633,54 +2654,21 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
         <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
         <span style="font-size: 13px; font-weight: 500;">Verilog</span>
       </button>
-      <button class="tb-btn" id="btn-examples" title="Load Pre-built Examples" aria-label="Examples">
-        <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      </button>
-      
-      <button class="tb-btn" id="btn-find" title="Find Component" aria-label="Find">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      </button>
-
-      <div class="tsep" style="margin: 0 4px;"></div>
-
-      <button class="tb-btn-text" id="btn-synth" title="Auto-Synthesize Circuit" aria-label="Synthesize" onclick="document.getElementById('synth-modal').classList.add('show')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M7.5 4.21l4.5 2.6 4.5-2.6"/><path d="M7.5 19.79V14.6L3 12"/><path d="M21 12l-4.5 2.6v5.19"/><path d="M3.27 6.96L12 12.01l8.73-5.05"/><path d="M12 22.08V12"/></svg>
-        <span style="font-size: 13px; font-weight: 500;">Auto-Synth</span>
-      </button>
-
-      <button class="tb-btn" id="btn-rand" title="Randomize Inputs" aria-label="Randomize">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
-      </button>
-
-      <button class="tb-btn-text" id="btn-ic-mgr" title="Manage Custom ICs" aria-label="IC Manager">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-        <span style="font-size: 13px; font-weight: 500;">Custom ICs</span>
-      </button>
-
-      <button class="tb-btn" id="btn-shortcuts" title="Keyboard Shortcuts" aria-label="Shortcuts">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-9 10H8v-2h3v2zm0-3H8V9h3v2zm4 3h-3v-2h3v2zm0-3h-3V9h3v2z"/></svg>
-      </button>
-
       <button class="tb-btn" id="btn-kmap-nav" title="Karnaugh Map Solver" aria-label="K-Map" onclick="window.open('/k-map/index.html','_blank')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
       </button>
-
       <button class="tb-btn" id="btn-fsm-nav" title="FSM Designer" aria-label="FSM" onclick="window.open('/fsm/index.html','_blank')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="19" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><path d="M10.5 10.5L7 7"/><path d="M13.5 13.5L17 17"/></svg>
-      </button>
-
-      <button class="tb-btn" id="btn-puzzle-nav" title="Logic Quest Puzzle" aria-label="Puzzle" onclick="window.open('/puzzle/index.html','_blank')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.439 7.85c-.049.322.059.648.289.878l1.568 1.568c.47.47.706 1.087.706 1.704s-.235 1.233-.706 1.704l-1.611 1.611a.98.98 0 0 0-.253.902l.331 2.158c.16 1.041-.35 2.1-1.282 2.646l-1.88.11c-.322.018-.616.19-.806.471l-1.183 1.758c-.569.845-1.579 1.233-2.585.992l-2.072-.494a.98.98 0 0 0-.915.163l-1.61 1.182c-.853.626-2.043.626-2.896 0l-1.61-1.182a.98.98 0 0 0-.915-.163l-2.072.494c-1.006.241-2.016-.147-2.585-.992l-1.183-1.758a.98.98 0 0 0-.806-.471l-1.88-.11c-.932-.546-1.442-1.605-1.282-2.646l.331-2.158a.98.98 0 0 0-.253-.902L.544 13.7c-.94-.94-.94-2.468 0-3.408l1.568-1.568c.23-.23.338-.556.289-.878L2.07 5.688C1.91 4.647 2.42 3.588 3.352 3.042l1.88-.11c.322-.018.616-.19.806-.471l1.183-1.758C7.79.162 8.8-.226 9.806.015l2.072.494a.98.98 0 0 0 .915-.163l1.61-1.182c.853-.626 2.043-.626 2.896 0l1.61 1.182c.28.206.634.265.915.163l2.072-.494c1.006-.241 2.016.147 2.585.992l1.183 1.758c.19.281.484.453.806.471l1.88.11c.932.546 1.442 1.605 1.282 2.646l-.331 2.158z"/><circle cx="12" cy="12" r="3"/></svg>
-      </button>
-      <button class="tb-btn" id="btn-speed" title="Simulation Speed" aria-label="Speed">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
       </button>
       <button class="tb-btn" id="btn-bom" title="Bill of Materials" aria-label="BOM">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
       </button>
-      <button class="tb-btn" id="btn-png" title="Export as Image" aria-label="Export PNG">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-      </button>
+    </div>
+    
+    <div class="tsep"></div>
+    
+    <!-- Group 6: Files & Output -->
+    <div class="tb-group">
       <button class="tb-btn" id="btn-dl-json" title="Backup Project JSON" aria-label="Backup">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       </button>
@@ -2688,6 +2676,15 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
       </button>
       <input type="file" id="json-upload" style="display:none" accept=".json">
+      <button class="tb-btn" id="btn-png" title="Export as Image" aria-label="Export PNG">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      </button>
+      <button class="tb-btn" id="btn-print" title="Print Schematic" aria-label="Print">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+      </button>
+      <button class="tb-btn" id="btn-speed" title="Simulation Speed" aria-label="Speed">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      </button>
     </div>
 
     <!-- Right Side Tools -->
@@ -2710,17 +2707,21 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       <button class="tb-btn" id="btn-tmpl" title="Circuit Templates" aria-label="Templates">
         <svg viewBox="0 0 24 24"><path d="M2 12a10 10 0 1 0 20 0 10 10 0 1 0-20 0"/></svg>
       </button>
-
-
-      <button class="tb-btn" id="btn-hlp" title="Help" aria-label="Help">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+      <button class="tb-btn" id="btn-examples" title="Load Pre-built Examples" aria-label="Examples">
+        <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
-
+      <button class="tb-btn" id="btn-puzzle-nav" title="Logic Quest Puzzle" aria-label="Puzzle" onclick="window.open('/puzzle/index.html','_blank')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.439 7.85c-.049.322.059.648.289.878l1.568 1.568c.47.47.706 1.087.706 1.704s-.235 1.233-.706 1.704l-1.611 1.611a.98.98 0 0 0-.253.902l.331 2.158c.16 1.041-.35 2.1-1.282 2.646l-1.88.11c-.322.018-.616.19-.806.471l-1.183 1.758c-.569.845-1.579 1.233-2.585.992l-2.072-.494a.98.98 0 0 0-.915.163l-1.61 1.182c-.853.626-2.043.626-2.896 0l-1.61-1.182a.98.98 0 0 0-.915-.163l-2.072.494c-1.006.241-2.016-.147-2.585-.992l-1.183-1.758a.98.98 0 0 0-.806-.471l-1.88-.11c-.932-.546-1.442-1.605-1.282-2.646l.331-2.158a.98.98 0 0 0-.253-.902L.544 13.7c-.94-.94-.94-2.468 0-3.408l1.568-1.568c.23-.23.338-.556.289-.878L2.07 5.688C1.91 4.647 2.42 3.588 3.352 3.042l1.88-.11c.322-.018.616-.19.806-.471l1.183-1.758C7.79.162 8.8-.226 9.806.015l2.072.494a.98.98 0 0 0 .915-.163l1.61-1.182c.853-.626 2.043-.626 2.896 0l1.61 1.182c.28.206.634.265.915.163l2.072-.494c1.006-.241 2.016.147 2.585.992l1.183 1.758c.19.281.484.453.806.471l1.88.11c.932.546 1.442 1.605 1.282 2.646l-.331 2.158z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
+      <button class="tb-btn" id="btn-shortcuts" title="Keyboard Shortcuts" aria-label="Shortcuts">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-9 10H8v-2h3v2zm0-3H8V9h3v2zm4 3h-3v-2h3v2zm0-3h-3V9h3v2z"/></svg>
+      </button>
       <button class="tb-btn" id="btn-share" onclick="shareCircuit()" title="Share Circuit via Link" aria-label="Share">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
       </button>
-
-      <!-- Primary Action -->
+      <button class="tb-btn" id="btn-hlp" title="Help" aria-label="Help">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+      </button>
       <button class="tb-btn-primary guide-pop" id="btn-guide" onclick="startTour()" aria-label="Interactive Guide">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
         Guide
@@ -2728,16 +2729,14 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       
       <div class="tsep" style="margin-left:4px"></div>
       
-      <!-- About -->
       <button class="tb-btn" title="About SQGATE" onclick="document.getElementById('ov-about').classList.add('open')">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
       </button>
-      <!-- Feedback -->
       <a href="https://docs.google.com/forms/d/e/1FAIpQLSc5AzzP2NccDkCbKAb5mVvefYFc5_X-EkJZx5RLWO7aqQ_8cw/viewform" target="_blank" id="btn-feedback-ed" title="Feedback / Contact" style="text-decoration:none;display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:6px;color:var(--t2);transition:all .2s ease;flex-shrink:0;" onmouseover="this.style.color='#7248b9'" onmouseout="this.style.color='var(--t2)'">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="17" y2="8"></line><line x1="12" y1="12" x2="17" y2="12"></line><line x1="12" y1="16" x2="17" y2="16"></line><line x1="8" y1="8" x2="8.01" y2="8"></line><line x1="8" y1="12" x2="8.01" y2="12"></line><line x1="8" y1="16" x2="8.01" y2="16"></line></svg>
       </a>
     </div>
-  </div>
+  </div></div>
   <div id="ed-body">
     <!-- SIDEBAR -->
     <div id="sidebar">
