@@ -1,0 +1,469 @@
+import os
+
+html_content = """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulating Finite State Machines (FSM) in JavaScript | SQGATE Blog</title>
+  <meta name="description" content="A comprehensive, highly technical 2000-word guide on simulating Moore and Mealy Finite State Machines (FSM) in JavaScript for hardware engineers.">
+  <meta name="keywords" content="finite state machine, FSM, moore machine, mealy machine, digital logic, state diagram, JavaScript, simulation, SQGATE, hardware engineering, javascript fsm, sequential logic, VHDL, Verilog">
+  <link rel="canonical" href="https://sqgate.online/blog/posts/fsm-design-javascript.html">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="icon" href="/icon.ico">
+  
+  <!-- OG Tags -->
+  <meta property="og:title" content="Simulating Finite State Machines (FSM) in JavaScript | SQGATE Blog">
+  <meta property="og:description" content="A comprehensive, highly technical 2000-word guide on simulating Moore and Mealy Finite State Machines (FSM) in JavaScript for hardware engineers.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sqgate.online/blog/posts/fsm-design-javascript.html">
+  <meta property="og:image" content="https://sqgate.online/blog/posts/images/fsm_design_1782910186539.png">
+  
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/liquid-glass.css">
+  
+  <style>
+    body {
+      background-color: #060813;
+      color: #cbd5e1;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.7;
+    }
+    .nav {
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(12, 15, 28, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 24px;
+      color: #fff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .article-header {
+      max-width: 800px;
+      margin: 60px auto 40px;
+      padding: 0 20px;
+      text-align: center;
+    }
+    .article-header h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 42px;
+      color: #fff;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+    .article-meta {
+      color: #64748b;
+      font-size: 14px;
+    }
+    .article-content {
+      max-width: 800px;
+      margin: 0 auto 80px;
+      padding: 40px;
+    }
+    .article-content h2, .article-content h3, .article-content h4 {
+      font-family: 'Outfit', sans-serif;
+      color: #fff;
+      margin-top: 40px;
+      margin-bottom: 16px;
+    }
+    .article-content a {
+      color: #3b82f6;
+      text-decoration: none;
+    }
+    .article-content a:hover {
+      text-decoration: underline;
+    }
+    .article-content pre {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: 'Fira Code', monospace;
+      font-size: 14px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .article-content code {
+      font-family: 'Fira Code', monospace;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    .article-content pre code {
+      background: none;
+      padding: 0;
+    }
+    .article-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      margin: 24px 0;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .cta-banner {
+      margin-top: 60px;
+      padding: 40px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .cta-banner h3 {
+      margin: 0;
+      font-family: 'Outfit', sans-serif;
+      font-size: 28px;
+    }
+    .blog-layout {
+      display: grid;
+      grid-template-columns: 250px 1fr 250px;
+      gap: 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .main-column {
+      min-width: 0;
+    }
+    .ad-sidebar {
+      position: sticky;
+      top: 100px;
+      height: calc(100vh - 120px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: rgba(20, 25, 45, 0.4);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 15px;
+      overflow: hidden;
+    }
+    .ad-label {
+      font-size: 10px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+    @media (max-width: 1100px) {
+      .blog-layout {
+        grid-template-columns: 1fr;
+      }
+      .ad-sidebar {
+        position: static;
+        height: auto;
+        min-height: 250px;
+        margin-bottom: 20px;
+      }
+    }
+  </style>
+  
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://sqgate.online/blog/posts/fsm-design-javascript.html"
+      },
+      "headline": "Simulating Finite State Machines (FSM) in JavaScript",
+      "image": "https://sqgate.online/blog/posts/images/fsm_design_1782910186539.png",
+      "author": {
+        "@type": "Person",
+        "name": "SQGATE Engineering"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "SQGATE",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://sqgate.online/icon.png"
+        }
+      },
+      "datePublished": "2026-07-02"
+    }
+  </script>
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7398330076279399" crossorigin="anonymous"></script>
+</head>
+<body>
+  <svg class="liquid-glass-svg-filter" style="position: absolute; width: 0; height: 0; pointer-events: none;">
+    <defs>
+      <filter id="liquid-glass-filter" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.05 0.05" numOctaves="3" result="noise" />
+        <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.15 0" in="noise" result="coloredNoise" />
+        <feBlend in="SourceGraphic" in2="coloredNoise" mode="screen" />
+      </filter>
+    </defs>
+  </svg>
+
+  <nav class="nav">
+    <a href="/home/" class="logo">
+      <img src="/icon.webp" width="32" height="32" alt="SQGATE Logo">
+      SQGATE
+    </a>
+    <a href="/blog/" style="color: #94a3b8; text-decoration: none; font-weight: 500; margin-left: 20px;">← Back to Blog</a>
+    <div style="flex-grow: 1;"></div>
+    <a href="/home/" class="liquid-btn">Launch Simulator</a>
+  </nav>
+
+  <div class="blog-layout">
+    <aside class="ad-sidebar">
+      <div class="ad-label">Advertisement</div>
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7398330076279399" data-ad-slot="1111111111" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </aside>
+
+    <div class="main-column">
+      <header class="article-header">
+        <h1>Simulating Finite State Machines (FSM) in JavaScript</h1>
+        <div class="article-meta">
+          By SQGATE Engineering | Published on July 2, 2026 | 12 min read
+        </div>
+      </header>
+
+      <main class="article-content liquid-panel">
+        <h2>Introduction to FSMs in the Browser</h2>
+        <p>In modern web-based electronic design automation (EDA) tools like SQGATE, a fundamental problem is accurately and efficiently simulating the behavior of digital circuits in real-time. When it comes to sequential logic, Finite State Machines (FSMs) form the absolute core. This article will meticulously dissect how to architect an FSM simulation engine entirely in Vanilla JavaScript.</p>
+        <p>For decades, EDA software was confined to heavy, desktop-bound applications requiring massive installations and specialized operating systems. However, with the advent of ultra-fast JavaScript engines like V8 and SpiderMonkey, alongside modern web APIs, we can now achieve cycle-accurate logic simulation directly within a standard web browser. An FSM is arguably the most complex individual component to simulate efficiently because it introduces temporal dependency—its current outputs and next state rely heavily on its past states.</p>
+        
+        <img src="images/fsm_design_1782910186539.png" alt="Dynamic visualization of an FSM state diagram and CMOS implementation">
+        
+        <h2>The Anatomy of a Hardware FSM</h2>
+        <p>Before writing a single line of JavaScript, we must rigorously define what we are simulating. In hardware design, an FSM typically consists of three discrete blocks of logic. Understanding this physical separation is critical to writing a simulator that doesn't just "work," but works accurately according to real-world physics.</p>
+        <ul>
+          <li><strong>Next-State Logic:</strong> A purely combinational cloud of logic gates that determines the transition to the next state based on the current state and inputs. It contains zero memory.</li>
+          <li><strong>State Register:</strong> The memory element (usually edge-triggered D flip-flops) that holds the current state. It synchronizes state transitions to a clock signal.</li>
+          <li><strong>Output Logic:</strong> Combinational logic that determines the outputs. In a Moore machine, this depends only on the state. In a Mealy machine, it depends on the state and inputs.</li>
+        </ul>
+        <p>When translating this to a JavaScript engine, we need data structures that faithfully represent these physical characteristics without incurring excessive computational overhead during a high-frequency simulation tick cycle. If we mix state update logic with combinational evaluation incorrectly, we risk creating race conditions or simulating latches instead of flip-flops.</p>
+        
+        <h2>Defining the Data Structures (SQGATE JSON)</h2>
+        <p>In our simulator, an FSM is not just a theoretical concept; it's an interactive node in a directed graph of circuit components. We need a serializable representation that can be saved, loaded, and executed. Here is a prototypical SQGATE JSON snippet defining a simple FSM:</p>
+        <pre><code class="language-json">{
+  "type": "FSM",
+  "id": "fsm_inst_0",
+  "states": ["S0", "S1", "S2"],
+  "initialState": "S0",
+  "transitions": [
+    {"from": "S0", "to": "S1", "condition": "x=1"},
+    {"from": "S1", "to": "S2", "condition": "y=1"},
+    {"from": "S2", "to": "S0", "condition": "reset=1"}
+  ],
+  "outputs": {
+    "S0": {"z": 0},
+    "S1": {"z": 1},
+    "S2": {"z": 0}
+  }
+}</code></pre>
+        <p>This JSON structure must be parsed into an active JavaScript class instance when the circuit is loaded. We use a graph-like structure internally for fast state resolution. Note that the structure is deliberately declarative. It describes <em>what</em> the FSM is, not <em>how</em> to simulate it. This separation of concerns allows the simulation engine to apply aggressive optimizations.</p>
+        
+        <h2>The Simulation Tick: Processing the Clock</h2>
+        <p>JavaScript is single-threaded. Real hardware is massively parallel. To bridge this gap, discrete-event simulation or cycle-based simulation is used. For FSMs, a cycle-based approach is often sufficient and highly performant. A global clock signal is distributed to all sequential components.</p>
+        <p>Our <code>FSMNode</code> class must implement an <code>evaluate</code> method that is called on every simulation tick. We have to carefully distinguish between continuous evaluation (combinational logic) and clocked evaluation (sequential logic).</p>
+        <pre><code class="language-javascript">class FSMNode extends CircuitNode {
+  constructor(config) {
+    super();
+    this.states = config.states;
+    this.currentState = config.initialState || this.states[0];
+    this.nextState = this.currentState;
+    this.transitions = this.compileTransitions(config.transitions);
+    this.outputs = config.outputs;
+    
+    // Add input pins
+    this.addInput('clk');
+    this.addInput('reset');
+    // Dynamically add input pins based on transition conditions
+    this.extractInputPins(config.transitions).forEach(pin => this.addInput(pin));
+  }
+
+  evaluate(clockEdge) {
+    // 1. Asynchronous Reset
+    if (this.getInput('reset').value === 1) {
+      this.currentState = this.states[0]; // Assume first state is reset state
+      this.updateOutputs();
+      return;
+    }
+
+    // 2. Synchronous State Update (on rising edge)
+    if (clockEdge === 'RISING') {
+      this.currentState = this.nextState;
+    }
+
+    // 3. Compute Next State Logic (Combinational)
+    this.nextState = this.computeNextState();
+
+    // 4. Compute Output Logic (Combinational)
+    this.updateOutputs();
+  }
+}</code></pre>
+        <p>Notice the exact order of operations inside <code>evaluate()</code>. We handle asynchronous resets first, as they override the clock. Then, on a rising edge, we update the current state from the previously computed next state. Finally, we compute the <em>new</em> next state and update outputs. This mimics the propagation delay and edge-triggering behavior of physical flip-flops.</p>
+
+        <h2>Optimizing Next-State Logic Evaluation</h2>
+        <p>The <code>computeNextState</code> function is the most performance-critical part of the FSM. If we parse strings like <code>"x=1 && y=0"</code> on every tick, the simulation will crawl to a halt. String parsing and abstract syntax tree (AST) traversal are far too slow for an inner loop that runs millions of times per second.</p>
+        <p>We must pre-compile these conditions into fast JavaScript functions when the FSM is instantiated. Using the <code>new Function()</code> constructor is a powerful technique here. We can convert the condition strings into executable code. However, we must ensure we sanitize inputs to prevent injection attacks if the JSON comes from an untrusted source. Assuming a controlled environment, we can do this:</p>
+        <pre><code class="language-javascript">compileTransitions(transitionsRaw) {
+  const compiled = {};
+  for (const t of transitionsRaw) {
+    if (!compiled[t.from]) compiled[t.from] = [];
+    
+    // Transform "x=1" to "inputs.x === 1"
+    let conditionCode = t.condition
+      .replace(/([a-zA-Z_]\w*)/g, 'inputs.$1')
+      .replace(/=/g, '===');
+      
+    // Create a highly optimized function
+    const evalFn = new Function('inputs', `return ${conditionCode};`);
+    
+    compiled[t.from].push({
+      to: t.to,
+      evaluate: evalFn
+    });
+  }
+  return compiled;
+}
+
+computeNextState() {
+  const possibleTransitions = this.transitions[this.currentState] || [];
+  const currentInputs = this.getAllInputValues();
+  
+  for (const trans of possibleTransitions) {
+    if (trans.evaluate(currentInputs)) {
+      return trans.to;
+    }
+  }
+  return this.currentState; // Default: remain in current state
+}</code></pre>
+        <p>By compiling the transition conditions into native JavaScript functions, the V8 engine (or equivalent) can Just-In-Time (JIT) compile these paths down to highly optimized machine code. The difference in performance between parsing a string per cycle versus invoking a JIT-compiled function is multiple orders of magnitude.</p>
+
+        <h2>Addressing Mealy vs. Moore Machines</h2>
+        <p>The implementation above primarily describes a Moore machine, where the output is determined strictly by the <code>currentState</code>. In a Mealy machine, outputs can change instantaneously when an input changes, without waiting for the clock edge. This asynchronous behavior can lead to combinational loops if not handled carefully in a simulator.</p>
+        <p>To support Mealy machines, our <code>updateOutputs</code> method must evaluate combinational logic that depends on <code>this.getAllInputValues()</code> in addition to <code>this.currentState</code>. Furthermore, in our event-driven simulation loop, the FSM's <code>evaluate</code> method (or a separate <code>evaluateCombinational</code> method) must be called whenever any input changes, not just on the clock edge.</p>
+        <pre><code class="language-javascript">updateOutputs() {
+  if (this.isMealy) {
+    // Mealy: Output depends on state AND inputs
+    const inputs = this.getAllInputValues();
+    const outputMap = this.mealyOutputs[this.currentState];
+    for (const outPin in outputMap) {
+      // Evaluate output condition based on inputs
+      this.setOutput(outPin, outputMap[outPin].evaluate(inputs));
+    }
+  } else {
+    // Moore: Output depends ONLY on state
+    const outValues = this.outputs[this.currentState];
+    for (const pin in outValues) {
+      this.setOutput(pin, outValues[pin]);
+    }
+  }
+}</code></pre>
+        <p>Handling Mealy machines introduces the risk of oscillation. If the output of the Mealy FSM feeds back into its own inputs (through external combinational logic), the simulator could enter an infinite loop trying to resolve the continuous signal changes. Robust simulators limit the number of combinational evaluations per clock cycle to detect and break these un-physical loops.</p>
+
+        <h2>Handling Metastability and Glitches</h2>
+        <p>In a pure logical simulation, everything is perfect. Real circuits have propagation delays, setup/hold times, and metastability. While a purely behavioral FSM simulation ignores these, a comprehensive web simulator might want to model them to educate students on the perils of asynchronous inputs.</p>
+        <p>To simulate setup/hold violations, the simulator needs to track the time of the last input transition relative to the clock edge. If an input changes too close to the clock edge (within a specified time window), the <code>nextState</code> could be evaluated as an unknown state (<code>'X'</code>). This requires extending our binary logic (0, 1) to a multi-valued logic system (0, 1, X, Z).</p>
+        <p>Implementing X-state propagation is computationally expensive because boolean arithmetic operators (&&, ||) no longer suffice. We must use truth tables or specialized ternary logic operators throughout the entire simulation engine. For an FSM, entering an 'X' state usually means the machine is permanently locked up until an asynchronous reset is applied, perfectly mirroring real-world flip-flop metastability.</p>
+
+        <h2>State Encoding: One-Hot, Binary, Gray</h2>
+        <p>While the JavaScript object uses string labels (<code>"S0"</code>, <code>"S1"</code>) for states, a hardware engineer cares about how these states are encoded into physical flip-flops. When exporting the FSM to Verilog or VHDL, we need to map these strings to bit vectors.</p>
+        <ul>
+          <li><strong>Binary Encoding:</strong> Minimizes the number of flip-flops. $N$ states require $\lceil \log_2(N) \rceil$ bits. It is the most common default but can lead to significant combinational logic depth in the next-state decoder.</li>
+          <li><strong>One-Hot Encoding:</strong> Uses one flip-flop per state. $N$ states require $N$ bits. It drastically simplifies next-state logic, often resulting in faster circuits at the cost of more register area. It is highly preferred in FPGA designs where registers are abundant.</li>
+          <li><strong>Gray Encoding:</strong> Ensures only one bit changes between adjacent states, reducing glitches in output decoding. Useful for state machines that naturally cycle through sequences.</li>
+        </ul>
+        <p>Our simulator interface should allow the user to select the encoding scheme. This selection doesn't change the functional JavaScript simulation, but it fundamentally alters the Verilog generation output.</p>
+        <pre><code class="language-javascript">// Verilog Generation Snippet
+generateVerilog(encoding = 'BINARY') {
+  let v = `module fsm (input clk, input reset, ... outputs);\n`;
+  const stateBits = Math.ceil(Math.log2(this.states.length));
+  
+  if (encoding === 'BINARY') {
+    v += `  reg [${stateBits-1}:0] current_state, next_state;\n`;
+    // Map states to binary values...
+  } else if (encoding === 'ONEHOT') {
+    v += `  reg [${this.states.length-1}:0] current_state, next_state;\n`;
+    // Map states to one-hot values...
+  }
+  // ... append logic ...
+  return v;
+}</code></pre>
+        <p>Generating optimal Verilog from a JavaScript object model involves careful string templating. We must ensure that we follow the user's constraints regarding multi-bit bus widths and array mapping to guarantee the resulting code synthesizes correctly without latch inferencing.</p>
+
+        <h2>Visualizing the State Diagram</h2>
+        <p>A major advantage of a web-based simulator is interactive visualization. Using libraries like D3.js or custom Canvas API rendering, we can draw the FSM as a directed graph.</p>
+        <p>As the simulation runs, the active state node can be highlighted. Transitions can glow when their conditions evaluate to true. This provides immediate, intuitive feedback that is far superior to staring at a waveform viewer. It demystifies the invisible processes occurring inside the silicon.</p>
+        <p>To achieve this, the FSM logic engine must decouple its simulation state from the UI. We employ an observer pattern where the FSM emits a <code>stateChanged</code> event. However, to avoid bogging down the simulation with DOM updates, we typically throttle these events or only poll the state at the browser's requestAnimationFrame boundary.</p>
+        <pre><code class="language-javascript">set currentState(newState) {
+  if (this._currentState !== newState) {
+    this._currentState = newState;
+    // For high performance, we might batch these or write to a SharedArrayBuffer
+    this.emit('stateChanged', { 
+      nodeId: this.id, 
+      newState: newState 
+    });
+  }
+}</code></pre>
+
+        <h2>WebAssembly (WASM) Integration for Extreme Performance</h2>
+        <p>While JIT-compiled JavaScript is fast, it still suffers from garbage collection pauses and dynamic typing overhead. For massive digital designs containing hundreds of interconnected FSMs, we can compile the simulation core to WebAssembly (WASM) using Rust or C++.</p>
+        <p>In a WASM-accelerated architecture, the JavaScript layer merely parses the JSON and builds an abstract syntax tree. It then passes a flat binary representation of the circuit over to the WASM module. The WASM module executes the simulation tick cycle entirely in linear memory without allocating any objects, completely bypassing the JavaScript garbage collector. The state transitions and output updates are written directly back into a <code>SharedArrayBuffer</code>, which the JavaScript UI reads to render the graphics.</p>
+        <p>This hybrid approach leverages JavaScript for its unparalleled UI capabilities (HTML/CSS) and WASM for bare-metal simulation performance, achieving speeds that rival native desktop applications.</p>
+
+        <h2>Advanced Considerations: Hierarchical FSMs</h2>
+        <p>For complex systems, flat FSMs become unmanageable. The number of states and transitions explodes exponentially (the state explosion problem). Hierarchical State Machines (HSMs), popularized by David Harel's statecharts, allow states to contain sub-states. Implementing HSMs in JavaScript involves a recursive evaluation strategy.</p>
+        <p>When a clock edge occurs, the engine must traverse the active state hierarchy from the root down to the leaf states. If a leaf state doesn't have a valid transition, the engine checks its parent state's transitions, and so on. This allows for powerful concepts like global interrupts or mode switching without duplicating transition logic in every leaf state. While slightly more computationally expensive per tick, HSMs drastically reduce the memory footprint and improve the maintainability of the JSON definition.</p>
+        
+        <h2>Conclusion</h2>
+        <p>Building a robust FSM simulator in JavaScript is a delicate balancing act between hardware accuracy and browser performance. By leveraging functional compilation, event-driven architectures, and rigorous data structuring, we can create tools that rival traditional desktop EDA software, all accessible instantly via a URL.</p>
+        <p>The integration of visual state tracking alongside high-speed cycle-based simulation offers an unparalleled educational and professional environment for designing complex sequential logic. Whether simulating a simple traffic light controller or a complex multi-core CPU pipeline control unit, the principles of translating physical concurrency into JavaScript's single-threaded event loop remain the key to success.</p>
+        
+        <div class="cta-banner">
+          <h3>Ready to test this out?</h3>
+          <p>Simulate logic gates, export Verilog, and solve Karnaugh maps instantly in your browser.</p>
+          <a href="/home/" class="liquid-btn" style="font-size: 16px; padding: 12px 24px;">Open SQGATE Simulator (Free)</a>
+        </div>
+      </main>
+    </div>
+
+    <aside class="ad-sidebar">
+      <div class="ad-label">Advertisement</div>
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7398330076279399" data-ad-slot="2222222222" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </aside>
+  </div>
+</body>
+</html>
+"""
+
+with open(r"C:\Users\Admin\.gemini\antigravity\worktrees\resilient-hertz\apply-code-changes\blog\posts\fsm-design-javascript.html", "w", encoding="utf-8") as f:
+    f.write(html_content)
+
+print("Successfully written HTML content.")

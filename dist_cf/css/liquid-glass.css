@@ -1,0 +1,89 @@
+/* ── Modern Dark UI Aesthetics (Replacing Liquid Glass) ── */
+
+/* Base style for elements that previously had liquid glass */
+.liquid-panel, .login-card, .proj-card, .new-card, .mbox, .wl-box, .share-box, .prop-panel, .sqgate-em-box, 
+.tt-gen-wrap, .blog-card {
+  background: #111424; /* Solid, sleek dark navy/black background */
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05); /* Subtle thin border */
+  color: #fff;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4); /* Soft, flat drop shadow */
+  position: relative;
+  overflow: hidden;
+}
+
+/* Interactive elements (Buttons) */
+.liquid-btn, 
+.mbtn, .pbtn, .proj-action-btn, .proj-logout, .login-sub-btn, .cta-button, .back-btn, .wh-btn, .kp-btn, .step-btn {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-family: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  text-decoration: none;
+  background: #1a1f36; /* Slightly lighter than panels */
+  color: #fff;
+  transition: all 0.2s ease;
+  padding: 8px 16px;
+}
+
+.liquid-btn:hover, 
+.mbtn:hover, .pbtn:hover, .proj-action-btn:hover, .proj-logout:hover, .login-sub-btn:hover, .cta-button:hover, .back-btn:hover, .wh-btn:hover, .kp-btn:hover, .step-btn:hover {
+  background: #242a47; /* Lighten on hover */
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Primary/Active Button Style (The Glowing Orange seen in the screenshot) */
+.liquid-btn.active, .level-btn.active, .tb-btn-primary {
+  background: rgba(245, 158, 11, 0.1) !important; /* Subtle orange tint */
+  border: 1px solid #f59e0b !important;
+  color: #f59e0b !important;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+}
+
+.liquid-btn.active:hover, .level-btn.active:hover, .tb-btn-primary:hover {
+  background: rgba(245, 158, 11, 0.2) !important;
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+}
+
+/* Toolbar button styling removed to allow index.html native glassmorphic pill buttons */
+
+/* Typography refinements */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+p, span, div {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Muted text color for secondary information */
+.text-muted, .blog-excerpt, .blog-meta {
+  color: #94a3b8;
+}
+
+/* ── Global Ambient Glows ── */
+body {
+  background-color: #060813;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(91, 33, 182, 0.15) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(13, 148, 136, 0.15) 0%, transparent 40%);
+  background-attachment: fixed;
+  background-size: cover;
+  color: #e2e8f0;
+}
+
+/* -- Custom Modern Radio Toggle (Test/Prod) -- */
+.lr-group { position: relative; display: flex; align-items: center; background: #0c0e17; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 20px; padding: 2px; }
+.lr-group input[type='radio'] { display: none; }
+.lr-label { position: relative; z-index: 2; padding: 4px 12px; font-size: 11px; font-weight: 600; font-family: 'Inter', sans-serif; color: #94a3b8; cursor: pointer; transition: color 0.3s ease; text-transform: uppercase; }
+.lr-slider { position: absolute; top: 2px; bottom: 2px; left: 2px; width: calc(50% - 2px); background: #1a1f36; border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.05); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1; }
+#lr-test:checked ~ .lr-slider { transform: translateX(0); }
+#lr-prod:checked ~ .lr-slider { transform: translateX(100%); }
+#lr-test:checked ~ .lr-label-test, #lr-prod:checked ~ .lr-label-prod { color: #fff; }

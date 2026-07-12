@@ -97,7 +97,7 @@
 #pg-editor:not(.theme-light) {
   --bg0:#0F172A;--bg1:rgba(30, 41, 59, 0.65);--bg2:rgba(30, 41, 59, 0.85);--bg3:rgba(51, 65, 85, 0.65);--bg4:rgba(71, 85, 105, 0.7);--bgh:rgba(71, 85, 105, 0.8);
 }
-html,body{width:100%;height:100%;overflow-x:hidden;overflow-y:auto;background:var(--bg0);font-family:var(--fsans);color:var(--t1);font-size:14px;user-select:none;-webkit-font-smoothing:antialiased}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg0);font-family:var(--fsans);color:var(--t1);font-size:14px;user-select:none;-webkit-font-smoothing:antialiased}
 
 /* ══ LOGIN PAGE ══════════════════════════════════════════════════ */
 /* PRO BUTTON UPGRADE */
@@ -264,15 +264,15 @@ html,body{width:100%;height:100%;overflow-x:hidden;overflow-y:auto;background:va
 
 /* ══ EDITOR ══════════════════════════════════════════════════════ */
 #pg-editor{
-  position:relative;height:100vh;width:100vw;display:none;
+  position:fixed;inset:0;display:none;
   flex-direction:column;z-index:800;
   background: radial-gradient(circle at 50% 50%, #232e42 0%, #131826 100%);
 }
 #ed-topbar{
   position:relative;
-  min-height:48px; height:auto; background:rgba(6, 8, 15, 0.65); border-bottom:1px solid rgba(255,255,255,0.06);
-  display:flex; align-items:center; justify-content:center; padding:4px 8px; gap:4px; flex-shrink:0; z-index:200;
-  flex-wrap:wrap; overflow-x:hidden; overflow-y:hidden; backdrop-filter:blur(24px); box-shadow:0 4px 30px rgba(0,0,0,0.6);
+  height:48px; background:rgba(6, 8, 15, 0.65); border-bottom:1px solid rgba(255,255,255,0.06);
+  display:flex; align-items:center; padding:0 8px; gap:4px; flex-shrink:0; z-index:200;
+  overflow-x:auto; overflow-y:hidden; backdrop-filter:blur(24px); box-shadow:0 4px 30px rgba(0,0,0,0.6);
 }
 #ed-topbar::-webkit-scrollbar { display:none; }
 .ed-logo{
@@ -290,7 +290,7 @@ html,body{width:100%;height:100%;overflow-x:hidden;overflow-y:auto;background:va
 .tsep{width:1px;height:20px;background:var(--b2);margin:0 2px;flex-shrink:0}
 
 .tb-group { display:flex; align-items:center; gap:2px; flex-shrink:0; }
-.tb-group-right { display:flex; align-items:center; gap:2px; flex-shrink:0; }
+.tb-group-right { margin-left:auto; display:flex; align-items:center; gap:2px; flex-shrink:0; }
 
 /* Icon-only button */
 .tb-btn {
@@ -1782,7 +1782,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
 }
 @media screen and (max-width: 800px) {
   #mobile-fullscreen-btn { display: flex; }
-  #ed-topbar { flex-wrap: wrap; height: auto; min-height: 48px; overflow-x: hidden; padding-right: 20px; }
+  #ed-topbar { overflow-x: auto; overflow-y: hidden; justify-content: flex-start; padding-right: 20px; }
   #ed-topbar::-webkit-scrollbar { display: none; }
 }
 
@@ -1906,13 +1906,6 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
   <link rel="stylesheet" href="/css/liquid-glass.css">
   <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7398330076279399" crossorigin="anonymous"></script>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YOUR_MEASUREMENT_ID"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-YOUR_MEASUREMENT_ID');
-  </script>
 </head>
 <body>
 
@@ -2187,39 +2180,6 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       <p style="margin-bottom: 0;"><strong>4. Interactive K-Map Solver:</strong> Our Karnaugh Map tool simplifies complex Boolean algebra expressions visually. It supports up to 6 variables, automatically finding the prime implicants and the simplified Sum of Products (SOP) expression. This saves engineering students hours of manual computation and helps them intuitively grasp digital circuit minimization.</p>
     </div>
 
-    <!-- LATEST BLOG GUIDES FOR ADSENSE -->
-    <div class="proj-section-title">LATEST DIGITAL LOGIC GUIDES</div>
-    <div class="proj-grid" style="margin-bottom: 48px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
-      <a href="/blog/posts/1-logic-gates.html" class="proj-card tc-emerald" style="display:flex; flex-direction:column; justify-content:space-between; min-height:120px; text-decoration:none; padding:16px;">
-        <div style="flex:1">
-          <div class="proj-card-name">Introduction to Logic Gates</div>
-          <div class="proj-card-meta" style="margin-top:4px; font-size:12px; line-height:1.4;">Learn the fundamentals of AND, OR, and NOT gates in digital electronics.</div>
-        </div>
-        <div class="tc-cta" style="margin-top:12px; font-size:11px;">Read Guide <i class="ti ti-arrow-right"></i></div>
-      </a>
-      <a href="/blog/posts/understanding-nand-gate-universal.html" class="proj-card tc-cyan" style="display:flex; flex-direction:column; justify-content:space-between; min-height:120px; text-decoration:none; padding:16px;">
-        <div style="flex:1">
-          <div class="proj-card-name">NAND: The Universal Gate</div>
-          <div class="proj-card-meta" style="margin-top:4px; font-size:12px; line-height:1.4;">Why NAND gates are the building blocks of modern computer architecture.</div>
-        </div>
-        <div class="tc-cta" style="margin-top:12px; font-size:11px;">Read Guide <i class="ti ti-arrow-right"></i></div>
-      </a>
-      <a href="/blog/posts/3-karnaugh-maps.html" class="proj-card tc-amber" style="display:flex; flex-direction:column; justify-content:space-between; min-height:120px; text-decoration:none; padding:16px;">
-        <div style="flex:1">
-          <div class="proj-card-name">Mastering Karnaugh Maps</div>
-          <div class="proj-card-meta" style="margin-top:4px; font-size:12px; line-height:1.4;">A complete guide to K-Map simplification and finding prime implicants.</div>
-        </div>
-        <div class="tc-cta" style="margin-top:12px; font-size:11px;">Read Guide <i class="ti ti-arrow-right"></i></div>
-      </a>
-      <a href="/blog/posts/fsm-design-verilog-guide.html" class="proj-card tc-coral" style="display:flex; flex-direction:column; justify-content:space-between; min-height:120px; text-decoration:none; padding:16px;">
-        <div style="flex:1">
-          <div class="proj-card-name">FSM Design to Verilog</div>
-          <div class="proj-card-meta" style="margin-top:4px; font-size:12px; line-height:1.4;">How to convert a visual state diagram into synthesizable Verilog code.</div>
-        </div>
-        <div class="tc-cta" style="margin-top:12px; font-size:11px;">Read Guide <i class="ti ti-arrow-right"></i></div>
-      </a>
-    </div>
-
     <!-- MY WORKSPACE -->
     <div class="proj-section-title">MY WORKSPACE</div>
     <div id="workspace-subtitle" style="font-size:12px;color:var(--t3);margin-bottom:16px;padding:0 2px;">Your projects are saved locally in this browser. <a href="#" onclick="showPage('pg-login')" style="color:#6366f1;text-decoration:none;">Sign in</a> to personalize your offline workspace.</div>
@@ -2328,13 +2288,13 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       <!-- LIQUID RADIO COMPONENT -->
       <div class="lr-container" style="margin-left:2px;">
         <div class="lr-group">
-          <input type="radio" id="lr-test" name="env-toggle" value="test" checked onchange="msg('Mode switched to: BUILD', 'ok')">
-          <input type="radio" id="lr-prod" name="env-toggle" value="prod" onchange="msg('Mode switched to: RUN', 'ok')">
+          <input type="radio" id="lr-test" name="env-toggle" value="test" checked onchange="msg('Environment switched to: TEST', 'ok')">
+          <input type="radio" id="lr-prod" name="env-toggle" value="prod" onchange="msg('Environment switched to: PROD', 'wa')">
           
           <div class="lr-glass-filter"></div>
           
-          <label for="lr-test" class="lr-label lr-label-test">BUILD</label>
-          <label for="lr-prod" class="lr-label lr-label-prod">RUN</label>
+          <label for="lr-test" class="lr-label lr-label-test">Test</label>
+          <label for="lr-prod" class="lr-label lr-label-prod">Prod</label>
           
           <div class="lr-slider"></div>
         </div>
@@ -2355,7 +2315,7 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
         <svg viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
         Clear
       </button>
-      <button class="tb-btn-text" id="btn-pkg" onclick="pkgSel()" title="Package selected logic into a Custom IC" aria-label="Create IC">
+      <button class="tb-btn-text" id="btn-pkg" title="Package selected logic into a Custom IC" aria-label="Create IC">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
         Create IC
       </button>
@@ -2387,10 +2347,6 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
         <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
         Code
       </button>
-      <button class="tb-btn-text" id="btn-examples" title="Load Pre-built Examples" aria-label="Examples">
-        <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        Examples
-      </button>
       
       <button class="tb-btn-text" id="btn-export" title="Save Project / Export Image" aria-label="Export">
         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
@@ -2412,7 +2368,9 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
       <button class="tb-btn" id="btn-tmpl" title="Circuit Templates" aria-label="Templates">
         <svg viewBox="0 0 24 24"><path d="M2 12a10 10 0 1 0 20 0 10 10 0 1 0-20 0"/></svg>
       </button>
-
+      <button class="tb-btn" id="btn-theme" title="Toggle Theme" aria-label="Theme" style="display:none;">
+        <svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      </button>
 
       <button class="tb-btn" id="btn-hlp" title="Help" aria-label="Help">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
@@ -2460,9 +2418,6 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
         <span id="zoom-lbl">100%</span>
         <button class="tb-btn" id="btn-zi" title="Zoom In" aria-label="Zoom In"><svg viewBox="0 0 24 24"><line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/></svg></button>
         <button class="tb-btn" id="btn-fit" title="Fit to Screen" aria-label="Fit"><svg viewBox="0 0 24 24"><path d="M3 3h6v2H5v4H3V3m18 0h-6v2h4v4h2V3m0 18h-6v-2h4v-4h2v6M3 21h6v-2H5v-4H3v6"/></svg></button>
-      </div>
-      <div id="assignment-banner" style="display:none; position:absolute; top:12px; left:50%; transform:translateX(-50%); z-index:100; background:var(--bg); border:1px solid var(--acc); color:var(--acc); padding:6px 16px; border-radius:16px; font-size:13px; font-weight:600; box-shadow:0 4px 12px rgba(0,0,0,0.3); pointer-events:none;">
-        🎓 Assignment Mode Active
       </div>
       <canvas id="grid-cv" aria-label="Circuit Workspace Grid"></canvas>
       <svg id="wire-svg" xmlns="http://www.w3.org/2000/svg"></svg>
@@ -2523,9 +2478,6 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
     <span class="sk">XY</span><span class="sv" id="st-c">—</span>
     <span id="stmsg" class="s-ok">Ready — select a component from the library and click canvas to place</span>
   </div>
-  
-
-
 </div>
 
 <!-- CONTEXT MENU -->
@@ -2602,32 +2554,6 @@ IN#1=1, IN#2=0 -> OUT#3=1</textarea>
   </div>
 </div>
 
-<!-- MODAL: Examples -->
-<div class="ov" id="ov-examples">
-  <div class="mbox" style="max-width: 600px;">
-    <div class="mh">Circuit Examples & Templates</div>
-    <div class="msc" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-      <div class="export-opt ex-card" id="ex-srlatch" style="display: flex; flex-direction: column; text-align: left; align-items: flex-start; padding: 16px;">
-        <div class="export-opt-label" style="font-size: 16px; margin-bottom: 4px; color: var(--hi);">SR Latch (NAND)</div>
-        <div class="export-opt-desc">Fundamental 1-bit memory cell using cross-coupled NAND gates.</div>
-      </div>
-      <div class="export-opt ex-card" id="ex-fulladder" style="display: flex; flex-direction: column; text-align: left; align-items: flex-start; padding: 16px;">
-        <div class="export-opt-label" style="font-size: 16px; margin-bottom: 4px; color: var(--hi);">1-Bit Full Adder</div>
-        <div class="export-opt-desc">Combinational arithmetic logic built from XOR, AND, and OR gates.</div>
-      </div>
-      <div class="export-opt ex-card" id="ex-4bitcounter" style="display: flex; flex-direction: column; text-align: left; align-items: flex-start; padding: 16px;">
-        <div class="export-opt-label" style="font-size: 16px; margin-bottom: 4px; color: var(--hi);">4-Bit Binary Counter</div>
-        <div class="export-opt-desc">Synchronous up-counter designed with D-Flip Flops and Half Adders.</div>
-      </div>
-      <div class="export-opt ex-card" id="ex-trafficfsm" style="display: flex; flex-direction: column; text-align: left; align-items: flex-start; padding: 16px;">
-        <div class="export-opt-label" style="font-size: 16px; margin-bottom: 4px; color: var(--hi);">Traffic Light FSM</div>
-        <div class="export-opt-desc">A simple Moore finite state machine controlling a traffic intersection.</div>
-      </div>
-    </div>
-    <div class="mft"><button class="mbtn sc" id="ex-close">Close</button></div>
-  </div>
-</div>
-
 <!-- MODAL: Export -->
 <div class="ov" id="ov-export">
   <div class="mbox">
@@ -2645,15 +2571,6 @@ IN#1=1, IN#2=0 -> OUT#3=1</textarea>
       <div class="export-opt" id="exp-json">
         <div class="export-opt-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--acc);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
         <div><div class="export-opt-label">Project JSON</div><div class="export-opt-desc">Full project snapshot — share or restore later</div></div>
-      </div>
-      <div class="export-opt" id="exp-assign">
-        <div class="export-opt-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--acc);"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
-        <div><div class="export-opt-label">Assignment Link</div><div class="export-opt-desc">Generate a shareable URL that locks the canvas (For TAs & Professors)</div></div>
-      </div>
-      <div id="assign-link-container" style="display:none; margin-top:10px; flex-direction:column; gap:8px;">
-        <div style="font-size:12px; color:var(--hi);">Shareable Assignment URL:</div>
-        <input type="text" id="assign-url-input" readonly style="width:100%; padding:8px; background:var(--bg); color:var(--t1); border:1px solid var(--bdr); border-radius:4px; font-family:monospace; font-size:11px;">
-        <button class="mbtn" id="assign-copy-btn" style="width:100%;">Copy Link</button>
       </div>
     </div>
     <div class="mft"><button class="mbtn sc" id="exp-close">Close</button></div>
@@ -3109,7 +3026,6 @@ function registerUser(email, name) {
 // PROJECT MANAGEMENT
 // ═══════════════════════════════════════════════════════
 let PROJ = null; // { id, name, data:{gates,wires,custom} }
-let ASSIGNMENT_MODE = false;
 
 function getProjects() {
   if (!CU || !CU.email) return {};
@@ -5131,7 +5047,6 @@ document.getElementById('cm-pkg').onclick=function(){pkgSel();hideCM();};
 // ═══════════════════════════════════════════════════════
 let clearArmed=false,clearArmTimer=null;
 document.getElementById('btn-clr').addEventListener('click',function(){
-  if (ASSIGNMENT_MODE) { msg("Cannot clear canvas in Assignment Mode", "er"); return; }
   const btn=document.getElementById('btn-clr');
   if(!clearArmed){
     clearArmed=true;btn.classList.add('confirm-btn');
@@ -5152,7 +5067,7 @@ function clearCanvas(){
   S.gates=[];S.wires=[];deselAll();simulate();stUpd();S.dirty=true;msg('Canvas cleared','');
 }
 
-// btn-pkg now uses inline onclick="pkgSel()" for reliable binding
+document.getElementById('btn-pkg').addEventListener('click',pkgSel);
 document.getElementById('btn-verilog').addEventListener('click', function() {
   openVerilogModal();
 });
@@ -6483,45 +6398,11 @@ function attachICShape(gate, el) {
 // ═══════════════════════════════════════════════════════
 // FEATURE 5: EXPORT PNG / SVG
 // ═══════════════════════════════════════════════════════
-// UI: EXAMPLES MODAL
-// ═══════════════════════════════════════════════════════
-var EXAMPLES_DATA = {
-  'ex-srlatch': {"name":"SR Latch","data":{"nodes":[{"id":"n1","x":-200,"y":-100,"type":"in","label":"S","outNodes":[],"inNodes":[],"p":{}},{"id":"n2","x":-200,"y":100,"type":"in","label":"R","outNodes":[],"inNodes":[],"p":{}},{"id":"n3","x":-50,"y":-100,"type":"nand","label":"NAND","outNodes":[],"inNodes":[],"p":{}},{"id":"n4","x":-50,"y":100,"type":"nand","label":"NAND","outNodes":[],"inNodes":[],"p":{}},{"id":"n5","x":100,"y":-100,"type":"out","label":"Q","outNodes":[],"inNodes":[],"p":{}},{"id":"n6","x":100,"y":100,"type":"out","label":"~Q","outNodes":[],"inNodes":[],"p":{}}],"links":[{"id":"l1","from":"n1","to":"n3","fromP":0,"toP":0},{"id":"l2","from":"n2","to":"n4","fromP":0,"toP":1},{"id":"l3","from":"n4","to":"n3","fromP":0,"toP":1},{"id":"l4","from":"n3","to":"n4","fromP":0,"toP":0},{"id":"l5","from":"n3","to":"n5","fromP":0,"toP":0},{"id":"l6","from":"n4","to":"n6","fromP":0,"toP":0}]}},
-  'ex-fulladder': {"name":"Full Adder","data":{"nodes":[{"id":"n1","x":-300,"y":-150,"type":"in","label":"A","outNodes":[],"inNodes":[],"p":{}},{"id":"n2","x":-300,"y":0,"type":"in","label":"B","outNodes":[],"inNodes":[],"p":{}},{"id":"n3","x":-300,"y":150,"type":"in","label":"Cin","outNodes":[],"inNodes":[],"p":{}},{"id":"n4","x":-150,"y":-75,"type":"xor","label":"XOR","outNodes":[],"inNodes":[],"p":{}},{"id":"n5","x":0,"y":0,"type":"xor","label":"XOR","outNodes":[],"inNodes":[],"p":{}},{"id":"n6","x":-150,"y":50,"type":"and","label":"AND","outNodes":[],"inNodes":[],"p":{}},{"id":"n7","x":0,"y":100,"type":"and","label":"AND","outNodes":[],"inNodes":[],"p":{}},{"id":"n8","x":150,"y":75,"type":"or","label":"OR","outNodes":[],"inNodes":[],"p":{}},{"id":"n9","x":150,"y":0,"type":"out","label":"Sum","outNodes":[],"inNodes":[],"p":{}},{"id":"n10","x":300,"y":75,"type":"out","label":"Cout","outNodes":[],"inNodes":[],"p":{}}],"links":[{"id":"l1","from":"n1","to":"n4","fromP":0,"toP":0},{"id":"l2","from":"n2","to":"n4","fromP":0,"toP":1},{"id":"l3","from":"n4","to":"n5","fromP":0,"toP":0},{"id":"l4","from":"n3","to":"n5","fromP":0,"toP":1},{"id":"l5","from":"n5","to":"n9","fromP":0,"toP":0},{"id":"l6","from":"n1","to":"n6","fromP":0,"toP":0},{"id":"l7","from":"n2","to":"n6","fromP":0,"toP":1},{"id":"l8","from":"n4","to":"n7","fromP":0,"toP":0},{"id":"l9","from":"n3","to":"n7","fromP":0,"toP":1},{"id":"l10","from":"n6","to":"n8","fromP":0,"toP":0},{"id":"l11","from":"n7","to":"n8","fromP":0,"toP":1},{"id":"l12","from":"n8","to":"n10","fromP":0,"toP":0}]}},
-  'ex-4bitcounter': {"name":"4-Bit Counter","data":{"nodes":[{"id":"n1","x":-300,"y":0,"type":"clock","label":"CLK","outNodes":[],"inNodes":[],"p":{}},{"id":"n2","x":-150,"y":0,"type":"dff","label":"DFF","outNodes":[],"inNodes":[],"p":{}},{"id":"n3","x":0,"y":0,"type":"dff","label":"DFF","outNodes":[],"inNodes":[],"p":{}},{"id":"n4","x":150,"y":0,"type":"dff","label":"DFF","outNodes":[],"inNodes":[],"p":{}},{"id":"n5","x":300,"y":0,"type":"dff","label":"DFF","outNodes":[],"inNodes":[],"p":{}},{"id":"n6","x":-150,"y":100,"type":"out","label":"Q0","outNodes":[],"inNodes":[],"p":{}},{"id":"n7","x":0,"y":100,"type":"out","label":"Q1","outNodes":[],"inNodes":[],"p":{}},{"id":"n8","x":150,"y":100,"type":"out","label":"Q2","outNodes":[],"inNodes":[],"p":{}},{"id":"n9","x":300,"y":100,"type":"out","label":"Q3","outNodes":[],"inNodes":[],"p":{}}],"links":[{"id":"l1","from":"n1","to":"n2","fromP":0,"toP":0},{"id":"l2","from":"n2","to":"n3","fromP":1,"toP":0},{"id":"l3","from":"n3","to":"n4","fromP":1,"toP":0},{"id":"l4","from":"n4","to":"n5","fromP":1,"toP":0},{"id":"l5","from":"n2","to":"n6","fromP":0,"toP":0},{"id":"l6","from":"n3","to":"n7","fromP":0,"toP":0},{"id":"l7","from":"n4","to":"n8","fromP":0,"toP":0},{"id":"l8","from":"n5","to":"n9","fromP":0,"toP":0},{"id":"l9","from":"n2","to":"n2","fromP":1,"toP":1},{"id":"l10","from":"n3","to":"n3","fromP":1,"toP":1},{"id":"l11","from":"n4","to":"n4","fromP":1,"toP":1},{"id":"l12","from":"n5","to":"n5","fromP":1,"toP":1}]}},
-  'ex-trafficfsm': {"name":"Traffic FSM","data":{"nodes":[{"id":"n1","x":-200,"y":0,"type":"clock","label":"CLK","outNodes":[],"inNodes":[],"p":{}},{"id":"n2","x":-50,"y":-100,"type":"dff","label":"State 1","outNodes":[],"inNodes":[],"p":{}},{"id":"n3","x":-50,"y":100,"type":"dff","label":"State 0","outNodes":[],"inNodes":[],"p":{}},{"id":"n4","x":100,"y":-150,"type":"out","label":"Red","outNodes":[],"inNodes":[],"p":{}},{"id":"n5","x":100,"y":0,"type":"out","label":"Yellow","outNodes":[],"inNodes":[],"p":{}},{"id":"n6","x":100,"y":150,"type":"out","label":"Green","outNodes":[],"inNodes":[],"p":{}},{"id":"n7","x":-150,"y":-150,"type":"and","label":"AND","outNodes":[],"inNodes":[],"p":{}},{"id":"n8","x":-150,"y":150,"type":"and","label":"AND","outNodes":[],"inNodes":[],"p":{}}],"links":[{"id":"l1","from":"n1","to":"n2","fromP":0,"toP":0},{"id":"l2","from":"n1","to":"n3","fromP":0,"toP":0},{"id":"l3","from":"n2","to":"n4","fromP":0,"toP":0},{"id":"l4","from":"n2","to":"n5","fromP":1,"toP":0},{"id":"l5","from":"n3","to":"n6","fromP":0,"toP":0},{"id":"l6","from":"n3","to":"n7","fromP":0,"toP":0},{"id":"l7","from":"n2","to":"n8","fromP":1,"toP":1},{"id":"l8","from":"n8","to":"n3","fromP":0,"toP":1},{"id":"l9","from":"n7","to":"n2","fromP":0,"toP":1}]}}
-};
-
-document.getElementById('btn-examples').addEventListener('click', function() {
-  document.getElementById('ov-examples').classList.add('open');
-});
-
-document.getElementById('ex-close').addEventListener('click', function() {
-  document.getElementById('ov-examples').classList.remove('open');
-});
-
-document.querySelectorAll('.ex-card').forEach(function(card) {
-  card.addEventListener('click', function() {
-    var exId = this.id;
-    if (EXAMPLES_DATA[exId]) {
-      loadSnapshot(EXAMPLES_DATA[exId].data);
-      PROJ.name = EXAMPLES_DATA[exId].name;
-      simTime = 0;
-      updateHeader();
-      document.getElementById('ov-examples').classList.remove('open');
-    }
-  });
-});
-
-// ═══════════════════════════════════════════════════════
-// UI: EXPORT MODAL
-// ═══════════════════════════════════════════════════════
 document.getElementById('btn-export').addEventListener('click', function() {
   document.getElementById('ov-export').classList.add('open');
 });
 document.getElementById('exp-close').addEventListener('click', function() {
   document.getElementById('ov-export').classList.remove('open');
-  document.getElementById('assign-link-container').style.display = 'none';
 });
 
 document.getElementById('exp-png').addEventListener('click', exportPNG);
@@ -6535,35 +6416,6 @@ document.getElementById('exp-json').addEventListener('click', function() {
   URL.revokeObjectURL(url);
   document.getElementById('ov-export').classList.remove('open');
   msg('Project JSON exported', 'ok');
-});
-
-document.getElementById('exp-assign').addEventListener('click', function() {
-  var snap = projDataSnapshot();
-  var jsonStr = JSON.stringify({name: PROJ ? PROJ.name : 'Assignment', data: snap});
-  var b64 = btoa(unescape(encodeURIComponent(jsonStr)));
-  var url = window.location.origin + window.location.pathname + '#assign=' + b64;
-  var cont = document.getElementById('assign-link-container');
-  var inp = document.getElementById('assign-url-input');
-  cont.style.display = 'flex';
-  inp.value = url;
-});
-
-document.getElementById('assign-copy-btn').addEventListener('click', function() {
-  var inp = document.getElementById('assign-url-input');
-  inp.select();
-  inp.setSelectionRange(0, 99999);
-  try {
-    document.execCommand('copy');
-    this.textContent = 'Copied!';
-    setTimeout(() => { this.textContent = 'Copy Link'; }, 2000);
-  } catch(e) {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(inp.value).then(() => {
-        this.textContent = 'Copied!';
-        setTimeout(() => { this.textContent = 'Copy Link'; }, 2000);
-      });
-    }
-  }
 });
 
 function exportPNG() {
@@ -8290,7 +8142,6 @@ function addAnnotation(wx, wy, text) {
 
   var body = document.createElement('div');
   body.className = 'annot-body';
-  ann.text = (ann.text||'Note').replace(/\\n/g, '\n').replace(/\/n/g, '\n');
   body.textContent = ann.text;
   el.appendChild(body);
   annotLayer.appendChild(el);
@@ -8349,9 +8200,7 @@ function bindAnnot(ann) {
     el.appendChild(ta);
     ta.focus(); ta.select();
     function finish() {
-      let val = ta.value.trim() || '…';
-      val = val.replace(/\\n/g, '\n').replace(/\/n/g, '\n');
-      ann.text = val;
+      ann.text = ta.value.trim() || '…';
       body.textContent = ann.text;
       ta.remove(); S.dirty = true;
     }
@@ -8987,11 +8836,7 @@ authLoad();
 
 
 
-if (Object.keys(getProjects()).length === 0) {
-  createNewProject();
-} else {
-  showProjects();
-}
+showProjects();
 // Touch to Mouse Event Translator for Mobile Support
 function touchHandler(event) {
     if (event.touches.length > 1) return; // Ignore multi-touch
@@ -9322,32 +9167,19 @@ function copyShareUrl() {
 
   // Guide and Share buttons use inline onclick handlers in the HTML
 
-  if (window.location.hash.startsWith('#load=') || window.location.hash.startsWith('#assign=')) {
-    const isAssign = window.location.hash.startsWith('#assign=');
+  if (window.location.hash.startsWith('#load=')) {
     try {
-      const b64 = window.location.hash.substring(window.location.hash.indexOf('=')+1);
+      const b64 = window.location.hash.substring(6);
       const decodedStr = decodeURIComponent(escape(atob(b64)));
       const sharedData = JSON.parse(decodedStr);
       
       setTimeout(() => {
         openProject({
           id: genId(),
-          name: sharedData.name || (isAssign ? 'Assignment' : 'Shared Circuit'),
+          name: sharedData.name || 'Shared Circuit',
           data: sharedData.data
         });
-        if (isAssign) {
-          ASSIGNMENT_MODE = true;
-          document.getElementById('assignment-banner').style.display = 'block';
-          const clearBtn = document.getElementById('btn-clr');
-          if (clearBtn) {
-            clearBtn.style.opacity = '0.5';
-            clearBtn.style.pointerEvents = 'none';
-            clearBtn.title = 'Disabled in Assignment Mode';
-          }
-          msg("Loaded assignment template successfully!", "ok");
-        } else {
-          msg("Loaded shared circuit successfully!", "ok");
-        }
+        msg("Loaded shared circuit successfully!", "ok");
         history.replaceState(null, null, window.location.pathname);
       }, 300);
     } catch(err) {
@@ -9377,48 +9209,58 @@ function copyShareUrl() {
     });
   }
 </script>
-
-
-<div style="position: absolute; top: 100vh; left: 0; width: 100%; border-top: 1px solid rgba(255,255,255,0.05); background: var(--bg0, #0f111a); z-index: 10; padding-bottom: 80px;">
-
-  <article class="publisher-content" style="padding: 60px 5%; max-width: 900px; margin: 0 auto; color: var(--t2); font-family: var(--fsans); line-height: 1.6;">
-    <h2 style="color: #fff; font-size: 28px; margin-bottom: 24px;">Digital Logic Simulator Guide</h2>
-    <p style="margin-bottom: 16px;">Welcome to the SQGate digital logic simulator. This comprehensive educational tool allows you to design, build, and test complex digital circuits directly in your web browser without any installation required.</p>
-    <p style="margin-bottom: 16px;">Whether you are an engineering student learning the fundamentals of Boolean algebra, or a hobbyist prototyping a complex CPU architecture, our intuitive drag-and-drop interface provides a seamless workflow. Start by selecting basic logic gates (AND, OR, NOT, XOR, NAND, NOR) from the <strong>Library panel</strong> on the left, and drag them onto the infinite grid canvas.</p>
-    <p style="margin-bottom: 16px;">Connect the terminals using the intuitive wiring system. Simply click on an output pin and drag to an input pin. SQGate automatically routes the wires, but you can add waypoints by clicking on the canvas during routing to keep your schematics organized. To test your logic, use the <strong>Toggle Switches</strong> and <strong>Push Buttons</strong> to inject high (1) or low (0) signals into your circuit, and monitor the outputs using <strong>LEDs</strong> or the <strong>Seven-Segment Display</strong>.</p>
-    <h3 style="color: #fff; font-size: 22px; margin-top: 32px; margin-bottom: 16px;">Advanced Features: Sequential Logic and Waveforms</h3>
-    <p style="margin-bottom: 16px;">Unlike simple combinational logic simulators, SQGate fully supports sequential logic elements. You can incorporate D Flip-Flops, T Flip-Flops, JK Flip-Flops, SR Latches, and specialized memory modules (RAM/ROM) into your designs. Use the <strong>Clock</strong> component to drive synchronous circuits like counters and shift registers.</p>
-    <p style="margin-bottom: 16px;">For rigorous timing analysis, open the <strong>Waveform Viewer</strong> from the top navigation bar. By clicking 'Record', the simulator captures the exact timing diagrams of every named node in your circuit. This is invaluable for debugging race conditions, setup/hold time violations, and analyzing propagation delays across complex data paths.</p>
-    <h3 style="color: #fff; font-size: 22px; margin-top: 32px; margin-bottom: 16px;">Exporting to Hardware Description Languages (HDL)</h3>
-    <p style="margin-bottom: 16px;">SQGate bridges the gap between graphical schematic capture and actual hardware synthesis. Once your design is verified, you can instantly export it to industry-standard <strong>Verilog</strong> or <strong>VHDL</strong> code using the 'Code' button. This generated HDL can then be synthesized using tools like Vivado or Quartus and deployed directly onto an FPGA.</p>
-    <p style="margin-bottom: 16px;">If you want to create your own custom components, simply select a cluster of gates and click <strong>Create IC</strong>. This packages your logic into a single reusable integrated circuit module that you can drop into any future project. All projects are saved locally in your browser, or can be downloaded as a `.sqg` file to share with classmates or colleagues.</p>
-    <div style="margin-top: 40px; padding: 20px; background: rgba(139, 92, 246, 0.1); border-radius: 8px; border: 1px solid rgba(139, 92, 246, 0.2);">
-      <h4 style="color: #fff; margin-bottom: 12px;">Need more help?</h4>
-      <p style="margin-bottom: 0;">Check out our <a href="/blog/" style="color: #a78bfa; text-decoration: underline;">Educational Blog</a> for detailed tutorials on state machine synthesis, Karnaugh Map simplification, and CPU architecture design.</p>
-    </div>
-  </article>
-
-  <section class="seo-content" style="max-width: 800px; margin: 40px auto; padding: 20px; color: var(--t2, #a1a1aa); line-height: 1.6; font-family: monospace; font-size: 14px;">
-    <h2 style="color: var(--t1, #fff); font-size: 18px; margin-bottom: 12px;">Browser-Based Logic Gate Simulator</h2>
-    <p style="margin-bottom: 16px;">Welcome to the ultimate logic gate simulator. This free online EDA (Electronic Design Automation) tool allows you to design, test, and analyze digital logic circuits directly in your browser without any software installation. Whether you are a student learning Boolean algebra or a professional prototyping a microprocessor, our logic simulator provides an infinite canvas with real-time evaluation.</p>
-    
-    <h2 style="color: var(--t1, #fff); font-size: 18px; margin-bottom: 12px;">Interactive Digital Design</h2>
-    <p style="margin-bottom: 16px;">Our simulator features a comprehensive components library including basic logic gates (AND, OR, NOT, NAND, NOR, XOR), complex combinational circuits (Multiplexers, Decoders, ALUs), and sequential logic elements (D Flip-Flops, J-K Flip-Flops, Counters, Registers). You can easily drag and drop components, wire them up, and use our interactive inputs (switches, buttons, clocks) to observe the digital states instantly.</p>
-    
-    <h2 style="color: var(--t1, #fff); font-size: 18px; margin-bottom: 12px;">Advanced Hardware Prototyping</h2>
-    <p style="margin-bottom: 16px;">Beyond simple circuits, our tool supports advanced hierarchical design (custom ICs), multi-bit buses, waveform timing analysis, and even structural Verilog HDL export. This makes it an invaluable resource for computer architecture courses, GATE exam preparation, and bridging the gap between schematic capture and FPGA/ASIC synthesis.</p>
-  </section>
+<!-- MOBILE PORTRAIT OVERLAY -->
+<style>
+#mobile-portrait-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--bg0, #0f111a);
+  z-index: 100000;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 24px;
+}
+@media (orientation: portrait) {
+  #mobile-portrait-overlay { display: flex !important; animation: fadeInOverlay 0.4s ease-out forwards; }
+}
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes rotatePhone {
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(-90deg); }
+  100% { transform: rotate(-90deg); }
+}
+</style>
+<div id="mobile-portrait-overlay">
+  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--acb, #3dba6e)" stroke-width="2" style="margin-bottom: 20px; animation: rotatePhone 2s infinite ease-in-out;">
+    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+    <line x1="12" y1="18" x2="12.01" y2="18"/>
+  </svg>
+  <h2 style="color:var(--t1, #fff); margin-bottom: 12px; font-family:var(--fmono, monospace);">Please Rotate Device</h2>
+  <p style="color:var(--t2, #aaa); font-size:14px; max-width:300px; margin-bottom: 24px;">SQGATE is heavily optimized for landscape viewing. Please rotate your phone.</p>
   
-  <div class="related-tools-section" style="max-width: 800px; margin: 40px auto; padding: 24px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; font-family: var(--fsans, sans-serif);">
-    <h3 style="color: #fff; margin-top: 0; margin-bottom: 16px; font-size: 18px;">Related Engineering Tools</h3>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;">
-      <a href="/circuit-simulator/" style="color: #4ade80; text-decoration: none; padding: 12px; background: rgba(74,222,128,0.1); border-radius: 8px; text-align: center; font-weight: bold; transition: background 0.2s;">Circuit Simulator</a>
-      <a href="/k-map/" style="color: #60a5fa; text-decoration: none; padding: 12px; background: rgba(96,165,250,0.1); border-radius: 8px; text-align: center; font-weight: bold; transition: background 0.2s;">Karnaugh Map Solver</a>
-      <a href="/fsm/" style="color: #f472b6; text-decoration: none; padding: 12px; background: rgba(244,114,182,0.1); border-radius: 8px; text-align: center; font-weight: bold; transition: background 0.2s;">FSM Designer</a>
-      <a href="/truth-table-generator/" style="color: #fbbf24; text-decoration: none; padding: 12px; background: rgba(251,191,36,0.1); border-radius: 8px; text-align: center; font-weight: bold; transition: background 0.2s;">Truth Table Generator</a>
-    </div>
+  <div style="padding:16px; background:rgba(239, 68, 68, 0.1); border:1px solid rgba(239, 68, 68, 0.3); border-radius:8px; color:var(--t1, #fff); font-size:13px; max-width:300px;">
+    <strong style="color:#ef4444;">Note:</strong> This application is meant for desktop only. Touch screens may experience limited functionality.
   </div>
+  
+  <button onclick="window.forceLandscapeFullscreen(); document.getElementById('mobile-portrait-overlay').setAttribute('style', 'display: none !important;');" style="cursor: pointer; margin-top: 32px; background: var(--acb, #3dba6e); color: #fff; padding: 12px 24px; border: none; font-weight: bold; border-radius: 8px; font-family: inherit; width: 100%; max-width: 250px;">Force Landscape (Auto-Rotate)</button>
+  <button onclick="document.getElementById('mobile-portrait-overlay').setAttribute('style', 'display: none !important;');" style="cursor: pointer; margin-top: 12px; background: transparent; color: var(--t3, #888); padding: 8px 16px; border: none; font-family: inherit;">Dismiss</button>
+</div>
 
+
+<div class="related-tools-section" style="max-width: 800px; margin: 40px auto; padding: 24px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; font-family: var(--font-sans, sans-serif);">
+  <h3 style="color: #fff; margin-top: 0; margin-bottom: 16px; font-size: 18px;">Related Engineering Tools</h3>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;">
+    <a href="/circuit-simulator/" style="color: #4ade80; text-decoration: none; padding: 12px; background: rgba(74,222,128,0.1); border-radius: 8px; text-align: center; font-weight: bold; transition: background 0.2s;">Circuit Simulator</a>
+    <a href="/k-map/" style="color: #60a5fa; text-decoration: none; padding: 12px; background: rgba(96,165,250,0.1); border-radius: 8px; text-align: center; font-weight: bold; transition: background 0.2s;">Karnaugh Map Solver</a>
+    <a href="/fsm/" style="color: #f472b6; text-decoration: none; padding: 12px; background: rgba(244,114,182,0.1); border-radius: 8px; text-align: center; font-weight: bold; transition: background 0.2s;">FSM Designer</a>
+    <a href="/truth-table-generator/" style="color: #fbbf24; text-decoration: none; padding: 12px; background: rgba(251,191,36,0.1); border-radius: 8px; text-align: center; font-weight: bold; transition: background 0.2s;">Truth Table Generator</a>
+  </div>
 </div>
 
 <script src="/cookie-consent.js"></script>

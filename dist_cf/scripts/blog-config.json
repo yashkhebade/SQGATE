@@ -1,0 +1,69 @@
+{
+  "site_url": "https://sqgate.online",
+  "blog_url": "https://sqgate.online/blog/",
+  "author": {
+    "name": "Yash Khebade",
+    "role": "Creator of SQGATE",
+    "url": "https://sqgate.online"
+  },
+  "default_seo": {
+    "description": "Learn digital electronics, logic design, Boolean algebra, and Karnaugh maps with SQGATE's comprehensive tutorials and guides.",
+    "keywords": "digital electronics blog, logic gates tutorial, Karnaugh map guide, Boolean algebra tips"
+  },
+  "categories": [
+    "Logic Gates",
+    "Karnaugh Maps",
+    "Boolean Algebra",
+    "Combinational Circuits",
+    "Sequential Circuits",
+    "Verilog / VHDL",
+    "Computer Architecture"
+  ],
+  "llm_prompt": {
+    "system_prompt": "You are an expert digital electronics instructor and SEO writer. You write comprehensive, technically accurate, and highly readable tutorials on digital logic. Your target audience is engineering students and hobbyists. Use clear explanations, structured headings, and practical examples. Always output pure, unstyled HTML content wrapped in appropriate semantic tags (<h2>, <p>, <ul>, <pre><code>, etc.). Do NOT wrap the entire response in a markdown code block (like ```html). Just output the raw HTML elements.",
+    "article_structure": [
+      "Introduction to the topic",
+      "Core principles and theory",
+      "Practical applications or examples",
+      "How to design/simulate this using SQGATE (include a call to action)",
+      "Conclusion"
+    ]
+  },
+  "topics": [
+    {
+      "slug": "understanding-nand-gate-universal",
+      "title": "Why the NAND Gate is the Universal Gate of Digital Electronics",
+      "keywords": "NAND gate universal gate, universal logic gates, digital electronics NAND, what is a universal gate"
+    },
+    {
+      "slug": "how-to-solve-karnaugh-maps",
+      "title": "How to Solve Karnaugh Maps (K-Maps) Step-by-Step",
+      "keywords": "karnaugh map solver, how to solve k map, k map simplification, boolean algebra k map"
+    },
+    {
+      "slug": "fsm-design-verilog-guide",
+      "title": "The Complete Guide to Finite State Machine (FSM) Design & Verilog Code",
+      "keywords": "FSM designer, finite state machine verilog, mealy moore machine, digital electronics state machine"
+    },
+    {
+      "slug": "hazards-in-combinational-circuits",
+      "title": "Static and Dynamic Hazards in Combinational Circuits Explained",
+      "keywords": "static hazard, dynamic hazard, combinational circuit hazard, digital glitch"
+    },
+    {
+      "slug": "cmos-logic-design-basics",
+      "title": "CMOS Logic Design Basics: Pull-Up and Pull-Down Networks",
+      "keywords": "cmos logic, pull up network, pull down network, pmos nmos logic gates"
+    },
+    {
+      "slug": "mastering-multiplexers-alu-design",
+      "title": "Mastering Multiplexers (MUX): From Boolean Functions to Advanced ALU Design",
+      "keywords": "multiplexer, MUX, ALU design, digital electronics multiplexer, boolean function implementation"
+    },
+    {
+      "slug": "understanding-metastability-clock-domain-crossing",
+      "title": "Metastability and Clock Domain Crossing (CDC) in Digital Design",
+      "keywords": "metastability, clock domain crossing, CDC synchronizer, setup and hold time, digital electronics metastability"
+    }
+  ]
+}
