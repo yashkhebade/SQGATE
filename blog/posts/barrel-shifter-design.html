@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Barrel Shifter Design: Logarithmic Shifting in Hardware | SQGATE Blog</title>
+  <meta name="description" content="Learn how barrel shifters perform multi-bit shifts in a single clock cycle using logarithmic MUX stages. Includes complete Verilog implementation and FPGA optimization techniques.">
+  <meta name="keywords" content="barrel shifter, digital design, shift register, logarithmic shifter, verilog, multiplexer, ALU design, sqgate">
+  <link rel="canonical" href="https://sqgate.online/blog/posts/barrel-shifter-design">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="icon" href="/icon.ico">
+  
+  <!-- OG Tags -->
+  <meta property="og:title" content="Barrel Shifter Design: Logarithmic Shifting in Hardware | SQGATE Blog">
+  <meta property="og:description" content="Learn how barrel shifters perform multi-bit shifts in a single clock cycle using logarithmic MUX stages. Includes complete Verilog implementation and FPGA optimization techniques.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sqgate.online/blog/posts/barrel-shifter-design.html">
+  <meta property="og:image" content="https://sqgate.online/blog/posts/images/blog_barrel_shifter_1783889499606.png">
+  
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/liquid-glass.css">
+  
+  <style>
+    body {
+      background-color: #060813;
+      color: #cbd5e1;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.7;
+    }
+    .nav {
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(12, 15, 28, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 24px;
+      color: #fff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .article-header {
+      max-width: 800px;
+      margin: 60px auto 40px;
+      padding: 0 20px;
+      text-align: center;
+    }
+    .article-header h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 42px;
+      color: #fff;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+    .article-meta {
+      color: #64748b;
+      font-size: 14px;
+    }
+    .article-content {
+      max-width: 800px;
+      margin: 0 auto 80px;
+      padding: 40px;
+    }
+    .article-content h2, .article-content h3, .article-content h4 {
+      font-family: 'Outfit', sans-serif;
+      color: #fff;
+      margin-top: 40px;
+      margin-bottom: 16px;
+    }
+    .article-content a {
+      color: #3b82f6;
+      text-decoration: none;
+    }
+    .article-content a:hover {
+      text-decoration: underline;
+    }
+    .article-content pre {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: 'Fira Code', monospace;
+      font-size: 14px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .article-content code {
+      font-family: 'Fira Code', monospace;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    .article-content pre code {
+      background: none;
+      padding: 0;
+    }
+    .article-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      margin: 24px 0;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .cta-banner {
+      margin-top: 60px;
+      padding: 40px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .cta-banner h3 {
+      margin: 0;
+      font-family: 'Outfit', sans-serif;
+      font-size: 28px;
+    }
+    .blog-layout {
+      display: grid;
+      grid-template-columns: 250px 1fr 250px;
+      gap: 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .main-column {
+      min-width: 0;
+    }
+    .ad-sidebar {
+      position: sticky;
+      top: 100px;
+      height: calc(100vh - 120px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: rgba(20, 25, 45, 0.4);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 15px;
+      overflow: hidden;
+    }
+    .ad-label {
+      font-size: 10px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+    @media (max-width: 1100px) {
+      .blog-layout {
+        grid-template-columns: 1fr;
+      }
+      .ad-sidebar {
+        position: static;
+        height: auto;
+        min-height: 250px;
+        margin-bottom: 20px;
+      }
+    }
+  </style>
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "Barrel Shifter Design: Logarithmic Shifting in Hardware",
+      "author": {
+        "@type": "Person",
+        "name": "Yash Khebade",
+        "url": "https://sqgate.online"
+      },
+      "datePublished": "2026-07-13T10:00:00+05:30",
+      "image": "https://sqgate.online/blog/posts/images/blog_barrel_shifter_1783889499606.png"
+    }
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7398330076279399" crossorigin="anonymous"></script>
+</head>
+<body>
+  <svg class="liquid-glass-svg-filter" style="position: absolute; width: 0; height: 0; pointer-events: none;">
+    <defs>
+      <filter id="liquid-glass-filter" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.05 0.05" numOctaves="3" result="noise" />
+        <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.15 0" in="noise" result="coloredNoise" />
+        <feBlend in="SourceGraphic" in2="coloredNoise" mode="screen" />
+      </filter>
+    </defs>
+  </svg>
+
+  <nav class="nav">
+    <a href="/home/" class="logo">
+      <img src="/icon.webp" width="32" height="32" alt="SQGATE Logo">
+      SQGATE
+    </a>
+    <a href="/blog/" style="color: #94a3b8; text-decoration: none; font-weight: 500; margin-left: 20px;">← Back to Blog</a>
+    <div style="flex-grow: 1;"></div>
+    <a href="/home/" class="liquid-btn">Launch Simulator</a>
+  </nav>
+
+  <div class="blog-layout">
+    <aside class="ad-sidebar">
+      <div class="ad-label">Advertisement</div>
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7398330076279399" data-ad-slot="1111111111" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </aside>
+
+    <div class="main-column">
+      <header class="article-header">
+        <h1>Barrel Shifter Design: Logarithmic Shifting in Hardware</h1>
+        <div class="article-meta">
+          By Yash Khebade | Published on July 13, 2026 | 12 min read
+        </div>
+      </header>
+
+      <main class="article-content liquid-panel">
+        <p>Shifting operations are among the most fundamental computations in digital systems. Whether you're implementing a floating-point unit that needs to normalize mantissas, an ALU that must support arithmetic and logical shifts, or a cryptographic engine performing rotations, the ability to shift data by an arbitrary number of positions in a single clock cycle is critical for high-performance hardware. The <strong>barrel shifter</strong> is the circuit that makes this possible—a purely combinational network that can shift or rotate an $n$-bit input by any amount from $0$ to $n-1$ positions in $O(\log_2 n)$ delay, rather than the $O(n)$ delay of a naive cascaded shift approach.</p>
+
+        <img src="/blog/posts/images/blog_barrel_shifter_1783889499606.png" alt="Barrel Shifter Architecture with Logarithmic MUX Stages" />
+
+        <h2>1. Why Not Just Use a Simple Shifter?</h2>
+        <p>The simplest approach to shifting is a <strong>cascaded shift register</strong>—a chain of multiplexers or transmission gates where each stage shifts the data by exactly one position. To shift by $k$ positions, the data ripples through $k$ stages sequentially. For an $n$-bit operand, the worst-case delay is proportional to $n$ gate delays, which is unacceptable in pipelined processors operating at multi-GHz frequencies.</p>
+        <p>Consider a 32-bit ALU in a RISC-V processor. If the shift amount is specified by a 5-bit immediate (values 0–31), a cascaded shifter would require up to 31 MUX stages in the critical path. At approximately 100 ps per MUX stage in a 7nm process, this results in a 3.1 ns shift latency—far exceeding the clock period of a typical 3 GHz processor (333 ps). Clearly, we need a better approach.</p>
+
+        <h2>2. The Barrel Shifter Concept: Decompose and Conquer</h2>
+        <p>The barrel shifter exploits a beautifully simple mathematical insight: <strong>any shift amount $k$ can be decomposed into powers of two</strong>. For an $n$-bit shifter where $n = 2^m$, the shift amount $k$ can be represented as an $m$-bit binary number:</p>
+        <p>$$k = k_{m-1} \cdot 2^{m-1} + k_{m-2} \cdot 2^{m-2} + \cdots + k_1 \cdot 2^1 + k_0 \cdot 2^0$$</p>
+        <p>Instead of shifting by $k$ positions through $k$ stages, we construct exactly $m = \log_2(n)$ stages, where stage $i$ conditionally shifts the data by $2^i$ positions based on the corresponding bit $k_i$ of the shift amount. Each stage is simply a row of 2-to-1 multiplexers:</p>
+        <ul>
+          <li>If $k_i = 0$: pass the data through unchanged</li>
+          <li>If $k_i = 1$: shift the data by $2^i$ positions</li>
+        </ul>
+        <p>For a 32-bit barrel shifter, we need only $\log_2(32) = 5$ MUX stages, regardless of the shift amount. The critical path is always exactly 5 MUX delays—approximately 500 ps at 7nm, well within our target clock period.</p>
+
+        <h3>2.1 Concrete Example: 8-Bit Left Shift</h3>
+        <p>Let's trace through an 8-bit barrel left shifter. We have input $D[7:0]$ and a 3-bit shift amount $k[2:0]$. The three stages are:</p>
+        <p><strong>Stage 0 (shift by 1):</strong> If $k[0]=1$, each output bit $S0[i] = D[i-1]$ (with $S0[0] = 0$); else $S0[i] = D[i]$.</p>
+        <p><strong>Stage 1 (shift by 2):</strong> If $k[1]=1$, each output bit $S1[i] = S0[i-2]$ (with $S1[1:0] = 0$); else $S1[i] = S0[i]$.</p>
+        <p><strong>Stage 2 (shift by 4):</strong> If $k[2]=1$, each output bit $S2[i] = S1[i-4]$ (with $S2[3:0] = 0$); else $S2[i] = S1[i]$.</p>
+        <p>For a shift of 5 ($k = 101_2$): Stage 0 shifts by 1, Stage 1 passes through, Stage 2 shifts by 4. Total shift: $1 + 0 + 4 = 5$. The result is obtained in exactly 3 MUX delays.</p>
+
+        <h2>3. Types of Barrel Shifters</h2>
+        <p>Barrel shifters can be configured to perform several different operations by changing how the "empty" positions are filled:</p>
+
+        <h3>3.1 Logical Left Shift (SLL)</h3>
+        <p>Vacated positions on the right are filled with zeros. This is equivalent to multiplication by $2^k$:</p>
+        <p>$$\text{SLL}(D, k) = D \times 2^k \mod 2^n$$</p>
+
+        <h3>3.2 Logical Right Shift (SRL)</h3>
+        <p>Vacated positions on the left are filled with zeros. This is equivalent to unsigned integer division by $2^k$:</p>
+        <p>$$\text{SRL}(D, k) = \lfloor D / 2^k \rfloor$$</p>
+
+        <h3>3.3 Arithmetic Right Shift (SRA)</h3>
+        <p>Vacated positions on the left are filled with copies of the sign bit ($D[n-1]$). This preserves the sign of two's complement numbers and implements signed integer division by $2^k$, rounding toward negative infinity:</p>
+        <p>$$\text{SRA}(D, k) = \lfloor D_{\text{signed}} / 2^k \rfloor$$</p>
+
+        <h3>3.4 Rotation (ROL / ROR)</h3>
+        <p>Bits that "fall off" one end wrap around to the other end. No information is lost. For a left rotation:</p>
+        <p>$$\text{ROL}(D, k) = (D \ll k) \mid (D \gg (n - k))$$</p>
+
+        <h2>4. Verilog Implementation</h2>
+        <p>Here is a parameterized, synthesizable barrel shifter in Verilog that supports all four operations:</p>
+
+<pre><code>module barrel_shifter #(
+    parameter WIDTH = 32,
+    parameter SHIFT_BITS = $clog2(WIDTH)
+)(
+    input  wire [WIDTH-1:0]      data_in,
+    input  wire [SHIFT_BITS-1:0] shift_amount,
+    input  wire [1:0]            mode,  // 00=SLL, 01=SRL, 10=SRA, 11=ROL
+    output reg  [WIDTH-1:0]      data_out
+);
+
+    // Internal stage wires
+    reg [WIDTH-1:0] stage [0:SHIFT_BITS];
+    integer i, j;
+
+    always @(*) begin
+        // Pre-process: reverse bits for right shifts
+        case (mode)
+            2'b00: stage[0] = data_in;                          // Left shift
+            2'b01: begin                                        // Logical right
+                for (i = 0; i < WIDTH; i = i + 1)
+                    stage[0][i] = data_in[WIDTH-1-i];
+            end
+            2'b10: begin                                        // Arithmetic right
+                for (i = 0; i < WIDTH; i = i + 1)
+                    stage[0][i] = data_in[WIDTH-1-i];
+            end
+            2'b11: stage[0] = data_in;                          // Rotate left
+        endcase
+
+        // Logarithmic MUX stages
+        for (i = 0; i < SHIFT_BITS; i = i + 1) begin
+            if (shift_amount[i]) begin
+                for (j = 0; j < WIDTH; j = j + 1) begin
+                    if (j < (1 << i)) begin
+                        // Fill vacated positions
+                        case (mode)
+                            2'b00: stage[i+1][j] = 1'b0;       // Zero fill
+                            2'b01: stage[i+1][j] = 1'b0;       // Zero fill
+                            2'b10: stage[i+1][j] = data_in[WIDTH-1]; // Sign extend
+                            2'b11: stage[i+1][j] = stage[i][WIDTH-(1<<i)+j]; // Wrap
+                        endcase
+                    end else begin
+                        stage[i+1][j] = stage[i][j - (1 << i)];
+                    end
+                end
+            end else begin
+                stage[i+1] = stage[i];
+            end
+        end
+
+        // Post-process: reverse back for right shifts
+        case (mode)
+            2'b00: data_out = stage[SHIFT_BITS];
+            2'b01: begin
+                for (i = 0; i < WIDTH; i = i + 1)
+                    data_out[i] = stage[SHIFT_BITS][WIDTH-1-i];
+            end
+            2'b10: begin
+                for (i = 0; i < WIDTH; i = i + 1)
+                    data_out[i] = stage[SHIFT_BITS][WIDTH-1-i];
+            end
+            2'b11: data_out = stage[SHIFT_BITS];
+        endcase
+    end
+endmodule</code></pre>
+
+        <h3>4.1 Key Design Decisions</h3>
+        <p>The implementation above uses a clever trick: <strong>right shifts are implemented by reversing the input, performing a left shift, then reversing the output</strong>. This means we only need to build the MUX network for one shift direction, halving the hardware cost. The reversal logic consists of simple wire crossings, which cost zero gates in an ASIC (they're just metal routing) and only a few LUTs in an FPGA.</p>
+        <p>The <code>$clog2</code> system function automatically computes the number of shift stages needed. For a 32-bit shifter, this yields 5 stages; for a 64-bit shifter, 6 stages.</p>
+
+        <h2>5. Hardware Cost Analysis</h2>
+        <p>Let's quantify the resources required for an $n$-bit barrel shifter:</p>
+        <p><strong>MUX count:</strong> Each stage contains $n$ 2-to-1 multiplexers. With $\log_2(n)$ stages, the total MUX count is:</p>
+        <p>$$\text{Total MUXes} = n \cdot \log_2(n)$$</p>
+        <p>For $n = 32$: $32 \times 5 = 160$ MUXes. For $n = 64$: $64 \times 6 = 384$ MUXes.</p>
+        <p><strong>Gate count:</strong> Each 2:1 MUX requires approximately 4 NAND2-equivalent gates (using the implementation $Y = \overline{S} \cdot A + S \cdot B$). Thus, a 32-bit barrel shifter requires roughly $160 \times 4 = 640$ gate equivalents—remarkably economical.</p>
+        <p><strong>Critical path delay:</strong> The delay is exactly $\log_2(n)$ MUX delays. Using the logical effort framework, a 2:1 MUX has a logical effort of $g = 2$ and a parasitic delay of $p = 2$ (in units of a FO4 inverter). The total delay through the barrel shifter is:</p>
+        <p>$$t_{barrel} = \log_2(n) \cdot (g \cdot h + p) = \log_2(n) \cdot (2h + 2) \cdot \tau$$</p>
+        <p>where $h$ is the electrical effort (fanout) per stage and $\tau$ is the technology-specific FO4 delay.</p>
+
+        <h2>6. Funnel Shifter: A Practical Optimization</h2>
+        <p>In real processor ALUs, a common optimization is the <strong>funnel shifter</strong>. Instead of separate left and right shift logic, the funnel shifter concatenates the input with itself (for rotations) or with zeros/sign bits (for logical/arithmetic shifts), creating a $2n$-bit "funnel" from which the correct $n$-bit window is extracted:</p>
+<pre><code>module funnel_shifter #(parameter N = 32)(
+    input  wire [N-1:0]         data_in,
+    input  wire [$clog2(N)-1:0] shift_amt,
+    input  wire                 shift_right,
+    input  wire                 arithmetic,
+    output wire [N-1:0]         data_out
+);
+    wire [2*N-1:0] funnel;
+    wire [$clog2(N)-1:0] actual_shift;
+
+    // Build the funnel
+    assign funnel = shift_right ?
+        { {N{arithmetic & data_in[N-1]}}, data_in } :
+        { data_in, {N{1'b0}} };
+
+    // Convert right shift to left-extraction offset
+    assign actual_shift = shift_right ? (N[[$clog2(N)-1:0]] - shift_amt) : shift_amt;
+
+    // Extract N-bit window using barrel left shift on upper half
+    assign data_out = funnel[2*N-1 -: N] << actual_shift >> (N - 1);
+endmodule</code></pre>
+        <p>The funnel shifter is the standard approach used in ARM Cortex-A series processors and RISC-V implementations like BOOM (Berkeley Out-of-Order Machine).</p>
+
+        <h2>7. FPGA-Specific Optimizations</h2>
+        <p>On FPGAs, barrel shifters map naturally to the LUT fabric. A Xilinx 6-input LUT (LUT6) can implement any function of 6 inputs, meaning a single LUT can serve as a 2:1 MUX for each bit in each stage. However, there are several FPGA-specific considerations:</p>
+        <ul>
+          <li><strong>SRL primitives:</strong> Xilinx FPGAs contain dedicated SRL16E and SRL32E primitives—shift registers implemented in the LUT fabric. For fixed-pattern shifts (like pipeline delays), these are far more efficient than barrel shifter logic.</li>
+          <li><strong>DSP48 slices:</strong> For shift-and-add operations (common in multiplication), the DSP48 slice's built-in barrel shifter is more efficient than fabric-based logic.</li>
+          <li><strong>Carry chain exploitation:</strong> Altera/Intel FPGAs have wide, fast carry chains that can be repurposed for certain shift operations.</li>
+        </ul>
+
+        <h2>8. Barrel Shifters in the SQGATE Simulator</h2>
+        <p>You can build and simulate barrel shifters directly in the <a href="/home/">SQGATE digital logic simulator</a>. Start with 2:1 MUX components from the library, wire them in the logarithmic cascade pattern described above, and use input switches to control the shift amount. The waveform viewer lets you observe how data propagates through each MUX stage in real time—an invaluable learning tool for understanding the combinational delay characteristics.</p>
+        <p>For a more advanced project, try building a complete ALU with integrated barrel shifter support for SLL, SRL, SRA, and ROL operations. Connect the shift amount to a 5-bit input bus and observe how different shift amounts produce different propagation patterns through the MUX network.</p>
+
+        <h2>9. Comparison with Alternative Shifting Architectures</h2>
+        <table style="width:100%; border-collapse: collapse; margin: 24px 0;">
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.2);">
+            <th style="padding: 12px; text-align: left; color: #fff;">Architecture</th>
+            <th style="padding: 12px; text-align: left; color: #fff;">Delay</th>
+            <th style="padding: 12px; text-align: left; color: #fff;">Area</th>
+            <th style="padding: 12px; text-align: left; color: #fff;">Use Case</th>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <td style="padding: 12px;">Cascaded (Ripple)</td>
+            <td style="padding: 12px;">$O(n)$</td>
+            <td style="padding: 12px;">$O(n)$</td>
+            <td style="padding: 12px;">Low-speed, area-constrained</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <td style="padding: 12px;">Barrel Shifter</td>
+            <td style="padding: 12px;">$O(\log n)$</td>
+            <td style="padding: 12px;">$O(n \log n)$</td>
+            <td style="padding: 12px;">High-speed ALUs, CPUs</td>
+          </tr>
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <td style="padding: 12px;">Funnel Shifter</td>
+            <td style="padding: 12px;">$O(\log n)$</td>
+            <td style="padding: 12px;">$O(n \log n)$</td>
+            <td style="padding: 12px;">Processor ALUs (bidirectional)</td>
+          </tr>
+          <tr>
+            <td style="padding: 12px;">Crossbar Shifter</td>
+            <td style="padding: 12px;">$O(1)$</td>
+            <td style="padding: 12px;">$O(n^2)$</td>
+            <td style="padding: 12px;">Very high-speed, area not critical</td>
+          </tr>
+        </table>
+
+        <h2>10. Conclusion</h2>
+        <p>The barrel shifter is a masterclass in algorithmic hardware design. By decomposing a complex operation (arbitrary shift) into a series of simple, power-of-two decisions, it achieves logarithmic delay with modest area overhead. This same "decompose into powers of two" principle appears throughout digital design—in carry-lookahead adders, prefix trees, and even FFT butterfly networks. Understanding the barrel shifter deeply equips you with a fundamental design pattern applicable across the entire spectrum of digital circuit architecture.</p>
+        <p>Whether you're designing an FPGA-based signal processor, a custom ASIC for machine learning inference, or simply exploring digital design concepts in the <a href="/home/">SQGATE simulator</a>, the barrel shifter is an essential building block that demonstrates how elegant mathematical decomposition translates into efficient, high-performance hardware.</p>
+
+        <div class="cta-banner">
+          <h3>Ready to build your own Barrel Shifter?</h3>
+          <p>Simulate logic gates, build custom circuits, and export Verilog—all in your browser.</p>
+          <a href="/home/" class="liquid-btn" style="font-size: 16px; padding: 12px 24px;">Open SQGATE Simulator (Free)</a>
+        </div>
+      </main>
+    </div>
+
+    <aside class="ad-sidebar">
+      <div class="ad-label">Advertisement</div>
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7398330076279399" data-ad-slot="2222222222" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </aside>
+  </div>
+</body>
+</html>

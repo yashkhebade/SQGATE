@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phase-Locked Loop (PLL) Design Fundamentals | SQGATE Blog</title>
+  <meta name="description" content="A comprehensive guide to Phase-Locked Loops (PLLs) in digital systems. Learn about phase detectors, charge pumps, loop filters, and Voltage-Controlled Oscillators (VCO).">
+  <meta name="keywords" content="PLL, phase locked loop, VCO, clock generation, digital design, analog design, vlsi, sqgate">
+  <link rel="canonical" href="https://sqgate.online/blog/posts/pll-design-fundamentals">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="icon" href="/icon.ico">
+  <meta property="og:title" content="Phase-Locked Loop (PLL) Design Fundamentals | SQGATE Blog">
+  <meta property="og:description" content="A comprehensive guide to Phase-Locked Loops (PLLs) in digital systems. Learn about phase detectors, charge pumps, loop filters, and Voltage-Controlled Oscillators (VCO).">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sqgate.online/blog/posts/pll-design-fundamentals.html">
+  <meta property="og:image" content="https://sqgate.online/blog/posts/images/blog_pll_design_1783889779960.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/liquid-glass.css">
+  <style>
+    body { background-color: #060813; color: #cbd5e1; font-family: 'Inter', sans-serif; margin: 0; padding: 0; line-height: 1.7; }
+    .nav { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; background: rgba(12, 15, 28, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); position: sticky; top: 0; z-index: 100; }
+    .logo { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 24px; color: #fff; text-decoration: none; display: flex; align-items: center; gap: 12px; }
+    .article-header { max-width: 800px; margin: 60px auto 40px; padding: 0 20px; text-align: center; }
+    .article-header h1 { font-family: 'Outfit', sans-serif; font-size: 42px; color: #fff; margin-bottom: 20px; line-height: 1.2; }
+    .article-meta { color: #64748b; font-size: 14px; }
+    .article-content { max-width: 800px; margin: 0 auto 80px; padding: 40px; }
+    .article-content h2, .article-content h3, .article-content h4 { font-family: 'Outfit', sans-serif; color: #fff; margin-top: 40px; margin-bottom: 16px; }
+    .article-content a { color: #3b82f6; text-decoration: none; }
+    .article-content a:hover { text-decoration: underline; }
+    .article-content pre { background: rgba(0, 0, 0, 0.5); padding: 16px; border-radius: 8px; overflow-x: auto; font-family: 'Fira Code', monospace; font-size: 14px; border: 1px solid rgba(255,255,255,0.1); }
+    .article-content code { font-family: 'Fira Code', monospace; background: rgba(255, 255, 255, 0.1); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+    .article-content pre code { background: none; padding: 0; }
+    .article-content img { max-width: 100%; height: auto; border-radius: 12px; margin: 24px 0; border: 1px solid rgba(255,255,255,0.1); }
+    .cta-banner { margin-top: 60px; padding: 40px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .cta-banner h3 { margin: 0; font-family: 'Outfit', sans-serif; font-size: 28px; }
+    .blog-layout { display: grid; grid-template-columns: 250px 1fr 250px; gap: 20px; max-width: 1400px; margin: 0 auto; padding: 20px; }
+    .main-column { min-width: 0; }
+    .ad-sidebar { position: sticky; top: 100px; height: calc(100vh - 120px); display: flex; flex-direction: column; align-items: center; background: rgba(20, 25, 45, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 15px; overflow: hidden; }
+    .ad-label { font-size: 10px; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+    @media (max-width: 1100px) { .blog-layout { grid-template-columns: 1fr; } .ad-sidebar { position: static; height: auto; min-height: 250px; margin-bottom: 20px; } }
+  </style>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-XXXXXXXXXX');</script>
+  <script type="application/ld+json">{"@context": "https://schema.org","@type": "Article","headline": "Phase-Locked Loop (PLL) Design Fundamentals","author": {"@type": "Person","name": "Yash Khebade","url": "https://sqgate.online"},"datePublished": "2026-07-13T11:00:00+05:30","image": "https://sqgate.online/blog/posts/images/blog_pll_design_1783889779960.png"}</script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7398330076279399" crossorigin="anonymous"></script>
+</head>
+<body>
+  <svg class="liquid-glass-svg-filter" style="position: absolute; width: 0; height: 0; pointer-events: none;"><defs><filter id="liquid-glass-filter" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency="0.05 0.05" numOctaves="3" result="noise" /><feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.15 0" in="noise" result="coloredNoise" /><feBlend in="SourceGraphic" in2="coloredNoise" mode="screen" /></filter></defs></svg>
+
+  <nav class="nav">
+    <a href="/home/" class="logo"><img src="/icon.webp" width="32" height="32" alt="SQGATE Logo"> SQGATE</a>
+    <a href="/blog/" style="color: #94a3b8; text-decoration: none; font-weight: 500; margin-left: 20px;">← Back to Blog</a>
+    <div style="flex-grow: 1;"></div>
+    <a href="/home/" class="liquid-btn">Launch Simulator</a>
+  </nav>
+
+  <div class="blog-layout">
+    <aside class="ad-sidebar"><div class="ad-label">Advertisement</div><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7398330076279399" data-ad-slot="1111111111" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></aside>
+
+    <div class="main-column">
+      <header class="article-header">
+        <h1>Phase-Locked Loop (PLL) Design Fundamentals</h1>
+        <div class="article-meta">By Yash Khebade | Published on July 13, 2026 | 13 min read</div>
+      </header>
+
+      <main class="article-content liquid-panel">
+        <p>In modern digital systems, a robust, precise, and highly stable clock is critical. However, generating multi-gigahertz frequencies directly from an external crystal oscillator is practically impossible due to the mechanical limits of the quartz crystal itself. The solution to this problem is the <strong>Phase-Locked Loop (PLL)</strong>, an analog-digital hybrid circuit that multiplies a low-frequency reference clock into a high-frequency, phase-aligned system clock.</p>
+
+        <img src="/blog/posts/images/blog_pll_design_1783889779960.png" alt="Phase-Locked Loop Architecture" />
+
+        <h2>1. The Anatomy of a PLL</h2>
+        <p>A classic Charge-Pump PLL consists of five main components arranged in a negative feedback loop:</p>
+        <ol>
+          <li><strong>Phase-Frequency Detector (PFD):</strong> Compares the phase and frequency of the reference clock against the feedback clock.</li>
+          <li><strong>Charge Pump (CP):</strong> Converts the digital UP/DOWN signals from the PFD into analog current pulses.</li>
+          <li><strong>Loop Filter (LF):</strong> A low-pass filter that integrates the current pulses into a smooth control voltage ($V_{ctrl}$).</li>
+          <li><strong>Voltage-Controlled Oscillator (VCO):</strong> Generates an output frequency proportional to $V_{ctrl}$.</li>
+          <li><strong>Frequency Divider (/N):</strong> Divides the high-frequency VCO output to match the low-frequency reference clock.</li>
+        </ol>
+
+        <h2>2. Phase-Frequency Detector (PFD)</h2>
+        <p>The PFD is a purely digital state machine, typically constructed using two D-flip-flops. It takes two inputs: $F_{ref}$ (reference clock) and $F_{fb}$ (feedback clock), and produces two outputs: UP and DOWN.</p>
+        <p>If $F_{ref}$ has a rising edge before $F_{fb}$, the PFD asserts the UP signal. If $F_{fb}$ rises first, it asserts the DOWN signal. When both edges occur, a short reset pulse clears both flip-flops. This ensures the UP and DOWN signals precisely represent the phase error $\Delta\phi$.</p>
+
+        <h2>3. Charge Pump and Loop Filter</h2>
+        <p>The Charge Pump consists of two current sources: one sourcing current ($I_{UP}$) into the loop filter when UP is high, and one sinking current ($I_{DN}$) when DOWN is high.</p>
+        <p>The Loop Filter is typically a second-order passive filter (a capacitor $C_1$ in parallel with a resistor-capacitor series branch $R, C_2$). It performs a dual role:</p>
+        <ul>
+          <li><strong>Integration:</strong> It accumulates the charge from the current pulses to create a stable DC voltage $V_{ctrl}$.</li>
+          <li><strong>Low-pass filtering:</strong> It smooths out the high-frequency ripples from the UP/DOWN pulses, ensuring the VCO doesn't exhibit excessive jitter.</li>
+        </ul>
+
+        <h2>4. Voltage-Controlled Oscillator (VCO)</h2>
+        <p>The VCO is the heart of the PLL. It is a tunable oscillator whose output frequency is a linear function of the input control voltage:</p>
+        <p>$$f_{out} = f_0 + K_{VCO} \cdot V_{ctrl}$$</p>
+        <p>where $f_0$ is the free-running frequency and $K_{VCO}$ is the VCO gain in Hz/V. Typical CMOS VCOs are either <strong>ring oscillators</strong> (easier to integrate, wider tuning range, higher phase noise) or <strong>LC tank oscillators</strong> (larger area, lower phase noise, narrower tuning range).</p>
+
+        <h2>5. The Feedback Loop and Lock State</h2>
+        <p>Because the feedback clock passes through a divide-by-N counter, its frequency is $f_{fb} = f_{out} / N$. The negative feedback loop continuously adjusts $V_{ctrl}$ until the phase error between $F_{ref}$ and $F_{fb}$ is exactly zero. When this occurs, the PLL is said to be <strong>locked</strong>.</p>
+        <p>At lock: $f_{ref} = f_{fb} = f_{out} / N$</p>
+        <p>Therefore: $f_{out} = N \cdot f_{ref}$</p>
+        <p>By simply changing the integer $N$ in the feedback divider, we can synthesize a wide range of output frequencies from a single crystal reference.</p>
+
+        <h2>6. Jitter and Phase Noise</h2>
+        <p>No oscillator is perfect. The time variation of the clock edges is called <strong>jitter</strong> (in the time domain) or <strong>phase noise</strong> (in the frequency domain). A well-designed PLL actually reduces jitter from the VCO by tracking the highly stable crystal reference at low frequencies, while the loop filter attenuates high-frequency noise from the PFD/Charge Pump.</p>
+
+        <h2>7. Fractional-N PLLs</h2>
+        <p>An Integer-N PLL can only generate frequencies that are exact integer multiples of the reference frequency. To achieve finer frequency resolution (e.g., generating 2.401 GHz from a 20 MHz reference), modern designs use a <strong>Fractional-N</strong> architecture. This uses a Delta-Sigma modulator to rapidly dither the divider value $N$ between two integers (e.g., $N$ and $N+1$), achieving an average division ratio that is fractional.</p>
+
+        <div class="cta-banner">
+          <h3>Simulate Digital Architectures in SQGATE</h3>
+          <p>Explore phase detectors, counters, and clock dividers in our free logic simulator.</p>
+          <a href="/home/" class="liquid-btn" style="font-size: 16px; padding: 12px 24px;">Open SQGATE Simulator (Free)</a>
+        </div>
+      </main>
+    </div>
+
+    <aside class="ad-sidebar"><div class="ad-label">Advertisement</div><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7398330076279399" data-ad-slot="2222222222" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script></aside>
+  </div>
+</body>
+</html>
