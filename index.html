@@ -13,7 +13,7 @@
   <meta name="generator" content="SQGate Platform v1.0" />
   <title>SQGate — Free Online Digital Electronics & Logic Design Toolkit</title>
   <meta name="description" content="SQGate is a free browser-based digital electronics toolkit for engineering students and hobbyists. Simulate logic circuits, design FSMs with Verilog export, solve Karnaugh maps up to 6 variables, and master logic gates through interactive puzzles — no install required." />
-  <meta name="keywords" content="logic gate simulator online, FSM designer, finite state machine Verilog export, Karnaugh map solver, Boolean algebra simplification, digital electronics tools, online circuit simulator, logic puzzle game, digital logic design, EDA tools online, truth table generator, combinational circuit simulator, sequential circuit design, GATE exam preparation tools, engineering student tools, K-map solver 6 variable, logic circuit visualization, flip flop simulator, state machine diagram, Verilog code generator, digital electronics for ECE, BTech digital electronics, online digital logic simulator, free EDA software, gate level simulation, Boolean expression minimizer, logic gate puzzle, HDL learning tool, digital circuit design online, clocked circuit simulator, synchronous circuit design, asynchronous FSM, NAND NOR gate simulator, multiplexer simulator, decoder encoder circuit, half adder full adder, binary logic simulator" />
+  <meta name="keywords" content="logic gate simulator, FSM designer, Karnaugh map solver, digital logic design, truth table generator, Verilog export" />
   <link rel="canonical" href="https://sqgate.online/">
 
   <meta property="og:type" content="website" />
@@ -1985,8 +1985,8 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
         <input type="checkbox" id="login-remember" checked style="accent-color:#6366f1; width:16px; height:16px; cursor:pointer;">
         Remember Me
       </label>
-      <button class="login-sub-btn" id="login-btn">Sign In Now</button>
-      <button class="login-sub-btn" id="guest-btn">Continue as Guest</button>
+      <button class="login-sub-btn" id="guest-btn" style="margin-bottom: 12px; background: #6366f1; border: 1px solid #818cf8; color: #fff; box-shadow: 0 0 15px rgba(99,102,241,0.4);">Launch App (Guest)</button>
+      <button class="login-sub-btn" id="login-btn" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); color: #fff;">Sign In to Workspace</button>
       <div class="login-err" id="login-err"></div>
 
       <div class="login-footer">
@@ -1996,8 +1996,8 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
           <strong>SQGATE Simulator</strong>
         </div>
         <div style="margin-top: 15px; display: flex; gap: 12px; justify-content: flex-start; flex-wrap: wrap;">
-          <a href="/terms.html" style="color:rgba(255,255,255,0.6);text-decoration:none;">Terms of Service</a> &bull; 
-          <a href="/privacy.html" style="color:rgba(255,255,255,0.6);text-decoration:none;">Privacy Policy</a>
+          <a href="/terms" style="color:rgba(255,255,255,0.6);text-decoration:none;">Terms of Service</a> &bull; 
+          <a href="/privacy" style="color:rgba(255,255,255,0.6);text-decoration:none;">Privacy Policy</a>
         </div>
       </div>
     </div>
@@ -2863,9 +2863,9 @@ table.tt{border-collapse:collapse;width:100%;font-family:var(--fmono);font-size:
     <div style="margin-top:auto;padding:48px 0 24px 0;text-align:center;font-size:11.5px;color:var(--t3);border-top:1px solid var(--b1);">
       &copy; 2026 SQGATE. | <a href="https://docs.google.com/forms/d/e/1FAIpQLSc5AzzP2NccDkCbKAb5mVvefYFc5_X-EkJZx5RLWO7aqQ_8cw/viewform" target="_blank" style="color:var(--t2);text-decoration:none;">Found a bug? Let me know!</a><br>
       <div style="margin-top: 10px; margin-bottom: 10px;">
-        <a href="/terms.html" style="color:var(--t2);text-decoration:none;">Terms</a> &nbsp;|&nbsp;
-        <a href="/privacy.html" style="color:var(--t2);text-decoration:none;">Privacy</a> &nbsp;|&nbsp;
-        <a href="/refund.html" style="color:var(--t2);text-decoration:none;">Refund Policy</a> &nbsp;|&nbsp;
+        <a href="/terms" style="color:var(--t2);text-decoration:none;">Terms</a> &nbsp;|&nbsp;
+        <a href="/privacy" style="color:var(--t2);text-decoration:none;">Privacy</a> &nbsp;|&nbsp;
+        <a href="/refund" style="color:var(--t2);text-decoration:none;">Refund Policy</a> &nbsp;|&nbsp;
         <a href="/contact.html" style="color:var(--t2);text-decoration:none;">Contact Us</a>
       </div>
       <span style="display:inline-block;margin-top:6px;opacity:0.7;">SQGATE is an educational simulator. Results may vary from physical logic hardware.</span>
@@ -3366,12 +3366,12 @@ IN#1=1, IN#2=0 -> OUT#3=1</textarea>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px;">
         <div style="border:1px solid var(--b2); padding:10px; border-radius:4px; background:var(--bg1)">
           <div style="font-weight:bold; color:var(--t1)">16-Bit RISC-V CPU</div>
-          <div style="font-size:11px; color:var(--t2)">by @AliceEDA</div>
+          <div style="font-size:11px; color:var(--t2)">by @AliceEDA (Example Project)</div>
           <button class="pbtn" style="margin-top:8px; width:100%" onclick="msg('Importing RISC-V...', 'ok'); setTimeout(() => document.getElementById('ov-hub').classList.remove('open'), 500)">Fork & Import</button>
         </div>
         <div style="border:1px solid var(--b2); padding:10px; border-radius:4px; background:var(--bg1)">
           <div style="font-weight:bold; color:var(--t1)">Pong Game Logic</div>
-          <div style="font-size:11px; color:var(--t2)">by @BobBuilder</div>
+          <div style="font-size:11px; color:var(--t2)">by @BobBuilder (Example Project)</div>
           <button class="pbtn" style="margin-top:8px; width:100%" onclick="msg('Importing Pong...', 'ok'); setTimeout(() => document.getElementById('ov-hub').classList.remove('open'), 500)">Fork & Import</button>
         </div>
       </div>
@@ -10411,41 +10411,24 @@ function copyShareUrl() {
 
 <div style="position: absolute; top: 100vh; left: 0; width: 100%; border-top: 1px solid rgba(255,255,255,0.05); background: var(--bg0, #0f111a); z-index: 10; padding-bottom: 80px;">
 
-  <article class="publisher-content" style="padding: 60px 5%; max-width: 900px; margin: 0 auto; color: var(--t2); font-family: var(--fsans); line-height: 1.6;">
-    <h2 style="color: #fff; font-size: 28px; margin-bottom: 24px;">Digital Logic Simulator Guide</h2>
-    <p style="margin-bottom: 16px;">Welcome to the SQGate digital logic simulator. This comprehensive educational tool allows you to design, build, and test complex digital circuits directly in your web browser without any installation required.</p>
-    <p style="margin-bottom: 16px;">Whether you are an engineering student learning the fundamentals of Boolean algebra, or a hobbyist prototyping a complex CPU architecture, our intuitive drag-and-drop interface provides a seamless workflow. Start by selecting basic logic gates (AND, OR, NOT, XOR, NAND, NOR) from the <strong>Library panel</strong> on the left, and drag them onto the infinite grid canvas.</p>
-    <p style="margin-bottom: 16px;">Connect the terminals using the intuitive wiring system. Simply click on an output pin and drag to an input pin. SQGate automatically routes the wires, but you can add waypoints by clicking on the canvas during routing to keep your schematics organized. To test your logic, use the <strong>Toggle Switches</strong> and <strong>Push Buttons</strong> to inject high (1) or low (0) signals into your circuit, and monitor the outputs using <strong>LEDs</strong> or the <strong>Seven-Segment Display</strong>.</p>
-    <h3 style="color: #fff; font-size: 22px; margin-top: 32px; margin-bottom: 16px;">Advanced Features: Sequential Logic and Waveforms</h3>
-    <p style="margin-bottom: 16px;">Unlike simple combinational logic simulators, SQGate fully supports sequential logic elements. You can incorporate D Flip-Flops, T Flip-Flops, JK Flip-Flops, SR Latches, and specialized memory modules (RAM/ROM) into your designs. Use the <strong>Clock</strong> component to drive synchronous circuits like counters and shift registers.</p>
-    <p style="margin-bottom: 16px;">For rigorous timing analysis, open the <strong>Waveform Viewer</strong> from the top navigation bar. By clicking 'Record', the simulator captures the exact timing diagrams of every named node in your circuit. This is invaluable for debugging race conditions, setup/hold time violations, and analyzing propagation delays across complex data paths.</p>
-    <h3 style="color: #fff; font-size: 22px; margin-top: 32px; margin-bottom: 16px;">Exporting to Hardware Description Languages (HDL)</h3>
-    <p style="margin-bottom: 16px;">SQGate bridges the gap between graphical schematic capture and actual hardware synthesis. Once your design is verified, you can instantly export it to industry-standard <strong>Verilog</strong> or <strong>VHDL</strong> code using the 'Code' button. This generated HDL can then be synthesized using tools like Vivado or Quartus and deployed directly onto an FPGA.</p>
-    <p style="margin-bottom: 16px;">If you want to create your own custom components, simply select a cluster of gates and click <strong>Create IC</strong>. This packages your logic into a single reusable integrated circuit module that you can drop into any future project. All projects are saved locally in your browser, or can be downloaded as a `.sqg` file to share with classmates or colleagues.</p>
+    <article class="publisher-content" style="padding: 60px 5%; max-width: 900px; margin: 0 auto; color: var(--t2); font-family: var(--fsans); line-height: 1.6;">
+    <h2 style="color: #fff; font-size: 28px; margin-bottom: 24px;">Complete Digital Logic Toolkit</h2>
+    <p style="margin-bottom: 16px;">SQGate is an educational sandbox designed for engineering students and hobbyists to master digital electronics directly in the browser. Without installing heavy EDA software, you can prototype complex combinational and sequential logic circuits, evaluate real-time signal propagation, and perform rigorous timing analysis using the integrated waveform viewer.</p>
+    <h3 style="color: #fff; font-size: 22px; margin-top: 32px; margin-bottom: 16px;">From Schematic to Hardware</h3>
+    <p style="margin-bottom: 16px;">Bridge the gap between theoretical Boolean algebra and actual hardware synthesis. SQGate features specialized tools for drawing finite state machines (FSMs), solving Karnaugh maps up to 6 variables, and generating truth tables automatically. Once your circuit or state machine is verified, instantly export it to clean, synthesizable Verilog HDL code, ready to be deployed onto a physical FPGA.</p>
     <div style="margin-top: 40px; padding: 20px; background: rgba(139, 92, 246, 0.1); border-radius: 8px; border: 1px solid rgba(139, 92, 246, 0.2);">
-      <h4 style="color: #fff; margin-bottom: 12px;">Need more help?</h4>
-      <p style="margin-bottom: 0;">Check out our <a href="/blog/" style="color: #a78bfa; text-decoration: underline;">Educational Blog</a> for detailed tutorials on state machine synthesis, Karnaugh Map simplification, and CPU architecture design.</p>
+      <h4 style="color: #fff; margin-bottom: 12px;">Engineering Resources</h4>
+      <p style="margin-bottom: 0;">Explore our <a href="/blog" style="color: #a78bfa; text-decoration: underline;">Educational Blog</a> for comprehensive Masterclasses on state machine design, logic minimization, and CPU architecture.</p>
     </div>
   </article>
-
-  <section class="seo-content" style="max-width: 800px; margin: 40px auto; padding: 20px; color: var(--t2, #a1a1aa); line-height: 1.6; font-family: monospace; font-size: 14px;">
-    <h2 style="color: var(--t1, #fff); font-size: 18px; margin-bottom: 12px;">Browser-Based Logic Gate Simulator</h2>
-    <p style="margin-bottom: 16px;">Welcome to the ultimate logic gate simulator. This free online EDA (Electronic Design Automation) tool allows you to design, test, and analyze digital logic circuits directly in your browser without any software installation. Whether you are a student learning Boolean algebra or a professional prototyping a microprocessor, our logic simulator provides an infinite canvas with real-time evaluation.</p>
-    
-    <h2 style="color: var(--t1, #fff); font-size: 18px; margin-bottom: 12px;">Interactive Digital Design</h2>
-    <p style="margin-bottom: 16px;">Our simulator features a comprehensive components library including basic logic gates (AND, OR, NOT, NAND, NOR, XOR), complex combinational circuits (Multiplexers, Decoders, ALUs), and sequential logic elements (D Flip-Flops, J-K Flip-Flops, Counters, Registers). You can easily drag and drop components, wire them up, and use our interactive inputs (switches, buttons, clocks) to observe the digital states instantly.</p>
-    
-    <h2 style="color: var(--t1, #fff); font-size: 18px; margin-bottom: 12px;">Advanced Hardware Prototyping</h2>
-    <p style="margin-bottom: 16px;">Beyond simple circuits, our tool supports advanced hierarchical design (custom ICs), multi-bit buses, waveform timing analysis, and even structural Verilog HDL export. This makes it an invaluable resource for computer architecture courses, GATE exam preparation, and bridging the gap between schematic capture and FPGA/ASIC synthesis.</p>
-  </section>
   
   <div class="related-tools-section" style="max-width: 800px; margin: 40px auto; padding: 24px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; font-family: var(--fsans, sans-serif);">
     <h3 style="color: #fff; margin-top: 0; margin-bottom: 16px; font-size: 18px;">Related Engineering Tools</h3>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;">
-      <a href="/circuit-simulator/" style="color: #4ade80; text-decoration: none; padding: 12px; background: rgba(74,222,128,0.1); border-radius: 8px; text-align: center; font-weight: bold; transition: background 0.2s;">Circuit Simulator</a>
-      <a href="/k-map/" style="color: #60a5fa; text-decoration: none; padding: 12px; background: rgba(96,165,250,0.1); border-radius: 8px; text-align: center; font-weight: bold; transition: background 0.2s;">Karnaugh Map Solver</a>
-      <a href="/fsm/" style="color: #f472b6; text-decoration: none; padding: 12px; background: rgba(244,114,182,0.1); border-radius: 8px; text-align: center; font-weight: bold; transition: background 0.2s;">FSM Designer</a>
-      <a href="/truth-table-generator/" style="color: #fbbf24; text-decoration: none; padding: 12px; background: rgba(251,191,36,0.1); border-radius: 8px; text-align: center; font-weight: bold; transition: background 0.2s;">Truth Table Generator</a>
+      <a href="/circuit-simulator" style="color: #4ade80; text-decoration: none; padding: 12px; background: rgba(74,222,128,0.1); border-radius: 8px; text-align: center; font-weight: bold; transition: background 0.2s;">Circuit Simulator</a>
+      <a href="/k-map" style="color: #60a5fa; text-decoration: none; padding: 12px; background: rgba(96,165,250,0.1); border-radius: 8px; text-align: center; font-weight: bold; transition: background 0.2s;">Karnaugh Map Solver</a>
+      <a href="/fsm" style="color: #f472b6; text-decoration: none; padding: 12px; background: rgba(244,114,182,0.1); border-radius: 8px; text-align: center; font-weight: bold; transition: background 0.2s;">FSM Designer</a>
+      <a href="/truth-table-generator" style="color: #fbbf24; text-decoration: none; padding: 12px; background: rgba(251,191,36,0.1); border-radius: 8px; text-align: center; font-weight: bold; transition: background 0.2s;">Truth Table Generator</a>
     </div>
   </div>
 

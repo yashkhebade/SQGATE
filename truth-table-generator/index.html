@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Free Online Truth Table Generator | SQGATE</title>
-  <link rel="canonical" href="https://sqgate.online/truth-table-generator/">
+  <link rel="canonical" href="https://sqgate.online/truth-table-generator">
   <meta name="description" content="Generate truth tables instantly from Boolean expressions or logic circuits using our free online Truth Table Generator.">
   <meta name="keywords" content="truth table generator, boolean expression truth table, logic gate truth table online, digital logic truth table">
   <meta name="google-adsense-account" content="ca-pub-7398330076279399">
@@ -365,19 +365,19 @@ document.addEventListener('DOMContentLoaded', () => {
 <section class="related-tools" style="max-width: 800px; margin: 40px auto; padding: 20px; font-family: var(--font-sans, sans-serif);">
   <h2 style="color: var(--text-primary, #fff); font-size: 20px; margin-bottom: 16px;">Related Tools</h2>
   <div class="related-tools-grid">
-    <a href="/circuit-simulator/" class="related-tool-card">
+    <a href="/circuit-simulator" class="related-tool-card">
       <h3>Circuit Simulator</h3>
       <p>Build and simulate digital logic circuits instantly.</p>
     </a>
-    <a href="/k-map/" class="related-tool-card">
+    <a href="/k-map" class="related-tool-card">
       <h3>Karnaugh Map Solver</h3>
       <p>Interactive solver for 2 to 6 variable K-Maps.</p>
     </a>
-    <a href="/fsm/" class="related-tool-card">
+    <a href="/fsm" class="related-tool-card">
       <h3>FSM Designer</h3>
       <p>Design and simulate Finite State Machines (Moore & Mealy).</p>
     </a>
-    <a href="/truth-table-generator/" class="related-tool-card">
+    <a href="/truth-table-generator" class="related-tool-card">
       <h3>Truth Table Generator</h3>
       <p>Generate truth tables from Boolean algebra expressions.</p>
     </a>
@@ -385,6 +385,17 @@ document.addEventListener('DOMContentLoaded', () => {
 </section>
 
 
+
+
+<!-- UNIQUE TOOL CONTENT -->
+<div class="tool-article" style="max-width: 1200px; margin: 0 auto 64px auto; padding: 0 24px; color: rgba(255,255,255,0.8); line-height: 1.7; font-family: var(--font-sans);">
+  <h2 style="color: #fff; font-size: 24px; margin-bottom: 16px;">Boolean Expression to Truth Table Generator</h2>
+  <p style="margin-bottom: 16px;">A Truth Table is the most fundamental way to describe the behavior of a digital logic circuit. It explicitly lists every possible combination of input variables and the resulting output. Our automated Truth Table Generator instantly parses any Boolean algebra expression you type and calculates the full truth table, saving you from tedious manual computation and human error during complex logic design.</p>
+  <h3 style="color: #fff; font-size: 20px; margin-top: 32px; margin-bottom: 16px;">How to Use the Generator</h3>
+  <p style="margin-bottom: 16px;">Simply type your Boolean expression into the input box. The parser understands standard digital logic notation. Use `*` or `&` for AND, `+` or `|` for OR, `^` for XOR, and `'` or `~` for NOT (negation). For example, to generate a table for a half adder's sum output, you would type <code>A^B</code>. The generator automatically detects the unique variables in your expression, calculates the 2^n input permutations, and generates a cleanly formatted table.</p>
+  <h3 style="color: #fff; font-size: 20px; margin-top: 32px; margin-bottom: 16px;">Minterms and Maxterms Analysis</h3>
+  <p style="margin-bottom: 16px;">In addition to the raw table output, the generator analyzes the final column to automatically extract the Canonical Sum of Products (SOP) and Canonical Product of Sums (POS). It will list the specific minterms (where the output is 1) and maxterms (where the output is 0). This makes it incredibly easy to take a raw algebraic expression and immediately map it into our Karnaugh Map solver for further minimization.</p>
+</div>
 
 </body>
 
