@@ -1,0 +1,78 @@
+    <!-- COMPREHENSIVE SEO CONTENT SECTION FOR ADSENSE -->
+    <div style="max-width: 1200px; margin: 48px auto 64px auto; padding: 32px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; line-height: 1.7; color: var(--t2); font-size: 15px;">
+      
+      <h2 style="color: var(--t1); margin-top: 0; font-size: 24px; margin-bottom: 20px; text-shadow: 0 0 12px var(--acc-glow);">About SQGATE: The Modern Digital Logic Toolkit</h2>
+      <p style="margin-bottom: 16px;">Welcome to SQGATE, a comprehensive, entirely free digital electronics and logic gate simulator built specifically for engineering students, hardware hobbyists, and educators. In traditional academic and industrial environments, designing digital logic circuits often requires installing heavy, legacy desktop applications that are prone to crashing and have steep learning curves. SQGATE completely eliminates download friction by providing a full-featured Electronic Design Automation (EDA) suite directly in your web browser. Whether you are learning the fundamentals of Boolean algebra or designing complex pipelined processors, SQGATE gives you the tools you need in an intuitive, liquid-glass interface.</p>
+      
+      <p style="margin-bottom: 16px;">Our primary mission is to democratize hardware design education. For decades, students learning Verilog, VHDL, and gate-level design have been restricted by desktop-only limitations, complex licensing, and unintuitive user interfaces. With SQGATE, you can instantly start drawing schematics using our drag-and-drop visual circuit simulator. There is no wire clutter—our smart routing algorithm ensures your schematics remain clean and readable. Furthermore, you are not limited to basic primitives; you can package your validated circuits into composable Custom ICs, allowing for hierarchical design similar to professional VLSI workflows.</p>
+
+      <p style="margin-bottom: 16px;">SQGATE is not just a combinational logic simulator. It incorporates a state-of-the-art Finite State Machine (FSM) designer, letting you visually graph states and transitions to instantly generate synthesizable Verilog HDL code. Additionally, it offers a sophisticated Karnaugh Map (K-Map) solver capable of minimizing expressions up to 6 variables, revealing prime implicants and the final Sum of Products (SOP). For those who learn best through gamification, our Logic Quest puzzle game provides a structured progression to master universal gates (NAND, NOR) and logic minimization techniques under constraints.</p>
+
+      <p style="margin-bottom: 32px;">Every component of SQGATE runs client-side. This means zero latency during clock simulations, unparalleled privacy since your circuit data never leaves your device unless you choose to share it, and the ability to work completely offline using modern Progressive Web App (PWA) technologies. From half-adders to fully custom 8-bit CPUs, SQGATE is your gateway to mastering digital electronics.</p>
+
+      <h2 style="color: var(--t1); font-size: 24px; margin-bottom: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 32px;">How to Use the SQGATE Circuit Simulator</h2>
+      
+      <h3 style="color: #fff; font-size: 18px; margin-bottom: 12px;">Step 1: Access the Components Library</h3>
+      <p style="margin-bottom: 20px;">Begin your design by opening the left-hand Library panel. Here you will find a categorized list of components ranging from basic logic gates (AND, OR, NOT, XOR) to advanced sequential elements like D Flip-Flops, T Flip-Flops, and J-K Flip-Flops. Simply click and drag any component from the library onto the grid canvas. You can use the search bar at the top of the library to quickly locate specific chips or I/O elements like LED matrices and hexadecimal displays.</p>
+
+      <h3 style="color: #fff; font-size: 18px; margin-bottom: 12px;">Step 2: Connect Wires and Route Signals</h3>
+      <p style="margin-bottom: 20px;">Wiring in SQGATE is designed to be completely fluid. Hover over any output pin (indicated by a small circular node) until it highlights, then click and drag your cursor to the desired input pin on another gate. The simulator automatically routes the wire orthogonally, minimizing wire clutter and crossed paths. To delete a wire, hover over it until it highlights and press the Delete or Backspace key. Signal states are color-coded in real time: bright cyan represents a logical HIGH (1), while subtle dark blue represents a logical LOW (0).</p>
+
+      <h3 style="color: #fff; font-size: 18px; margin-bottom: 12px;">Step 3: Simulate and Verify Logic</h3>
+      <p style="margin-bottom: 20px;">Simulation is always live. To test your circuit, place an Input Toggle or Push Button from the library and connect it to your logic path. Click the switches to toggle their state and watch the signals propagate through your gates instantly. For sequential circuits, you can add a Clock generator and adjust its frequency via the right-hand Properties panel. Use the automated Truth Table Generator tool to instantly verify the complete input-output mapping of your combinational blocks.</p>
+
+      <h3 style="color: #fff; font-size: 18px; margin-bottom: 12px;">Step 4: Export to Verilog and Save</h3>
+      <p style="margin-bottom: 32px;">Once your design is functionally correct, you can export it for use in FPGA toolchains. Click the "Code" button in the top toolbar to instantly translate your visual schematic into structural Verilog HDL. You can also package your circuit into a Custom IC for reuse in larger projects. Remember to click "Save" to store your project locally in your browser's offline workspace, or generate a shareable link to collaborate with classmates.</p>
+
+      <h2 style="color: var(--t1); font-size: 24px; margin-bottom: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 32px;">Frequently Asked Questions (FAQ)</h2>
+      
+      <div style="margin-bottom: 16px;">
+        <strong style="color: #fff; display: block; margin-bottom: 6px;">1. Is SQGATE completely free to use?</strong>
+        Yes, SQGATE is 100% free for students, hobbyists, and educators. There are no paywalls for the core simulation features, logic gates, or Verilog HDL export capabilities.
+      </div>
+      
+      <div style="margin-bottom: 16px;">
+        <strong style="color: #fff; display: block; margin-bottom: 6px;">2. Do I need to download or install any software?</strong>
+        No, SQGATE runs entirely in your web browser. There is absolutely no download friction. It leverages HTML5 Canvas and modern JavaScript to deliver desktop-grade performance without any installation.
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <strong style="color: #fff; display: block; margin-bottom: 6px;">3. Can I use SQGATE offline?</strong>
+        Yes! Once you load the application in your browser, it utilizes Service Workers to cache its resources. You can disconnect from the internet and continue designing and simulating circuits offline.
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <strong style="color: #fff; display: block; margin-bottom: 6px;">4. How does the Verilog export feature work?</strong>
+        Our engine traverses your visual schematic, identifying logic primitives and custom IC blocks. It then generates structural Verilog code mapping wires to nets and gates to continuous assignments or module instantiations, ready for synthesis in Quartus or Vivado.
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <strong style="color: #fff; display: block; margin-bottom: 6px;">5. How do I build a custom IC (Integrated Circuit)?</strong>
+        Select the components you wish to package, click the "Create IC" button in the toolbar, and assign input/output ports. Your new Custom IC will appear in your library and can be used just like any standard gate, allowing for hierarchical design.
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <strong style="color: #fff; display: block; margin-bottom: 6px;">6. What is the K-Map solver?</strong>
+        The Karnaugh Map solver is a built-in educational tool that visually minimizes Boolean expressions. You can input truth tables for up to 6 variables, and it will group the 1s to provide the most simplified Sum of Products (SOP) expression.
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <strong style="color: #fff; display: block; margin-bottom: 6px;">7. Does SQGATE support sequential circuits and flip-flops?</strong>
+        Absolutely. We provide SR, D, JK, and T flip-flops alongside adjustable clock generators. You can build counters, shift registers, memory arrays, and complex state machines.
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <strong style="color: #fff; display: block; margin-bottom: 6px;">8. Where are my circuits saved?</strong>
+        To protect your privacy, all projects are saved locally in your browser's IndexedDB and LocalStorage. They are not uploaded to any server unless you explicitly use the "Share Circuit" feature.
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <strong style="color: #fff; display: block; margin-bottom: 6px;">9. What happens if I create a combinational logic loop?</strong>
+        The simulation engine includes infinite loop detection. If it detects an unclocked feedback loop (a race condition), it will halt the simulation to prevent your browser from freezing and highlight the problematic wires.
+      </div>
+
+      <div style="margin-bottom: 16px;">
+        <strong style="color: #fff; display: block; margin-bottom: 6px;">10. Is SQGATE available on mobile devices?</strong>
+        While we recommend using a desktop or tablet for the best schematic capture experience, SQGATE includes touch polyfills so you can view, pan, and interact with circuits on your smartphone.
+      </div>
+    </div>

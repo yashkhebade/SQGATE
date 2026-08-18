@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us | SQGATE Digital Logic Simulator</title>
+  <link rel="canonical" href="https://sqgate.online/about">
+  <meta name="description" content="Learn about SQGATE, the mission behind the free online digital electronics and logic gate simulator, and the team bringing EDA tools to the browser.">
+  <meta name="keywords" content="about SQGATE, digital electronics tools, online circuit simulator, logic gate education">
+  <meta name="google-adsense-account" content="ca-pub-7398330076279399">
+  
+  <meta property="og:title" content="About Us | SQGATE">
+  <meta property="og:description" content="Learn about the mission behind SQGATE's free digital electronics toolkit.">
+  <meta property="og:image" content="https://sqgate.online/og-image.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sqgate.online/about.html">
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-72EG9VJELZ"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-72EG9VJELZ');</script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7398330076279399" crossorigin="anonymous"></script>
+  
+  <link rel="icon" href="./icon.webp" type="image/png">
+  <style>
+    body { margin: 0; padding: 0; background: #09090b; color: #e4e4e7; font-family: 'Outfit', sans-serif; line-height: 1.6; }
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+    h1 { color: #ffffff; font-size: 36px; border-bottom: 1px solid #22222c; padding-bottom: 10px; margin-bottom: 30px; }
+    h2 { color: #a1a1aa; font-size: 24px; margin-top: 40px; margin-bottom: 15px; }
+    p, li { color: #a1a1aa; font-size: 16px; margin-bottom: 15px; }
+    ul { margin-bottom: 20px; padding-left: 20px; }
+    strong { color: #ffffff; }
+    a { color: #6366f1; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .back-btn { display: inline-block; margin-bottom: 30px; background: #18181f; color: #a1a1aa; padding: 8px 16px; border-radius: 6px; border: 1px solid #323242; transition: all 0.2s ease; text-decoration: none; }
+    .back-btn:hover { color: #ffffff; border-color: #6366f1; }
+    .content-box { background: #18181b; border: 1px solid #27272a; border-radius: 12px; padding: 30px; margin-top: 20px; }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap">
+</head>
+<body>
+
+  <div class="container">
+    <a href="/home/" class="back-btn">← Back to SQGATE</a>
+    
+    <h1>About SQGATE</h1>
+    
+    <div class="content-box">
+      <h2>Our Mission</h2>
+      <p>SQGATE was founded with a singular vision: to democratize hardware design education by bringing professional-grade Electronic Design Automation (EDA) tools directly into the modern web browser. For decades, learning digital electronics required students to navigate complex, heavy desktop applications. Our platform eliminates that friction, offering a seamless, client-side digital logic simulator that runs instantly anywhere, anytime.</p>
+      
+      <h2>What We Build</h2>
+      <p>We provide a comprehensive suite of digital electronics tools tailored for engineering students, educators, and hobbyists:</p>
+      <ul>
+        <li><strong>Visual Circuit Simulator:</strong> An interactive, drag-and-drop workspace supporting everything from basic logic gates (AND, OR, NOT) to advanced memory arrays and ALUs.</li>
+        <li><strong>Finite State Machine (FSM) Designer:</strong> A graphical tool to draw Moore and Mealy state diagrams and instantly generate synthesizable Verilog HDL code.</li>
+        <li><strong>Interactive K-Map Solver:</strong> A built-in solver for up to 6-variable Karnaugh Maps, automatically identifying prime implicants and simplifying Boolean algebra.</li>
+        <li><strong>Logic Quest:</strong> A gamified educational module designed to help beginners master logic minimization through constraints.</li>
+      </ul>
+
+      <h2>Privacy & Architecture</h2>
+      <p>We believe in data ownership and privacy. The entire SQGATE application executes locally within your browser using HTML5 Canvas and WebAssembly technologies. When you save a circuit, it is stored locally via IndexedDB. Your intellectual property and circuit designs are never transmitted to our servers unless you explicitly choose to share them via a generated link.</p>
+
+      <h2>Our Community</h2>
+      <p>SQGATE is used globally by computer science and electrical engineering departments to introduce students to the fundamentals of computer architecture. We are constantly improving our platform based on user feedback. If you have feature requests or encounter bugs, we encourage you to <a href="/contact.html">contact us</a>.</p>
+    </div>
+  </div>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch((error) => console.log('ServiceWorker registration failed: ', error));
+    });
+  }
+</script>
+</body>
+</html>
