@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RISC-V Architecture: The Open-Source Hardware Revolution | SQGATE Blog</title>
+  <meta name="description" content="A technical introduction to the RISC-V open-source Instruction Set Architecture (ISA). Learn why RISC-V is revolutionizing hardware design and how to implement it.">
+  <meta name="keywords" content="RISC-V, ISA, computer architecture, open source hardware, verilog processor, RV32I">
+  <link rel="canonical" href="https://sqgate.online/blog/posts/riscv-architecture-open-source">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="icon" href="/icon.ico">
+  
+  <!-- OG Tags -->
+  <meta property="og:title" content="RISC-V Architecture: The Open-Source Hardware Revolution | SQGATE Blog">
+  <meta property="og:description" content="A technical introduction to the RISC-V open-source Instruction Set Architecture (ISA). Learn why RISC-V is revolutionizing hardware design and how to implement it.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://sqgate.online/blog/posts/riscv-architecture-open-source.html">
+  <meta property="og:image" content="https://sqgate.online/blog/posts/images/blog_riscv_architecture_1790858891911.jpg">
+  
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/liquid-glass.css">
+  
+  <style>
+    body {
+      background-color: #060813;
+      color: #cbd5e1;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      line-height: 1.7;
+    }
+    .nav {
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(12, 15, 28, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 24px;
+      color: #fff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .article-header {
+      max-width: 800px;
+      margin: 60px auto 40px;
+      padding: 0 20px;
+      text-align: center;
+    }
+    .article-header h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 42px;
+      color: #fff;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+    .article-meta {
+      color: #64748b;
+      font-size: 14px;
+    }
+    .article-content {
+      max-width: 800px;
+      margin: 0 auto 80px;
+      padding: 40px;
+    }
+    .article-content h2, .article-content h3, .article-content h4 {
+      font-family: 'Outfit', sans-serif;
+      color: #fff;
+      margin-top: 40px;
+      margin-bottom: 16px;
+    }
+    .article-content a {
+      color: #3b82f6;
+      text-decoration: none;
+    }
+    .article-content a:hover {
+      text-decoration: underline;
+    }
+    .article-content pre {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: 'Fira Code', monospace;
+      font-size: 14px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .article-content code {
+      font-family: 'Fira Code', monospace;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+    .article-content pre code {
+      background: none;
+      padding: 0;
+    }
+    .article-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      margin: 24px 0;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .cta-banner {
+      margin-top: 60px;
+      padding: 40px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .cta-banner h3 {
+      margin: 0;
+      font-family: 'Outfit', sans-serif;
+      font-size: 28px;
+    }
+    .blog-layout {
+      display: grid;
+      grid-template-columns: 250px 1fr 250px;
+      gap: 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .main-column {
+      min-width: 0;
+    }
+    .ad-sidebar {
+      position: sticky;
+      top: 100px;
+      height: calc(100vh - 120px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: rgba(20, 25, 45, 0.4);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 15px;
+      overflow: hidden;
+    }
+    .ad-label {
+      font-size: 10px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+    @media (max-width: 1100px) {
+      .blog-layout {
+        grid-template-columns: 1fr;
+      }
+      .ad-sidebar {
+        position: static;
+        height: auto;
+        min-height: 250px;
+        margin-bottom: 20px;
+      }
+    }
+  </style>
+  
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-72EG9VJELZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-72EG9VJELZ');
+  </script>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "CMOS Logic Design Basics: Pull-Up and Pull-Down Networks",
+      "author": {
+        "@type": "Person",
+        "name": "Yash Khebade",
+        "url": "https://sqgate.online"
+      },
+      "datePublished": "2026-07-02T04:30:00+05:30",
+      "image": "https://sqgate.online/blog/posts/images/cmos_logic_1782910218066.png"
+    }
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7398330076279399" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/blog/assets/blog-demo.css">
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-72EG9VJELZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-72EG9VJELZ');
+  </script>
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1234567890123456" crossorigin="anonymous"></script>
+
+</head>
+<body>
+  <svg class="liquid-glass-svg-filter" style="position: absolute; width: 0; height: 0; pointer-events: none;">
+    <defs>
+      <filter id="liquid-glass-filter" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.05 0.05" numOctaves="3" result="noise" />
+        <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.15 0" in="noise" result="coloredNoise" />
+        <feBlend in="SourceGraphic" in2="coloredNoise" mode="screen" />
+      </filter>
+    </defs>
+  </svg>
+
+  <nav class="nav">
+    <a href="/home/" class="logo">
+      <img src="/icon.webp" width="32" height="32" alt="SQGATE Logo">
+      SQGATE
+    </a>
+    <a href="/blog" style="color: #94a3b8; text-decoration: none; font-weight: 500; margin-left: 20px;">← Back to Blog</a>
+    <div style="flex-grow: 1;"></div>
+    <a href="/home/" class="liquid-btn">Launch Simulator</a>
+  </nav>
+
+  <div class="blog-layout">
+    <aside class="ad-sidebar">
+      <div class="ad-label">Advertisement</div>
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7398330076279399" data-ad-slot="1111111111" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </aside>
+
+    <div class="main-column">
+      <header class="article-header">
+        <h1>RISC-V Architecture: The Open-Source Hardware Revolution</h1>
+        <div class="article-meta">By Yash Khebade | Published on October 1, 2026 | 12 min read</div>
+      </header>
+
+      <main class="article-content liquid-panel">
+<img src="/blog/posts/images/blog_riscv_architecture_1790858891911.jpg" alt="RISC-V Architecture: The Open-Source Hardware Revolution" />
+
+    <h2>The RISC-V Open-Source Hardware Revolution</h2>
+    <p>For decades, the microprocessor industry has been dominated by proprietary Instruction Set Architectures (ISAs) like x86 and ARM. These architectures require exorbitant licensing fees, restricting innovation for startups and academia. Enter RISC-V (pronounced "risk-five"), a free and open-source ISA that is reshaping computer architecture.</p>
+    
+    <h3>What Makes RISC-V Different?</h3>
+    <p>RISC-V is purely a set of specifications, not a microarchitecture. It dictates the instructions a processor must understand (e.g., <code>ADD</code>, <code>LW</code>, <code>BEQ</code>), but leaves the physical implementation (pipeline depth, branch prediction, superscalar execution) entirely to the designer. This modularity allows engineers to build everything from tiny IoT microcontrollers to massive cloud-computing accelerators using the same base ISA.</p>
+
+    <h3>Base Integer ISA (RV32I)</h3>
+    <p>The foundation of RISC-V is incredibly small. The RV32I base integer instruction set contains just 40 instructions. From there, designers can add standard extensions like 'M' for Integer Multiplication/Division, 'A' for Atomic operations, and 'F' for Single-Precision Floating-Point.</p>
+    
+    <h3>Designing a RISC-V Core in Verilog</h3>
+    <p>Building a basic single-cycle RISC-V processor involves creating an Instruction Fetch unit, Decode logic, an ALU, Memory access, and Writeback stages. Unlike proprietary architectures, you can legally implement and sell a RISC-V core without paying royalties.</p>
+    
+    <pre><code>module alu (
+    input  [31:0] a,
+    input  [31:0] b,
+    input  [3:0]  alu_ctrl,
+    output reg [31:0] result,
+    output zero
+);
+    always @(*) begin
+        case (alu_ctrl)
+            4'b0000: result = a + b;       // ADD
+            4'b0001: result = a - b;       // SUB
+            4'b0010: result = a & b;       // AND
+            4'b0011: result = a | b;       // OR
+            4'b0100: result = a ^ b;       // XOR
+            default: result = 32'b0;
+        endcase
+    end
+    assign zero = (result == 32'b0);
+endmodule</code></pre>
+    
+    <p>Ready to test your logic design skills? Head over to the <a href="https://sqgate.online/home/">SQGATE Visual Simulator</a> to prototype the fundamental combinatorial logic blocks needed for your own CPU architecture.</p>
+
+</main>
+    </div>
+
+    <aside class="ad-sidebar">
+      <div class="ad-label">Advertisement</div>
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7398330076279399" data-ad-slot="2222222222" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </aside>
+  </div>
+
+<div class="related-tools-section" style="max-width: 800px; margin: 40px auto; padding: 24px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; font-family: var(--font-sans, sans-serif);">
+  <h3 style="color: #fff; margin-top: 0; margin-bottom: 16px; font-size: 18px;">Related Engineering Tools</h3>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;">
+    <a href="/circuit-simulator" style="color: #4ade80; text-decoration: none; padding: 12px; background: rgba(74,222,128,0.1); border-radius: 8px; text-align: center; font-weight: bold; transition: background 0.2s;">Circuit Simulator</a>
+    <a href="/k-map" style="color: #60a5fa; text-decoration: none; padding: 12px; background: rgba(96,165,250,0.1); border-radius: 8px; text-align: center; font-weight: bold; transition: background 0.2s;">Karnaugh Map Solver</a>
+    <a href="/fsm" style="color: #f472b6; text-decoration: none; padding: 12px; background: rgba(244,114,182,0.1); border-radius: 8px; text-align: center; font-weight: bold; transition: background 0.2s;">FSM Designer</a>
+    <a href="/truth-table-generator" style="color: #fbbf24; text-decoration: none; padding: 12px; background: rgba(251,191,36,0.1); border-radius: 8px; text-align: center; font-weight: bold; transition: background 0.2s;">Truth Table Generator</a>
+  </div>
+</div>
+
+  <script src="/blog/assets/blog-demo.js"></script>
+</body>
+</html>
